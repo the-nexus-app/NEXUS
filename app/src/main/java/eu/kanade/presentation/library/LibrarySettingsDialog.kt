@@ -70,12 +70,8 @@ fun LibrarySettingsDialog(
     onDismissRequest: () -> Unit,
     screenModel: LibrarySettingsScreenModel,
     category: Category?,
-     -->
     hasCategories: Boolean,
-     <--
-     -->
     categories: List<Category>,
-     <--
 ) {
     TabbedDialog(
         onDismissRequest = onDismissRequest,
@@ -83,9 +79,7 @@ fun LibrarySettingsDialog(
             stringResource(MR.strings.action_filter),
             stringResource(MR.strings.action_sort),
             stringResource(MR.strings.action_display),
-             -->
             stringResource(SYMR.strings.group),
-             <--
         ),
     ) { page ->
         Column(
@@ -96,9 +90,7 @@ fun LibrarySettingsDialog(
             when (page) {
                 0 -> FilterPage(
                     screenModel = screenModel,
-                     -->
                     categories = categories,
-                     <--
                 )
                 1 -> SortPage(
                     category = category,
@@ -107,12 +99,10 @@ fun LibrarySettingsDialog(
                 2 -> DisplayPage(
                     screenModel = screenModel,
                 )
-                 -->
                 3 -> GroupPage(
                     screenModel = screenModel,
                     hasCategories = hasCategories,
                 )
-                 <--
             }
         }
     }
@@ -171,21 +161,17 @@ private fun ColumnScope.FilterPage(
             onClick = { screenModel.toggleFilter(LibraryPreferences::filterIntervalCustom) },
         )
     }
-     -->
     val filterLewd by screenModel.libraryPreferences.filterLewd().collectAsState()
     TriStateItem(
         label = stringResource(SYMR.strings.lewd),
         state = filterLewd,
         onClick = { screenModel.toggleFilter(LibraryPreferences::filterLewd) },
     )
-     <--
 
-     -->
     CategoriesFilter(
         libraryPreferences = screenModel.libraryPreferences,
         categories = categories,
     )
-     <--
 
     val trackers by screenModel.trackersFlow.collectAsState()
     when (trackers.size) {
@@ -222,7 +208,6 @@ private fun ColumnScope.SortPage(
     screenModel: LibrarySettingsScreenModel,
 ) {
     val trackers by screenModel.trackersFlow.collectAsState()
-     -->
     val globalSortMode by screenModel.libraryPreferences.sortingMode().collectAsState()
     val sortingMode = if (screenModel.grouping == LibraryGroup.BY_DEFAULT) {
         category.sort.type
@@ -238,21 +223,18 @@ private fun ColumnScope.SortPage(
         screenModel.libraryPreferences.sortTagsForLibrary().changes()
             .map { it.isNotEmpty() }
     }.collectAsState(initial = screenModel.libraryPreferences.sortTagsForLibrary().get().isNotEmpty())
-     <--
 
-    val options = remember(trackers.isEmpty()/* SY --> */, hasSortTags/* SY <-- */) {
+    val options = remember(trackers.isEmpty(), hasSortTags) {
         val trackerMeanPair = if (trackers.isNotEmpty()) {
             MR.strings.action_sort_tracker_score to LibrarySort.Type.TrackerMean
         } else {
             null
         }
-         -->
         val tagSortPair = if (hasSortTags) {
             SYMR.strings.tag_sorting to LibrarySort.Type.TagList
         } else {
             null
         }
-         <--
         listOfNotNull(
             MR.strings.action_sort_alpha to LibrarySort.Type.Alphabetical,
             MR.strings.action_sort_total to LibrarySort.Type.TotalChapters,
@@ -263,9 +245,7 @@ private fun ColumnScope.SortPage(
             MR.strings.action_sort_chapter_fetch_date to LibrarySort.Type.ChapterFetchDate,
             MR.strings.action_sort_date_added to LibrarySort.Type.DateAdded,
             trackerMeanPair,
-             -->
             tagSortPair,
-             <--
             MR.strings.action_sort_random to LibrarySort.Type.Random,
         )
     }
@@ -310,9 +290,7 @@ private val displayModes = listOf(
     MR.strings.action_display_comfortable_grid to LibraryDisplayMode.ComfortableGrid,
     MR.strings.action_display_list to LibraryDisplayMode.List,
     MR.strings.action_display_cover_only_grid to LibraryDisplayMode.CoverOnlyGrid,
-     -->
     KMR.strings.action_display_comfortable_grid_panorama to LibraryDisplayMode.ComfortableGridPanorama,
-     <--
 )
 
 @Suppress("UnusedReceiverParameter")
@@ -373,7 +351,6 @@ private fun ColumnScope.DisplayPage(
         label = stringResource(MR.strings.action_display_language_badge),
         pref = screenModel.libraryPreferences.languageBadge(),
     )
-     -->
     val showLang by screenModel.libraryPreferences.languageBadge().collectAsState()
     if (showLang) {
         CheckboxItem(
@@ -385,7 +362,6 @@ private fun ColumnScope.DisplayPage(
         label = stringResource(KMR.strings.action_display_source_badge),
         pref = screenModel.libraryPreferences.sourceBadge(),
     )
-     <--
     CheckboxItem(
         label = stringResource(MR.strings.action_display_show_continue_reading_button),
         pref = screenModel.libraryPreferences.showContinueReadingButton(),
@@ -396,19 +372,16 @@ private fun ColumnScope.DisplayPage(
         label = stringResource(MR.strings.action_display_show_tabs),
         pref = screenModel.libraryPreferences.categoryTabs(),
     )
-     -->
     CheckboxItem(
         label = stringResource(KMR.strings.action_show_hidden_categories),
         pref = screenModel.libraryPreferences.showHiddenCategories(),
     )
-     <--
     CheckboxItem(
         label = stringResource(MR.strings.action_display_show_number_of_items),
         pref = screenModel.libraryPreferences.categoryNumberOfItems(),
     )
 }
 
- -->
 data class GroupMode(
     val int: Int,
     val nameRes: StringResource,
@@ -463,9 +436,7 @@ private fun ColumnScope.GroupPage(
         )
     }
 }
- <--
 
- -->
 @Composable
 private fun CategoriesFilter(
     libraryPreferences: LibraryPreferences,
@@ -518,4 +489,3 @@ private fun CategoriesFilter(
         }
     }
 }
- <--

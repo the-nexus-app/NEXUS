@@ -28,9 +28,7 @@ import uy.kohesive.injekt.api.get
 
 class DownloadQueueScreenModel(
     private val downloadManager: DownloadManager = Injekt.get(),
-     -->
     private val navigator: Navigator? = null,
-     <--
 ) : ScreenModel {
 
     private val _state = MutableStateFlow(emptyList<DownloadHeaderItem>())
@@ -115,12 +113,10 @@ class DownloadQueueScreenModel(
                             cancel(allDownloadsForSeries)
                         }
                     }
-                     -->
                     R.id.show_manga -> {
                         val mangaId = item.download.manga.id
                         showManga(mangaId = mangaId)
                     }
-                     <--
                 }
             }
         }
@@ -176,11 +172,9 @@ class DownloadQueueScreenModel(
         downloadManager.cancelQueuedDownloads(downloads)
     }
 
-     -->
     fun showManga(mangaId: Long) {
         navigator?.push(MangaScreen(mangaId))
     }
-     <--
 
     fun <R : Comparable<R>> reorderQueue(selector: (DownloadItem) -> R, reverse: Boolean = false) {
         val adapter = adapter ?: return

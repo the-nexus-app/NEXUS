@@ -51,11 +51,9 @@ class PreferenceModule(val app: Application) : InjektModule {
         addSingletonFactory {
             UpdatesPreferences(get())
         }
-         -->
         addSingletonFactory {
             HistoryPreferences(get())
         }
-         <--
         addSingletonFactory {
             ReaderPreferences(get())
         }
@@ -80,9 +78,9 @@ class PreferenceModule(val app: Application) : InjektModule {
         addSingletonFactory {
             BasePreferences(app, get())
         }
-        // AM (CONNECTIONS) -->
+        // AM (CONNECTIONS)
         addSingletonFactory { ConnectionsPreferences(get()) }
-        // <-- AM (CONNECTIONS)
+        //AM (CONNECTIONS)
 
         addSingletonFactory {
             SyncPreferences(get())

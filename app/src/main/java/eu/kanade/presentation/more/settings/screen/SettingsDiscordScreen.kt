@@ -1,4 +1,4 @@
-// AM (DISCORD) -->
+// AM (DISCORD)
 package eu.kanade.presentation.more.settings.screen
 
 import androidx.compose.foundation.layout.Column
@@ -88,14 +88,12 @@ object SettingsDiscordScreen : SearchableSettings {
             when (this) {
                 is LogoutConnectionDialog -> {
                     ConnectionsLogoutDialog(
-                         -->
                         serviceName = stringResource(service.nameStrRes()),
                         onConfirmation = {
                             enableDRPCPref.set(false)
                             service.logout()
                             navigator.pop()
                         },
-                         <--
                         onDismissRequest = {
                             dialog = null
                         },
@@ -281,4 +279,4 @@ object SettingsDiscordScreen : SearchableSettings {
         )
     }
 }
-// <-- AM (DISCORD)
+//AM (DISCORD)

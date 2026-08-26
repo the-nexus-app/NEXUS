@@ -121,16 +121,13 @@ class MangaRepositoryImpl(
 
     override suspend fun insertNetworkManga(
         manga: List<Manga>,
-         -->
         updateInfo: Boolean,
-         <--
     ): List<Manga> {
         return handler.await(inTransaction = true) {
             manga.map {
                 mangasQueries.insertNetworkManga(
                     source = it.source,
                     url = it.url,
-                     -->
                     title = it.ogTitle,
                     artist = it.ogArtist,
                     author = it.ogAuthor,
@@ -138,7 +135,6 @@ class MangaRepositoryImpl(
                     description = it.ogDescription,
                     genre = it.ogGenre,
                     status = it.ogStatus,
-                     <--
                     favorite = it.favorite,
                     lastUpdate = it.lastUpdate,
                     nextUpdate = it.nextUpdate,
@@ -151,14 +147,10 @@ class MangaRepositoryImpl(
                     updateStrategy = it.updateStrategy,
                     version = it.version,
                     memo = it.memo,
-                     -->
                     updateTitle = it.ogTitle.isNotBlank(),
                     updateCover = !it.ogThumbnailUrl.isNullOrBlank(),
-                     <--
                     updateDetails = it.initialized,
-                     -->
                     updateInfo = updateInfo,
-                     <--
                     mapper = MangaMapper::mapManga,
                 )
                     .executeAsOne()
@@ -199,7 +191,6 @@ class MangaRepositoryImpl(
         }
     }
 
-     -->
     override suspend fun getMangaBySourceId(sourceId: Long): List<Manga> {
         return handler.awaitList { mangasQueries.getBySource(sourceId, MangaMapper::mapManga) }
     }
@@ -215,5 +206,4 @@ class MangaRepositoryImpl(
     override suspend fun getReadMangaNotInLibraryView(): List<LibraryManga> {
         return handler.awaitList { libraryViewQueries.readMangaNonLibrary(MangaMapper::mapLibraryManga) }
     }
-     <--
 }

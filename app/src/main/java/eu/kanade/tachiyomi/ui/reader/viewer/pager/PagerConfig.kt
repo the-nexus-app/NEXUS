@@ -50,7 +50,6 @@ class PagerConfig(
     var landscapeZoom = false
         private set
 
-     -->
     var disableZoomIn = false
         private set
 
@@ -59,9 +58,7 @@ class PagerConfig(
 
     var landscapeZoomScaleType = LandscapeZoomScaleType.FIT
         private set
-     <--
 
-     -->
     var usePageTransitions = false
 
     var shiftDoublePage = false
@@ -83,23 +80,18 @@ class PagerConfig(
     var pageCanvasColor = Color.WHITE
 
     var centerMarginType = CenterMarginType.NONE
-     <--
 
     init {
         readerPreferences.readerTheme()
             .register(
                 {
-                     -->
                     themeToColor(it)
-                     <--
                     automaticBackground = it == 3
                 },
                 {
                     imagePropertyChangedListener?.invoke()
-                     -->
                     themeToColor(it)
                     reloadChapterListener?.invoke(doublePages)
-                     <--
                 },
             )
 
@@ -128,12 +120,10 @@ class PagerConfig(
             .onEach { navigationModeChangedListener?.invoke() }
             .launchIn(scope)
 
-         -->
         readerPreferences.smallerTapZone().changes()
             .drop(1)
             .onEach { updateNavigation(navigationMode) }
             .launchIn(scope)
-         <--
 
         readerPreferences.dualPageSplitPaged()
             .register(
@@ -159,7 +149,6 @@ class PagerConfig(
                 { imagePropertyChangedListener?.invoke() },
             )
 
-         -->
         readerPreferences.pagedDisableZoomIn()
             .register(
                 { disableZoomIn = it },
@@ -176,9 +165,7 @@ class PagerConfig(
                 { landscapeZoomScaleType = it },
                 { imagePropertyChangedListener?.invoke() },
             )
-         <--
 
-         -->
         readerPreferences.pageTransitionsPager()
             .register({ usePageTransitions = it }, { imagePropertyChangedListener?.invoke() })
 
@@ -204,7 +191,6 @@ class PagerConfig(
 
         readerPreferences.invertDoublePages()
             .register({ invertDoublePages = it && dualPageSplit == false }, { imagePropertyChangedListener?.invoke() })
-         <--
     }
 
     private fun zoomTypeFromPreference(value: Int) {

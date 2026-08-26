@@ -6,7 +6,6 @@ import tachiyomi.domain.manga.model.Manga
 fun SManga.toDomainManga(sourceId: Long): Manga {
     return Manga.create().copy(
         url = url,
-         -->
         ogTitle = title,
         ogArtist = artist,
         ogAuthor = author,
@@ -14,7 +13,6 @@ fun SManga.toDomainManga(sourceId: Long): Manga {
         ogGenre = getGenres(),
         ogStatus = status.toLong(),
         ogThumbnailUrl = thumbnail_url,
-         <--
         updateStrategy = update_strategy,
         initialized = initialized,
         memo = memo,

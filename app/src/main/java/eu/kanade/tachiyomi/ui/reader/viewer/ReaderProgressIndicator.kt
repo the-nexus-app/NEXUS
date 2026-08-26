@@ -32,9 +32,7 @@ class ReaderProgressIndicator @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-     -->
     @ColorInt private val seedColor: Int? = null,
-     <--
 ) : AbstractComposeView(context, attrs, defStyleAttr) {
 
     init {
@@ -46,14 +44,10 @@ class ReaderProgressIndicator @JvmOverloads constructor(
 
     @Composable
     override fun Content() {
-         -->
         val uiPreferences = Injekt.get<UiPreferences>()
         val themeCoverBased = uiPreferences.themeCoverBased().get()
-         <--
         TachiyomiTheme(
-             -->
             seedColor = seedColor?.let { Color(seedColor) }.takeIf { themeCoverBased },
-             <--
         ) {
             CombinedCircularProgressIndicator(progress = { progress })
         }

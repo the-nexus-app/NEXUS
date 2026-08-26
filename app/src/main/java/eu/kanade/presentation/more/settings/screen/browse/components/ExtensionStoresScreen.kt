@@ -44,10 +44,8 @@ fun ExtensionStoresScreen(
     onOpenWebsite: (ExtensionStore) -> Unit,
     onOpenDiscord: (ExtensionStore) -> Unit,
     onClickDelete: (ExtensionStore) -> Unit,
-     -->
     onClickEnable: (ExtensionStore) -> Unit,
     onClickDisable: (ExtensionStore) -> Unit,
-     <--
     onClickRefresh: () -> Unit,
     navigateUp: () -> Unit,
 ) {
@@ -80,7 +78,6 @@ fun ExtensionStoresScreen(
             EmptyScreen(
                 MR.strings.extensionStoresScreen_emptyLabel,
                 modifier = Modifier.padding(paddingValues),
-                 -->
                 help = {
                     TextButton(
                         onClick = { context.openInBrowser(REPO_HELP) },
@@ -91,7 +88,6 @@ fun ExtensionStoresScreen(
                         Text(text = stringResource(MR.strings.label_help))
                     }
                 },
-                 <--
             )
             return@Scaffold
         }
@@ -105,16 +101,13 @@ fun ExtensionStoresScreen(
             onOpenWebsite = onOpenWebsite,
             onOpenDiscord = onOpenDiscord,
             onClickDelete = onClickDelete,
-             -->
             onClickEnable = onClickEnable,
             onClickDisable = onClickDisable,
             disabledRepos = state.disabledRepos,
-             <--
         )
     }
 }
 
- -->
 @PreviewLightDark
 @Composable
 private fun ExtensionStoresScreenPreview() {
@@ -165,4 +158,3 @@ private fun ExtensionStoresScreenEmptyPreview() {
         }
     }
 }
- <--

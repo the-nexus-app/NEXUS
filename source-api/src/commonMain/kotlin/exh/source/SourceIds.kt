@@ -3,12 +3,10 @@ package exh.source
 // Lewd source IDs
 const val LEWD_SOURCE_SERIES = 6900L
 
- -->
 const val EH_SOURCE_ID = 1713178126840476467 // LEWD_SOURCE_SERIES + 1
 const val EXH_SOURCE_ID = 6225928719850211219 // LEWD_SOURCE_SERIES + 2
 const val EH_PACKAGE = "eu.kanade.tachiyomi.extension.all.ehentai"
 const val LOCAL_SOURCE_PACKAGE = "tachiyomi.source.local"
- <--
 
 const val NHENTAI_SOURCE_ID = 7309872737163460316L
 const val PURURIN_SOURCE_ID = 2221515250486218861L
@@ -19,16 +17,13 @@ const val HBROWSE_SOURCE_ID = 1401584337232758222L
 // If MERGED_SOURCE_ID is to update, remember to update updatesView.sq and libraryView.sq too
 const val MERGED_SOURCE_ID = LEWD_SOURCE_SERIES + 69
 
- -->
 const val EH_OLD_ID = 6901L
 const val EXH_OLD_ID = 6902L
- <--
 
 const val NHENTAI_OLD_ID = 6907L
 const val TSUMINO_OLD_ID = 6909L
 const val HBROWSE_OLD_ID = 6912L
 
- -->
 val EHENTAI_EXT_SOURCES = mapOf(
     8100626124886895451 to "ja", // E-Hentai (Ja)
     57122881048805941 to "en", // E-Hentai (En)
@@ -180,4 +175,3 @@ val MANGADEX_IDS = setOf(
     2838715564514827672, // uz
     9194073792736219759, // vi
 )
- <--

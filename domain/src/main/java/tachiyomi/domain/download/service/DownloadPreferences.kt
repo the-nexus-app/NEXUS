@@ -41,13 +41,9 @@ class DownloadPreferences(
 
     fun parallelPageLimit() = preferenceStore.getInt("download_parallel_page_limit", 5)
 
-     -->
     fun includeChapterUrlHash() = preferenceStore.getBoolean("download_include_chapter_url_hash", false)
-     <--
 
-     -->
     fun downloadCacheRenewInterval() = preferenceStore.getInt("download_cache_renew_interval", 1)
-     <--
 
     companion object {
         private const val REMOVE_EXCLUDE_CATEGORIES_PREF_KEY = "remove_exclude_categories"

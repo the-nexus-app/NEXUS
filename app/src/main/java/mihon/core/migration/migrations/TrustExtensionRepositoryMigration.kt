@@ -18,9 +18,7 @@ class TrustExtensionRepositoryMigration : Migration {
             try {
                 repository.insertFromPreference(
                     indexUrl = source.removeSuffix("/index.min.json").removeSuffix("/index.json")
-                         -->
                         .removeSuffix("/repo.json") + "/repo.json",
-                     <--
                     name = "Repo #${index + 1}",
                 )
             } catch (e: Exception) {

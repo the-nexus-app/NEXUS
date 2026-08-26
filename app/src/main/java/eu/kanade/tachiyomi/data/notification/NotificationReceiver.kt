@@ -82,10 +82,9 @@ class NotificationReceiver : BroadcastReceiver() {
             // Cancel downloading app update
             ACTION_CANCEL_APP_UPDATE_DOWNLOAD -> cancelDownloadAppUpdate(context)
 
-             -->
             // Stop Discord RPC service
             ACTION_STOP_DISCORD_RPC -> stopDiscordRPC(context)
-            // <-- KMK
+            //KMK
 
             // Open reader activity
             ACTION_OPEN_CHAPTER -> {
@@ -250,7 +249,6 @@ class NotificationReceiver : BroadcastReceiver() {
         }
     }
 
-     -->
     /**
      * Stop the Discord RPC service
      *
@@ -261,7 +259,7 @@ class NotificationReceiver : BroadcastReceiver() {
         context.stopService(serviceIntent)
         context.cancelNotification(Notifications.ID_DISCORD_RPC)
     }
-    // <-- KMK
+    //KMK
 
     companion object {
         private const val NAME = "NotificationReceiver"
@@ -289,9 +287,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
         private const val ACTION_DISMISS_NOTIFICATION = "$ID.$NAME.ACTION_DISMISS_NOTIFICATION"
 
-         -->
         private const val ACTION_STOP_DISCORD_RPC = "$ID.$NAME.STOP_DISCORD_RPC"
-        // <-- KMK
+        //KMK
 
         private const val EXTRA_URI = "$ID.$NAME.URI"
         private const val EXTRA_NOTIFICATION_ID = "$ID.$NAME.NOTIFICATION_ID"
@@ -653,7 +650,6 @@ class NotificationReceiver : BroadcastReceiver() {
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
 
-         -->
         /**
          * Returns [PendingIntent] that opens the error log file in an external viewer
          *
@@ -672,7 +668,6 @@ class NotificationReceiver : BroadcastReceiver() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
         }
-         <--
 
         /**
          * Returns [PendingIntent] that cancels a backup restore job.
@@ -714,7 +709,6 @@ class NotificationReceiver : BroadcastReceiver() {
             )
         }
 
-         -->
         /**
          * Returns a [PendingIntent] that stops the Discord RPC service
          *
@@ -732,6 +726,5 @@ class NotificationReceiver : BroadcastReceiver() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
         }
-         <--
     }
 }

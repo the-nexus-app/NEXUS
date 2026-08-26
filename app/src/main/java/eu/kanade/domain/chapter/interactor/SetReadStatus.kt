@@ -23,9 +23,7 @@ class SetReadStatus(
     private val deleteDownload: DeleteDownload,
     private val mangaRepository: MangaRepository,
     private val chapterRepository: ChapterRepository,
-     -->
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId,
-     <--
 ) {
 
     private val mapper = { chapter: Chapter, read: Boolean ->
@@ -52,9 +50,7 @@ class SetReadStatus(
     suspend fun await(
         read: Boolean,
         vararg chapters: Chapter,
-         -->
         manually: Boolean = true,
-         <--
     ): Result = withNonCancellableContext {
         val chaptersToUpdate = chapters.filter {
             when (read) {
@@ -76,16 +72,12 @@ class SetReadStatus(
         }
 
         if (
-             -->
             manually &&
-             <--
             read &&
             downloadPreferences.removeAfterMarkedAsRead().get()
         ) {
             chaptersToUpdate
-                 -->
                 .map { it.copy(read = true) } // mark as read so it will respect category exclusion
-                 <--
                 .groupBy { it.mangaId }
                 .forEach { (mangaId, chapters) ->
                     deleteDownload.awaitAll(
@@ -107,7 +99,6 @@ class SetReadStatus(
         )
     }
 
-     -->
     private suspend fun awaitMerged(mangaId: Long, read: Boolean) = withNonCancellableContext f@{
         return@f await(
             read = read,
@@ -122,7 +113,6 @@ class SetReadStatus(
     } else {
         await(manga.id, read)
     }
-     <--
 
     sealed interface Result {
         data object Success : Result

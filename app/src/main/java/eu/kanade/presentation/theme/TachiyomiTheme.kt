@@ -52,7 +52,6 @@ fun TachiyomiTheme(
     )
 }
 
- -->
 /** Theme based on Cover */
 @Composable
 fun TachiyomiTheme(
@@ -77,7 +76,6 @@ fun TachiyomiTheme(
         )
     }
 }
- <--
 
 @Composable
 fun TachiyomiPreviewTheme(
@@ -117,7 +115,6 @@ private fun getThemeColorScheme(
         AppTheme.MONET -> {
             MonetColorScheme(context)
         }
-         -->
         AppTheme.CUSTOM -> {
             val uiPreferences = Injekt.get<UiPreferences>()
             CustomColorScheme(
@@ -125,7 +122,6 @@ private fun getThemeColorScheme(
                 style = uiPreferences.customThemeStyle().get(),
             )
         }
-         <--
         else -> {
             colorSchemes.getOrDefault(appTheme, TachiyomiColorScheme)
         }

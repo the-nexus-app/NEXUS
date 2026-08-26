@@ -81,9 +81,7 @@ class Tester {
                 name = "a",
                 order = 1,
                 flags = 0,
-                 -->
                 hidden = false,
-                 <--
             ),
         )
         val favoriteEntries = listOf(

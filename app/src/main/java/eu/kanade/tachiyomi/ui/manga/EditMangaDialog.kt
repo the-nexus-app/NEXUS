@@ -80,9 +80,7 @@ import uy.kohesive.injekt.api.get
 @Composable
 fun EditMangaDialog(
     manga: Manga,
-     -->
     coverRatio: MutableFloatState,
-     <--
     onDismissRequest: () -> Unit,
     onPositiveClick: (
         title: String?,
@@ -103,9 +101,7 @@ fun EditMangaDialog(
     val trackerManager = remember { Injekt.get<TrackerManager>() }
     val tracks = remember { mutableStateOf(emptyList<Pair<Track, Tracker>>()) }
 
-     -->
     val colorScheme = AndroidViewColorScheme(MaterialTheme.colorScheme)
-     <--
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -164,10 +160,8 @@ fun EditMangaDialog(
                                     trackerManager,
                                     tracks,
                                     showTrackerSelectionDialogue,
-                                     -->
                                     colorScheme,
                                     coverRatio = coverRatio,
-                                     <--
                                 )
                             }
                             .root
@@ -240,23 +234,17 @@ private fun onViewCreated(
     trackerManager: TrackerManager,
     tracks: MutableState<List<Pair<Track, Tracker>>>,
     showTrackerSelectionDialogue: MutableState<Boolean>,
-     -->
     colorScheme: AndroidViewColorScheme,
     coverRatio: MutableFloatState,
-     <--
 ) {
     loadCover(
         manga,
         binding,
-         -->
         coverRatio,
-         <--
     )
 
-     -->
     // val statusAdapter: ArrayAdapter<String> = ArrayAdapter(
     val statusAdapter = SpinnerAdapter(
-         <--
         context,
         android.R.layout.simple_spinner_dropdown_item,
         listOf(
@@ -268,9 +256,7 @@ private fun onViewCreated(
             MR.strings.cancelled,
             MR.strings.on_hiatus,
         ).map { context.stringResource(it) },
-         -->
         colorScheme,
-         <--
     )
 
     binding.status.adapter = statusAdapter
@@ -289,7 +275,6 @@ private fun onViewCreated(
         )
     }
 
-     -->
     // Set Spinner's selected item's background color to transparent
     binding.status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
@@ -340,25 +325,20 @@ private fun onViewCreated(
                 SYMR.strings.description_hint,
                 manga.ogDescription?.takeIf { it.isNotBlank() }?.replace("\n", " ")?.chop(20) ?: "",
             )
-         -->
         val thumbnailUrlHints = listOfNotNull(
             manga.ogThumbnailUrl?.let {
                 it.chop(40) + if (it.length > 46) "." + it.substringAfterLast(".").chop(6) else ""
             },
             "file:///storage/emulated/0/Pictures/Komikku/Cover.jpg",
         )
-         <--
         binding.thumbnailUrl.hint =
             context.stringResource(
                 SYMR.strings.thumbnail_url_hint,
-                 -->
                 thumbnailUrlHints.joinToString("\nor\n"),
-                 <--
             )
     }
     binding.mangaGenresTags.clearFocus()
 
-     -->
     listOf(
         binding.title,
         binding.mangaAuthor,
@@ -384,7 +364,6 @@ private fun onViewCreated(
     binding.resetTags.setBackgroundColor(colorScheme.btnBgColor)
     binding.resetInfo.setTextColor(colorScheme.btnTextColor)
     binding.resetInfo.setBackgroundColor(colorScheme.btnBgColor)
-     <--
 
     binding.resetTags.setOnClickListener { resetTags(manga, binding, scope, colorScheme) }
     binding.resetInfo.setOnClickListener { resetInfo(manga, binding, scope, colorScheme) }
@@ -443,9 +422,7 @@ private fun resetTags(
     manga: Manga,
     binding: EditMangaDialogBinding,
     scope: CoroutineScope,
-     -->
     colorScheme: AndroidViewColorScheme,
-     <--
 ) {
     if (manga.genre.isNullOrEmpty() || manga.isLocal()) {
         binding.mangaGenresTags.setChips(emptyList(), scope, colorScheme)
@@ -457,11 +434,8 @@ private fun resetTags(
 private fun loadCover(
     manga: Manga,
     binding: EditMangaDialogBinding,
-     -->
     coverRatio: MutableFloatState,
-     <--
 ) {
-     -->
     if (Injekt.get<UiPreferences>().usePanoramaCoverAlways().get() && coverRatio.floatValue <= RatioSwitchToPanorama) {
         binding.mangaCover.visibility = View.GONE
         binding.mangaCoverPanorama.visibility = View.VISIBLE
@@ -469,7 +443,6 @@ private fun loadCover(
             transformations(RoundedCornersTransformation(4.dpToPx.toFloat()))
         }
     } else {
-         <--
         binding.mangaCover.load(manga) {
             transformations(RoundedCornersTransformation(4.dpToPx.toFloat()))
         }
@@ -480,9 +453,7 @@ private fun resetInfo(
     manga: Manga,
     binding: EditMangaDialogBinding,
     scope: CoroutineScope,
-     -->
     colorScheme: AndroidViewColorScheme,
-     <--
 ) {
     binding.title.text?.clear()
     binding.mangaAuthor.text?.clear()
@@ -495,35 +466,25 @@ private fun resetInfo(
 private fun ChipGroup.setChips(
     items: List<String>,
     scope: CoroutineScope,
-     -->
     colorScheme: AndroidViewColorScheme,
-     <--
 ) {
     removeAllViews()
 
-     -->
     val colorStateList = ColorStateList.valueOf(colorScheme.tagColor)
-     <--
 
     items.asSequence().map { item ->
         Chip(context).apply {
             text = item
-             -->
             setTextColor(colorScheme.tagTextColor)
-             <--
 
             isCloseIconVisible = true
-             -->
             // closeIcon?.setTint(context.getResourceColor(R.attr.colorAccent))
             closeIcon?.setTint(colorScheme.iconColor)
-             <--
             setOnCloseIconClickListener {
                 removeView(this)
             }
 
-             -->
             chipBackgroundColor = colorStateList
-             <--
         }
     }.forEach {
         addView(it)
@@ -531,24 +492,17 @@ private fun ChipGroup.setChips(
 
     val addTagChip = Chip(context).apply {
         text = SYMR.strings.add_tags.getString(context)
-         -->
         setTextColor(colorScheme.tagTextColor)
-         <--
 
         chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_add_24dp)?.apply {
             isChipIconVisible = true
-             -->
             // setTint(context.getResourceColor(R.attr.colorAccent))
             setTint(colorScheme.iconColor)
-             <--
         }
 
-         -->
         chipBackgroundColor = colorStateList
-         <--
 
         setOnClickListener {
-             -->
             var dialog: AlertDialog? = null
 
             val builder = MaterialAlertDialogBuilder(context)
@@ -557,12 +511,10 @@ private fun ChipGroup.setChips(
                 .setHint(SYMR.strings.multi_tags_comma_separated.getString(context))
                 .setPositiveButton(MR.strings.action_ok.getString(context)) {
                     dialog?.dismissDialog()
-                     <--
                     val newTags = it.trimOrNull()
                     newTags?.let { tags ->
                         setChips(items + tags.split(",").mapNotNull { tag -> tag.trimOrNull() }, scope, colorScheme)
                     }
-                     -->
                 }
                 .setNegativeButton(MR.strings.action_cancel.getString(context)) {
                     dialog?.dismissDialog()
@@ -573,7 +525,6 @@ private fun ChipGroup.setChips(
             dialog = builder.create()
             dialog.setView(binding.root)
             dialog.show()
-             <--
         }
     }
     addView(addTagChip)

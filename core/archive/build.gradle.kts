@@ -12,8 +12,6 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.libarchive)
     implementation(libs.unifile)
-     -->
     implementation(projects.core.common)
     implementation(libs.injekt)
-     <--
 }

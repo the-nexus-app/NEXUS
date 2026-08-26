@@ -50,22 +50,18 @@ fun UpcomingScreenContent(
     state: UpcomingScreenModel.State,
     setSelectedYearMonth: (YearMonth) -> Unit,
     onClickUpcoming: (manga: Manga) -> Unit,
-     -->
     showUpdatingMangas: () -> Unit,
     hideUpdatingMangas: () -> Unit,
     isPredictReleaseDate: Boolean,
-     <--
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-     -->
     val headerIndexes = if (state.isShowingUpdatingMangas) state.updatingHeaderIndexes else state.headerIndexes
     val items = if (state.isShowingUpdatingMangas) state.updatingItems else state.items
     val events = if (state.isShowingUpdatingMangas) state.updatingEvents else state.events
     val isLoading = if (state.isShowingUpdatingMangas) state.isLoadingUpdating else state.isLoadingUpcoming
-     <--
 
     val onClickDay: (LocalDate, Int) -> Unit = { date, offset ->
         headerIndexes[date]?.let {
@@ -77,22 +73,18 @@ fun UpcomingScreenContent(
     Scaffold(
         topBar = {
             UpcomingToolbar(
-                 -->
                 state.isShowingUpdatingMangas,
                 showUpdatingMangas = showUpdatingMangas,
                 hideUpdatingMangas = hideUpdatingMangas,
                 isPredictReleaseDate = isPredictReleaseDate,
-                 <--
             )
         },
         modifier = modifier,
     ) { paddingValues ->
-         -->
         if (isLoading) {
             LoadingScreen(modifier = Modifier.padding(paddingValues))
             return@Scaffold
         }
-         <--
         if (isTabletUi()) {
             UpcomingScreenLargeImpl(
                 listState = listState,
@@ -103,9 +95,7 @@ fun UpcomingScreenContent(
                 setSelectedYearMonth = setSelectedYearMonth,
                 onClickDay = { onClickDay(it, 0) },
                 onClickUpcoming = onClickUpcoming,
-                 -->
                 state.isShowingUpdatingMangas,
-                 <--
             )
         } else {
             UpcomingScreenSmallImpl(
@@ -117,9 +107,7 @@ fun UpcomingScreenContent(
                 setSelectedYearMonth = setSelectedYearMonth,
                 onClickDay = { onClickDay(it, 1) },
                 onClickUpcoming = onClickUpcoming,
-                 -->
                 state.isShowingUpdatingMangas,
-                 <--
             )
         }
     }
@@ -127,12 +115,10 @@ fun UpcomingScreenContent(
 
 @Composable
 private fun UpcomingToolbar(
-     -->
     isShowingUpdatingMangas: Boolean,
     showUpdatingMangas: () -> Unit,
     hideUpdatingMangas: () -> Unit,
     isPredictReleaseDate: Boolean,
-     <--
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val uriHandler = LocalUriHandler.current
@@ -146,7 +132,6 @@ private fun UpcomingToolbar(
         },
         navigateUp = navigator::pop,
         actions = {
-             -->
             if (isPredictReleaseDate) {
                 IconButton(
                     onClick = {
@@ -164,7 +149,6 @@ private fun UpcomingToolbar(
                     )
                 }
             }
-             <--
             IconButton(onClick = { uriHandler.openUri(Constants.URL_HELP_UPCOMING) }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
@@ -179,9 +163,7 @@ private fun UpcomingToolbar(
 internal fun DateHeading(
     date: LocalDate,
     mangaCount: Int,
-     -->
     modifier: Modifier = Modifier,
-     <--
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -215,9 +197,7 @@ private fun UpcomingScreenSmallImpl(
     setSelectedYearMonth: (YearMonth) -> Unit,
     onClickDay: (LocalDate) -> Unit,
     onClickUpcoming: (manga: Manga) -> Unit,
-     -->
     isShowingUpdatingMangas: Boolean,
-     <--
 ) {
     FastScrollLazyColumn(
         contentPadding = paddingValues,
@@ -270,9 +250,7 @@ private fun UpcomingScreenLargeImpl(
     setSelectedYearMonth: (YearMonth) -> Unit,
     onClickDay: (LocalDate) -> Unit,
     onClickUpcoming: (manga: Manga) -> Unit,
-     -->
     isShowingUpdatingMangas: Boolean,
-     <--
 ) {
     TwoPanelBox(
         modifier = Modifier.padding(paddingValues),

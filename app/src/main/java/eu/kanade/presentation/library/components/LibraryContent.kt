@@ -28,9 +28,7 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun LibraryContent(
     categories: List<Category>,
-     -->
     activeCategoryIndex: Int,
-     <--
     searchQuery: String?,
     selection: Set<Long>,
     contentPadding: PaddingValues,
@@ -63,7 +61,6 @@ fun LibraryContent(
 
         if (showPageTabs && categories.isNotEmpty() && (categories.size > 1 || !categories.first().isSystemCategory)) {
             LaunchedEffect(categories) {
-                 -->
                 val targetPage = when {
                     categories.isEmpty() -> 0
                     activeCategoryIndex != pagerState.currentPage -> activeCategoryIndex.coerceAtMost(categories.size - 1)
@@ -73,7 +70,6 @@ fun LibraryContent(
                 if (targetPage != pagerState.currentPage) {
                     pagerState.scrollToPage(targetPage)
                 }
-                 <--
             }
             LibraryTabs(
                 categories = categories,

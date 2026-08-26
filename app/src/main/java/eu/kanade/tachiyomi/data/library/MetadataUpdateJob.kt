@@ -118,10 +118,8 @@ class MetadataUpdateJob(private val context: Context, workerParams: WorkerParame
                                             source = source,
                                             manga = manga,
                                             fetchDetails = true,
-                                             -->
                                             // Refresh same Url
                                             manualFetch = true,
-                                             <--
                                         ).getOrThrow()
                                     } catch (e: Throwable) {
                                         // Ignore errors and continue

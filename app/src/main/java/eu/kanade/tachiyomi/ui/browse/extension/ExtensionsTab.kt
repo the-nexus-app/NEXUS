@@ -45,7 +45,6 @@ fun extensionsTab(
         badgeNumber = state.updates.takeIf { it > 0 },
         searchEnabled = true,
         actions = persistentListOf(
-             -->
             AppBar.Action(
                 title = stringResource(KMR.strings.action_toggle_nsfw_only),
                 icon = Icons.Outlined._18UpRating,
@@ -56,7 +55,6 @@ fun extensionsTab(
                 title = stringResource(MR.strings.action_webview_refresh),
                 onClick = extensionsScreenModel::findAvailableExtensions,
             ),
-             <--
             AppBar.OverflowAction(
                 title = stringResource(MR.strings.action_filter),
                 onClick = { navigator.push(ExtensionFilterScreen()) },

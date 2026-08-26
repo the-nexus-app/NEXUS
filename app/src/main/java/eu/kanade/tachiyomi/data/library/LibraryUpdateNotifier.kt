@@ -49,9 +49,7 @@ class LibraryUpdateNotifier(
 
     private val securityPreferences: SecurityPreferences = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
-     -->
     private val getCategories: GetCategories = Injekt.get(),
-     <--
 ) {
     private val libraryUpdateStatus: LibraryUpdateStatus = Injekt.get()
     private val percentFormatter = NumberFormat.getPercentInstance().apply {
@@ -108,9 +106,7 @@ class LibraryUpdateNotifier(
                 ),
             )
 
-         -->
         libraryUpdateStatus.updateProgress(current.toFloat() / total)
-         <--
 
         if (!securityPreferences.hideNotificationContent().get()) {
 
@@ -185,10 +181,8 @@ class LibraryUpdateNotifier(
      * @param updates a list of manga with new updates.
      */
     suspend fun showUpdateNotifications(updates: List<Pair<Manga, Array<Chapter>>>) {
-         -->
         val hiddenMap = updates.associate { (manga, _) -> manga.id to isMangaHidden(manga) }
         val visibleUpdates = updates.filterNot { hiddenMap[it.first.id] == true }
-         <--
 
         // Parent group notification
         context.notify(
@@ -196,9 +190,7 @@ class LibraryUpdateNotifier(
             Notifications.CHANNEL_NEW_CHAPTERS,
         ) {
             setContentTitle(context.stringResource(MR.strings.notification_new_chapters))
-             -->
             if (updates.size == 1 && !securityPreferences.hideNotificationContent().get() && !hiddenMap[updates.first().first.id]!!) {
-                 <--
                 setContentText(updates.first().first.title.chop(NOTIF_TITLE_MAX_LEN))
             } else {
                 setContentText(
@@ -212,9 +204,7 @@ class LibraryUpdateNotifier(
                 if (!securityPreferences.hideNotificationContent().get()) {
                     setStyle(
                         NotificationCompat.BigTextStyle().bigText(
-                             -->
                             visibleUpdates.joinToString("\n") {
-                                 <--
                                 it.first.title.chop(NOTIF_TITLE_MAX_LEN)
                             },
                         ),
@@ -239,9 +229,7 @@ class LibraryUpdateNotifier(
         if (!securityPreferences.hideNotificationContent().get()) {
             launchUI {
                 context.notify(
-                     -->
                     visibleUpdates.map { (manga, chapters) ->
-                         <--
                         NotificationManagerCompat.NotificationWithIdAndTag(
                             manga.id.hashCode(),
                             createNewChaptersNotification(manga, chapters),
@@ -265,7 +253,6 @@ class LibraryUpdateNotifier(
 
             if (icon != null) {
                 setLargeIcon(icon)
-                 -->
                 setStyle(
                     NotificationCompat.BigPictureStyle()
                         .bigPicture(icon)
@@ -273,7 +260,6 @@ class LibraryUpdateNotifier(
                         .setBigContentTitle(manga.title)
                         .setSummaryText(description),
                 )
-                 <--
             } else {
                 setStyle(NotificationCompat.BigTextStyle().bigText(description))
             }
@@ -334,10 +320,8 @@ class LibraryUpdateNotifier(
     private suspend fun getMangaIcon(manga: Manga): Bitmap? {
         val request = ImageRequest.Builder(context)
             .data(manga)
-             -->
             // .transformations(CircleCropTransformation())
             // .size(NOTIF_ICON_SIZE)
-             <--
             .build()
         val drawable = context.imageLoader.execute(request).image?.asDrawable(context.resources)
         return drawable?.getBitmapOrNull()

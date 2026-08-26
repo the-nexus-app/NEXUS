@@ -184,7 +184,6 @@ class MangaDex(delegate: HttpSource, val context: Context) :
         return delegate.latestUpdatesParse(response)
     }
 
-     -->
     override suspend fun getMangaUpdate(
         manga: SManga,
         chapters: List<SChapter>,
@@ -195,7 +194,6 @@ class MangaDex(delegate: HttpSource, val context: Context) :
         val asyncChapters = if (fetchChapters) getChapterList(manga) else null
         return SMangaUpdate(asyncManga ?: manga, asyncChapters ?: chapters)
     }
-     <--
 
     @Deprecated("Use the combined suspend API instead", replaceWith = ReplaceWith("getMangaUpdate"))
     override fun fetchMangaDetails(manga: SManga): Observable<SManga> {

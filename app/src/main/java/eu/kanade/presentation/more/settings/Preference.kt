@@ -17,9 +17,7 @@ sealed class Preference {
     abstract val enabled: Boolean
 
     sealed class PreferenceItem<T, R> : Preference() {
-         -->
         abstract val subtitle: CharSequence?
-         <--
 
         abstract val icon: ImageVector?
         abstract val onValueChanged: suspend (value: T) -> R
@@ -156,7 +154,7 @@ sealed class Preference {
             override val onValueChanged: suspend (value: String) -> Unit = {}
         }
 
-        // AM (CONNECTIONS) -->
+        // AM (CONNECTIONS)
         /**
          * A [PreferenceItem] for individual connections service.
          */
@@ -171,7 +169,7 @@ sealed class Preference {
             override val icon: ImageVector? = null
             override val onValueChanged: suspend (newValue: String) -> Unit = {}
         }
-        // <-- AM (CONNECTIONS)
+        //AM (CONNECTIONS)
 
         data class InfoPreference(
             override val title: String,

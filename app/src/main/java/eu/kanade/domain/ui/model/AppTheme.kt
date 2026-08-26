@@ -39,7 +39,5 @@ enum class AppTheme(val titleRes: StringResource?) {
     HOT_PINK(null),
     BLUE(null),
 
-     -->
     PURE_RED(null),
-     <--
 }

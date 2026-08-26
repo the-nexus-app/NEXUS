@@ -22,16 +22,12 @@ val CoverHeight = 87.dp
 fun UpdatesMangaCover(
     cover: Bitmap?,
     modifier: GlanceModifier = GlanceModifier,
-     -->
     color: Color? = null,
-     <--
 ) {
     Box(
         modifier = modifier
             .size(width = CoverWidth, height = CoverHeight)
-             -->
             .background(color ?: Color.Unspecified)
-             <--
             .appWidgetInnerRadius(),
     ) {
         if (cover != null) {

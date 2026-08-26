@@ -75,10 +75,8 @@ class ExtensionManager(
 
     private val availableExtensionMapFlow = MutableStateFlow(emptyMap<String, Extension.Available>())
 
-     -->
     val availableExtensionsFlow = availableExtensionMapFlow.map { it.filterNotBlacklisted().values.toList() }
         .stateIn(scope, SharingStarted.Lazily, availableExtensionMapFlow.value.values.toList())
-     <--
 
     private val untrustedExtensionMapFlow = MutableStateFlow(emptyMap<String, Extension.Untrusted>())
     val untrustedExtensionsFlow = untrustedExtensionMapFlow.mapExtensions(scope)
@@ -115,16 +113,12 @@ class ExtensionManager(
             }
         }
 
-         -->
         return when (sourceId) {
-             -->
             in EHENTAI_EXT_SOURCES -> ContextCompat.getDrawable(context, R.mipmap.ic_ehentai_source)
             in EXHENTAI_EXT_SOURCES -> ContextCompat.getDrawable(context, R.mipmap.ic_exhentai_source)
-             <--
             MERGED_SOURCE_ID -> ContextCompat.getDrawable(context, R.mipmap.ic_merged_source)
             else -> null
         }
-         <--
     }
 
     private var availableExtensionsSourcesData: Map<Long, StubSource> = emptyMap()
@@ -151,14 +145,12 @@ class ExtensionManager(
         untrustedExtensionMapFlow.value = extensions
             .filterIsInstance<LoadResult.Untrusted>()
             .associate { it.extension.pkgName to it.extension }
-             -->
             .filterNotBlacklisted()
-         <--
 
         _isInitialized.value = true
     }
 
-    // EXH -->
+    // EXH
     private fun <T : Extension> Map<String, T>.filterNotBlacklisted(): Map<String, T> {
         val blacklistEnabled = preferences.enableSourceBlacklist().get()
         return filterNot { (_, extension) ->
@@ -171,17 +163,13 @@ class ExtensionManager(
 
     private fun Extension.isBlacklisted(
         blacklistEnabled: Boolean = preferences.enableSourceBlacklist().get(),
-         -->
         isHentaiEnabled: Boolean = Injekt.get<ExhPreferences>().isHentaiEnabled().get(),
-         <--
     ): Boolean {
         return pkgName in BlacklistedSources.BLACKLISTED_EXTENSIONS &&
             blacklistEnabled &&
-             -->
             isHentaiEnabled
-         <--
     }
-    // EXH <--
+    // EXH
 
     /**
      * Finds the available extensions in the [api] and updates [availableExtensionMapFlow].
@@ -199,9 +187,7 @@ class ExtensionManager(
 
         availableExtensionMapFlow.value = extensions.associateBy {
             it.pkgName +
-                 -->
                 "_${it.signatureHash}"
-             <--
         }
         updatedInstalledExtensionsStatuses(extensions)
         setupAvailableExtensionsSourcesDataMap(extensions)
@@ -247,40 +233,32 @@ class ExtensionManager(
         var changed = false
         for ((pkgName, extension) in installedExtensionsMap) {
             val availableExt = availableExtensions.find {
-                 -->
                 it.signatureHash == extension.signatureHash &&
-                     <--
                     it.pkgName == pkgName
             }
 
             if (availableExt == null &&
-                (!extension.isObsolete || /* KMK --> */ extension.hasUpdate /* KMK <-- */)
+                (!extension.isObsolete || /* KMK*/ extension.hasUpdate /* KMK*/)
             ) {
                 // Ext not found: Set isObsolete & clear hasUpdate
                 installedExtensionsMap[pkgName] = extension.copy(
                     isObsolete = true,
-                     -->
                     hasUpdate = false,
-                     <--
                 )
                 changed = true
-                 -->
             } else if (extension.isBlacklisted() && !extension.isRedundant) {
                 installedExtensionsMap[pkgName] = extension.copy(isRedundant = true)
                 changed = true
-                 <--
             } else if (availableExt != null) {
                 // Ext found: Update installed extensions with new information from repo
                 // Also clear isObsolete and set new repo Name if needed
                 val hasUpdate = extension.updateExists(availableExt)
-                 -->
                 installedExtensionsMap[pkgName] = extension.copy(
                     hasUpdate = hasUpdate,
                     store = availableExt.store,
                     isObsolete = false,
                     storeName = extension.storeName ?: availableExt.storeName,
                 )
-                 <--
                 changed = true
             }
         }
@@ -311,9 +289,7 @@ class ExtensionManager(
     fun updateExtension(extension: Extension.Installed): Flow<InstallStep> {
         val availableExt = availableExtensionMapFlow.value[
             extension.pkgName +
-                 -->
                 "_${extension.signatureHash}",
-             <--
         ] ?: return emptyFlow()
         return installExtension(availableExt)
     }
@@ -321,9 +297,7 @@ class ExtensionManager(
     fun cancelInstallUpdateExtension(extension: Extension) {
         installer.cancelInstall(
             extension.pkgName +
-                 -->
                 "_${extension.signatureHash}",
-             <--
         )
     }
 
@@ -373,12 +347,10 @@ class ExtensionManager(
      * @param extension The extension to be registered.
      */
     private fun registerNewExtension(extension: Extension.Installed) {
-         -->
         if (extension.isBlacklisted()) {
             xLogD("Removing blacklisted extension: (name: String, pkgName: %s)!", extension.name, extension.pkgName)
             return
         }
-         <--
 
         installedExtensionMapFlow.value += extension
     }
@@ -390,12 +362,10 @@ class ExtensionManager(
      * @param extension The extension to be registered.
      */
     private fun registerUpdatedExtension(extension: Extension.Installed) {
-         -->
         if (extension.isBlacklisted()) {
             xLogD("Removing blacklisted extension: (name: %s, pkgName: %s)!", extension.name, extension.pkgName)
             return
         }
-         <--
 
         installedExtensionMapFlow.value += extension
     }

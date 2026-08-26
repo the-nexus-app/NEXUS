@@ -22,9 +22,7 @@ fun SavedSearchItem(
     savedSearches: ImmutableList<EXHSavedSearch>,
     onSavedSearch: (EXHSavedSearch) -> Unit,
     onSavedSearchPress: (EXHSavedSearch) -> Unit,
-     -->
     onSavedSearchPressDesc: String,
-     <--
 ) {
     if (savedSearches.isEmpty()) return
     Column(
@@ -36,9 +34,7 @@ fun SavedSearchItem(
             ),
     ) {
         Text(
-             -->
             text = onSavedSearchPressDesc,
-             <--
             style = MaterialTheme.typography.bodySmall,
         )
         FlowRow(

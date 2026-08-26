@@ -58,13 +58,10 @@ fun ChapterNavigator(
     onPreviousChapter: () -> Unit,
     enabledPrevious: Boolean,
     currentPage: Int,
-     -->
     currentPageText: String,
-     <--
     totalPages: Int,
     onPageIndexChange: (Int) -> Unit,
 ) {
-     -->
     if (isVerticalSlider) {
         ChapterNavigatorVert(
             onNextChapter = onNextChapter,
@@ -78,7 +75,6 @@ fun ChapterNavigator(
         )
         return
     }
-     <--
     val isTabletUi = isTabletUi()
     val horizontalPadding = if (isTabletUi) 24.dp else 8.dp
     val layoutDirection = if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr
@@ -91,9 +87,7 @@ fun ChapterNavigator(
     val buttonColor = IconButtonDefaults.filledIconButtonColors(
         containerColor = backgroundColor,
         disabledContainerColor = backgroundColor,
-         -->
         contentColor = MaterialTheme.colorScheme.primary,
-         <--
     )
     val textColor = MaterialTheme.colorScheme.onSurface
 
@@ -130,12 +124,8 @@ fun ChapterNavigator(
                     ) {
                         Box(contentAlignment = Alignment.CenterEnd) {
                             Text(
-                                 -->
                                 text = currentPageText,
-                                 <--
-                                 -->
                                 color = textColor,
-                                 <--
                             )
                             // Taking up full length so the slider doesn't shift when 'currentPage' length changes
                             Text(text = totalPages.toString(), color = Color.Transparent)
@@ -163,9 +153,7 @@ fun ChapterNavigator(
 
                         Text(
                             text = totalPages.toString(),
-                             -->
                             color = textColor,
-                             <--
                         )
                     }
                 }
@@ -196,9 +184,7 @@ fun ChapterNavigatorVert(
     onPreviousChapter: () -> Unit,
     enabledPrevious: Boolean,
     currentPage: Int,
-     -->
     currentPageText: String,
-     <--
     totalPages: Int,
     onPageIndexChange: (Int) -> Unit,
 ) {
@@ -220,9 +206,7 @@ fun ChapterNavigatorVert(
         val buttonColor = IconButtonDefaults.filledIconButtonColors(
             containerColor = backgroundColor,
             disabledContainerColor = backgroundColor,
-             -->
             contentColor = MaterialTheme.colorScheme.primary,
-             <--
         )
         val textColor = MaterialTheme.colorScheme.onSurface
 
@@ -248,12 +232,8 @@ fun ChapterNavigatorVert(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                     -->
                     text = currentPageText,
-                     <--
-                     -->
                     color = textColor,
-                     <--
                 )
 
                 val interactionSource = remember { MutableInteractionSource() }
@@ -295,9 +275,7 @@ fun ChapterNavigatorVert(
 
                 Text(
                     text = totalPages.toString(),
-                     -->
                     color = textColor,
-                     <--
                 )
             }
         } else {
@@ -332,12 +310,9 @@ private fun ChapterNavigatorPreview() {
             currentPage = currentPage,
             totalPages = 10,
             onPageIndexChange = { currentPage = (it + 1) },
-             -->
             currentPageText = "1",
             isVerticalSlider = false,
-             <--
         )
-         -->
         ChapterNavigator(
             isRtl = false,
             onNextChapter = {},
@@ -350,6 +325,5 @@ private fun ChapterNavigatorPreview() {
             currentPageText = "1",
             isVerticalSlider = true,
         )
-         <--
     }
 }

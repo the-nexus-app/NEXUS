@@ -140,7 +140,6 @@ class BangumiApi(
         }
     }
 
-     -->
     suspend fun getMangaMetadata(track: DomainTrack): TrackMangaMetadata {
         return withIOContext {
             with(json) {
@@ -166,7 +165,6 @@ class BangumiApi(
             }
         }
     }
-     <--
 
     suspend fun accessToken(code: String): BGMOAuth {
         return withIOContext {

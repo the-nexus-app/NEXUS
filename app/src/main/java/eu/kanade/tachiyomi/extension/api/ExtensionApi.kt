@@ -27,23 +27,17 @@ internal class ExtensionApi {
     private val updateExtensionStores: UpdateExtensionStores by injectLazy()
     private val extensionManager: ExtensionManager by injectLazy()
 
-     -->
     private val sourcePreferences: SourcePreferences by injectLazy()
-     <--
 
     private val lastExtCheck: Preference<Long> by lazy {
         preferenceStore.getLong(Preference.appStateKey("last_ext_check"), 0)
     }
 
     suspend fun findExtensions(): List<Extension.Available> {
-         -->
         val disabledRepos = sourcePreferences.disabledRepos().get()
-         <--
         return withIOContext {
             repository.fetchExtensions(
-                 -->
                 disabledRepos,
-                 <--
             )
         }
     }
@@ -67,16 +61,12 @@ internal class ExtensionApi {
             findExtensions().also { lastExtCheck.set(Instant.now().toEpochMilli()) }
         }
 
-         -->
         val blacklistEnabled = sourcePreferences.enableSourceBlacklist().get()
-         <--
 
         val installedExtensions = ExtensionLoader.loadExtensions(context)
             .filterIsInstance<LoadResult.Success>()
             .map { it.extension }
-             -->
             .filterNot { it.isBlacklisted(blacklistEnabled) }
-         <--
 
         val extensionsWithUpdate = mutableListOf<Extension.Installed>()
         for (installedExt in installedExtensions) {
@@ -97,18 +87,12 @@ internal class ExtensionApi {
         return extensionsWithUpdate
     }
 
-     -->
     private fun Extension.isBlacklisted(
         blacklistEnabled: Boolean = sourcePreferences.enableSourceBlacklist().get(),
-         -->
         isHentaiEnabled: Boolean = Injekt.get<ExhPreferences>().isHentaiEnabled().get(),
-         <--
     ): Boolean {
         return pkgName in BlacklistedSources.BLACKLISTED_EXTENSIONS &&
             blacklistEnabled &&
-             -->
             isHentaiEnabled
-         <--
     }
-     <--
 }

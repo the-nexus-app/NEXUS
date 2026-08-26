@@ -31,9 +31,7 @@ import tachiyomi.i18n.MR
 class MigrationListScreen(
     private val mangaIds: Collection<Long>,
     private val extraSearchQuery: String?,
-     -->
     private val isSmartSearchSingleEntry: Boolean = false,
-     <--
 ) : Screen() {
 
     private var matchOverride: Pair<Long, Long>? = null
@@ -45,14 +43,11 @@ class MigrationListScreen(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-         -->
         val singleEntryNoSmartSearch = mangaIds.size == 1 && !isSmartSearchSingleEntry
-         <--
-        val screenModel = rememberScreenModel { MigrationListScreenModel(mangaIds, extraSearchQuery, /* KMK --> */ singleEntryNoSmartSearch /* KMK <-- */) }
+        val screenModel = rememberScreenModel { MigrationListScreenModel(mangaIds, extraSearchQuery, /* KMK*/ singleEntryNoSmartSearch /* KMK*/) }
         val state by screenModel.state.collectAsState()
         val context = LocalContext.current
 
-         -->
         var hasPushedManual by rememberSaveable(mangaIds) { mutableStateOf(false) }
         LaunchedEffect(mangaIds) {
             if (singleEntryNoSmartSearch && !hasPushedManual) {
@@ -61,7 +56,6 @@ class MigrationListScreen(
                 navigator.push(MigrateSearchScreen(mangaIds.single()))
             }
         }
-         <--
 
         LaunchedEffect(matchOverride) {
             val (current, target) = matchOverride ?: return@LaunchedEffect
@@ -77,7 +71,6 @@ class MigrationListScreen(
 
         LaunchedEffect(screenModel) {
             screenModel.navigateBackEvent.collect {
-                 -->
                 /* If this screen is called from single manga migration, replace the MangaScreen in the backstack
                    with the newly migrated manga to reflect the changes properly.
                    Otherwise, just pop normally. */
@@ -99,7 +92,6 @@ class MigrationListScreen(
                         navigator.pop()
                     }
                 } else {
-                     <--
                     navigator.pop()
                 }
             }
@@ -118,10 +110,8 @@ class MigrationListScreen(
             onMigrate = { screenModel.migrateNow(mangaId = it, replace = true) },
             onCopy = { screenModel.migrateNow(mangaId = it, replace = false) },
             openMigrationDialog = screenModel::showMigrateDialog,
-             -->
             onCancel = { screenModel.cancelManga(it) },
             openOptionsDialog = screenModel::openOptionsDialog,
-             <--
         )
 
         when (val dialog = state.dialog) {
@@ -152,7 +142,6 @@ class MigrationListScreen(
                     exitMigration = navigator::pop,
                 )
             }
-             -->
             MigrationListScreenModel.Dialog.Options -> {
                 MigrationConfigScreenSheet(
                     preferences = screenModel.preferences,
@@ -164,7 +153,6 @@ class MigrationListScreen(
                     fullSettings = false,
                 )
             }
-             <--
             null -> Unit
         }
 

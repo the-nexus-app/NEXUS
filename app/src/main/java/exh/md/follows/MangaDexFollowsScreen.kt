@@ -50,23 +50,18 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
         val screenModel = rememberScreenModel { MangaDexFollowsScreenModel(sourceId) }
         val state by screenModel.state.collectAsState()
 
-         -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
-         <--
 
         val snackbarHostState = remember { SnackbarHostState() }
 
-         -->
         val mangaList = screenModel.mangaPagerFlowFlow.collectAsLazyPagingItems()
-         <--
         Scaffold(
             topBar = { scrollBehavior ->
-                 -->
                 if (bulkFavoriteState.selectionMode) {
                     BulkSelectionToolbar(
                         selectedCount = bulkFavoriteState.selection.size,
@@ -85,17 +80,14 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
                         },
                     )
                 } else {
-                     <--
                     BrowseSourceSimpleToolbar(
                         title = stringResource(SYMR.strings.mangadex_follows),
                         displayMode = screenModel.displayMode,
                         onDisplayModeChange = { screenModel.displayMode = it },
                         navigateUp = navigator::pop,
                         scrollBehavior = scrollBehavior,
-                         -->
                         toggleSelectionMode = bulkFavoriteScreenModel::toggleSelectionMode,
                         isRunning = bulkFavoriteState.isRunning,
-                         <--
                     )
                 }
             },
@@ -107,9 +99,7 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
                 source = screenModel.source,
                 mangaList = mangaList,
                 columns = screenModel.getColumnsPreference(LocalConfiguration.current.orientation),
-                 -->
                 ehentaiBrowseDisplayMode = screenModel.ehentaiBrowseDisplayMode,
-                 <--
                 displayMode = screenModel.displayMode,
                 snackbarHostState = snackbarHostState,
                 contentPadding = paddingValues,
@@ -117,21 +107,17 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
                 onHelpClick = null,
                 onLocalSourceHelpClick = null,
                 onMangaClick = { manga ->
-                     -->
                     if (bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.toggleSelection(manga)
                     } else {
-                         <--
                         navigator.push(MangaScreen(manga.id, true))
                     }
                 },
                 onMangaLongClick = { manga ->
-                     -->
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     if (bulkFavoriteState.selectionMode) {
                         navigator.push(MangaScreen(manga.id, true))
                     } else {
-                         <--
                         scope.launchIO {
                             val duplicates = screenModel.getDuplicateLibraryManga(manga)
                             when {
@@ -144,9 +130,7 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
                         }
                     }
                 },
-                 -->
                 selection = bulkFavoriteState.selection,
-                 <--
             )
         }
 
@@ -158,13 +142,10 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
                     onDismissRequest = onDismissRequest,
                     onConfirm = { screenModel.addFavorite(dialog.manga) },
                     onOpenManga = { navigator.push(MangaScreen(it.id)) },
-                     -->
                     targetManga = dialog.manga,
                     onMigrate = { screenModel.setDialog(BrowseSourceScreenModel.Dialog.Migrate(dialog.manga, it)) },
-                     <--
                 )
             }
-             -->
             is BrowseSourceScreenModel.Dialog.Migrate -> {
                 MigrateMangaDialog(
                     current = dialog.current,
@@ -174,7 +155,6 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
                     onDismissRequest = onDismissRequest,
                 )
             }
-             <--
             is BrowseSourceScreenModel.Dialog.RemoveManga -> {
                 RemoveMangaDialog(
                     onDismissRequest = onDismissRequest,
@@ -200,12 +180,10 @@ class MangaDexFollowsScreen(private val sourceId: Long) : Screen() {
             else -> {}
         }
 
-         -->
         // Bulk-favorite actions only
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
-         <--
     }
 }

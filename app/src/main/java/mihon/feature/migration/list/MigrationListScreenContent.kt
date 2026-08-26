@@ -81,10 +81,8 @@ fun MigrationListScreenContent(
     onMigrate: (Long) -> Unit,
     onCopy: (Long) -> Unit,
     openMigrationDialog: (Boolean) -> Unit,
-     -->
     onCancel: (Long) -> Unit,
     openOptionsDialog: () -> Unit,
-     <--
 ) {
     Scaffold(
         topBar = { scrollBehavior ->
@@ -97,13 +95,11 @@ fun MigrationListScreenContent(
                 actions = {
                     AppBarActions(
                         persistentListOf(
-                             -->
                             AppBar.Action(
                                 title = stringResource(MR.strings.action_settings),
                                 icon = Icons.Outlined.Settings,
                                 onClick = openOptionsDialog,
                             ),
-                             <--
                             AppBar.Action(
                                 title = stringResource(MR.strings.migrationListScreen_copyActionLabel),
                                 icon = if (items.size == 1) Icons.Outlined.ContentCopy else Icons.Outlined.CopyAll,
@@ -172,9 +168,7 @@ fun MigrationListScreenContent(
                         onSkip = { onSkip(item.manga.id) },
                         onMigrate = { onMigrate(item.manga.id) },
                         onCopy = { onCopy(item.manga.id) },
-                         -->
                         onCancel = { onCancel(item.manga.id) },
-                         <--
                     )
                 }
             }
@@ -326,18 +320,14 @@ private fun MigrationListItemAction(
     onSkip: () -> Unit,
     onMigrate: () -> Unit,
     onCopy: () -> Unit,
-     -->
     onCancel: () -> Unit,
-     <--
 ) {
     var menuExpanded by rememberSaveable { mutableStateOf(false) }
     val closeMenu = { menuExpanded = false }
     Box(modifier) {
         when (result) {
             MigratingManga.SearchResult.Searching -> {
-                 -->
                 IconButton(onClick = onCancel) {
-                     <--
                     Icon(
                         imageVector = Icons.Outlined.Close,
                         contentDescription = null,

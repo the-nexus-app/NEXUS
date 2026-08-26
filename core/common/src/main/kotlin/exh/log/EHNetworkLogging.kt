@@ -6,9 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 fun OkHttpClient.Builder.maybeInjectEHLogger(): OkHttpClient.Builder {
-     -->
     if (EHLogLevel.isExtremeLogging()) {
-         <--
         val xlogBorder = XLog.tag("||EH-NETWORK-JSON").build()
         val xlogNoBorder = XLog.tag("||EH-NETWORK-JSON").disableBorder().build()
         val logger: HttpLoggingInterceptor.Logger = HttpLoggingInterceptor.Logger { message ->

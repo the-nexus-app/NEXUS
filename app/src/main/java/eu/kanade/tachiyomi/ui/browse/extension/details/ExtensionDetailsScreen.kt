@@ -31,15 +31,12 @@ data class ExtensionDetailsScreen(
         }
 
         val navigator = LocalNavigator.currentOrThrow
-         -->
         val source = state.extension?.sources?.getOrNull(0)
-         <--
 
         ExtensionDetailsScreen(
             navigateUp = navigator::pop,
             state = state,
             onClickSourcePreferences = { navigator.push(SourcePreferencesScreen(it)) },
-             -->
             onOpenWebView = if (source != null && source is HttpSource) {
                 {
                     navigator.push(
@@ -53,7 +50,6 @@ data class ExtensionDetailsScreen(
             } else {
                 null
             },
-             <--
             onClickEnableAll = { screenModel.toggleSources(true) },
             onClickDisableAll = { screenModel.toggleSources(false) },
             onClickClearCookies = screenModel::clearCookies,

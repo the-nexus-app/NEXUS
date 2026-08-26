@@ -7,7 +7,5 @@ interface ReleaseService {
 
     suspend fun latest(arguments: GetApplicationRelease.Arguments): Release?
 
-     -->
     suspend fun releaseNotes(arguments: GetApplicationRelease.Arguments): List<Release>
-     <--
 }

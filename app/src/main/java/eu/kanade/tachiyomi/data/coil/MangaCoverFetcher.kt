@@ -54,11 +54,9 @@ import java.io.IOException
  * - [USE_CUSTOM_COVER_KEY]: Use custom cover if set by user, default is true
  */
 class MangaCoverFetcher(
-     -->
     private val mangaCover: MangaCover,
     private val url: String? = mangaCover.url,
     // private val url: String?,
-     <--
     private val isLibraryManga: Boolean,
     private val options: Options,
     private val coverFileLazy: Lazy<File?>,
@@ -69,12 +67,10 @@ class MangaCoverFetcher(
     private val imageLoader: ImageLoader,
 ) : Fetcher {
 
-     -->
     private val scope by lazy { CoroutineScope(Dispatchers.IO) }
     private val uiPreferences = Injekt.get<UiPreferences>()
     private val themeCoverBased = uiPreferences.themeCoverBased().get()
     private val preloadLibraryColor = uiPreferences.preloadLibraryColor().get()
-     <--
 
     private val diskCacheKey: String
         get() = diskCacheKeyLazy.value
@@ -103,9 +99,7 @@ class MangaCoverFetcher(
     }
 
     private fun fileLoader(file: File): FetchResult {
-         -->
         setRatioAndColorsInScope(mangaCover, ogFile = file)
-         <--
         return SourceFetchResult(
             source = ImageSource(
                 file = file.toOkioPath(),
@@ -118,9 +112,7 @@ class MangaCoverFetcher(
     }
 
     private fun fileUriLoader(uri: String): FetchResult {
-         -->
         setRatioAndColorsInScope(mangaCover)
-         <--
         val source = UniFile.fromUri(options.context, uri.toUri())!!
             .openInputStream()
             .source()
@@ -154,9 +146,7 @@ class MangaCoverFetcher(
                 }
 
                 // Read from snapshot
-                 -->
                 setRatioAndColorsInScope(mangaCover, bufferedSource = snapshot.toImageSource().source())
-                 <--
                 return SourceFetchResult(
                     source = snapshot.toImageSource(),
                     mimeType = "image/*",
@@ -177,9 +167,7 @@ class MangaCoverFetcher(
                 // Read from disk cache
                 snapshot = writeToDiskCache(response)
                 if (snapshot != null) {
-                     -->
                     setRatioAndColorsInScope(mangaCover, bufferedSource = snapshot.toImageSource().source())
-                     <--
                     return SourceFetchResult(
                         source = snapshot.toImageSource(),
                         mimeType = "image/*",
@@ -187,7 +175,6 @@ class MangaCoverFetcher(
                     )
                 }
 
-                 -->
                 setRatioAndColorsInScope(
                     mangaCover,
                     bufferedSource = ImageSource(
@@ -195,7 +182,6 @@ class MangaCoverFetcher(
                         fileSystem = FileSystem.SYSTEM,
                     ).source(),
                 )
-                 <--
                 // Read from response if cache is unused or unusable
                 return SourceFetchResult(
                     source = ImageSource(source = responseBody.source(), fileSystem = FileSystem.SYSTEM),
@@ -334,7 +320,6 @@ class MangaCoverFetcher(
         }
     }
 
-     -->
     /**
      * [setRatioAndColorsInScope] is called whenever a cover is loaded with [MangaCoverFetcher.fetch]
      *
@@ -355,7 +340,6 @@ class MangaCoverFetcher(
             MangaCoverMetadata.setRatioAndColors(mangaCover, bufferedSource, ogFile, onlyFavorite, force)
         }
     }
-     <--
 
     private enum class Type {
         File,
@@ -372,10 +356,8 @@ class MangaCoverFetcher(
 
         override fun create(data: Manga, options: Options, imageLoader: ImageLoader): Fetcher {
             return MangaCoverFetcher(
-                 -->
                 // url = data.thumbnailUrl,
                 mangaCover = data.asMangaCover(),
-                 <--
                 isLibraryManga = data.favorite,
                 options = options,
                 coverFileLazy = lazy { coverCache.getCoverFile(data.thumbnailUrl) },
@@ -397,10 +379,8 @@ class MangaCoverFetcher(
 
         override fun create(data: MangaCover, options: Options, imageLoader: ImageLoader): Fetcher {
             return MangaCoverFetcher(
-                 -->
                 // url = data.url,
                 mangaCover = data,
-                 <--
                 isLibraryManga = data.isMangaFavorite,
                 options = options,
                 coverFileLazy = lazy { coverCache.getCoverFile(data.url) },

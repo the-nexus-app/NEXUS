@@ -14,10 +14,8 @@ class TrustExtension(
 ) {
 
     suspend fun isTrusted(pkgInfo: PackageInfo, fingerprints: List<String>): Boolean {
-         -->
         if (isDebugBuildType) return true
         if (fingerprints.contains(KOMIKKU_SIGNATURE)) return true
-         <--
         val trustedFingerprints = repository.getAll().map { it.signingKey }.toHashSet()
         val key = "${pkgInfo.packageName}:${PackageInfoCompat.getLongVersionCode(pkgInfo)}:${fingerprints.last()}"
         return trustedFingerprints.any { fingerprints.contains(it) } || key in preferences.trustedExtensions().get()

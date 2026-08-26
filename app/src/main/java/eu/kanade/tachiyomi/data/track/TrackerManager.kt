@@ -19,9 +19,8 @@ class TrackerManager {
         const val KITSU = 3L
         const val KAVITA = 8L
 
-         --> Mangadex from Neko
+        // Mangadex from Neko
         const val MDLIST = 60L
-         <--
     }
 
     val mdList = MdList(MDLIST)

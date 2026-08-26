@@ -168,7 +168,6 @@ fun MangaScreen(
     onEditFetchIntervalClicked: (() -> Unit)?,
     onMigrateClicked: (() -> Unit)?,
     onEditNotesClicked: () -> Unit,
-     -->
     onMetadataViewerClicked: () -> Unit,
     onEditInfoClicked: () -> Unit,
     onRecommendClicked: () -> Unit,
@@ -178,7 +177,6 @@ fun MangaScreen(
     onOpenPagePreview: (Int) -> Unit,
     onMorePreviewsClicked: () -> Unit,
     previewsRowCount: Int,
-     <--
 
     // For bottom action menu
     onMultiBookmarkClicked: (List<Chapter>, bookmarked: Boolean) -> Unit,
@@ -194,7 +192,6 @@ fun MangaScreen(
     onAllChapterSelected: (Boolean) -> Unit,
     onInvertSelection: () -> Unit,
 
-     -->
     getMangaState: @Composable (Manga) -> State<Manga>,
     onClickSourceSettingsClicked: (() -> Unit)?,
     onClearManga: () -> Unit,
@@ -208,7 +205,6 @@ fun MangaScreen(
     coverRatio: MutableFloatState,
     onPaletteScreenClick: () -> Unit,
     hazeState: HazeState,
-     <--
 ) {
     val context = LocalContext.current
     val onCopyTagToClipboard: (tag: String) -> Unit = {
@@ -244,7 +240,6 @@ fun MangaScreen(
             onEditIntervalClicked = onEditFetchIntervalClicked,
             onMigrateClicked = onMigrateClicked,
             onEditNotesClicked = onEditNotesClicked,
-             -->
             onMetadataViewerClicked = onMetadataViewerClicked,
             onEditInfoClicked = onEditInfoClicked,
             onRecommendClicked = onRecommendClicked,
@@ -254,7 +249,6 @@ fun MangaScreen(
             onOpenPagePreview = onOpenPagePreview,
             onMorePreviewsClicked = onMorePreviewsClicked,
             previewsRowCount = previewsRowCount,
-             <--
             onMultiBookmarkClicked = onMultiBookmarkClicked,
             onMultiMarkAsReadClicked = onMultiMarkAsReadClicked,
             onMarkPreviousAsReadClicked = onMarkPreviousAsReadClicked,
@@ -263,7 +257,6 @@ fun MangaScreen(
             onChapterSelected = onChapterSelected,
             onAllChapterSelected = onAllChapterSelected,
             onInvertSelection = onInvertSelection,
-             -->
             getMangaState = getMangaState,
             onClickSourceSettingsClicked = onClickSourceSettingsClicked,
             onClearManga = onClearManga,
@@ -277,7 +270,6 @@ fun MangaScreen(
             coverRatio = coverRatio,
             onPaletteScreenClick = onPaletteScreenClick,
             hazeState = hazeState,
-             <--
         )
     } else {
         MangaScreenLargeImpl(
@@ -306,7 +298,6 @@ fun MangaScreen(
             onEditIntervalClicked = onEditFetchIntervalClicked,
             onMigrateClicked = onMigrateClicked,
             onEditNotesClicked = onEditNotesClicked,
-             -->
             onMetadataViewerClicked = onMetadataViewerClicked,
             onEditInfoClicked = onEditInfoClicked,
             onRecommendClicked = onRecommendClicked,
@@ -316,7 +307,6 @@ fun MangaScreen(
             onOpenPagePreview = onOpenPagePreview,
             onMorePreviewsClicked = onMorePreviewsClicked,
             previewsRowCount = previewsRowCount,
-             <--
             onMultiBookmarkClicked = onMultiBookmarkClicked,
             onMultiMarkAsReadClicked = onMultiMarkAsReadClicked,
             onMarkPreviousAsReadClicked = onMarkPreviousAsReadClicked,
@@ -325,7 +315,6 @@ fun MangaScreen(
             onChapterSelected = onChapterSelected,
             onAllChapterSelected = onAllChapterSelected,
             onInvertSelection = onInvertSelection,
-             -->
             getMangaState = getMangaState,
             onClickSourceSettingsClicked = onClickSourceSettingsClicked,
             onClearManga = onClearManga,
@@ -339,7 +328,6 @@ fun MangaScreen(
             coverRatio = coverRatio,
             onPaletteScreenClick = onPaletteScreenClick,
             hazeState = hazeState,
-             <--
         )
     }
 }
@@ -378,7 +366,6 @@ private fun MangaScreenSmallImpl(
     onEditIntervalClicked: (() -> Unit)?,
     onMigrateClicked: (() -> Unit)?,
     onEditNotesClicked: () -> Unit,
-     -->
     onMetadataViewerClicked: () -> Unit,
     onEditInfoClicked: () -> Unit,
     onRecommendClicked: () -> Unit,
@@ -388,7 +375,6 @@ private fun MangaScreenSmallImpl(
     onOpenPagePreview: (Int) -> Unit,
     onMorePreviewsClicked: () -> Unit,
     previewsRowCount: Int,
-     <--
 
     // For bottom action menu
     onMultiBookmarkClicked: (List<Chapter>, bookmarked: Boolean) -> Unit,
@@ -404,7 +390,6 @@ private fun MangaScreenSmallImpl(
     onAllChapterSelected: (Boolean) -> Unit,
     onInvertSelection: () -> Unit,
 
-     -->
     getMangaState: @Composable ((Manga) -> State<Manga>),
     onClickSourceSettingsClicked: (() -> Unit)?,
     onClearManga: () -> Unit,
@@ -418,7 +403,6 @@ private fun MangaScreenSmallImpl(
     coverRatio: MutableFloatState,
     onPaletteScreenClick: () -> Unit,
     hazeState: HazeState,
-     <--
 ) {
     val chapterListState = rememberLazyListState()
 
@@ -429,13 +413,10 @@ private fun MangaScreenSmallImpl(
             third = state.isAnySelected,
         )
     }
-     -->
     val metadataDescription = metadataDescription(state.source)
     var maxWidth by remember {
         mutableStateOf(Dp.Hairline)
     }
-     <--
-     -->
     val uiPreferences = Injekt.get<UiPreferences>()
     val relatedMangasEnabled by Injekt.get<SourcePreferences>().relatedMangas().collectAsState()
     val expandRelatedMangas by uiPreferences.expandRelatedMangas().collectAsState()
@@ -447,7 +428,6 @@ private fun MangaScreenSmallImpl(
     var offsetX by remember { mutableFloatStateOf(0f) }
     val fabPosition by uiPreferences.readButtonPosition().collectAsState()
     val readButtonPosition = uiPreferences.readButtonPosition()
-     <--
 
     BackHandler(onBack = {
         if (isAnySelected) {
@@ -487,9 +467,7 @@ private fun MangaScreenSmallImpl(
                 onClickRefresh = onRefresh,
                 onClickMigrate = onMigrateClicked,
                 onClickEditNotes = onEditNotesClicked,
-                 -->
                 onClickEditInfo = onEditInfoClicked.takeIf { state.manga.favorite },
-                 -->
                 onClickSourceSettings = onClickSourceSettingsClicked,
                 onClearManga = onClearManga,
                 onOpenMangaFolder = onOpenMangaFolder,
@@ -498,20 +476,16 @@ private fun MangaScreenSmallImpl(
                         showRelatedMangasInOverflow &&
                         state.manga.source != MERGED_SOURCE_ID
                 },
-                 <--
                 onClickRecommend = onRecommendClicked.takeIf { state.showRecommendationsInOverflow },
                 onClickMergedSettings = onMergedSettingsClicked.takeIf { state.manga.source == MERGED_SOURCE_ID },
                 onClickMerge = onMergeClicked.takeIf { state.showMergeInOverflow },
-                 <--
                 actionModeCounter = selectedChapterCount,
                 onCancelActionMode = { onAllChapterSelected(false) },
                 onSelectAll = { onAllChapterSelected(true) },
                 onInvertSelection = { onInvertSelection() },
                 titleAlphaProvider = { titleAlpha },
                 backgroundAlphaProvider = { backgroundAlpha },
-                 -->
                 onPaletteScreenClick = onPaletteScreenClick,
-                 <--
             )
         },
         bottomBar = {
@@ -549,7 +523,6 @@ private fun MangaScreenSmallImpl(
                     visible = isFABVisible,
                     alignment = Alignment.BottomEnd,
                 )
-                     -->
                     .offset { IntOffset(offsetX.roundToInt(), 0) }
                     .onGloballyPositioned { coordinates ->
                         fabSize = coordinates.size
@@ -574,10 +547,8 @@ private fun MangaScreenSmallImpl(
                         }
                     },
                 containerColor = MaterialTheme.colorScheme.primary,
-                 <--
             )
         },
-         -->
         floatingActionButtonPosition = if (fabPosition == FabPosition.End.toString()) {
             FabPosition.End
         } else {
@@ -588,7 +559,6 @@ private fun MangaScreenSmallImpl(
                 layoutSize = coordinates.size
             }
             .hazeSource(state = hazeState),
-         <--
     ) { contentPadding ->
         val topPadding = contentPadding.calculateTopPadding()
 
@@ -623,17 +593,13 @@ private fun MangaScreenSmallImpl(
                             manga = state.manga,
                             sourceName = remember { state.source.getNameForMangaInfo(state.mergedData?.sources) },
                             isStubSource = remember { state.source is StubSource },
-                             -->
                             isSourceIncognito = remember { state.source.isIncognitoModeEnabled() },
-                             <--
                             onCoverClick = onCoverClicked,
                             doSearch = onSearch,
-                             -->
                             librarySearch = librarySearch,
                             onSourceClick = onSourceClick,
                             onCoverLoaded = onCoverLoaded,
                             coverRatio = coverRatio,
-                             <--
                         )
                     }
 
@@ -652,17 +618,12 @@ private fun MangaScreenSmallImpl(
                             onTrackingClicked = onTrackingClicked,
                             onEditIntervalClicked = onEditIntervalClicked,
                             onEditCategory = onEditCategoryClicked,
-                             -->
                             onMergeClicked = onMergeClicked.takeUnless { state.showMergeInOverflow },
-                             <--
-                             -->
                             status = state.manga.status,
                             interval = state.manga.fetchInterval,
-                             <--
                         )
                     }
 
-                     -->
                     if (metadataDescription != null) {
                         item(
                             key = MangaScreenItem.METADATA_INFO,
@@ -676,7 +637,6 @@ private fun MangaScreenSmallImpl(
                             }
                         }
                     }
-                     <--
 
                     item(
                         key = MangaScreenItem.DESCRIPTION_WITH_TAG,
@@ -690,16 +650,13 @@ private fun MangaScreenSmallImpl(
                             onTagSearch = onTagSearch,
                             onCopyTagToClipboard = onCopyTagToClipboard,
                             onEditNotes = onEditNotesClicked,
-                             -->
                             doSearch = onSearch,
                             searchMetadataChips = remember(state.meta, state.source.id, state.manga.genre) {
                                 SearchMetadataChips(state.meta, state.source.id, state.manga.genre)
                             },
-                             <--
                         )
                     }
 
-                     -->
                     if (state.source !is StubSource &&
                         relatedMangasEnabled &&
                         state.manga.source != MERGED_SOURCE_ID
@@ -743,9 +700,7 @@ private fun MangaScreenSmallImpl(
                             }
                         }
                     }
-                     <--
 
-                     -->
                     if (!state.showRecommendationsInOverflow || state.showMergeWithAnother) {
                         item(
                             key = MangaScreenItem.INFO_BUTTONS,
@@ -770,7 +725,6 @@ private fun MangaScreenSmallImpl(
                             rowCount = previewsRowCount,
                         )
                     }
-                     <--
 
                     item(
                         key = MangaScreenItem.CHAPTER_HEADER,
@@ -794,9 +748,7 @@ private fun MangaScreenSmallImpl(
                         isAnyChapterSelected = chapters.fastAny { it.selected },
                         chapterSwipeStartAction = chapterSwipeStartAction,
                         chapterSwipeEndAction = chapterSwipeEndAction,
-                         -->
                         alwaysShowReadingProgress = state.alwaysShowReadingProgress,
-                         <--
                         onChapterClicked = onChapterClicked,
                         onDownloadChapter = onDownloadChapter,
                         onChapterSelected = onChapterSelected,
@@ -842,7 +794,6 @@ private fun MangaScreenLargeImpl(
     onEditIntervalClicked: (() -> Unit)?,
     onMigrateClicked: (() -> Unit)?,
     onEditNotesClicked: () -> Unit,
-     -->
     onMetadataViewerClicked: () -> Unit,
     onEditInfoClicked: () -> Unit,
     onRecommendClicked: () -> Unit,
@@ -852,7 +803,6 @@ private fun MangaScreenLargeImpl(
     onOpenPagePreview: (Int) -> Unit,
     onMorePreviewsClicked: () -> Unit,
     previewsRowCount: Int,
-     <--
 
     // For bottom action menu
     onMultiBookmarkClicked: (List<Chapter>, bookmarked: Boolean) -> Unit,
@@ -868,7 +818,6 @@ private fun MangaScreenLargeImpl(
     onAllChapterSelected: (Boolean) -> Unit,
     onInvertSelection: () -> Unit,
 
-     -->
     getMangaState: @Composable ((Manga) -> State<Manga>),
     onClickSourceSettingsClicked: (() -> Unit)?,
     onClearManga: () -> Unit,
@@ -882,7 +831,6 @@ private fun MangaScreenLargeImpl(
     coverRatio: MutableFloatState,
     onPaletteScreenClick: () -> Unit,
     hazeState: HazeState,
-     <--
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val density = LocalDensity.current
@@ -895,10 +843,7 @@ private fun MangaScreenLargeImpl(
         )
     }
 
-     -->
     val metadataDescription = metadataDescription(state.source)
-     <--
-     -->
     val uiPreferences = Injekt.get<UiPreferences>()
     val relatedMangasEnabled by Injekt.get<SourcePreferences>().relatedMangas().collectAsState()
     val expandRelatedMangas by uiPreferences.expandRelatedMangas().collectAsState()
@@ -910,7 +855,6 @@ private fun MangaScreenLargeImpl(
     var offsetX by remember { mutableFloatStateOf(0f) }
     val fabPosition by uiPreferences.readButtonPosition().collectAsState()
     val readButtonPosition = uiPreferences.readButtonPosition()
-     <--
 
     val insetPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues()
     var topBarHeight by remember { mutableIntStateOf(0) }
@@ -943,9 +887,7 @@ private fun MangaScreenLargeImpl(
                 onClickMigrate = onMigrateClicked,
                 onClickEditNotes = onEditNotesClicked,
                 onCancelActionMode = { onAllChapterSelected(false) },
-                 -->
                 onClickEditInfo = onEditInfoClicked.takeIf { state.manga.favorite },
-                 -->
                 onClickSourceSettings = onClickSourceSettingsClicked,
                 onClearManga = onClearManga,
                 onOpenMangaFolder = onOpenMangaFolder,
@@ -954,19 +896,15 @@ private fun MangaScreenLargeImpl(
                         showRelatedMangasInOverflow &&
                         state.manga.source != MERGED_SOURCE_ID
                 },
-                 <--
                 onClickRecommend = onRecommendClicked.takeIf { state.showRecommendationsInOverflow },
                 onClickMergedSettings = onMergedSettingsClicked.takeIf { state.manga.source == MERGED_SOURCE_ID },
                 onClickMerge = onMergeClicked.takeIf { state.showMergeInOverflow },
-                 <--
                 actionModeCounter = selectedChapterCount,
                 onSelectAll = { onAllChapterSelected(true) },
                 onInvertSelection = { onInvertSelection() },
                 titleAlphaProvider = { 1f },
                 backgroundAlphaProvider = { 1f },
-                 -->
                 onPaletteScreenClick = onPaletteScreenClick,
-                 <--
             )
         },
         bottomBar = {
@@ -1011,7 +949,6 @@ private fun MangaScreenLargeImpl(
                     visible = isFABVisible,
                     alignment = Alignment.BottomEnd,
                 )
-                     -->
                     .offset { IntOffset(offsetX.roundToInt(), 0) }
                     .onGloballyPositioned { coordinates ->
                         fabSize = coordinates.size
@@ -1036,10 +973,8 @@ private fun MangaScreenLargeImpl(
                         }
                     },
                 containerColor = MaterialTheme.colorScheme.primary,
-                 <--
             )
         },
-         -->
         floatingActionButtonPosition = if (fabPosition == FabPosition.End.toString()) {
             FabPosition.End
         } else {
@@ -1050,7 +985,6 @@ private fun MangaScreenLargeImpl(
                 layoutSize = coordinates.size
             }
             .hazeSource(state = hazeState),
-         <--
     ) { contentPadding ->
         PullRefresh(
             refreshing = state.isRefreshingData,
@@ -1079,17 +1013,13 @@ private fun MangaScreenLargeImpl(
                             manga = state.manga,
                             sourceName = remember { state.source.getNameForMangaInfo(state.mergedData?.sources) },
                             isStubSource = remember { state.source is StubSource },
-                             -->
                             isSourceIncognito = remember { state.source.isIncognitoModeEnabled() },
-                             <--
                             onCoverClick = onCoverClicked,
                             doSearch = onSearch,
-                             -->
                             librarySearch = librarySearch,
                             onSourceClick = onSourceClick,
                             onCoverLoaded = onCoverLoaded,
                             coverRatio = coverRatio,
-                             <--
                         )
                         MangaActionRow(
                             favorite = state.manga.favorite,
@@ -1102,22 +1032,16 @@ private fun MangaScreenLargeImpl(
                             onTrackingClicked = onTrackingClicked,
                             onEditIntervalClicked = onEditIntervalClicked,
                             onEditCategory = onEditCategoryClicked,
-                             -->
                             onMergeClicked = onMergeClicked.takeUnless { state.showMergeInOverflow },
-                             <--
-                             -->
                             status = state.manga.status,
                             interval = state.manga.fetchInterval,
-                             <--
                         )
-                         -->
                         metadataDescription?.invoke(
                             state,
                             onMetadataViewerClicked,
                         ) {
                             onSearch(it, false)
                         }
-                         <--
                         ExpandableMangaDescription(
                             defaultExpandState = true,
                             description = state.manga.description,
@@ -1126,14 +1050,11 @@ private fun MangaScreenLargeImpl(
                             onTagSearch = onTagSearch,
                             onCopyTagToClipboard = onCopyTagToClipboard,
                             onEditNotes = onEditNotesClicked,
-                             -->
                             doSearch = onSearch,
                             searchMetadataChips = remember(state.meta, state.source.id, state.manga.genre) {
                                 SearchMetadataChips(state.meta, state.source.id, state.manga.genre)
                             },
-                             <--
                         )
-                         -->
                         if (!state.showRecommendationsInOverflow || state.showMergeWithAnother) {
                             MangaInfoButtons(
                                 showRecommendsButton = !state.showRecommendationsInOverflow,
@@ -1150,7 +1071,6 @@ private fun MangaScreenLargeImpl(
                                 rowCount = previewsRowCount,
                             )
                         }
-                         <--
                     }
                 },
                 endContent = {
@@ -1166,7 +1086,6 @@ private fun MangaScreenLargeImpl(
                                 bottom = contentPadding.calculateBottomPadding(),
                             ),
                         ) {
-                             -->
                             if (state.source !is StubSource &&
                                 relatedMangasEnabled &&
                                 state.manga.source != MERGED_SOURCE_ID
@@ -1209,7 +1128,6 @@ private fun MangaScreenLargeImpl(
                                     }
                                 }
                             }
-                             <--
 
                             item(
                                 key = MangaScreenItem.CHAPTER_HEADER,
@@ -1233,9 +1151,7 @@ private fun MangaScreenLargeImpl(
                                 isAnyChapterSelected = chapters.fastAny { it.selected },
                                 chapterSwipeStartAction = chapterSwipeStartAction,
                                 chapterSwipeEndAction = chapterSwipeEndAction,
-                                 -->
                                 alwaysShowReadingProgress = state.alwaysShowReadingProgress,
-                                 <--
                                 onChapterClicked = onChapterClicked,
                                 onDownloadChapter = onDownloadChapter,
                                 onChapterSelected = onChapterSelected,
@@ -1298,9 +1214,7 @@ private fun LazyListScope.sharedChapterItems(
     isAnyChapterSelected: Boolean,
     chapterSwipeStartAction: LibraryPreferences.ChapterSwipeAction,
     chapterSwipeEndAction: LibraryPreferences.ChapterSwipeAction,
-     -->
     alwaysShowReadingProgress: Boolean,
-     <--
     onChapterClicked: (Chapter) -> Unit,
     onDownloadChapter: ((List<ChapterList.Item>, ChapterDownloadAction) -> Unit)?,
     onChapterSelected: (ChapterList.Item, Boolean, Boolean) -> Unit,
@@ -1310,7 +1224,7 @@ private fun LazyListScope.sharedChapterItems(
         items = chapters,
         key = { item ->
             when (item) {
-                : using hashcode to prevent edge-cases where the missing count might duplicate,
+                // Using hashcode to prevent edge-cases where the missing count might duplicate,
                 // especially on merged manga
                 is ChapterList.MissingCount -> "missing-count-${item.hashCode()}"
                 is ChapterList.Item -> "chapter-${item.id}"
@@ -1337,18 +1251,16 @@ private fun LazyListScope.sharedChapterItems(
                     date = item.chapter.dateUpload
                         .takeIf { it > 0L }
                         ?.let {
-                             -->
                             if (manga.isEhBasedManga()) {
                                 MetadataUtil.EX_DATE_FORMAT
                                     .format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault()))
                             } else {
                                 relativeDateText(item.chapter.dateUpload)
                             }
-                             <--
                         },
                     readProgress = item.chapter.lastPageRead
                         .takeIf {
-                            /* SY --> */(!item.chapter.read || alwaysShowReadingProgress)/* SY <-- */ && it > 0L
+                            (!item.chapter.read || alwaysShowReadingProgress) && it > 0L
                         }
                         ?.let {
                             stringResource(
@@ -1357,11 +1269,9 @@ private fun LazyListScope.sharedChapterItems(
                             )
                         },
                     scanlator = item.chapter.scanlator.takeIf {
-                        !it.isNullOrBlank() /* SY --> */ && item.showScanlator /* SY <-- */
+                        !it.isNullOrBlank() && item.showScanlator 
                     },
-                     -->
                     sourceName = item.sourceName,
-                     <--
                     read = item.chapter.read,
                     bookmark = item.chapter.bookmark,
                     selected = item.selected,
@@ -1410,7 +1320,6 @@ private fun onChapterItemClick(
     }
 }
 
- -->
 typealias MetadataDescriptionComposable = @Composable (
     state: MangaScreenModel.State.Success,
     openMetadataViewer: () -> Unit,
@@ -1444,4 +1353,3 @@ fun metadataDescription(source: Source): MetadataDescriptionComposable? {
         }
     }
 }
- <--

@@ -33,9 +33,7 @@ interface SearchableSettings : Screen {
         )
     }
 
-     -->
     fun isEnabled(): Boolean = true
-     <--
 
     companion object {
         // HACK: for the background blipping thingy.

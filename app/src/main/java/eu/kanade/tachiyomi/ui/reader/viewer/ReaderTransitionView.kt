@@ -26,9 +26,7 @@ import uy.kohesive.injekt.api.get
 class ReaderTransitionView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-     -->
     @ColorInt private val seedColor: Int? = null,
-     <--
 ) :
     AbstractComposeView(context, attrs) {
 
@@ -49,7 +47,7 @@ class ReaderTransitionView @JvmOverloads constructor(
                             chapterName = goingToChapter.name,
                             chapterScanlator = goingToChapter.scanlator,
                             chapterUrl = goingToChapter.url,
-                            mangaTitle = /* SY --> */ manga.ogTitle, /* SY <-- */
+                            mangaTitle = manga.ogTitle, 
                             sourceId = manga.source,
                             skipCache = true,
                         )
@@ -63,14 +61,10 @@ class ReaderTransitionView @JvmOverloads constructor(
     @Composable
     override fun Content() {
         data?.let {
-             -->
             val uiPreferences = Injekt.get<UiPreferences>()
             val themeCoverBased = uiPreferences.themeCoverBased().get()
-             <--
             TachiyomiTheme(
-                 -->
                 seedColor = seedColor?.let { Color(seedColor) }.takeIf { themeCoverBased },
-                 <--
             ) {
                 CompositionLocalProvider(
                     LocalTextStyle provides MaterialTheme.typography.bodySmall,

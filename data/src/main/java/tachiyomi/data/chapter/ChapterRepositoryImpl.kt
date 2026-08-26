@@ -89,10 +89,8 @@ class ChapterRepositoryImpl(
             chaptersQueries.getChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
-                 -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
-                 <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -128,10 +126,8 @@ class ChapterRepositoryImpl(
             chaptersQueries.getChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
-                 -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
-                 <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -147,7 +143,6 @@ class ChapterRepositoryImpl(
         }
     }
 
-     -->
     override suspend fun getChapterByUrl(url: String): List<Chapter> {
         return handler.awaitList { chaptersQueries.getChapterByUrl(url, ChapterMapper::mapChapter) }
     }
@@ -157,10 +152,8 @@ class ChapterRepositoryImpl(
             chaptersQueries.getMergedChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
-                 -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
-                 <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -174,10 +167,8 @@ class ChapterRepositoryImpl(
             chaptersQueries.getMergedChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
-                 -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
-                 <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -194,5 +185,4 @@ class ChapterRepositoryImpl(
             chaptersQueries.getScanlatorsByMergeId(mangaId) { it.orEmpty() }
         }
     }
-     <--
 }

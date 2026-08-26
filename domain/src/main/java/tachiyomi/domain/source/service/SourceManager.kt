@@ -20,15 +20,11 @@ interface SourceManager {
 
     fun getOnlineSources(): List<HttpSource>
 
-     -->
     fun getVisibleOnlineSources(): List<HttpSource>
 
     fun getVisibleSources(): List<Source>
-     <--
 
-     -->
     suspend fun getMergedSources(mangaId: Long): List<Source>
-     <--
 
     fun getStubSources(): List<StubSource>
 }

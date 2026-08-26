@@ -64,7 +64,6 @@ fun CalendarDay(
             },
             fontWeight = FontWeight.SemiBold,
         )
-         -->
         if (events > 0) {
             Text(
                 text = events.toString(),
@@ -76,7 +75,6 @@ fun CalendarDay(
                     .offset(x = 12.dp, y = (-10).dp),
             )
         }
-         <--
         Row(Modifier.offset(y = 12.dp)) {
             val size = events.coerceAtMost(MAX_EVENTS)
             for (index in 0 until size) {

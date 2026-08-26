@@ -43,24 +43,18 @@ import tachiyomi.source.local.LocalSource
 @Composable
 fun BrowseSourceContent(
     source: Source?,
-    mangaList: LazyPagingItems<StateFlow</* SY --> */Pair<Manga, RaisedSearchMetadata?>/* SY <-- */>>,
+    mangaList: LazyPagingItems<StateFlow<Pair<Manga, RaisedSearchMetadata?>>>,
     columns: GridCells,
-     -->
     ehentaiBrowseDisplayMode: Boolean,
-     <--
     displayMode: LibraryDisplayMode,
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
-     -->
     onWebViewClick: (() -> Unit)?,
     onHelpClick: (() -> Unit)?,
     onLocalSourceHelpClick: (() -> Unit)?,
-     <--
     onMangaClick: (Manga) -> Unit,
     onMangaLongClick: (Manga) -> Unit,
-     -->
     selection: List<Manga>,
-     <--
 ) {
     val context = LocalContext.current
 
@@ -97,7 +91,7 @@ fun BrowseSourceContent(
                 is LoadState.Error -> getErrorMessage(errorState)
                 else -> stringResource(MR.strings.no_results_found)
             },
-            actions = if (source is LocalSource /* SY --> */ && onLocalSourceHelpClick != null /* SY <-- */) {
+            actions = if (source is LocalSource && onLocalSourceHelpClick != null ) {
                 persistentListOf(
                     EmptyScreenAction(
                         stringRes = MR.strings.local_source_help_guide,
@@ -112,7 +106,6 @@ fun BrowseSourceContent(
                         icon = Icons.Outlined.Refresh,
                         onClick = mangaList::refresh,
                     ),
-                     -->
                     if (onWebViewClick != null) {
                         EmptyScreenAction(
                             MR.strings.action_open_in_web_view,
@@ -131,7 +124,6 @@ fun BrowseSourceContent(
                     } else {
                         null
                     },
-                     <--
                 ).toImmutableList()
             },
         )
@@ -139,20 +131,16 @@ fun BrowseSourceContent(
         return
     }
 
-     -->
     if (source?.isEhBasedSource() == true && ehentaiBrowseDisplayMode) {
         BrowseSourceEHentaiList(
             mangaList = mangaList,
             contentPadding = contentPadding,
             onMangaClick = onMangaClick,
             onMangaLongClick = onMangaLongClick,
-             -->
             selection = selection,
-             <--
         )
         return
     }
-     <--
 
     when (displayMode) {
         LibraryDisplayMode.ComfortableGrid -> {
@@ -162,12 +150,9 @@ fun BrowseSourceContent(
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
-                 -->
                 selection = selection,
-                 <--
             )
         }
-         -->
         LibraryDisplayMode.ComfortableGridPanorama -> {
             BrowseSourceComfortableGrid(
                 mangaList = mangaList,
@@ -175,22 +160,17 @@ fun BrowseSourceContent(
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
-                 -->
                 selection = selection,
                 usePanoramaCover = true,
-                 <--
             )
         }
-         <--
         LibraryDisplayMode.List -> {
             BrowseSourceList(
                 mangaList = mangaList,
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
-                 -->
                 selection = selection,
-                 <--
             )
         }
         LibraryDisplayMode.CompactGrid, LibraryDisplayMode.CoverOnlyGrid -> {
@@ -200,9 +180,7 @@ fun BrowseSourceContent(
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
-                 -->
                 selection = selection,
-                 <--
             )
         }
     }

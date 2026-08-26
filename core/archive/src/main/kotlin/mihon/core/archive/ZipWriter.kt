@@ -14,17 +14,13 @@ import java.nio.ByteBuffer
 class ZipWriter(
     val context: Context,
     file: UniFile,
-     -->
     encrypt: Boolean = false,
-     <--
 ) : Closeable {
     private val pfd = file.openFileDescriptor(context, "wt")
     private val archive = Archive.writeNew()
     private val entry = ArchiveEntry.new2(archive)
     private val buffer = ByteBuffer.allocateDirect(
-         -->
         BUFFER_SIZE,
-         <--
     )
 
     init {
@@ -32,12 +28,10 @@ class ZipWriter(
             Archive.setCharset(archive, Charsets.UTF_8.name().toByteArray())
             Archive.writeSetFormatZip(archive)
             Archive.writeZipSetCompressionStore(archive)
-             -->
             if (encrypt) {
                 Archive.writeSetOptions(archive, CbzCrypto.getPreferredEncryptionAlgo())
                 Archive.writeSetPassphrase(archive, CbzCrypto.getDecryptedPasswordCbz())
             }
-             <--
             Archive.writeOpenFd(archive, pfd.fd)
         } catch (e: ArchiveException) {
             close()
@@ -64,7 +58,6 @@ class ZipWriter(
         }
     }
 
-     -->
     fun write(fileData: ByteArray, fileName: String) {
         ArchiveEntry.clear(entry)
         ArchiveEntry.setPathnameUtf8(entry, fileName)
@@ -83,7 +76,6 @@ class ZipWriter(
         }
         Archive.writeFinishEntry(archive)
     }
-     <--
 
     override fun close() {
         ArchiveEntry.free(entry)
@@ -91,11 +83,9 @@ class ZipWriter(
         pfd.close()
     }
 
-     -->
     companion object {
         private const val BUFFER_SIZE = 8192
     }
-     <--
 }
 
 private fun StructStat.toArchiveStat() = ArchiveEntry.StructStat().apply {

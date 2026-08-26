@@ -52,9 +52,7 @@ fun MangaChapterListItem(
     date: String?,
     readProgress: String?,
     scanlator: String?,
-     -->
     sourceName: String?,
-     <--
     read: Boolean,
     bookmark: Boolean,
     selected: Boolean,
@@ -69,10 +67,8 @@ fun MangaChapterListItem(
     onChapterSwipe: (LibraryPreferences.ChapterSwipeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-     -->
     val swipeBackground = MaterialTheme.colorScheme.primaryContainer
     val swipeStart = remember(chapterSwipeStartAction, read, bookmark, downloadStateProvider()) {
-         <--
         getSwipeAction(
             action = chapterSwipeStartAction,
             read = read,
@@ -82,9 +78,7 @@ fun MangaChapterListItem(
             onSwipe = { onChapterSwipe(chapterSwipeStartAction) },
         )
     }
-     -->
     val swipeEnd = remember(chapterSwipeEndAction, read, bookmark, downloadStateProvider()) {
-         <--
         getSwipeAction(
             action = chapterSwipeEndAction,
             read = read,
@@ -163,8 +157,8 @@ fun MangaChapterListItem(
                                 overflow = TextOverflow.Ellipsis,
                             )
                             if (readProgress != null ||
-                                scanlator != null/* SY --> */ ||
-                                sourceName != null/* SY <-- */
+                                scanlator != null||
+                                sourceName != null
                             ) {
                                 DotSeparatorText()
                             }
@@ -176,9 +170,8 @@ fun MangaChapterListItem(
                                 overflow = TextOverflow.Ellipsis,
                                 color = LocalContentColor.current.copy(alpha = DISABLED_ALPHA),
                             )
-                            if (scanlator != null/* SY --> */ || sourceName != null/* SY <-- */) DotSeparatorText()
+                            if (scanlator != null|| sourceName != null) DotSeparatorText()
                         }
-                         -->
                         if (sourceName != null) {
                             Text(
                                 text = sourceName,
@@ -187,7 +180,6 @@ fun MangaChapterListItem(
                             )
                             if (scanlator != null) DotSeparatorText()
                         }
-                         <--
                         if (scanlator != null) {
                             Text(
                                 text = scanlator,

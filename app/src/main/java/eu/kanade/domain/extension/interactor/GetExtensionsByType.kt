@@ -25,7 +25,7 @@ class GetExtensionsByType(
                 .filter { (showNsfwSources || !it.isNsfw) }
                 .sortedWith(
                     compareBy<Extension.Installed> {
-                        !it.isObsolete /* SY --> */ && !it.isRedundant /* SY <-- */
+                        !it.isObsolete && !it.isRedundant 
                     }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.name },
                 )
                 .partition { it.hasUpdate }
@@ -36,15 +36,11 @@ class GetExtensionsByType(
             val available = _available
                 .filter { extension ->
                     _installed.none {
-                         -->
                         it.signatureHash == extension.signatureHash &&
-                             <--
                             it.pkgName == extension.pkgName
                     } &&
                         _untrusted.none {
-                             -->
                             it.signatureHash == extension.signatureHash &&
-                                 <--
                                 it.pkgName == extension.pkgName
                         } &&
                         (showNsfwSources || !extension.isNsfw)

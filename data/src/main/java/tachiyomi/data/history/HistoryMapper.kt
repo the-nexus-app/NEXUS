@@ -28,28 +28,22 @@ object HistoryMapper {
         isFavorite: Boolean,
         coverLastModified: Long,
         chapterNumber: Double,
-         -->
         read: Boolean,
         lastPageRead: Long,
         totalCount: Double,
         readCount: Double,
-         <--
         readAt: Date?,
         readDuration: Long,
     ): HistoryWithRelations = HistoryWithRelations(
         id = historyId,
         chapterId = chapterId,
         mangaId = mangaId,
-         -->
         ogTitle = title,
-         <--
         chapterNumber = chapterNumber,
-         -->
         read = read,
         lastPageRead = lastPageRead,
         totalCountCalculated = totalCount.toLong(),
         readCountCalculated = readCount.toLong(),
-         <--
         readAt = readAt,
         readDuration = readDuration,
         coverData = MangaCover(

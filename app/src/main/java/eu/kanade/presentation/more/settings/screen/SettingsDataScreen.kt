@@ -135,9 +135,7 @@ object SettingsDataScreen : SearchableSettings {
             getDataGroup(),
             getExportGroup(),
         ) +
-             -->
             getSyncPreferences(syncPreferences = syncPreferences, syncService = syncService)
-         <--
     }
 
     @Composable
@@ -180,7 +178,6 @@ object SettingsDataScreen : SearchableSettings {
         val context = LocalContext.current
         val storageDir by storageDirPref.collectAsState()
 
-         -->
         var locationValid by remember(storageDir) {
             mutableStateOf(directoryAccessible(context, storageDir))
         }
@@ -193,7 +190,6 @@ object SettingsDataScreen : SearchableSettings {
         }
 
         if (!locationValid) {
-             <--
             return stringResource(MR.strings.no_location_set)
         }
 
@@ -210,18 +206,14 @@ object SettingsDataScreen : SearchableSettings {
         val context = LocalContext.current
         val pickStorageLocation = storageLocationPicker(storagePreferences.baseStorageDirectory())
 
-         -->
         val storagePref = storagePreferences.baseStorageDirectory()
-         <--
 
         return Preference.PreferenceItem.TextPreference(
             title = stringResource(MR.strings.pref_storage_location),
-            subtitle = storageLocationText(/* KMK --> */storagePref/* KMK <-- */),
+            subtitle = storageLocationText(/* KMK*/storagePref/* KMK*/),
             onClick = {
                 try {
-                     -->
                     allowAccessStorage(context, storagePref) {
-                         <--
                         pickStorageLocation.launch(null)
                     }
                 } catch (_: Exception) {
@@ -324,12 +316,10 @@ object SettingsDataScreen : SearchableSettings {
                     stringResource(MR.strings.backup_info) + "\n\n" +
                         stringResource(MR.strings.last_auto_backup_info, relativeTimeSpanString(lastAutoBackup)),
                 ),
-                 -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = backupPreferences.showRestoringProgressBanner(),
                     title = stringResource(KMR.strings.pref_show_restoring_progress_banner),
                 ),
-                 <--
             ),
         )
     }
@@ -344,11 +334,9 @@ object SettingsDataScreen : SearchableSettings {
         var cacheReadableSizeSema by remember { mutableIntStateOf(0) }
         val cacheReadableSize = remember(cacheReadableSizeSema) { chapterCache.readableSize }
 
-         -->
         val pagePreviewCache = remember { Injekt.get<PagePreviewCache>() }
         var pagePreviewReadableSizeSema by remember { mutableIntStateOf(0) }
         val pagePreviewReadableSize = remember(pagePreviewReadableSizeSema) { pagePreviewCache.readableSize }
-         <--
 
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.pref_storage_usage),
@@ -383,7 +371,6 @@ object SettingsDataScreen : SearchableSettings {
                         }
                     },
                 ),
-                 -->
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(SYMR.strings.pref_clear_page_preview_cache),
                     subtitle = stringResource(MR.strings.used_cache, pagePreviewReadableSize),
@@ -402,7 +389,6 @@ object SettingsDataScreen : SearchableSettings {
                         }
                     },
                 ),
-                 <--
                 Preference.PreferenceItem.SwitchPreference(
                     preference = libraryPreferences.autoClearChapterCache(),
                     title = stringResource(MR.strings.pref_auto_clear_chapter_cache),
@@ -548,7 +534,6 @@ object SettingsDataScreen : SearchableSettings {
         )
     }
 
-     -->
     @Composable
     private fun getSyncPreferences(syncPreferences: SyncPreferences, syncService: Int): List<Preference> {
         val context = LocalContext.current
@@ -562,19 +547,15 @@ object SettingsDataScreen : SearchableSettings {
                             SyncManager.SyncService.NONE.value to stringResource(MR.strings.off),
                             SyncManager.SyncService.SYNCYOMI.value to stringResource(SYMR.strings.syncyomi),
                             SyncManager.SyncService.GOOGLE_DRIVE.value to stringResource(SYMR.strings.google_drive),
-                             -->
                             SyncManager.SyncService.WEB_DAV.value to stringResource(KMR.strings.web_dav),
-                             <--
                         ),
                         title = stringResource(SYMR.strings.pref_sync_service),
                         onValueChanged = {
-                             -->
                             if (it != SyncManager.SyncService.NONE.value) {
                                 SyncDataJob.setupTask(context)
                             } else {
                                 SyncDataJob.setupTask(context, prefInterval = 0)
                             }
-                             <--
                             true
                         },
                     ),
@@ -606,9 +587,7 @@ object SettingsDataScreen : SearchableSettings {
             SyncManager.SyncService.NONE -> emptyList()
             SyncManager.SyncService.SYNCYOMI -> getSelfHostPreferences(syncPreferences)
             SyncManager.SyncService.GOOGLE_DRIVE -> getGoogleDrivePreferences()
-             -->
             SyncManager.SyncService.WEB_DAV -> getWebDavPreferences(syncPreferences)
-             <--
         }
 
         return if (syncServiceType != SyncManager.SyncService.NONE) {
@@ -628,12 +607,10 @@ object SettingsDataScreen : SearchableSettings {
         return listOf(
             getSyncNowPref(),
             getAutomaticSyncGroup(syncPreferences),
-             -->
             Preference.PreferenceItem.SwitchPreference(
                 preference = syncPreferences.showSyncingProgressBanner(),
                 title = stringResource(KMR.strings.pref_show_syncing_progress_banner),
             ),
-             <--
         )
     }
 
@@ -783,7 +760,6 @@ object SettingsDataScreen : SearchableSettings {
         )
     }
 
-     -->
     @Composable
     private fun getWebDavPreferences(syncPreferences: SyncPreferences): List<Preference> {
         val scope = rememberCoroutineScope()
@@ -846,7 +822,6 @@ object SettingsDataScreen : SearchableSettings {
             ),
         )
     }
-     <--
 
     @Composable
     private fun getSyncNowPref(): Preference.PreferenceGroup {
@@ -914,5 +889,4 @@ object SettingsDataScreen : SearchableSettings {
             ),
         )
     }
-     <--
 }

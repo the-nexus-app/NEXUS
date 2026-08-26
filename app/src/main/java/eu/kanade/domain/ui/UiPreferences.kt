@@ -24,7 +24,6 @@ class UiPreferences(
 
     fun themeDarkAmoled() = preferenceStore.getBoolean("pref_theme_dark_amoled_key", false)
 
-     -->
     fun colorTheme() = preferenceStore.getInt("pref_color_theme", 0xFFDF0090.toInt())
 
     fun customThemeStyle() = preferenceStore.getEnum("pref_custom_theme_style_key", PaletteStyle.Fidelity)
@@ -34,7 +33,6 @@ class UiPreferences(
     fun themeCoverBasedStyle() = preferenceStore.getEnum("pref_theme_cover_based_style_key", PaletteStyle.Vibrant)
 
     fun preloadLibraryColor() = preferenceStore.getBoolean("pref_preload_library_color_key", true)
-     <--
 
     fun relativeTime() = preferenceStore.getBoolean("relative_time_v2", true)
 
@@ -44,7 +42,6 @@ class UiPreferences(
 
     fun imagesInDescription() = preferenceStore.getBoolean("pref_render_images_description", true)
 
-     -->
 
     fun expandFilters() = preferenceStore.getBoolean("eh_expand_filters", false)
 
@@ -52,7 +49,6 @@ class UiPreferences(
 
     fun feedTabInFront() = preferenceStore.getBoolean("latest_tab_position", false)
 
-     -->
     fun expandRelatedMangas() = preferenceStore.getBoolean("expand_related_mangas", true)
 
     fun relatedMangasInOverflow() = preferenceStore.getBoolean("related_mangas_in_overflow", false)
@@ -68,7 +64,6 @@ class UiPreferences(
     fun usePanoramaCoverMangaInfo() = preferenceStore.getBoolean("use_panorama_cover_manga_info", false)
 
     fun topAlignCover() = preferenceStore.getBoolean("top_align_cover", false)
-     <--
 
     fun recommendsInOverflow() = preferenceStore.getBoolean("recommends_in_overflow", false)
 
@@ -84,7 +79,6 @@ class UiPreferences(
 
     fun showNavHistory() = preferenceStore.getBoolean("pref_show_history_button", true)
 
-     <--
 
     companion object {
         fun dateFormat(format: String): DateTimeFormatter = when (format) {

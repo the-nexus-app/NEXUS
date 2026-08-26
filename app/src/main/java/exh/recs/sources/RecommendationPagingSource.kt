@@ -30,9 +30,7 @@ import uy.kohesive.injekt.injectLazy
  */
 abstract class RecommendationPagingSource(
     protected val manga: Manga,
-     -->
     source: RecommendationSource = RecommendationSource(),
-     <--
 ) : BaseSourcePagingSource(source) {
     // Display name
     abstract val name: String
@@ -51,9 +49,7 @@ abstract class RecommendationPagingSource(
     companion object {
         internal fun createSources(
             manga: Manga,
-             -->
             recommendationSource: RecommendationSource,
-             <--
         ): List<RecommendationPagingSource> {
             return buildList {
                 add(AniListPagingSource(manga))
@@ -63,32 +59,24 @@ abstract class RecommendationPagingSource(
 
                 // Only include MangaDex if the delegate sources are enabled and the source is MD-based
                 if (
-                     -->
                     recommendationSource.isMangaDexSource()
-                     <--
                 ) {
                     add(
                         MangaDexSimilarPagingSource(
                             manga,
-                             -->
                             recommendationSource,
-                             <--
                         ),
                     )
                 }
 
                 // Only include Comick if the source manga is from there
                 if (
-                     -->
                     recommendationSource.isComickSource()
-                     <--
                 ) {
                     add(
                         ComickPagingSource(
                             manga,
-                             -->
                             recommendationSource,
-                             <--
                         ),
                     )
                 }
@@ -147,7 +135,6 @@ abstract class TrackerRecommendationPagingSource(
     }
 }
 
- -->
 class RecommendationSource(
     override val id: Long = RECOMMENDS_SOURCE,
     sourceManager: SourceManager = Injekt.get(),
@@ -191,4 +178,3 @@ class RecommendationSource(
 }
 
 const val RECOMMENDS_SOURCE = -1L
- <--

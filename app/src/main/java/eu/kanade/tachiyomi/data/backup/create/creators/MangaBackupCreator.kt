@@ -28,11 +28,9 @@ class MangaBackupCreator(
     private val handler: DatabaseHandler = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
     private val getHistory: GetHistory = Injekt.get(),
-     -->
     private val sourceManager: SourceManager = Injekt.get(),
     private val getCustomMangaInfo: GetCustomMangaInfo = Injekt.get(),
     private val getFlatMetadataById: GetFlatMetadataById = Injekt.get(),
-     <--
 ) {
 
     suspend operator fun invoke(mangas: List<Manga>, options: BackupOptions): List<BackupManga> {
@@ -44,16 +42,13 @@ class MangaBackupCreator(
     private suspend fun backupManga(manga: Manga, options: BackupOptions): BackupManga {
         // Entry for this manga
         val mangaObject = manga.toBackupManga(
-             -->
             if (options.customInfo) {
                 getCustomMangaInfo.get(manga.id)
             } else {
                 null
             },
-             <--
         )
 
-         -->
         if (manga.source == MERGED_SOURCE_ID) {
             mangaObject.mergedMangaReferences = handler.awaitList {
                 mergedQueries.selectByMergeId(manga.id, backupMergedMangaReferenceMapper)
@@ -66,7 +61,6 @@ class MangaBackupCreator(
                 mangaObject.flatMetadata = BackupFlatMetadata.copyFrom(flatMetadata)
             }
         }
-         <--
 
         mangaObject.excludedScanlators = handler.awaitList {
             excluded_scanlatorsQueries.getExcludedScanlatorsByMangaId(manga.id)
@@ -78,10 +72,8 @@ class MangaBackupCreator(
                 chaptersQueries.getChaptersByMangaId(
                     mangaId = manga.id,
                     applyFilter = 0, // false
-                     -->
                     Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                     Manga.CHAPTER_SHOW_BOOKMARKED,
-                     <--
                     mapper = backupChapterMapper,
                 )
             }
@@ -121,10 +113,9 @@ class MangaBackupCreator(
     }
 }
 
-private fun Manga.toBackupManga(/* SY --> */customMangaInfo: CustomMangaInfo?/* SY <-- */) =
+private fun Manga.toBackupManga(customMangaInfo: CustomMangaInfo?) =
     BackupManga(
         url = this.url,
-         -->
         title = this.ogTitle,
         artist = this.ogArtist,
         author = this.ogAuthor,
@@ -132,7 +123,6 @@ private fun Manga.toBackupManga(/* SY --> */customMangaInfo: CustomMangaInfo?/* 
         genre = this.ogGenre.orEmpty(),
         status = this.ogStatus.toInt(),
         thumbnailUrl = this.ogThumbnailUrl,
-         <--
         favorite = this.favorite,
         source = this.source,
         dateAdded = this.dateAdded,
@@ -146,7 +136,6 @@ private fun Manga.toBackupManga(/* SY --> */customMangaInfo: CustomMangaInfo?/* 
         notes = this.notes,
         initialized = this.initialized,
         memo = MemoColumnAdapter.encode(this.memo),
-         -->
     ).also { backupManga ->
         customMangaInfo?.let {
             backupManga.customTitle = it.title
@@ -158,4 +147,3 @@ private fun Manga.toBackupManga(/* SY --> */customMangaInfo: CustomMangaInfo?/* 
             backupManga.customStatus = it.status?.toInt() ?: 0
         }
     }
- <--

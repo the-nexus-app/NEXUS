@@ -33,9 +33,7 @@ import kotlin.math.min
 @Suppress("LeakingThis")
 abstract class PagerViewer(
     val activity: ReaderActivity,
-     -->
     @ColorInt private val seedColor: Int? = null,
-     <--
 ) : Viewer {
 
     val downloadManager: DownloadManager by injectLazy()
@@ -58,9 +56,7 @@ abstract class PagerViewer(
      */
     private val adapter = PagerViewerAdapter(
         this,
-         -->
         seedColor = seedColor,
-         <--
     )
 
     /**
@@ -95,9 +91,7 @@ abstract class PagerViewer(
 
     private val pagerListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
-             -->
             if (pager.isRestoring) return
-             <--
             if (!activity.isScrollingThroughPages) {
                 activity.hideMenu()
             }
@@ -392,12 +386,10 @@ abstract class PagerViewer(
      * Pans to the top of the page or if already on the top moves to the previous page.
      */
     protected open fun moveUp() {
-         -->
         val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
         if (holder != null && holder.canPanUp()) {
             holder.panUp()
         } else {
-             <--
             moveToPrevious()
         }
     }
@@ -406,12 +398,10 @@ abstract class PagerViewer(
      * Pans to the bottom of the page or if already on the bottom moves to the next page.
      */
     protected open fun moveDown() {
-         -->
         val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
         if (holder != null && holder.canPanDown()) {
             holder.panDown()
         } else {
-             <--
             moveToNext()
         }
     }
@@ -501,7 +491,6 @@ abstract class PagerViewer(
         adapter.cleanupPageSplit()
     }
 
-     -->
     fun updateShifting(page: ReaderPage? = null) {
         adapter.pageToShift = page ?: adapter.joinedItems.getOrNull(pager.currentItem)?.first as? ReaderPage
     }
@@ -511,5 +500,4 @@ abstract class PagerViewer(
     }
 
     fun getShiftedPage(): ReaderPage? = adapter.pageToShift
-     <--
 }

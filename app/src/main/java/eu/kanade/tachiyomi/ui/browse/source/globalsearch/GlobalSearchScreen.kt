@@ -46,7 +46,6 @@ class GlobalSearchScreen(
             mutableStateOf(searchQuery.isNotEmpty() && !extensionFilter.isNullOrEmpty() && state.total == 1)
         }
 
-         -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
@@ -55,7 +54,6 @@ class GlobalSearchScreen(
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
-         <--
 
         if (showSingleLoadingScreen) {
             LoadingScreen()
@@ -88,35 +86,27 @@ class GlobalSearchScreen(
                     navigator.push(BrowseSourceScreen(it.id, state.searchQuery))
                 },
                 onClickItem = { manga ->
-                     -->
                     if (bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.toggleSelection(manga)
                     } else {
-                         <--
                         navigator.push(MangaScreen(manga.id, true))
                     }
                 },
                 onLongClickItem = { manga ->
-                     -->
                     if (!bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.addRemoveManga(manga, haptic)
                     } else {
-                         <--
                         navigator.push(MangaScreen(manga.id, true))
                     }
                 },
-                 -->
                 bulkFavoriteScreenModel = bulkFavoriteScreenModel,
                 hasPinnedSources = screenModel.hasPinnedSources(),
-                 <--
             )
         }
 
-         -->
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
-         <--
     }
 }

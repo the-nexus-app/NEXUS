@@ -25,7 +25,6 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 
- -->
 /**
  * object used to En/Decrypt and Base64 en/decode
  * passwords before storing
@@ -229,4 +228,3 @@ private class ByteArrayOutputStreamPassword : ByteArrayOutputStream() {
         this.buf.fill('#'.code.toByte())
     }
 }
- <--

@@ -1,4 +1,4 @@
-// AM (DISCORD) -->
+// AM (DISCORD)
 
 // Taken from Animiru. Thank you Quickdev for permission!
 
@@ -103,4 +103,4 @@ class Discord(id: Long) : ConnectionsService(id) {
         }
     }
 }
-// <-- AM (DISCORD)
+//AM (DISCORD)

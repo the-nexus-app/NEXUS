@@ -53,9 +53,7 @@ fun UpdateScreen(
     state: UpdatesScreenModel.State,
     snackbarHostState: SnackbarHostState,
     lastUpdated: Long,
-     -->
     preserveReadingPosition: Boolean,
-     <--
     onClickCover: (UpdatesItem) -> Unit,
     onSelectAll: (Boolean) -> Unit,
     onInvertSelection: () -> Unit,
@@ -65,22 +63,18 @@ fun UpdateScreen(
     onMultiBookmarkClicked: (List<UpdatesItem>, bookmark: Boolean) -> Unit,
     onMultiMarkAsReadClicked: (List<UpdatesItem>, read: Boolean) -> Unit,
     onMultiDeleteClicked: (List<UpdatesItem>) -> Unit,
-     -->
     updateSwipeStartAction: LibraryPreferences.ChapterSwipeAction,
     updateSwipeEndAction: LibraryPreferences.ChapterSwipeAction,
     onUpdateSwipe: (UpdatesItem, LibraryPreferences.ChapterSwipeAction) -> Unit,
     showHiddenUpdates: Boolean,
     onToggleHiddenUpdates: () -> Unit,
-     <--
-    onUpdateSelected: (UpdatesItem, /* KMK --> */ 
-    UpdatesScreenModel.UpdateSelectionOptions /* KMK <-- */) -> Unit,
+    onUpdateSelected: (UpdatesItem, /* KMK*/ 
+    UpdatesScreenModel.UpdateSelectionOptions /* KMK*/) -> Unit,
     onOpenChapter: (UpdatesItem) -> Unit,
     onFilterClicked: () -> Unit,
     hasActiveFilters: Boolean,
-     -->
     usePanoramaCover: Boolean,
     collapseToggle: (key: String) -> Unit,
-     <--
 ) 
 {
     BackHandler(enabled = state.selectionMode, onBack = { onSelectAll(false) })
@@ -97,10 +91,8 @@ fun UpdateScreen(
             onInvertSelection = { onInvertSelection() },
             onCancelActionMode = { onSelectAll(false) },
             scrollBehavior = scrollBehavior,
-             -->
             showHiddenUpdates = showHiddenUpdates,
             onToggleHiddenUpdates = onToggleHiddenUpdates,
-             <--
         )
         },
         bottomBar = {
@@ -123,9 +115,7 @@ fun UpdateScreen(
             else -> {
                 val scope = rememberCoroutineScope()
                 var isRefreshing by remember { mutableStateOf(false) }
-                 -->
                 val uiModels = remember(state.items) { state.getUiModel() }
-                 <--
 
                 PullRefresh(
                     refreshing = isRefreshing,
@@ -148,25 +138,19 @@ fun UpdateScreen(
                         updatesLastUpdatedItem(lastUpdated)
 
                         updatesUiItems(
-                             -->
                             uiModels = uiModels,
                             expandedState = state.expandedState,
                             collapseToggle = collapseToggle,
                             usePanoramaCover = usePanoramaCover,
-                             <--
                             selectionMode = state.selectionMode,
-                             -->
                             preserveReadingPosition = preserveReadingPosition,
-                             <--
                             onUpdateSelected = onUpdateSelected,
                             onClickCover = onClickCover,
                             onClickUpdate = onOpenChapter,
                             onDownloadChapter = onDownloadChapter,
-                             -->
                             updateSwipeStartAction = updateSwipeStartAction,
                             updateSwipeEndAction = updateSwipeEndAction,
                             onUpdateSwipe = onUpdateSwipe,
-                             <--
                         )
                     }
                 }
@@ -187,10 +171,8 @@ private fun UpdatesAppBar(
     onInvertSelection: () -> Unit,
     onCancelActionMode: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-     -->
     showHiddenUpdates: Boolean,
     onToggleHiddenUpdates: () -> Unit,
-     <--
     modifier: Modifier = Modifier,
 ) {
     AppBar(
@@ -210,13 +192,11 @@ private fun UpdatesAppBar(
                         icon = Icons.Outlined.CalendarMonth,
                         onClick = onCalendarClicked,
                     ),
-                     -->
                     AppBar.Action(
                         title = "Show hidden updates",
                         icon = if (showHiddenUpdates) Icons.Outlined.LockOpen else Icons.Outlined.Lock,
                         onClick = onToggleHiddenUpdates,
                     ),
-                     <--
                     AppBar.Action(
                         title = stringResource(MR.strings.action_update_library),
                         icon = Icons.Outlined.Refresh,
@@ -285,8 +265,6 @@ sealed interface UpdatesUiModel {
     data class Header(val date: LocalDate, val mangaCount: Int) : UpdatesUiModel
     open class Item(open val item: UpdatesItem, open val isExpandable: Boolean = false) : UpdatesUiModel
 
-     -->
     /** The first [Item] in a group of chapters from same manga */
     data class Leader(override val item: UpdatesItem, override val isExpandable: Boolean) : Item(item)
-     <--
 }

@@ -52,11 +52,9 @@ fun ExtensionStoresContent(
     onOpenWebsite: (ExtensionStore) -> Unit,
     onOpenDiscord: (ExtensionStore) -> Unit,
     onClickDelete: (ExtensionStore) -> Unit,
-     -->
     onClickEnable: (ExtensionStore) -> Unit,
     onClickDisable: (ExtensionStore) -> Unit,
     disabledRepos: Set<String>,
-     <--
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -74,11 +72,9 @@ fun ExtensionStoresContent(
                     onOpenDiscord = { onOpenDiscord(it) },
                     onCopy = { onCopy(it) },
                     onDelete = { onClickDelete(it) },
-                     -->
                     onEnable = { onClickEnable(it) },
                     onDisable = { onClickDisable(it) },
                     isDisabled = it.indexUrl in disabledRepos,
-                     <--
                 )
             }
         }
@@ -93,16 +89,13 @@ private fun ExtensionStoresListItem(
     onCopy: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
-     -->
     isDisabled: Boolean,
     onEnable: () -> Unit,
     onDisable: () -> Unit,
-     <--
 ) {
     ElevatedCard(
         modifier = modifier,
     ) {
-         -->
         Row(
             modifier = Modifier
                 .padding(start = MaterialTheme.padding.medium),
@@ -118,7 +111,6 @@ private fun ExtensionStoresListItem(
                     .align(Alignment.CenterVertically),
             )
             Column {
-                 <--
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -131,12 +123,10 @@ private fun ExtensionStoresListItem(
                 ) {
                     Text(
                         text = store.name,
-                        : modifier = Modifier.padding(start = MaterialTheme.padding.medium),
+                        modifier = Modifier.padding(start = MaterialTheme.padding.medium),
                         style = MaterialTheme.typography.titleMedium,
-                         -->
                         color = LocalContentColor.current.let { if (isDisabled) it.copy(alpha = 0.6f) else it },
                         textDecoration = TextDecoration.LineThrough.takeIf { isDisabled },
-                         <--
                     )
                 }
 
@@ -167,14 +157,12 @@ private fun ExtensionStoresListItem(
                         )
                     }
 
-                     -->
                     IconButton(onClick = if (isDisabled) onEnable else onDisable) {
                         Icon(
                             imageVector = if (isDisabled) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
                             contentDescription = stringResource(MR.strings.action_disable),
                         )
                     }
-                     <--
 
                     IconButton(onClick = onDelete) {
                         Icon(
@@ -188,7 +176,6 @@ private fun ExtensionStoresListItem(
     }
 }
 
- -->
 fun repoResId(signKey: String) = when (signKey) {
     KOMIKKU_SIGNATURE -> R.mipmap.komikku
     REPO_SIGNATURE -> R.mipmap.repo
@@ -220,4 +207,3 @@ fun ExtensionReposContentPreview() {
         }
     }
 }
- <--

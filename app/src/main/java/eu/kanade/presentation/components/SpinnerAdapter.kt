@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import eu.kanade.presentation.theme.colorscheme.AndroidViewColorScheme
 
- -->
 internal class SpinnerAdapter(
     context: Context,
     @LayoutRes val resource: Int,

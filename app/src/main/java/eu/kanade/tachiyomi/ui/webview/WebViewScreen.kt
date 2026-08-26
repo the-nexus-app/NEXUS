@@ -40,12 +40,11 @@ class WebViewScreen(
             onClearCookies = screenModel::clearCookies,
         )
 
-         -->
         LaunchedEffect(Unit) {
             with(DiscordRPCService) {
                 discordScope.launchIO { setScreen(context, DiscordScreen.WEBVIEW) }
             }
         }
-        // <-- KMK
+        //KMK
     }
 }

@@ -37,9 +37,7 @@ internal class DownloadPageLoader(
             dbChapter.name,
             dbChapter.scanlator,
             dbChapter.url,
-             -->
             manga.ogTitle,
-             <--
             source,
         )
         return if (chapterPath?.isFile == true) {

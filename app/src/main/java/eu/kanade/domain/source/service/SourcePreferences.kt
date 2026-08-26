@@ -28,9 +28,7 @@ class SourcePreferences(
     fun incognitoExtensions() = preferenceStore.getStringSet("incognito_extensions", emptySet())
 
     fun pinnedSources() = preferenceStore.getStringSet(
-         -->
         PINNED_SOURCES_PREF_KEY,
-         <--
         emptySet(),
     )
 
@@ -50,9 +48,7 @@ class SourcePreferences(
 
     fun hideInLibraryItems() = preferenceStore.getBoolean("browse_hide_in_library_items", false)
 
-     -->
     fun hideInLibraryFeedItems() = preferenceStore.getBoolean("feed_hide_in_library_items", false)
-     <--
 
     @Deprecated("Use ExtensionRepoRepository instead", replaceWith = ReplaceWith("ExtensionRepoRepository.getAll()"))
     fun extensionRepos() = preferenceStore.getStringSet("extension_repos", emptySet())
@@ -86,7 +82,6 @@ class SourcePreferences(
 
     fun migrationHideWithoutUpdates() = preferenceStore.getBoolean("migration_hide_without_updates", false)
 
-     -->
     fun migrationSmartSearchSingleEntry() = preferenceStore.getBoolean("migration_smart_search_single_entry", false)
 
     fun globalSearchPinnedState() = preferenceStore.getEnum(
@@ -95,9 +90,7 @@ class SourcePreferences(
     )
 
     fun disabledRepos() = preferenceStore.getStringSet("disabled_repos", emptySet())
-     <--
 
-     -->
     fun enableSourceBlacklist() = preferenceStore.getBoolean("eh_enable_source_blacklist", true)
 
     fun sourcesTabCategories() = preferenceStore.getStringSet("sources_tab_categories", mutableSetOf())
@@ -140,13 +133,10 @@ class SourcePreferences(
     )
 
     fun recommendationSearchFlags() = preferenceStore.getInt("rec_search_flags", Int.MAX_VALUE)
-     <--
 
-     -->
     fun relatedMangas() = preferenceStore.getBoolean("related_mangas", true)
 
     companion object {
         const val PINNED_SOURCES_PREF_KEY = "pinned_catalogues"
     }
-     <--
 }

@@ -50,9 +50,7 @@ class ShizukuInstaller(private val service: Service) : Installer(service) {
 
         override fun onServiceDisconnected(name: ComponentName?) {
             shellInterface = null
-             -->
             ready = false
-             <--
         }
     }
 
@@ -114,13 +112,9 @@ class ShizukuInstaller(private val service: Service) : Installer(service) {
         try {
             service.contentResolver.openAssetFileDescriptor(entry.uri, "r")?.use {
                 shellInterface?.install(it)
-                     -->
                     ?: throw Exception("Shell interface is not available")
-                 <--
             }
-                 -->
                 ?: throw Exception("Failed to open asset file descriptor")
-             <--
             service.contentResolver.delete(entry.uri, null, null)
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, e) { "Failed to install extension ${entry.downloadId} ${entry.uri}" }
@@ -141,7 +135,6 @@ class ShizukuInstaller(private val service: Service) : Installer(service) {
                 logcat(LogPriority.WARN, e) { "Failed to unbind shizuku service" }
             }
         }
-         -->
         try {
             service.unregisterReceiver(receiver)
         } catch (e: IllegalArgumentException) {
@@ -151,7 +144,6 @@ class ShizukuInstaller(private val service: Service) : Installer(service) {
             // Unexpected error while unregistering
             logcat(LogPriority.ERROR, e) { "Failed to unregister receiver" }
         }
-         <--
         logcat { "ShizukuInstaller destroy" }
         scope.cancel()
         super.onDestroy()

@@ -18,7 +18,6 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
     private val multiPage = HistoryScreenModel.State(
         searchQuery = null,
         list =
-         -->
         persistentListOf(HistoryWithRelationExamples.headerToday)
             .asSequence()
             .plus(HistoryWithRelationExamples.items().take(3))
@@ -26,7 +25,6 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
             .plus(HistoryWithRelationExamples.items().take(1))
             .plus(HistoryWithRelationExamples.header { it.minus(2, ChronoUnit.DAYS) })
             .plus(HistoryWithRelationExamples.items().take(7))
-             <--
             .toImmutableList(),
         dialog = null,
     )
@@ -34,10 +32,8 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
     private val shortRecent = HistoryScreenModel.State(
         searchQuery = null,
         list = persistentListOf(
-             -->
             HistoryWithRelationExamples.headerToday,
             HistoryWithRelationExamples.items().first(),
-             <--
         ),
         dialog = null,
     )
@@ -45,10 +41,8 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
     private val shortFuture = HistoryScreenModel.State(
         searchQuery = null,
         list = persistentListOf(
-             -->
             HistoryWithRelationExamples.headerTomorrow,
             HistoryWithRelationExamples.items().first(),
-             <--
         ),
         dialog = null,
     )
@@ -65,9 +59,7 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
 
     private val loading = HistoryScreenModel.State(
         searchQuery = null,
-         -->
         isLoading = true,
-         <--
         dialog = null,
     )
 
@@ -80,7 +72,6 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
         loading,
     )
 
-     -->
     private object HistoryWithRelationExamples {
         val headerToday = randItem()
         val headerTomorrow = randItem(LocalDate.now().plusDays(1).toDate())
@@ -90,20 +81,17 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
 
         fun LocalDate.toDate(zone: ZoneId = ZoneId.systemDefault()): Date =
             Date.from(atStartOfDay(zone).toInstant())
-         <--
 
         fun items() = sequence {
             var count = 1
             while (true) {
-                yield(randItem { it.copy(/* SY --> */ogTitle = /* SY <-- */ "Example Title $count") })
+                yield(randItem { it.copy(ogTitle = "Example Title $count") })
                 count += 1
             }
         }
 
         fun randItem(
-             -->
             readAt: Date = Date.from(Instant.now()),
-             <--
             historyBuilder: (HistoryWithRelations) -> HistoryWithRelations = { it },
         ) =
             historyBuilder(
@@ -111,17 +99,13 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
                     id = Random.nextLong(),
                     chapterId = Random.nextLong(),
                     mangaId = Random.nextLong(),
-                     -->
                     ogTitle = "Test Title",
-                     <--
                     chapterNumber = Random.nextDouble(),
-                     -->
                     read = Random.nextBoolean(),
                     lastPageRead = Random.nextLong(1, 10),
                     totalCountCalculated = Random.nextLong(1, 100),
                     readCountCalculated = 1,
                     readAt = readAt,
-                     <--
                     readDuration = Random.nextLong(),
                     coverData = MangaCover(
                         mangaId = Random.nextLong(),

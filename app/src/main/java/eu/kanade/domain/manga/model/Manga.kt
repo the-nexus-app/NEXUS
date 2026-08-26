@@ -38,21 +38,18 @@ fun Manga.chaptersFiltered(): Boolean {
 
 fun Manga.toSManga(): SManga = SManga.create().also {
     it.url = url
-     -->
     it.title = ogTitle
     it.artist = ogArtist
     it.author = ogAuthor
     it.description = ogDescription
     it.genre = ogGenre.orEmpty().joinToString()
     it.status = ogStatus.toInt()
-     <--
     it.thumbnail_url = thumbnailUrl
     it.initialized = initialized
     it.memo = memo
 }
 
 fun Manga.copyFrom(other: SManga): Manga {
-     -->
     val author = other.author ?: ogAuthor
     val artist = other.artist ?: ogArtist
     val thumbnailUrl = other.thumbnail_url ?: ogThumbnailUrl
@@ -62,18 +59,13 @@ fun Manga.copyFrom(other: SManga): Manga {
     } else {
         ogGenre
     }
-     <--
     return this.copy(
-         -->
         ogAuthor = author,
         ogArtist = artist,
         ogThumbnailUrl = thumbnailUrl,
         ogDescription = description,
         ogGenre = genres,
-         <--
-         -->
         ogStatus = other.status.toLong(),
-         <--
         updateStrategy = other.update_strategy,
         initialized = other.initialized && initialized,
         memo = other.memo,
@@ -114,9 +106,7 @@ fun getComicInfo(
     ),
     categories = categories?.let { ComicInfo.CategoriesTachiyomi(it.joinToString()) },
     source = ComicInfo.SourceMihon(sourceName),
-     -->
     padding = CbzCrypto.createComicInfoPadding()?.let { ComicInfo.PaddingTachiyomiSY(it) },
-     <--
     inker = null,
     colorist = null,
     letterer = null,

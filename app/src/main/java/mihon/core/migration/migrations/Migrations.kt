@@ -43,18 +43,14 @@ val migrations: List<Migration>
         // MoveExtensionRepoSettingsMigration(),
         // MoveCacheToDiskSettingMigration(),
         // MoveEncryptionSettingsToAppStateMigration(),
-         -->
         IntegratedHentaiMigration(),
         SetupAppUpdateMigration(),
         EHentaiMigration(),
         MergedMangaDedupeModeMigration(),
-         <--
         TrustExtensionRepositoryMigration(),
         CategoryPreferencesCleanupMigration(),
         RemoveDuplicateReaderPreferenceMigration(),
-         -->
         DisabledRepoMigration(),
         SyncPrefKeyMigration(),
         ChapterUrlHashMigration(),
-         <--
     )

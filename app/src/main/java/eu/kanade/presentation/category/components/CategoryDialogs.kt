@@ -43,11 +43,9 @@ fun CategoryCreateDialog(
     onDismissRequest: () -> Unit,
     onCreate: (String) -> Unit,
     categories: ImmutableList<String>,
-     -->
     title: String = stringResource(MR.strings.action_add_category),
     extraMessage: String? = null,
     alreadyExistsError: StringResource = MR.strings.error_category_exists,
-     <--
 ) {
     var name by remember { mutableStateOf("") }
 
@@ -73,15 +71,11 @@ fun CategoryCreateDialog(
             }
         },
         title = {
-             -->
             Text(text = title)
-             <--
         },
         text = {
-             -->
             Column {
                 extraMessage?.let { Text(it) }
-                 <--
 
                 OutlinedTextField(
                     modifier = Modifier
@@ -93,9 +87,7 @@ fun CategoryCreateDialog(
                     },
                     supportingText = {
                         val msgRes = if (name.isNotEmpty() && nameAlreadyExists) {
-                             -->
                             alreadyExistsError
-                             <--
                         } else {
                             MR.strings.information_required_plain
                         }
@@ -104,9 +96,7 @@ fun CategoryCreateDialog(
                     isError = name.isNotEmpty() && nameAlreadyExists,
                     singleLine = true,
                 )
-                 -->
             }
-             <--
         },
     )
 
@@ -185,11 +175,9 @@ fun CategoryRenameDialog(
 fun CategoryDeleteDialog(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
-     -->
     category: String = "",
     title: String = stringResource(MR.strings.delete_category),
     text: String = stringResource(MR.strings.delete_category_confirmation, category),
-     <--
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -207,14 +195,10 @@ fun CategoryDeleteDialog(
             }
         },
         title = {
-             -->
             Text(text = title)
-             <--
         },
         text = {
-             -->
             Text(text = text)
-             <--
         },
     )
 }

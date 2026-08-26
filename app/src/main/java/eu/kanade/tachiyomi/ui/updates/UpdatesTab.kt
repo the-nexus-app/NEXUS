@@ -66,7 +66,6 @@ data object UpdatesTab : Tab {
         navigator.push(DownloadQueueScreen)
     }
 
-     -->
     @Composable
     override fun isEnabled(): Boolean {
         val scope = rememberCoroutineScope()
@@ -74,7 +73,6 @@ data object UpdatesTab : Tab {
             Injekt.get<UiPreferences>().showNavUpdates().asState(scope)
         }.value
     }
-     <--
 
     @Composable
     override fun Content() {
@@ -83,21 +81,15 @@ data object UpdatesTab : Tab {
         val screenModel = rememberScreenModel { UpdatesScreenModel() }
         val settingsScreenModel = rememberScreenModel { UpdatesSettingsScreenModel() }
         val state by screenModel.state.collectAsState()
-         -->
         val scope = rememberCoroutineScope()
-         <--
 
-         -->
         val usePanoramaCover by settingsScreenModel.updatesPreferences.usePanoramaCover().collectAsState()
-         <--
 
         UpdateScreen(
             state = state,
             snackbarHostState = screenModel.snackbarHostState,
             lastUpdated = screenModel.lastUpdated,
-             -->
             preserveReadingPosition = screenModel.preserveReadingPosition,
-             <--
             onClickCover = { item -> navigator.push(MangaScreen(item.update.mangaId)) },
             onSelectAll = screenModel::toggleAllSelection,
             onInvertSelection = screenModel::invertSelection,
@@ -106,7 +98,6 @@ data object UpdatesTab : Tab {
             onMultiBookmarkClicked = screenModel::bookmarkUpdates,
             onMultiMarkAsReadClicked = screenModel::markUpdatesRead,
             onMultiDeleteClicked = screenModel::showConfirmDeleteChapters,
-             -->
             updateSwipeStartAction = screenModel.chapterSwipeStartAction,
             updateSwipeEndAction = screenModel.chapterSwipeEndAction,
             onUpdateSwipe = screenModel::updateSwipe,
@@ -130,7 +121,6 @@ data object UpdatesTab : Tab {
                     }
                 }
             },
-             <--
             onUpdateSelected = screenModel::toggleSelection,
             onOpenChapter = {
                 val intent = ReaderActivity.newIntent(context, it.update.mangaId, it.update.chapterId)
@@ -139,10 +129,8 @@ data object UpdatesTab : Tab {
             onCalendarClicked = { navigator.push(UpcomingScreen()) },
             onFilterClicked = screenModel::showFilterDialog,
             hasActiveFilters = state.hasActiveFilters,
-             -->
             usePanoramaCover = usePanoramaCover,
             collapseToggle = screenModel::toggleExpandedState,
-             <--
         )
 
         val onDismissDialog = { screenModel.setDialog(null) }
@@ -188,11 +176,11 @@ data object UpdatesTab : Tab {
             if (!state.isLoading) {
                 (context as? MainActivity)?.ready = true
 
-                // AM (DISCORD) -->
+                // AM (DISCORD)
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.UPDATES) }
                 }
-                // <-- AM (DISCORD)
+                //AM (DISCORD)
             }
         }
         DisposableEffect(Unit) {

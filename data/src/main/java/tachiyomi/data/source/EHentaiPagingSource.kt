@@ -23,9 +23,7 @@ abstract class EHentaiPagingSource(
         val manga = mangasPage.mangas
             .mapIndexed { index, sManga -> sManga.toDomainManga(source.id) to metadata.getOrNull(index) }
             .filter { seenManga.add(it.first.url) }
-             -->
             .let { pairs -> networkToLocalManga(pairs.map { it.first }).zip(pairs.map { it.second }) }
-         <--
 
         return LoadResult.Page(
             data = manga,

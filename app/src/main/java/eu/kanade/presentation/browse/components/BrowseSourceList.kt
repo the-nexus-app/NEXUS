@@ -27,13 +27,11 @@ import tachiyomi.presentation.core.util.plus
 
 @Composable
 fun BrowseSourceList(
-    mangaList: LazyPagingItems<StateFlow</* SY --> */Pair<Manga, RaisedSearchMetadata?>/* SY <-- */>>,
+    mangaList: LazyPagingItems<StateFlow<Pair<Manga, RaisedSearchMetadata?>>>,
     contentPadding: PaddingValues,
     onMangaClick: (Manga) -> Unit,
     onMangaLongClick: (Manga) -> Unit,
-     -->
     selection: List<Manga>,
-     <--
 ) {
     LazyColumn(
         contentPadding = contentPadding + PaddingValues(vertical = 8.dp),
@@ -45,22 +43,16 @@ fun BrowseSourceList(
         }
 
         items(count = mangaList.itemCount) { index ->
-             -->
             val pair by mangaList[index]?.collectAsState() ?: return@items
             val manga = pair.first
             val metadata = pair.second
-             <--
 
             BrowseSourceListItem(
                 manga = manga,
-                 -->
                 metadata = metadata,
-                 <--
                 onClick = { onMangaClick(manga) },
                 onLongClick = { onMangaLongClick(manga) },
-                 -->
                 isSelected = selection.fastAny { selected -> selected.id == manga.id },
-                 <--
             )
         }
 
@@ -75,14 +67,10 @@ fun BrowseSourceList(
 @Composable
 internal fun BrowseSourceListItem(
     manga: Manga,
-     -->
     metadata: RaisedSearchMetadata?,
-     <--
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = onClick,
-     -->
     isSelected: Boolean = false,
-     <--
 ) {
     MangaListItem(
         title = manga.title,
@@ -93,13 +81,10 @@ internal fun BrowseSourceListItem(
             ogUrl = manga.thumbnailUrl,
             lastModified = manga.coverLastModified,
         ),
-         -->
         isSelected = isSelected,
-         <--
         coverAlpha = if (manga.favorite) CommonMangaItemDefaults.BrowseFavoriteCoverAlpha else 1f,
         badge = {
             InLibraryBadge(enabled = manga.favorite)
-             -->
             if (metadata is MangaDexSearchMetadata) {
                 metadata.followStatus?.let { followStatus ->
                     val text = LocalResources.current
@@ -132,7 +117,6 @@ internal fun BrowseSourceListItem(
                     )
                 }
             }
-             <--
         },
         onLongClick = onLongClick,
         onClick = onClick,

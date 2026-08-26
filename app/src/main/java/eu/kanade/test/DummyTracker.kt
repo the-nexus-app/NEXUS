@@ -101,7 +101,7 @@ data class DummyTracker(
     override suspend fun setRemoteLastChapterRead(
         track: eu.kanade.tachiyomi.data.database.models.Track,
         chapterNumber: Int,
-    ) /* KMK --> */ = track /* KMK <-- */
+    ) /* KMK*/ = track /* KMK*/
 
     override suspend fun setRemoteScore(
         track: eu.kanade.tachiyomi.data.database.models.Track,
@@ -123,15 +123,11 @@ data class DummyTracker(
         private: Boolean,
     ) = Unit
 
-     -->
     override suspend fun getMangaMetadata(
         track: Track,
     ): TrackMangaMetadata = TrackMangaMetadata(0, "test", "test", "test", "test", "test")
 
     override suspend fun searchById(id: String) = null
-     <--
 
-     -->
     override fun hasNotStartedReading(status: Long): Boolean = status == 2L
-     <--
 }

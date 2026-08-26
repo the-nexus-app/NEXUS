@@ -49,8 +49,8 @@ android {
     defaultConfig {
         applicationId = "com.nexus.app"
 
-        versionCode = 81
-        versionName = "1.14.1"
+        versionCode = 2
+        versionName = "1.0.1"
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
         buildConfigField("String", "COMMIT_SHA", "\"${getGitSha()}\"")
@@ -208,12 +208,8 @@ kotlin {
 
 dependencies {
     implementation(projects.i18n)
-     -->
     implementation(projects.i18nKmk)
-     <--
-     -->
     implementation(projects.i18nSy)
-     <--
     implementation(projects.core.archive)
     implementation(projects.core.common)
     implementation(projects.coreMetadata)
@@ -242,9 +238,7 @@ dependencies {
     implementation(androidx.paging.compose)
 
     implementation(libs.bundles.sqlite)
-     -->
     implementation(sylibs.sqlcipher)
-     <--
 
     implementation(kotlinx.reflect)
     implementation(kotlinx.immutables)
@@ -318,12 +312,10 @@ dependencies {
     implementation(libs.bundles.markdown)
     implementation(libs.materialKolor)
 
-     -->
     implementation(libs.palette.ktx)
     implementation(libs.haze)
     implementation(compose.colorpicker)
     implementation(projects.flagkit)
-     <--
 
     // Logging
     implementation(libs.timber)
@@ -345,7 +337,6 @@ dependencies {
 
     testImplementation(kotlinx.coroutines.test)
 
-     -->
     // Better logging (EH)
     implementation(sylibs.xlog)
 

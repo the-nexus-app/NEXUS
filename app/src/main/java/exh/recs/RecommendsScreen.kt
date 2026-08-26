@@ -48,7 +48,6 @@ class RecommendsScreen(private val args: Args) : Screen() {
         val screenModel = rememberScreenModel { RecommendsScreenModel(args) }
         val state by screenModel.state.collectAsState()
 
-         -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
@@ -57,7 +56,6 @@ class RecommendsScreen(private val args: Args) : Screen() {
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
-         <--
 
         val onClickItem = { manga: Manga ->
             navigator.push(
@@ -72,13 +70,11 @@ class RecommendsScreen(private val args: Args) : Screen() {
             when (manga.source) {
                 RECOMMENDS_SOURCE -> WebViewActivity.newIntent(context, manga.url, title = manga.title).let(context::startActivity)
                 else -> {
-                     -->
                     // Add to favorite
                     bulkFavoriteScreenModel.addRemoveManga(
                         manga,
                         haptic,
                     )
-                     <--
                 }
             }
         }
@@ -116,11 +112,9 @@ class RecommendsScreen(private val args: Args) : Screen() {
             onLongClickItem = { onLongClickItem(it) },
         )
 
-         -->
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
-         <--
     }
 }

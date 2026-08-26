@@ -91,13 +91,11 @@ import java.time.Instant
 import eu.kanade.tachiyomi.source.model.Filter as SourceModelFilter
 
 open class BrowseSourceScreenModel(
-    /* KMK --> */
-    protected /* KMK <-- */ val sourceId: Long,
+    /* KMK*/
+    protected /* KMK*/ val sourceId: Long,
     listingQuery: String?,
-     -->
     filtersJson: String? = null,
     savedSearch: Long? = null,
-     <--
     sourceManager: SourceManager = Injekt.get(),
     sourcePreferences: SourcePreferences = Injekt.get(),
     private val libraryPreferences: LibraryPreferences = Injekt.get(),
@@ -111,37 +109,29 @@ open class BrowseSourceScreenModel(
     private val updateManga: UpdateManga = Injekt.get(),
     private val addTracks: AddTracks = Injekt.get(),
     getIncognitoState: GetIncognitoState = Injekt.get(),
-     -->
     private val updateMangaFromRemote: UpdateMangaFromRemote = Injekt.get(),
     private val toggleIncognito: ToggleIncognito = Injekt.get(),
     private val extensionManager: ExtensionManager = Injekt.get(),
-     <--
 
-     -->
     exhPreferences: ExhPreferences = Injekt.get(),
     uiPreferences: UiPreferences = Injekt.get(),
     private val getFlatMetadataById: GetFlatMetadataById = Injekt.get(),
     private val deleteSavedSearchById: DeleteSavedSearchById = Injekt.get(),
     private val insertSavedSearch: InsertSavedSearch = Injekt.get(),
     private val getExhSavedSearch: GetExhSavedSearch = Injekt.get(),
-     <--
 ) : StateScreenModel<BrowseSourceScreenModel.State>(State(Listing.valueOf(listingQuery))) {
 
     var displayMode by sourcePreferences.sourceDisplayMode().asState(screenModelScope)
 
     var source = sourceManager.getOrStub(sourceId)
 
-     -->
     val ehentaiBrowseDisplayMode by exhPreferences.enhancedEHentaiView().asState(screenModelScope)
 
     val startExpanded by uiPreferences.expandFilters().asState(screenModelScope)
 
     private val filterSerializer = FilterSerializer()
-     <--
 
-     -->
     var incognitoMode = mutableStateOf(getIncognitoState.await(source.id))
-     <--
 
     init {
         mutableState.update {
@@ -160,7 +150,6 @@ open class BrowseSourceScreenModel(
             )
         }
 
-         -->
         val savedSearchId = savedSearch
         val jsonFilters = filtersJson
         val filters = state.value.filters
@@ -170,9 +159,7 @@ open class BrowseSourceScreenModel(
                 search(
                     query = savedSearch.query,
                     filters = savedSearch.filterList,
-                     -->
                     savedSearchId = savedSearchId,
-                     <--
                 )
             }
         } else if (jsonFilters != null) {
@@ -189,19 +176,15 @@ open class BrowseSourceScreenModel(
                 mutableState.update { it.copy(savedSearches = savedSearches.toImmutableList()) }
             }
             .launchIn(screenModelScope)
-         <--
 
-        -->
         getIncognitoState.subscribe(sourceId)
             .onEach {
                 if (!it) sourcePreferences.lastUsedSource().set(source.id)
                 incognitoMode.value = it
             }
             .launchIn(screenModelScope)
-         <--
     }
 
-     -->
     fun toggleIncognitoMode() {
         val packageName = when {
             source is StubSource -> null
@@ -213,7 +196,6 @@ open class BrowseSourceScreenModel(
             toggleIncognito.await(it, !incognitoMode.value)
         }
     }
-     <--
 
     /**
      * Flow of Pager flow tied to [State.listing]
@@ -223,16 +205,12 @@ open class BrowseSourceScreenModel(
         .distinctUntilChanged()
         .map { listing ->
             Pager(PagingConfig(pageSize = 25)) {
-                 -->
                 createSourcePagingSource(listing.query ?: "", listing.filters)
-                 <--
             }.flow.map { pagingData ->
                 pagingData.map { (manga, metadata) ->
                     getManga.subscribe(manga.url, manga.source)
                         .map { it ?: manga }
-                         -->
                         .combineMetadata(metadata)
-                         <--
                         .stateIn(ioCoroutineScope)
                 }
                     .filter { !hideInLibraryItems || !it.value.first.favorite }
@@ -251,7 +229,6 @@ open class BrowseSourceScreenModel(
         return if (columns == 0) GridCells.Adaptive(128.dp) else GridCells.Fixed(columns)
     }
 
-     -->
     open fun Flow<Manga>.combineMetadata(metadata: RaisedSearchMetadata?): Flow<Pair<Manga, RaisedSearchMetadata?>> {
         val metadataSource = source.getMainSource<MetadataSource<*, *>>()
         return flatMapLatest { manga ->
@@ -265,13 +242,10 @@ open class BrowseSourceScreenModel(
             }
         }
     }
-     <--
 
     fun resetFilters() {
-         -->
         setFilters(source.getFilterList())
         reloadSavedSearches()
-         <--
     }
 
     fun setListing(listing: Listing) {
@@ -289,17 +263,11 @@ open class BrowseSourceScreenModel(
     fun search(
         query: String? = null,
         filters: FilterList? = null,
-         -->
         savedSearchId: Long? = null,
-         <--
     ) {
-         -->
         if (filters != null && filters !== state.value.filters) {
-             -->
             setFilters(filters)
-             <--
         }
-         <--
         val input = state.value.listing as? Listing.Search
             ?: Listing.Search(query = null, filters = source.getFilterList())
 
@@ -308,9 +276,7 @@ open class BrowseSourceScreenModel(
                 listing = input.copy(
                     query = query ?: input.query,
                     filters = filters ?: input.filters,
-                     -->
                     savedSearchId = savedSearchId,
-                     <--
                 ),
                 toolbarQuery = query ?: input.query,
             )
@@ -383,7 +349,6 @@ open class BrowseSourceScreenModel(
             }
 
             updateManga.await(new.toMangaUpdate())
-             -->
             val fetchMetadataOnAdd = libraryPreferences.fetchMetadataOnAdd().get()
             val fetchChaptersOnAdd = libraryPreferences.fetchChaptersOnAdd().get()
             if (new.favorite && (fetchMetadataOnAdd || fetchChaptersOnAdd)) {
@@ -399,7 +364,6 @@ open class BrowseSourceScreenModel(
                     logcat(LogPriority.ERROR, e)
                 }
             }
-             <--
         }
     }
 
@@ -438,11 +402,9 @@ open class BrowseSourceScreenModel(
         }
     }
 
-     -->
     open fun createSourcePagingSource(query: String, filters: FilterList): SourcePagingSource {
         return getRemoteManga(sourceId, query, filters)
     }
-     <--
 
     /**
      * Get user categories.
@@ -491,9 +453,7 @@ open class BrowseSourceScreenModel(
         data class Search(
             override val query: String?,
             override val filters: FilterList,
-             -->
             val savedSearchId: Long? = null,
-             <--
         ) : Listing(query = query, filters = filters)
 
         companion object {
@@ -517,10 +477,8 @@ open class BrowseSourceScreenModel(
         ) : Dialog
         data class Migrate(val target: Manga, val current: Manga) : Dialog
 
-         -->
         data class DeleteSavedSearch(val idToDelete: Long, val name: String) : Dialog
         data class CreateSavedSearch(val currentSavedSearches: ImmutableList<String>) : Dialog
-         <--
     }
 
     @Immutable
@@ -529,15 +487,12 @@ open class BrowseSourceScreenModel(
         val filters: FilterList = FilterList(),
         val toolbarQuery: String? = null,
         val dialog: Dialog? = null,
-         -->
         val savedSearches: ImmutableList<EXHSavedSearch> = persistentListOf(),
         val filterable: Boolean = true,
-         <--
     ) {
         val isUserQuery get() = listing is Listing.Search && !listing.query.isNullOrEmpty()
     }
 
-     -->
     private fun reloadSavedSearches() {
         screenModelScope.launchIO {
             getExhSavedSearch.await(source.id, source::getFilterList)
@@ -547,9 +502,8 @@ open class BrowseSourceScreenModel(
                 }
         }
     }
-     <--
 
-    // EXH -->
+    // EXH
     /** Show a dialog to enter name for new saved search */
     fun onSaveSearch() {
         screenModelScope.launchIO {
@@ -560,18 +514,12 @@ open class BrowseSourceScreenModel(
 
     /** Open a saved search */
     fun onSavedSearch(
-         -->
         loadedSearch: EXHSavedSearch,
-         <--
         onToast: (StringResource) -> Unit,
     ) {
-         -->
         resetFilters()
-         <--
         screenModelScope.launchIO {
-             -->
             val search = getExhSavedSearch.awaitOne(loadedSearch.id, source::getFilterList) ?: loadedSearch
-             <--
 
             if (search.filterList == null && state.value.filters.isNotEmpty()) {
                 withUIContext {
@@ -592,9 +540,7 @@ open class BrowseSourceScreenModel(
                     listing = Listing.Search(
                         query = search.query,
                         filters = filters,
-                         -->
                         savedSearchId = search.id,
-                         <--
                     ),
                     filters = filters,
                     toolbarQuery = search.query,
@@ -644,5 +590,5 @@ open class BrowseSourceScreenModel(
             onRandomFound(random)
         }
     }
-    // EXH <--
+    // EXH
 }

@@ -139,7 +139,6 @@ object SettingsSecurityScreen : SearchableSettings {
                         .toImmutableMap(),
                     title = stringResource(MR.strings.secure_screen),
                 ),
-                 -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = securityPreferences.passwordProtectDownloads(),
                     title = stringResource(SYMR.strings.password_protect_downloads),
@@ -219,7 +218,6 @@ object SettingsSecurityScreen : SearchableSettings {
                         onClick = { dialogOpen = true },
                     )
                 },
-                 <--
                 Preference.PreferenceItem.InfoPreference(stringResource(MR.strings.secure_screen_summary)),
             ),
         )
@@ -249,7 +247,6 @@ object SettingsSecurityScreen : SearchableSettings {
         )
     }
 
-     -->
     enum class DayOption(val day: Int, val stringRes: StringResource) {
         Sunday(SecureActivityDelegate.LOCK_SUNDAY, SYMR.strings.sunday),
         Monday(SecureActivityDelegate.LOCK_MONDAY, SYMR.strings.monday),
@@ -332,9 +329,7 @@ object SettingsSecurityScreen : SearchableSettings {
     fun PasswordDialog(
         onDismissRequest: () -> Unit,
         onReturnPassword: (String) -> Unit,
-         -->
         title: StringResource = SYMR.strings.cbz_archive_password,
-         <--
     ) {
         var password by rememberSaveable { mutableStateOf("") }
         var passwordVisibility by remember { mutableStateOf(false) }
@@ -405,7 +400,6 @@ object SettingsSecurityScreen : SearchableSettings {
             },
         )
     }
-     <--
 }
 
 private val LockAfterValues = persistentListOf(

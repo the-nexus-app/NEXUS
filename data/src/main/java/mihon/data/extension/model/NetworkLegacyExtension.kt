@@ -36,10 +36,8 @@ data class NetworkLegacyExtension(
             versionName = version,
             lang = lang,
             isNsfw = nsfw == 1,
-             -->
             signatureHash = store.signingKey,
             storeName = store.name,
-             <--
             sources = if (sources.isNullOrEmpty()) {
                 listOf(
                     Extension.Available.Source(

@@ -130,14 +130,12 @@ class ReaderViewModel @JvmOverloads constructor(
     private val setMangaViewerFlags: SetMangaViewerFlags = Injekt.get(),
     private val getIncognitoState: GetIncognitoState = Injekt.get(),
     private val libraryPreferences: LibraryPreferences = Injekt.get(),
-     -->
     private val syncPreferences: SyncPreferences = Injekt.get(),
     private val uiPreferences: UiPreferences = Injekt.get(),
     private val getFlatMetadataById: GetFlatMetadataById = Injekt.get(),
     private val getMergedMangaById: GetMergedMangaById = Injekt.get(),
     private val getMergedReferencesById: GetMergedReferencesById = Injekt.get(),
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId = Injekt.get(),
-     <--
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(State())
@@ -173,7 +171,6 @@ class ReaderViewModel @JvmOverloads constructor(
             field = value
         }
 
-     -->
     fun handleDownloadAction(chapter: Chapter, action: ChapterDownloadAction) {
         when (action) {
             ChapterDownloadAction.START -> downloadChapter(chapter)
@@ -223,18 +220,17 @@ class ReaderViewModel @JvmOverloads constructor(
                     source,
                     ignoreCategoryExclusion = true,
                 )
-//                 -->
+//
 //                if (source.isLocal()) {
 //                    // TODO: Refresh chapters state for Local source
 //                    fetchChaptersFromSource()
 //                }
-//                 <--
+//
             } catch (e: Exception) {
                 logcat(LogPriority.ERROR, e)
             }
         }
     }
-     <--
 
     /**
      * The chapter loader for the loaded manga. It'll be null until [manga] is set.
@@ -251,13 +247,11 @@ class ReaderViewModel @JvmOverloads constructor(
     private val unfilteredChapterList by lazy {
         val manga = manga!!
         runBlocking {
-             -->
             if (manga.source == MERGED_SOURCE_ID) {
                 getMergedChaptersByMangaId.await(manga.id, dedupe = false, applyFilter = false)
             } else {
                 getChaptersByMangaId.await(manga.id, applyFilter = false)
             }
-             <--
         }
     }
 
@@ -267,7 +261,6 @@ class ReaderViewModel @JvmOverloads constructor(
      */
     private val chapterList by lazy {
         val manga = manga!!
-         -->
         val (chapters, mangaMap) = runBlocking {
             if (manga.source == MERGED_SOURCE_ID) {
                 getMergedChaptersByMangaId.await(manga.id, applyFilter = true) to
@@ -286,7 +279,6 @@ class ReaderViewModel @JvmOverloads constructor(
                 sourceId = chapterManga.source,
             )
         }
-         <--
 
         val selectedChapter = chapters.find { it.id == chapterId }
             ?: error("Requested chapter of id $chapterId not found in chapter list")
@@ -299,7 +291,6 @@ class ReaderViewModel @JvmOverloads constructor(
                         readerPreferences.skipFiltered().get() -> {
                             (manga.unreadFilterRaw == Manga.CHAPTER_SHOW_READ && !it.read) ||
                                 (manga.unreadFilterRaw == Manga.CHAPTER_SHOW_UNREAD && it.read) ||
-                                 -->
                                 (
                                     manga.downloadedFilterRaw == Manga.CHAPTER_SHOW_DOWNLOADED &&
                                         !isChapterDownloaded(it)
@@ -308,7 +299,6 @@ class ReaderViewModel @JvmOverloads constructor(
                                     manga.downloadedFilterRaw == Manga.CHAPTER_SHOW_NOT_DOWNLOADED &&
                                         isChapterDownloaded(it)
                                     ) ||
-                                 <--
                                 (manga.bookmarkedFilterRaw == Manga.CHAPTER_SHOW_BOOKMARKED && !it.bookmark) ||
                                 (manga.bookmarkedFilterRaw == Manga.CHAPTER_SHOW_NOT_BOOKMARKED && it.bookmark)
                         }
@@ -353,9 +343,7 @@ class ReaderViewModel @JvmOverloads constructor(
         state.map { it.viewerChapters?.currChapter }
             .distinctUntilChanged()
             .filterNotNull()
-             -->
             .drop(1) // allow the loader to set the first page and chapter id
-             <-
             .onEach { currentChapter ->
                 if (chapterPageIndex >= 0) {
                     // Restore from SavedState
@@ -367,7 +355,6 @@ class ReaderViewModel @JvmOverloads constructor(
             }
             .launchIn(viewModelScope)
 
-         -->
         state.mapLatest { it.ehAutoscrollFreq }
             .distinctUntilChanged()
             .drop(1)
@@ -383,7 +370,6 @@ class ReaderViewModel @JvmOverloads constructor(
                 }
             }
             .launchIn(viewModelScope)
-         <--
     }
 
     override fun onCleared() {
@@ -415,13 +401,12 @@ class ReaderViewModel @JvmOverloads constructor(
      * Initializes this presenter with the given [mangaId] and [initialChapterId]. This method will
      * fetch the manga from the database and initialize the initial chapter.
      */
-    suspend fun init(mangaId: Long, initialChapterId: Long /* SY --> */, page: Int?/* SY <-- */): Result<Boolean> {
+    suspend fun init(mangaId: Long, initialChapterId: Long , page: Int?): Result<Boolean> {
         if (!needsInit()) return Result.success(true)
         return withIOContext {
             try {
                 val manga = getManga.await(mangaId)
                 if (manga != null) {
-                     -->
                     sourceManager.isInitialized.first { it }
                     val source = sourceManager.getOrStub(manga.source)
                     val metadataSource = source.getMainSource<MetadataSource<*, *>>()
@@ -446,11 +431,9 @@ class ReaderViewModel @JvmOverloads constructor(
                     }
                     val relativeTime = uiPreferences.relativeTime().get()
                     val autoScrollFreq = readerPreferences.autoscrollInterval().get()
-                     <--
                     mutableState.update {
                         it.copy(
                             manga = manga,
-                             -->
                             meta = metadata,
                             mergedManga = mergedManga,
                             dateRelativeTime = relativeTime,
@@ -460,7 +443,6 @@ class ReaderViewModel @JvmOverloads constructor(
                                 autoScrollFreq.toString()
                             },
                             isAutoScrollEnabled = autoScrollFreq != -1f,
-                             <--
                         )
                     }
                     if (chapterId == -1L) chapterId = initialChapterId
@@ -473,20 +455,16 @@ class ReaderViewModel @JvmOverloads constructor(
                         downloadProvider = downloadProvider,
                         manga = manga,
                         source = source,
-                         -->
                         sourceManager = sourceManager,
                         readerPrefs = readerPreferences,
                         mergedReferences = mergedReferences,
                         mergedManga = mergedManga,
-                         <--
                     )
 
                     loadChapter(
                         loader!!,
                         chapterList.first { chapterId == it.chapter.id },
-                         -->
                         page,
-                         <--
                     )
                     Result.success(true)
                 } else {
@@ -502,27 +480,21 @@ class ReaderViewModel @JvmOverloads constructor(
         }
     }
 
-     -->
     fun getChapters(): List<ReaderChapterItem> {
-         -->
         val manga = manga ?: return emptyList()
         val mangaList = state.value.mergedManga?.takeIf { it.isNotEmpty() } ?: mapOf(manga.id to manga)
-         <--
 
         val currentChapter = getCurrentChapter()
 
         return chapterList.map {
             ReaderChapterItem(
                 chapter = it.chapter.toDomainChapter()!!,
-                 -->
                 manga = mangaList[it.chapter.manga_id] ?: manga,
-                 <--
                 isCurrent = it.chapter.id == currentChapter?.chapter?.id,
                 dateFormat = UiPreferences.dateFormat(uiPreferences.dateFormat().get()),
             )
         }
     }
-     <--
 
     /**
      * Loads the given [chapter] with this [loader] and updates the currently active chapters.
@@ -531,11 +503,9 @@ class ReaderViewModel @JvmOverloads constructor(
     private suspend fun loadChapter(
         loader: ChapterLoader,
         chapter: ReaderChapter,
-         -->
         page: Int? = null,
-         <--
     ): ViewerChapters {
-        loader.loadChapter(chapter /* SY --> */, page/* SY <-- */)
+        loader.loadChapter(chapter , page)
 
         val chapterPos = chapterList.indexOf(chapter)
         val newChapters = ViewerChapters(
@@ -634,9 +604,7 @@ class ReaderViewModel @JvmOverloads constructor(
                 dbChapter.name,
                 dbChapter.scanlator,
                 dbChapter.url,
-                 -->
                 manga.ogTitle,
-                 <--
                 manga.source,
                 skipCache = true,
             )
@@ -673,22 +641,20 @@ class ReaderViewModel @JvmOverloads constructor(
      * read, update tracking services, enqueue downloaded chapter deletion, and updating the active chapter if this
      * [page]'s chapter is different from the currently active.
      */
-    fun onPageSelected(page: ReaderPage, currentPageText: String /* SY --> */, hasExtraPage: Boolean /* SY <-- */) {
+    fun onPageSelected(page: ReaderPage, currentPageText: String , hasExtraPage: Boolean ) {
         // InsertPage doesn't change page progress
         if (page is InsertPage) {
             return
         }
 
-         -->
         mutableState.update { it.copy(currentPageText = currentPageText) }
-         <--
 
         val selectedChapter = page.chapter
         val pages = selectedChapter.pages ?: return
 
         // Save last page read and mark as read if needed
         viewModelScope.launchNonCancellable {
-            updateChapterProgress(selectedChapter, page/* SY --> */, hasExtraPage/* SY <-- */)
+            updateChapterProgress(selectedChapter, page, hasExtraPage)
         }
 
         if (selectedChapter != getCurrentChapter()) {
@@ -712,20 +678,16 @@ class ReaderViewModel @JvmOverloads constructor(
         if (getCurrentChapter()?.pageLoader !is DownloadPageLoader) return
         val nextChapter = state.value.viewerChapters?.nextChapter?.chapter ?: return
 
-         -->
         val mangas = state.value.mergedManga ?: mapOf(manga.id to manga)
         val nextChapterManga = mangas[nextChapter.manga_id] ?: return
-         <--
 
         viewModelScope.launchIO {
             val isNextChapterDownloaded = downloadManager.isChapterDownloaded(
                 nextChapter.name,
                 nextChapter.scanlator,
                 nextChapter.url,
-                 -->
                 nextChapterManga.ogTitle,
                 nextChapterManga.source,
-                 <--
             )
             if (!isNextChapterDownloaded) return@launchIO
 
@@ -737,7 +699,6 @@ class ReaderViewModel @JvmOverloads constructor(
                 }
             }.take(downloadAheadAmount)
 
-             -->
             chaptersToDownload.groupBy { it.mangaId }.forEach { (mangaId, chapters) ->
                 val chapterManga = mangas[mangaId] ?: return@forEach
                 downloadManager.downloadChapters(
@@ -745,7 +706,6 @@ class ReaderViewModel @JvmOverloads constructor(
                     chapters,
                 )
             }
-             <--
         }
     }
 
@@ -783,7 +743,6 @@ class ReaderViewModel @JvmOverloads constructor(
         }
     }
 
-     -->
     /**
      * Deletes duplicate chapters when `removeAfterReadSlots` = "Last read chapter" (0).
      *
@@ -798,7 +757,6 @@ class ReaderViewModel @JvmOverloads constructor(
         if (removeAfterReadSlots != 0) return
         enqueueDeleteReadChapters(chapterToDelete)
     }
-     <--
 
     /**
      * Saves the chapter progress (last read page and whether it's read)
@@ -807,9 +765,7 @@ class ReaderViewModel @JvmOverloads constructor(
     private suspend fun updateChapterProgress(
         readerChapter: ReaderChapter,
         page: Page,
-         -->
         hasExtraPage: Boolean,
-         <--
     ) {
         val pageIndex = page.index
         val syncTriggerOpt = syncPreferences.getSyncTriggerOptions()
@@ -825,18 +781,14 @@ class ReaderViewModel @JvmOverloads constructor(
             readerChapter.chapter.last_page_read = pageIndex
 
             if (readerChapter.pages?.lastIndex == pageIndex ||
-                 -->
                 (hasExtraPage && readerChapter.pages?.lastIndex?.minus(1) == page.index)
-                 <--
             ) {
                 updateChapterProgressOnComplete(readerChapter)
 
-                 -->
                 // Check if syncing is enabled for chapter read:
                 if (isSyncEnabled && syncTriggerOpt.syncOnChapterRead) {
                     SyncDataJob.startNow(Injekt.get<Application>())
                 }
-                 <--
             }
 
             updateChapter.await(
@@ -847,18 +799,15 @@ class ReaderViewModel @JvmOverloads constructor(
                 ),
             )
 
-             -->
             // Check if syncing is enabled for chapter open:
             if (isSyncEnabled && syncTriggerOpt.syncOnChapterOpen && readerChapter.chapter.last_page_read == 0) {
                 SyncDataJob.startNow(Injekt.get<Application>())
             }
-             <--
         }
     }
 
     private suspend fun updateChapterProgressOnComplete(readerChapter: ReaderChapter) {
         readerChapter.chapter.read = true
-         -->
         if (manga?.isEhBasedManga() == true) {
             viewModelScope.launchNonCancellable {
                 val chapterUpdates = unfilteredChapterList
@@ -869,7 +818,6 @@ class ReaderViewModel @JvmOverloads constructor(
                 updateChapter.awaitAll(chapterUpdates)
             }
         }
-         <--
 
         updateTrackChapterRead(readerChapter)
         deleteChapterIfNeeded(readerChapter)
@@ -886,9 +834,7 @@ class ReaderViewModel @JvmOverloads constructor(
                     chapter.chapterNumber.toFloat() == readerChapter.chapter.chapter_number
                 ) {
                     ChapterUpdate(id = chapter.id, read = true)
-                         -->
                         .also { deleteDupChapterIfNeeded(ReaderChapter(chapter.copy(read = true))) }
-                     <--
                 } else {
                     null
                 }
@@ -983,7 +929,6 @@ class ReaderViewModel @JvmOverloads constructor(
         }
     }
 
-     -->
     fun toggleBookmark(chapterId: Long, bookmarked: Boolean) {
         val chapter = chapterList.find { it.chapter.id == chapterId }?.chapter ?: return
         chapter.bookmark = bookmarked
@@ -996,7 +941,6 @@ class ReaderViewModel @JvmOverloads constructor(
             )
         }
     }
-     <--
 
     /**
      * Returns the viewer position used by this manga or the default one.
@@ -1005,7 +949,6 @@ class ReaderViewModel @JvmOverloads constructor(
         val default = readerPreferences.defaultReadingMode().get()
         val manga = manga ?: return default
         val readingMode = ReadingMode.fromPreference(manga.readingMode.toInt())
-         -->
         return when {
             resolveDefault && readingMode == ReadingMode.DEFAULT && readerPreferences.useAutoWebtoon().get() -> {
                 manga.defaultReaderType(manga.mangaType(sourceName = sourceManager.get(manga.source)?.name))
@@ -1014,7 +957,6 @@ class ReaderViewModel @JvmOverloads constructor(
             resolveDefault && readingMode == ReadingMode.DEFAULT -> default
             else -> manga.readingMode.toInt()
         }
-         <--
     }
 
     /**
@@ -1078,7 +1020,6 @@ class ReaderViewModel @JvmOverloads constructor(
         }
     }
 
-     -->
     fun toggleCropBorders(): Boolean {
         val readingMode = getMangaReadingMode()
         val isPagerType = ReadingMode.isPagerType(readingMode)
@@ -1091,7 +1032,6 @@ class ReaderViewModel @JvmOverloads constructor(
             readerPreferences.cropBordersContinuousVertical().toggle()
         }
     }
-     <--
 
     /**
      * Generate a filename for the given [manga] and [page]
@@ -1112,7 +1052,6 @@ class ReaderViewModel @JvmOverloads constructor(
         mutableState.update { it.copy(menuVisible = visible) }
     }
 
-     -->
     fun showEhUtils(visible: Boolean) {
         mutableState.update { it.copy(ehUtilsVisible = visible) }
     }
@@ -1152,7 +1091,6 @@ class ReaderViewModel @JvmOverloads constructor(
     fun setAutoScrollFrequency(frequency: String) {
         mutableState.update { it.copy(ehAutoscrollFreq = frequency) }
     }
-     <--
 
     fun showLoadingDialog() {
         mutableState.update { it.copy(dialog = Dialog.Loading) }
@@ -1166,7 +1104,7 @@ class ReaderViewModel @JvmOverloads constructor(
         mutableState.update { it.copy(dialog = Dialog.OrientationModeSelect) }
     }
 
-    fun openPageDialog(page: ReaderPage/* SY --> */, extraPage: ReaderPage? = null/* SY <-- */) {
+    fun openPageDialog(page: ReaderPage, extraPage: ReaderPage? = null) {
         mutableState.update { it.copy(dialog = Dialog.PageActions(page, extraPage)) }
     }
 
@@ -1187,13 +1125,11 @@ class ReaderViewModel @JvmOverloads constructor(
      * There's also a notification to allow sharing the image somewhere else or deleting it.
      */
     fun saveImage(useExtraPage: Boolean) {
-         -->
         val page = if (useExtraPage) {
             (state.value.dialog as? Dialog.PageActions)?.extraPage
         } else {
             (state.value.dialog as? Dialog.PageActions)?.page
         }
-         <--
         if (page?.status != Page.State.Ready) return
         val manga = manga ?: return
 
@@ -1231,7 +1167,6 @@ class ReaderViewModel @JvmOverloads constructor(
         }
     }
 
-     -->
     fun saveImages() {
         val (firstPage, secondPage) = (state.value.dialog as? Dialog.PageActions ?: return)
         val viewer = state.value.viewer as? PagerViewer ?: return
@@ -1298,7 +1233,6 @@ class ReaderViewModel @JvmOverloads constructor(
             ),
         )
     }
-     <--
 
     /**
      * Shares the image of the selected page and notifies the UI with the path of the file to share.
@@ -1309,17 +1243,13 @@ class ReaderViewModel @JvmOverloads constructor(
      */
     fun shareImage(
         copyToClipboard: Boolean,
-         -->
         useExtraPage: Boolean,
-         <--
     ) {
-         -->
         val page = if (useExtraPage) {
             (state.value.dialog as? Dialog.PageActions)?.extraPage
         } else {
             (state.value.dialog as? Dialog.PageActions)?.page
         }
-         <--
         if (page?.status != Page.State.Ready) return
         val manga = manga ?: return
 
@@ -1345,7 +1275,6 @@ class ReaderViewModel @JvmOverloads constructor(
         }
     }
 
-     -->
     fun shareImages(copyToClipboard: Boolean) {
         val (firstPage, secondPage) = (state.value.dialog as? Dialog.PageActions ?: return)
         val viewer = state.value.viewer as? PagerViewer ?: return
@@ -1376,19 +1305,16 @@ class ReaderViewModel @JvmOverloads constructor(
             logcat(LogPriority.ERROR, e)
         }
     }
-     <--
 
     /**
      * Sets the image of the selected page as cover and notifies the UI of the result.
      */
     fun setAsCover(useExtraPage: Boolean) {
-         -->
         val page = if (useExtraPage) {
             (state.value.dialog as? Dialog.PageActions)?.extraPage
         } else {
             (state.value.dialog as? Dialog.PageActions)?.page
         }
-         <--
         if (page?.status != Page.State.Ready) return
         val manga = manga ?: return
         val stream = page.stream ?: return
@@ -1442,13 +1368,11 @@ class ReaderViewModel @JvmOverloads constructor(
     private fun enqueueDeleteReadChapters(chapter: ReaderChapter) {
         if (!chapter.chapter.read) return
         val mergedManga = state.value.mergedManga
-         -->
         val manga = if (mergedManga.isNullOrEmpty()) {
             manga
         } else {
             mergedManga[chapter.chapter.manga_id]
         } ?: return
-         <--
 
         viewModelScope.launchNonCancellable {
             downloadManager.enqueueChaptersToDelete(listOf(chapter.chapter.toDomainChapter()!!), manga)
@@ -1482,7 +1406,6 @@ class ReaderViewModel @JvmOverloads constructor(
         val menuVisible: Boolean = false,
         @field:IntRange(from = -100, to = 100) val brightnessOverlayValue: Int = 0,
 
-         -->
         /** for display page number in double-page mode */
         val currentPageText: String = "",
         val meta: RaisedSearchMetadata? = null,
@@ -1496,7 +1419,6 @@ class ReaderViewModel @JvmOverloads constructor(
         val autoScroll: Boolean = false,
         val isAutoScrollEnabled: Boolean = false,
         val ehAutoscrollFreq: String = "",
-         <--
     ) {
         val currentChapter: ReaderChapter?
             get() = viewerChapters?.currChapter
@@ -1511,22 +1433,16 @@ class ReaderViewModel @JvmOverloads constructor(
         data object ReadingModeSelect : Dialog
         data object OrientationModeSelect : Dialog
 
-         -->
         data object ChapterList : Dialog
-         <--
 
         data class PageActions(
             val page: ReaderPage,
-             -->
             val extraPage: ReaderPage? = null,
-             <--
         ) : Dialog
 
-         -->
         data object AutoScrollHelp : Dialog
         data object RetryAllHelp : Dialog
         data object BoostPageHelp : Dialog
-         <--
     }
 
     sealed interface Event {
@@ -1539,9 +1455,7 @@ class ReaderViewModel @JvmOverloads constructor(
         data class ShareImage(
             val uri: Uri,
             val page: ReaderPage,
-             -->
             val secondPage: ReaderPage? = null,
-             <--
         ) : Event
         data class CopyImage(val uri: Uri) : Event
     }

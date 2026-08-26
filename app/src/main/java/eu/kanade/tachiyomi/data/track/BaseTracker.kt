@@ -93,7 +93,7 @@ abstract class BaseTracker(
         updateRemote(track)
     }
 
-    override suspend fun setRemoteLastChapterRead(track: Track, chapterNumber: Int): /* KMK --> */ Track /* KMK <-- */ {
+    override suspend fun setRemoteLastChapterRead(track: Track, chapterNumber: Int): /* KMK*/ Track /* KMK*/ {
         if (
             track.last_chapter_read == 0.0 &&
             track.last_chapter_read < chapterNumber &&
@@ -107,9 +107,7 @@ abstract class BaseTracker(
             track.finished_reading_date = System.currentTimeMillis()
         }
         updateRemote(track)
-         -->
         return track
-         <--
     }
 
     override suspend fun setRemoteScore(track: Track, scoreString: String) {
@@ -136,11 +134,9 @@ abstract class BaseTracker(
         throw NotImplementedError("Not implemented.")
     }
 
-     -->
     override suspend fun searchById(id: String): TrackSearch? {
         throw NotImplementedError("Not implemented.")
     }
-     <--
 
     private suspend fun updateRemote(track: Track): Unit = withIOContext {
         try {

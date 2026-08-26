@@ -17,9 +17,7 @@ class GlobalSearchScreenModel(
             search()
         }
 
-         -->
         shouldPinnedSourcesHidden()
-         <--
     }
 
     override fun getEnabledSources(): List<Source> {

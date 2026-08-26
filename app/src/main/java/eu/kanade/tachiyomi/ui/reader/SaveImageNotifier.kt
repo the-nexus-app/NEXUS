@@ -56,14 +56,12 @@ class SaveImageNotifier(private val context: Context) {
         context.cancelNotification(notificationId)
     }
 
-     -->
     /**
      * Bitmap of the app for notifications.
      */
     private val notificationBitmap by lazy {
         BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo)
     }
-     <--
 
     /**
      * Called on error while downloading image.
@@ -72,9 +70,7 @@ class SaveImageNotifier(private val context: Context) {
     fun onError(error: String?) {
         // Create notification
         with(notificationBuilder) {
-             -->
             setLargeIcon(notificationBitmap)
-             <--
             setContentTitle(context.stringResource(MR.strings.download_notifier_title_error))
             setContentText(error ?: context.stringResource(MR.strings.unknown_error))
             setSmallIcon(android.R.drawable.ic_menu_report_image)
@@ -89,10 +85,8 @@ class SaveImageNotifier(private val context: Context) {
             image?.let {
                 setStyle(
                     NotificationCompat.BigPictureStyle()
-                         -->
                         .bigLargeIcon(notificationBitmap)
                         .setBigContentTitle(context.stringResource(MR.strings.picture_saved))
-                         <--
                         .bigPicture(it),
                 )
                 setLargeIcon(image)

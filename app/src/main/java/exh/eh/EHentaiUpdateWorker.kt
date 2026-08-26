@@ -269,9 +269,7 @@ class EHentaiUpdateWorker(private val context: Context, workerParams: WorkerPara
 
         private const val TAG = "EHBackgroundUpdater"
 
-         -->
         private val logger = ResettableLogger { safeXLogTag() }
-         <--
 
         fun launchBackgroundTest(context: Context) {
             context.workManager.enqueue(

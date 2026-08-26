@@ -119,9 +119,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
             BuildConfig.COMMIT_COUNT,
         )
 
-         -->
         if (isDebugBuildType) Timber.plant(Timber.DebugTree())
-         <--
 
         GlobalExceptionHandler.initialize(applicationContext, CrashActivity::class.java)
 
@@ -139,25 +137,19 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
         Injekt.importModule(PreferenceModule(this))
         Injekt.importModule(AppModule(this))
         Injekt.importModule(DomainModule())
-         -->
         Injekt.importModule(KMKDomainModule())
-         <--
-         -->
         Injekt.importModule(SYPreferenceModule(this))
         Injekt.importModule(SYDomainModule())
-         <--
 
         setupExhLogging() // EXH logging
         if (!LogcatLogger.isInstalled) {
             val minLogPriority = when {
-                 -->
                 EHLogLevel.isExtraLogging() -> LogPriority.VERBOSE
-                 <--
                 BuildConfig.DEBUG -> LogPriority.DEBUG
                 else -> LogPriority.INFO
             }
             LogcatLogger.install()
-            LogcatLogger.loggers += XLogLogcatLogger()  Redirect Logcat to XLog
+            LogcatLogger.loggers += XLogLogcatLogger() // Redirect Logcat to XLog
             LogcatLogger.loggers += AndroidLogcatLogger(minLogPriority)
         }
 
@@ -218,9 +210,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
         setAppCompatDelegateThemeMode(Injekt.get<UiPreferences>().themeMode().get())
 
-         -->
         MangaCoverMetadata.load()
-         <--
 
         // Updates widget update
         WidgetManager(Injekt.get(), Injekt.get()).apply { init(scope) }
@@ -239,9 +229,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
     private fun initializeMigrator() {
         val preferenceStore = Injekt.get<PreferenceStore>()
-         -->
         val preference = preferenceStore.getInt(Preference.appStateKey("eh_last_version_code"), 0)
-         <--
         logcat { "Migration from ${preference.get()} to ${BuildConfig.VERSION_CODE}" }
         Migrator.initialize(
             old = preference.get(),
@@ -269,10 +257,8 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
                 // Keyer
                 add(MangaCoverKeyer())
                 add(MangaKeyer())
-                 -->
                 add(PagePreviewKeyer())
                 add(PagePreviewFetcher.Factory(callFactoryLazy))
-                 <--
             }
 
             diskCache(
@@ -290,9 +276,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
             crossfade((300 * this@App.animatorDurationScale).toInt())
             allowRgb565(DeviceUtil.isLowRamDevice(this@App))
-             -->
             if (EHLogLevel.isExtraLogging()) logger(DebugLogger())
-             <--
 
             // Coil spawns a new thread for every image load by default
             fetcherCoroutineContext(Dispatchers.IO.limitedParallelism(8))
@@ -310,27 +294,25 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
             SyncDataJob.startNow(this@App)
         }
 
-        // AM (DISCORD) -->
+        // AM (DISCORD)
         DiscordRPCService.start(applicationContext)
-        // <-- AM (DISCORD)
+        //AM (DISCORD)
     }
 
     override fun onStop(owner: LifecycleOwner) {
         SecureActivityDelegate.onApplicationStopped()
 
-        // AM (DISCORD) -->
+        // AM (DISCORD)
         DiscordRPCService.stop(applicationContext)
-        // <-- AM (DISCORD)
+        //AM (DISCORD)
     }
 
     override fun getPackageName(): String {
         try {
             // Override the value passed as X-Requested-With in WebView requests
             val stackTrace = Looper.getMainLooper().thread.stackTrace
-             -->
             val chromiumClasses = setOf("org.chromium.base.buildinfo", "org.chromium.base.apkinfo")
             val chromiumMethods = setOf("getall", "getpackagename", "<init>")
-             <--
             val isChromiumCall = stackTrace.any { trace ->
                 trace.className.lowercase() in chromiumClasses &&
                     trace.methodName.lowercase() in chromiumMethods
@@ -355,16 +337,12 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
     private fun setupExhLogging() {
         EHLogLevel.init(
             this,
-             -->
             isDebugBuildType = isDebugBuildType,
-             <--
         )
 
         val logLevel = when {
-             -->
             EHLogLevel.isExtremeLogging() -> LogLevel.ALL
             EHLogLevel.isExtraLogging() -> LogLevel.DEBUG
-             <--
             else -> LogLevel.WARN
         }
 

@@ -11,10 +11,8 @@ class BackupCategory(
     @ProtoNumber(3) var id: Long = 0,
     // @ProtoNumber(3) val updateInterval: Int = 0, 1.x value not used in 0.x
     @ProtoNumber(100) var flags: Long = 0,
-     -->
     @ProtoNumber(900) var hidden: Boolean = false,
-     <--
-     specific values
+    // SY specific values
     /*@ProtoNumber(600) var mangaOrder: List<Long> = emptyList(),*/
 ) {
     fun toCategory(id: Long) = Category(
@@ -22,9 +20,7 @@ class BackupCategory(
         name = this@BackupCategory.name,
         flags = this@BackupCategory.flags,
         order = this@BackupCategory.order,
-         -->
         hidden = this@BackupCategory.hidden,
-         <--
         /*mangaOrder = this@BackupCategory.mangaOrder*/
     )
 }
@@ -35,8 +31,6 @@ val backupCategoryMapper = { category: Category ->
         name = category.name,
         order = category.order,
         flags = category.flags,
-         -->
         hidden = category.hidden,
-         <--
     )
 }

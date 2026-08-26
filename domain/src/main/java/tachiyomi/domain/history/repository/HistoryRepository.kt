@@ -9,11 +9,9 @@ interface HistoryRepository {
 
     fun getHistory(
         query: String,
-         -->
         unfinishedManga: Boolean?,
         unfinishedChapter: Boolean?,
         nonLibraryEntries: Boolean?,
-         <--
     ): Flow<List<HistoryWithRelations>>
 
     suspend fun getLastHistory(): HistoryWithRelations?
@@ -22,17 +20,13 @@ interface HistoryRepository {
 
     suspend fun getHistoryByMangaId(mangaId: Long): List<History>
 
-     -->
     suspend fun resetHistory(historyIds: List<Long>)
 
     suspend fun resetHistoryByMangaIds(mangaIds: List<Long>)
-     <--
 
     suspend fun deleteAllHistory(): Boolean
 
     suspend fun upsertHistory(historyUpdate: HistoryUpdate)
 
-     -->
     suspend fun upsertHistory(historyUpdates: List<HistoryUpdate>)
-     <--
 }

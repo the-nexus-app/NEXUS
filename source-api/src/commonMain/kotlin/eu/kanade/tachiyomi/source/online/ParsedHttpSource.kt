@@ -164,7 +164,6 @@ abstract class ParsedHttpSource : HttpSource() {
      */
     protected abstract fun mangaDetailsParse(document: Document): SManga
 
-     -->
 
     /**
      * Parses the response from the site and returns a list of related mangas.
@@ -192,7 +191,6 @@ abstract class ParsedHttpSource : HttpSource() {
      * @param element an element obtained from [relatedMangaListSelector].
      */
     protected open fun relatedMangaFromElement(element: Element): SManga = popularMangaFromElement(element)
-     <--
 
     /**
      * Parses the response from the site and returns a list of chapters.

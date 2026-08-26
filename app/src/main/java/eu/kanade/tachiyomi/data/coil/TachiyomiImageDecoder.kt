@@ -29,7 +29,6 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
     private val context = Injekt.get<Application>()
 
     override suspend fun decode(): DecodeResult {
-         -->
         var coverStream: BufferedInputStream? = null
         if (resources.sourceOrNull()?.peek()?.use { CbzCrypto.detectCoverImageArchive(it.inputStream()) } == true) {
             if (resources.source().peek().use { ImageUtil.findImageType(it.inputStream()) == null }) {
@@ -43,7 +42,6 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
                 ImageDecoder.newInstance(coverStream ?: it.inputStream(), options.cropBorders, displayProfile)
             }
         }
-         <--
 
         check(decoder != null && decoder.width > 0 && decoder.height > 0) { "Failed to initialize decoder" }
 
@@ -97,11 +95,9 @@ class TachiyomiImageDecoder(private val resources: ImageSource, private val opti
             val type = source.peek().inputStream().buffered().use { stream ->
                 ImageUtil.findImageType(stream)
             }
-             -->
             source.peek().inputStream().use { stream ->
                 if (CbzCrypto.detectCoverImageArchive(stream)) return true
             }
-             <--
             return when (type) {
                 ImageUtil.ImageType.AVIF, ImageUtil.ImageType.JXL, ImageUtil.ImageType.HEIF -> true
                 else -> false

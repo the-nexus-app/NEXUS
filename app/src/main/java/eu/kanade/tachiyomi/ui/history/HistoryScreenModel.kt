@@ -66,39 +66,29 @@ class HistoryScreenModel(
     private val updateManga: UpdateManga = Injekt.get(),
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
     private val sourceManager: SourceManager = Injekt.get(),
-     -->
     private val historyPreferences: HistoryPreferences = Injekt.get(),
-     <--
 ) : StateScreenModel<HistoryScreenModel.State>(State()) {
 
     private val _events: Channel<Event> = Channel(Channel.UNLIMITED)
     val events: Flow<Event> = _events.receiveAsFlow()
 
-     -->
     // First and last selected index in list
     private val selectedPositions: Array<Int> = arrayOf(-1, -1)
-     <--
 
     init {
         screenModelScope.launch {
-             -->
             combine(
-                 <--
                 state.map { it.searchQuery }
                     .distinctUntilChanged(),
-                 -->
                 getHistoryItemPreferenceFlow()
                     .distinctUntilChanged(),
             ) { query, itemPreferences -> query to itemPreferences }
                 .flatMapLatest { (query, pref) ->
-                     <--
                     getHistory.subscribe(
                         query ?: "",
-                         -->
                         unfinishedManga = pref.filterUnfinishedManga.toBooleanOrNull(),
                         unfinishedChapter = pref.filterUnfinishedChapter.toBooleanOrNull(),
                         nonLibraryEntries = pref.filterNonLibraryManga.toBooleanOrNull(),
-                         <--
                     )
                         .distinctUntilChanged()
                         .catch { error ->
@@ -110,16 +100,13 @@ class HistoryScreenModel(
                 .collect { newList ->
                     mutableState.update {
                         it.copy(
-                             -->
                             isLoading = false,
                             list = newList.toImmutableList(),
-                             <--
                         )
                     }
                 }
         }
 
-         -->
         getHistoryItemPreferenceFlow()
             .map { prefs ->
                 listOf(
@@ -136,7 +123,6 @@ class HistoryScreenModel(
                 }
             }
             .launchIn(screenModelScope)
-         <--
     }
 
     suspend fun getNextChapter(): Chapter? {
@@ -154,7 +140,6 @@ class HistoryScreenModel(
         _events.send(Event.OpenChapter(chapter))
     }
 
-     -->
     fun removeFromHistory(toDelete: List<HistoryWithRelations>) {
         screenModelScope.launchIO {
             removeHistory.await(toDelete.map { it.id })
@@ -168,7 +153,6 @@ class HistoryScreenModel(
         }
         toggleSelectionMode(false)
     }
-     <--
 
     fun removeAllHistory() {
         screenModelScope.launchIO {
@@ -261,7 +245,7 @@ class HistoryScreenModel(
                 else -> showChangeCategoryDialog(manga)
             }
 
-            nc with tracking services if applicable
+            // Sync with tracking services if applicable
             addTracks.bindEnhancedTrackers(manga, sourceManager.getOrStub(manga.source))
         }
     }
@@ -287,7 +271,6 @@ class HistoryScreenModel(
         }
     }
 
-     -->
     data class HistorySelectionOptions(
         val selected: Boolean,
         val fromLongPress: Boolean = false,
@@ -393,7 +376,6 @@ class HistoryScreenModel(
             mutableState.update { it.copy(selectionMode = newMode ?: !it.selectionMode) }
         }
     }
-     <--
 
     private fun getHistoryItemPreferenceFlow(): Flow<ItemPreferences> {
         return combine(
@@ -419,17 +401,13 @@ class HistoryScreenModel(
         val filterUnfinishedChapter: TriState,
         val filterNonLibraryManga: TriState,
     )
-     <--
 
     @Immutable
     data class State(
         val searchQuery: String? = null,
-         -->
         val list: ImmutableList<HistoryWithRelations> = persistentListOf(),
         val isLoading: Boolean = true,
-         <--
         val dialog: Dialog? = null,
-         -->
         val selection: Set<Long> = emptySet(),
         val hasActiveFilters: Boolean = false,
         val selectionMode: Boolean = false,
@@ -448,27 +426,21 @@ class HistoryScreenModel(
                 }
             }
     }
-     <--
 
     sealed interface Dialog {
         data object DeleteAll : Dialog
-         -->
         data class Delete(val histories: List<HistoryWithRelations>) : Dialog {
             constructor(history: HistoryWithRelations) : this(listOf(history))
         }
-         <--
         data class DuplicateManga(val manga: Manga, val duplicates: List<MangaWithChapterCount>) : Dialog
         data class ChangeCategory(
             val manga: Manga,
             val initialSelection: ImmutableList<CheckboxState<Category>>,
         ) : Dialog
         data class Migrate(val target: Manga, val current: Manga) : Dialog
-         -->
         data object FilterSheet : Dialog
-         <--
     }
 
-     -->
     private fun TriState.toBooleanOrNull(): Boolean? {
         return when (this) {
             TriState.DISABLED -> null
@@ -476,7 +448,6 @@ class HistoryScreenModel(
             TriState.ENABLED_NOT -> false
         }
     }
-     <--
 
     sealed interface Event {
         data class OpenChapter(val chapter: Chapter?) : Event

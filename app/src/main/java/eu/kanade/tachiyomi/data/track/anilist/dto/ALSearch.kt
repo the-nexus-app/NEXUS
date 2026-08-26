@@ -19,7 +19,6 @@ data class ALSearchMedia(
     val media: List<ALSearchItem>,
 )
 
- -->
 @Serializable
 data class ALIdSearchResult(
     val data: ALIdSearchMedia,
@@ -30,4 +29,3 @@ data class ALIdSearchMedia(
     @SerialName("Media")
     val media: ALSearchItem,
 )
- <--
