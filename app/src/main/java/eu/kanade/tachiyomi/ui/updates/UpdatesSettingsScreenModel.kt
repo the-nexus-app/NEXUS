@@ -18,9 +18,7 @@ class UpdatesSettingsScreenModel(
         }
     }
 
-     -->
     fun toggleSwitch(preference: (UpdatesPreferences) -> Preference<Boolean>) {
         preference(updatesPreferences).getAndSet { !it }
     }
-     <--
 }

@@ -45,7 +45,6 @@ interface SManga : Serializable {
         return genre?.split(", ")?.map { it.trim() }?.filterNot { it.isBlank() }?.distinct()
     }
 
-     -->
     val originalTitle: String
     val originalAuthor: String?
     val originalArtist: String?
@@ -53,11 +52,9 @@ interface SManga : Serializable {
     val originalDescription: String?
     val originalGenre: String?
     val originalStatus: Int
-     <--
 
     fun copy() = create().also {
         it.url = url
-         -->
         it.title = originalTitle
         it.artist = originalArtist
         it.author = originalAuthor
@@ -65,7 +62,6 @@ interface SManga : Serializable {
         it.description = originalDescription
         it.genre = originalGenre
         it.status = originalStatus
-         <--
         it.update_strategy = update_strategy
         it.initialized = initialized
         it.memo = memo
@@ -84,7 +80,6 @@ interface SManga : Serializable {
             return SMangaImpl()
         }
 
-         -->
         operator fun invoke(
             url: String,
             title: String,
@@ -108,11 +103,9 @@ interface SManga : Serializable {
                 it.initialized = initialized
             }
         }
-         <--
     }
 }
 
- -->
 fun SManga.copy(
     url: String = this.url,
     title: String = this.originalTitle,
@@ -123,9 +116,7 @@ fun SManga.copy(
     status: Int = this.status,
     thumbnail_url: String? = this.originalThumbnailUrl,
     initialized: Boolean = this.initialized,
-     -->
     memo: JsonObject = this.memo,
-     <--
 ) = SManga.create().also {
     it.url = url
     it.title = title
@@ -136,8 +127,5 @@ fun SManga.copy(
     it.status = status
     it.thumbnail_url = thumbnail_url
     it.initialized = initialized
-     -->
     it.memo = memo
-     <--
 }
- <--

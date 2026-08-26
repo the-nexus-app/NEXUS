@@ -157,9 +157,7 @@ private fun ExtensionContent(
     val context = LocalContext.current
     var trustState by remember { mutableStateOf<Extension.Untrusted?>(null) }
     val installGranted = rememberRequestPackageInstallsPermissionState(initialValue = true)
-     -->
     val navigator = LocalNavigator.current
-     <--
 
     FastScrollLazyColumn(
         contentPadding = contentPadding + topSmallPaddingValues,
@@ -196,7 +194,6 @@ private fun ExtensionContent(
                                         }
                                     }
                                 }
-                                 -->
                                 KMR.strings.extensions_page_more -> {
                                     {
                                         Button(onClick = { navigator?.push(ExtensionStoresScreen()) }) {
@@ -209,7 +206,6 @@ private fun ExtensionContent(
                                         }
                                     }
                                 }
-                                 <--
                                 else -> {
                                     {}
                                 }
@@ -217,9 +213,7 @@ private fun ExtensionContent(
                         ExtensionHeader(
                             textRes = header.textRes,
                             modifier = Modifier
-                                 -->
                                 .padding(end = MaterialTheme.padding.small)
-                                 <--
                                 .animateItemFastScroll(),
                             action = action,
                         )
@@ -384,13 +378,11 @@ private fun ExtensionItemContent(
         ) {
             ProvideTextStyle(value = MaterialTheme.typography.bodySmall) {
                 var hasAlreadyShownAnElement by remember { mutableStateOf(false) }
-                 -->
                 extension.lang?.let {
                     if (it.isNotEmpty()) {
-                         <--
                         hasAlreadyShownAnElement = true
                         Text(
-                            text = /* KMK --> */FlagEmoji.getEmojiLangFlag(it) + " " + /* KMK <-- */
+                            text = /* KMK*/FlagEmoji.getEmojiLangFlag(it) + " " + /* KMK*/
                                 LocaleHelper.getSourceDisplayName(it, LocalContext.current),
                         )
                     }
@@ -404,16 +396,12 @@ private fun ExtensionItemContent(
                     )
                 }
 
-                 -->
                 Text(text = extension.storeName?.let { "@$it" } ?: "(?)")
-                 <--
 
                 val warning = when {
                     extension is Extension.Untrusted -> MR.strings.ext_untrusted
                     extension is Extension.Installed && extension.isObsolete -> MR.strings.ext_obsolete
-                     -->
                     extension is Extension.Installed && extension.isRedundant -> SYMR.strings.ext_redundant
-                     <--
                     extension.isNsfw -> MR.strings.ext_nsfw_short
                     else -> null
                 }
@@ -595,7 +583,6 @@ private fun ExtensionTrustDialog(
     )
 }
 
- -->
 @PreviewLightDark
 @Composable
 private fun ExtensionItemContentPreview() {
@@ -673,4 +660,3 @@ private fun ExtensionItemContentPreview() {
         }
     }
 }
- <--

@@ -72,9 +72,7 @@ class DownloadCache(
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-     -->
     private val downloadPreferences: DownloadPreferences = Injekt.get()
-     <--
 
     private val _changes: Channel<Unit> = Channel(Channel.UNLIMITED)
     val changes = _changes.receiveAsFlow()
@@ -86,10 +84,8 @@ class DownloadCache(
      * issues, as the cache is only used for UI feedback.
      */
     private val renewInterval // = 1.hours.inWholeMilliseconds
-         -->
         get() = downloadPreferences.downloadCacheRenewInterval().get()
             .hours.inWholeMilliseconds
-     <--
 
     /**
      * The last time the cache was refreshed.
@@ -197,7 +193,7 @@ class DownloadCache(
         val sourceDir = rootDownloadsDir.sourceDirs[manga.source]
         if (sourceDir != null) {
             val mangaDir = sourceDir.mangaDirs[
-                provider.getMangaDirName(/* SY --> */ manga.ogTitle /* SY <-- */),
+                provider.getMangaDirName(manga.ogTitle ),
             ]
             if (mangaDir != null) {
                 return mangaDir.chapterDirs.size
@@ -225,7 +221,7 @@ class DownloadCache(
             }
 
             // Retrieve the cached manga directory or cache a new one
-            val mangaDirName = provider.getMangaDirName(/* SY --> */ manga.ogTitle /* SY <-- */)
+            val mangaDirName = provider.getMangaDirName(manga.ogTitle )
             var mangaDir = sourceDir.mangaDirs[mangaDirName]
             if (mangaDir == null) {
                 mangaDir = MangaDirectory(mangaUniFile)
@@ -250,9 +246,7 @@ class DownloadCache(
             val sourceDir = rootDownloadsDir.sourceDirs[manga.source] ?: return
             val mangaDir = sourceDir.mangaDirs[
                 provider.getMangaDirName(
-                     -->
                     manga.ogTitle,
-                     <--
                 ),
             ] ?: return
             provider.getValidChapterDirNames(chapter.name, chapter.scanlator, chapter.url).forEach {
@@ -265,7 +259,6 @@ class DownloadCache(
         notifyChanges()
     }
 
-     -->
     suspend fun removeFolders(folders: List<String>, manga: Manga) {
         rootDownloadsDirMutex.withLock {
             val sourceDir = rootDownloadsDir.sourceDirs[manga.source] ?: return
@@ -278,7 +271,6 @@ class DownloadCache(
         }
     }
 
-     <--
 
     /**
      * Removes a list of chapters that have been deleted from this cache.
@@ -291,9 +283,7 @@ class DownloadCache(
             val sourceDir = rootDownloadsDir.sourceDirs[manga.source] ?: return
             val mangaDir = sourceDir.mangaDirs[
                 provider.getMangaDirName(
-                     -->
                     manga.ogTitle,
-                     <--
                 ),
             ] ?: return
             chapters.forEach { chapter ->
@@ -316,7 +306,7 @@ class DownloadCache(
     suspend fun removeManga(manga: Manga) {
         rootDownloadsDirMutex.withLock {
             val sourceDir = rootDownloadsDir.sourceDirs[manga.source] ?: return
-            val mangaDirName = provider.getMangaDirName(/* SY --> */ manga.ogTitle /* SY <-- */)
+            val mangaDirName = provider.getMangaDirName(manga.ogTitle )
             if (sourceDir.mangaDirs.containsKey(mangaDirName)) {
                 sourceDir.mangaDirs -= mangaDirName
             }
@@ -335,7 +325,7 @@ class DownloadCache(
     suspend fun renameManga(manga: Manga, mangaUniFile: UniFile, newTitle: String) {
         rootDownloadsDirMutex.withLock {
             val sourceDir = rootDownloadsDir.sourceDirs[manga.source] ?: return
-            val oldMangaDirName = provider.getMangaDirName(/* KMK --> */ manga.ogTitle /* KMK --> */)
+            val oldMangaDirName = provider.getMangaDirName(/* KMK*/ manga.ogTitle /* KMK*/)
             var oldChapterDirs: MutableSet<String>? = null
             // Save the old name's cached chapter dirs
             if (sourceDir.mangaDirs.containsKey(oldMangaDirName)) {
@@ -373,34 +363,26 @@ class DownloadCache(
         renewalJob?.cancel()
         diskCacheFile.delete()
         renewCache(
-             -->
             renewInterval = 0L,
-             <--
         )
     }
 
-     -->
     fun cleanInvalidDownloads() {
         lastRenew = 0L
         renewalJob?.cancel()
         diskCacheFile.delete()
         renewCache()
     }
-     <--
 
     /**
      * Renews the downloads cache.
      */
     private fun renewCache(
-         -->
         renewInterval: Long = this.renewInterval,
-         <--
     ) {
         // Avoid renewing cache if in the process nor too often
         if (lastRenew + renewInterval >= System.currentTimeMillis() ||
-             -->
             renewInterval < 0L ||
-             <--
             renewalJob?.isActive == true
         ) {
             return
@@ -412,7 +394,6 @@ class DownloadCache(
             }
 
             // Try to wait until extensions and sources have loaded
-             -->
             var sources = emptyList<Source>()
             withTimeoutOrNull(30.seconds) {
                 extensionManager.isInitialized.first { it }
@@ -420,7 +401,6 @@ class DownloadCache(
 
                 sources = getSources()
             }
-             <--
 
             val sourceMap = sources.associate { provider.getSourceDirName(it).lowercase() to it.id }
 
@@ -482,9 +462,7 @@ class DownloadCache(
     }
 
     private fun getSources(): List<Source> {
-         -->
         return sourceManager.getVisibleOnlineSources() + sourceManager.getStubSources()
-         <--
     }
 
     private fun notifyChanges() {

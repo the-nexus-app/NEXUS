@@ -74,14 +74,10 @@ fun FeedScreen(
     contentPadding: PaddingValues,
     onClickSavedSearch: (SavedSearch, Source) -> Unit,
     onClickSource: (Source) -> Unit,
-     -->
     onLongClickFeed: (FeedItemUI) -> Unit,
-     <--
     onClickManga: (Manga) -> Unit,
-     -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
-     <--
     onRefresh: () -> Unit,
     getMangaState: @Composable (Manga) -> State<Manga>,
 ) {
@@ -111,20 +107,16 @@ fun FeedScreen(
                     contentPadding = contentPadding + topSmallPaddingValues,
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                     -->
                     val feeds = state.items.orEmpty()
                     items(
                         items = feeds,
                         key = { it.feed.key },
                     ) { item ->
-                         <--
                         GlobalSearchResultItem(
                             title = item.title,
                             subtitle = item.subtitle,
                             onLongClick = {
-                                 -->
                                 onLongClickFeed(item)
-                                 <--
                             },
                             onClick = {
                                 if (item.savedSearch != null && item.source != null) {
@@ -139,10 +131,8 @@ fun FeedScreen(
                                 item = item,
                                 getMangaState = { getMangaState(it) },
                                 onClickManga = onClickManga,
-                                 -->
                                 onLongClickManga = onLongClickManga,
                                 selection = selection,
-                                 <--
                             )
                         }
                     }
@@ -157,10 +147,8 @@ fun FeedItem(
     item: FeedItemUI,
     getMangaState: @Composable ((Manga) -> State<Manga>),
     onClickManga: (Manga) -> Unit,
-     -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
-     <--
 ) {
     when {
         item.results == null -> {
@@ -174,10 +162,8 @@ fun FeedItem(
                 titles = item.results,
                 getManga = getMangaState,
                 onClick = onClickManga,
-                 -->
                 onLongClick = onLongClickManga,
                 selection = selection,
-                 <--
             )
         }
     }
@@ -189,7 +175,6 @@ fun FeedAddDialog(
     onDismiss: () -> Unit,
     onClickAdd: (Source?) -> Unit,
 ) {
-     -->
     var query by remember { mutableStateOf("") }
     val sourceList = sources
         .filter { source ->
@@ -216,21 +201,18 @@ fun FeedAddDialog(
                 Text(text = it.getNameForMangaInfo())
             }
         }
-     <--
     var selected by remember { mutableStateOf<Int?>(null) }
     AlertDialog(
         title = {
             Text(text = stringResource(SYMR.strings.feed))
         },
         text = {
-             -->
             RadioSelectorSearchable(
                 options = composeOptions,
                 queryString = query,
                 onChangeSearchQuery = {
                     query = it ?: ""
                 },
-                 <--
                 selected = selected,
             ) {
                 selected = it
@@ -262,15 +244,11 @@ fun FeedAddSearchDialog(
             val savedSearchStrings = remember {
                 savedSearches.map {
                     it?.name
-                         -->
                         ?: if (source.supportsLatest) {
-                             <--
                             context.stringResource(MR.strings.latest)
-                             -->
                         } else {
                             context.stringResource(MR.strings.popular)
                         }
-                     <--
                 }.toImmutableList()
             }
             RadioSelectorSearchable(
@@ -285,9 +263,7 @@ fun FeedAddSearchDialog(
         confirmButton = {
             TextButton(
                 onClick = { onClickAdd(source, selected?.let { savedSearches[it] }) },
-                 -->
                 enabled = selected != null,
-                 <--
             ) {
                 Text(text = stringResource(MR.strings.action_ok))
             }
@@ -319,7 +295,6 @@ fun <T> RadioSelectorSearchable(
     }
 }
 
- -->
 @Composable
 fun RadioSelectorSearchable(
     options: List<@Composable () -> Unit>,
@@ -355,4 +330,3 @@ fun RadioSelectorSearchable(
         }
     }
 }
- <--

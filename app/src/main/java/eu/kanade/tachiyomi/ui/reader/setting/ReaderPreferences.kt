@@ -17,11 +17,9 @@ class ReaderPreferences(
 
     // region General
 
-     -->
     fun pageTransitionsPager() = preferenceStore.getBoolean("pref_enable_transitions_pager_key", true)
 
     fun pageTransitionsWebtoon() = preferenceStore.getBoolean("pref_enable_transitions_webtoon_key", true)
-     <--
 
     fun flashOnPageChange() = preferenceStore.getBoolean("pref_reader_flash", false)
 
@@ -55,18 +53,14 @@ class ReaderPreferences(
 
     fun webtoonDoubleTapZoomEnabled() = preferenceStore.getBoolean("pref_enable_double_tap_zoom_webtoon", true)
 
-     -->
     fun pagedDoubleTapZoomEnabled() = preferenceStore.getBoolean("pref_enable_double_tap_zoom_paged", true)
 
     fun webtoonPinchToZoomEnabled() = preferenceStore.getBoolean("pref_enable_pinch_to_zoom_webtoon", true)
-     <--
 
     fun imageScaleType() = preferenceStore.getInt("pref_image_scale_type_key", 1)
 
-     -->
     fun webtoonScaleType() = preferenceStore.getEnum("pref_webtoon_scale_type_key", WebtoonScaleType.FIT)
     fun longStripGapSmartScale() = preferenceStore.getBoolean("pref_webtoon_smart_scale_long_strip_gap", false)
-     <--
 
     fun zoomStart() = preferenceStore.getInt("pref_zoom_start_key", 1)
 
@@ -80,9 +74,7 @@ class ReaderPreferences(
 
     fun landscapeZoom() = preferenceStore.getBoolean("landscape_zoom", true)
 
-     -->
     fun landscapeZoomType() = preferenceStore.getEnum("landscape_zoom_type", LandscapeZoomScaleType.FIT)
-     <--
 
     fun cropBordersWebtoon() = preferenceStore.getBoolean("crop_borders_webtoon", false)
 
@@ -100,9 +92,7 @@ class ReaderPreferences(
 
     fun webtoonDisableZoomOut() = preferenceStore.getBoolean("webtoon_disable_zoom_out", false)
 
-     -->
     fun pagedDisableZoomIn() = preferenceStore.getBoolean("paged_disable_zoom_in", false)
-     <--
 
     // endregion
 
@@ -164,13 +154,10 @@ class ReaderPreferences(
 
     fun showNavigationOverlayOnStart() = preferenceStore.getBoolean("reader_navigation_overlay_on_start", false)
 
-     -->
     fun smallerTapZone() = preferenceStore.getBoolean("reader_navigation_smaller_tap_zone", false)
-     <--
 
     // endregion
 
-     -->
 
     fun readerThreads() = preferenceStore.getInt("eh_reader_threads", 2)
 
@@ -209,7 +196,6 @@ class ReaderPreferences(
     fun centerMarginType() = preferenceStore.getInt("center_margin_type", PagerConfig.CenterMarginType.NONE)
 
     fun archiveReaderMode() = preferenceStore.getInt("archive_reader_mode", ArchiveReaderMode.LOAD_FROM_FILE)
-     <--
 
     enum class FlashColor {
         BLACK,
@@ -235,7 +221,6 @@ class ReaderPreferences(
         LOWEST(47),
     }
 
-     -->
     enum class LandscapeZoomScaleType(
         val titleRes: StringResource,
     ) {
@@ -253,7 +238,6 @@ class ReaderPreferences(
         R16_9(KMR.strings.scale_type_16_9, 9f / 16f),
         R20_9(KMR.strings.scale_type_20_9, 9f / 20f),
     }
-     <--
 
     object ArchiveReaderMode {
         const val LOAD_FROM_FILE = 0
@@ -292,12 +276,10 @@ class ReaderPreferences(
             MR.strings.zoom_start_center,
         )
 
-         -->
         val zoomWideImagesAllowedList = listOf(
             SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE,
             SubsamplingScaleImageView.SCALE_TYPE_ORIGINAL_SIZE,
         )
-         <--
 
         val ColorFilterMode = buildList {
             addAll(
@@ -318,7 +300,6 @@ class ReaderPreferences(
             }
         }
 
-         -->
         val PageLayouts = listOf(
             SYMR.strings.single_page,
             SYMR.strings.double_pages,
@@ -337,6 +318,5 @@ class ReaderPreferences(
             SYMR.strings.archive_mode_load_into_memory,
             SYMR.strings.archive_mode_cache_to_disk,
         )
-         <--
     }
 }

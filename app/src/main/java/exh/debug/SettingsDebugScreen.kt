@@ -73,12 +73,10 @@ class SettingsDebugScreen : Screen() {
     @Composable
     override fun Content() {
         val scope = rememberCoroutineScope()
-         -->
         // val navigator = LocalNavigator.currentOrThrow
         // DisposableEffect(Unit) {
         //     onDispose { navigator.pop() }
         // }
-         <--
         val functions by produceState<ImmutableList<Pair<KFunction<*>, String>>?>(initialValue = null) {
             value = withContext(Dispatchers.Default) {
                 DebugFunctions::class.declaredFunctions.filter {

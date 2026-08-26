@@ -1,4 +1,4 @@
-// AM (CONNECTIONS) -->
+// AM (CONNECTIONS)
 package eu.kanade.presentation.more.settings.screen
 
 import android.content.Context
@@ -233,10 +233,8 @@ object SettingsConnectionScreen : SearchableSettings {
 
 @Composable
 internal fun ConnectionsLogoutDialog(
-     -->
     serviceName: String,
     onConfirmation: () -> Unit,
-     <--
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -260,9 +258,7 @@ internal fun ConnectionsLogoutDialog(
                 Button(
                     modifier = Modifier.weight(1f),
                     onClick = {
-                         -->
                         onConfirmation()
-                         <--
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
                     },
@@ -286,4 +282,4 @@ private data class LoginConnectionDialog(
 internal data class LogoutConnectionDialog(
     val service: ConnectionsService,
 )
-// <-- AM (CONNECTIONS)
+//AM (CONNECTIONS)

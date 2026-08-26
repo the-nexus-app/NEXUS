@@ -45,9 +45,7 @@ import tachiyomi.i18n.MR
 class WebtoonPageHolder(
     private val frame: ReaderPageImageView,
     viewer: WebtoonViewer,
-     -->
     @ColorInt private val seedColor: Int? = null,
-     <--
 ) : WebtoonBaseHolder(frame, viewer) {
 
     /**
@@ -272,9 +270,7 @@ class WebtoonPageHolder(
 
         val progress = ReaderProgressIndicator(
             context,
-             -->
             seedColor = seedColor,
-             <--
         ).apply {
             updateLayoutParams<FrameLayout.LayoutParams> {
                 updateMargins(top = parentHeight / 4)

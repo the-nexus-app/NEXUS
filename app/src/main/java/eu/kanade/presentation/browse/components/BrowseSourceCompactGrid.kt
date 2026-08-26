@@ -30,14 +30,12 @@ import tachiyomi.presentation.core.util.plus
 
 @Composable
 fun BrowseSourceCompactGrid(
-    mangaList: LazyPagingItems<StateFlow</* SY --> */Pair<Manga, RaisedSearchMetadata?>/* SY <-- */>>,
+    mangaList: LazyPagingItems<StateFlow<Pair<Manga, RaisedSearchMetadata?>>>,
     columns: GridCells,
     contentPadding: PaddingValues,
     onMangaClick: (Manga) -> Unit,
     onMangaLongClick: (Manga) -> Unit,
-     -->
     selection: List<Manga>,
-     <--
 ) {
     LazyVerticalGrid(
         columns = columns,
@@ -52,22 +50,16 @@ fun BrowseSourceCompactGrid(
         }
 
         items(count = mangaList.itemCount) { index ->
-             -->
             val pair by mangaList[index]?.collectAsState() ?: return@items
             val manga = pair.first
             val metadata = pair.second
-             <--
 
             BrowseSourceCompactGridItem(
                 manga = manga,
-                 -->
                 metadata = metadata,
-                 <--
                 onClick = { onMangaClick(manga) },
                 onLongClick = { onMangaLongClick(manga) },
-                 -->
                 isSelected = selection.fastAny { selected -> selected.id == manga.id },
-                 <--
             )
         }
 
@@ -82,14 +74,10 @@ fun BrowseSourceCompactGrid(
 @Composable
 internal fun BrowseSourceCompactGridItem(
     manga: Manga,
-     -->
     metadata: RaisedSearchMetadata?,
-     <--
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = onClick,
-     -->
     isSelected: Boolean = false,
-     <--
 ) {
     MangaCompactGridItem(
         title = manga.title,
@@ -100,14 +88,11 @@ internal fun BrowseSourceCompactGridItem(
             ogUrl = manga.thumbnailUrl,
             lastModified = manga.coverLastModified,
         ),
-         -->
         isSelected = isSelected,
-         <--
         coverAlpha = if (manga.favorite) CommonMangaItemDefaults.BrowseFavoriteCoverAlpha else 1f,
         coverBadgeStart = {
             InLibraryBadge(enabled = manga.favorite)
         },
-         -->
         coverBadgeEnd = {
             if (metadata is MangaDexSearchMetadata) {
                 metadata.followStatus?.let { followStatus ->
@@ -142,7 +127,6 @@ internal fun BrowseSourceCompactGridItem(
                 }
             }
         },
-         <--
         onLongClick = onLongClick,
         onClick = onClick,
     )

@@ -33,13 +33,11 @@ class WebtoonFrame(context: Context) : FrameLayout(context) {
             scaleDetector.isQuickScaleEnabled = value
         }
 
-     -->
     var pinchToZoom = true
         set(value) {
             field = value
             recycler?.pinchToZoom = value
         }
-     <--
 
     var zoomOutDisabled = false
         set(value) {

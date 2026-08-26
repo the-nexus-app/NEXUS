@@ -45,9 +45,7 @@ import uy.kohesive.injekt.api.get
 class MigrationListScreenModel(
     mangaIds: Collection<Long>,
     extraSearchQuery: String?,
-     -->
     runManually: Boolean = false,
-     <--
     val preferences: SourcePreferences = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
     private val getManga: GetManga = Injekt.get(),
@@ -59,19 +57,15 @@ class MigrationListScreenModel(
 
     private val smartSearchEngine = SmartSourceSearchEngine(extraSearchQuery)
 
-     -->
     private val throttleManager = ThrottleManager()
-     <--
 
     val items
         inline get() = state.value.items
 
     private var hideUnmatched = preferences.migrationHideUnmatched().get()
     private var hideWithoutUpdates = preferences.migrationHideWithoutUpdates().get()
-     -->
     private var prioritizeByChapters = preferences.migrationPrioritizeByChapters().get()
     private var deepSearchMode = preferences.migrationDeepSearchMode().get()
-     <--
 
     private val navigateBackChannel = Channel<Unit>()
     val navigateBackEvent = navigateBackChannel.receiveAsFlow()
@@ -90,28 +84,22 @@ class MigrationListScreenModel(
                             chapterCount = chapterInfo.chapterCount,
                             latestChapter = chapterInfo.latestChapter,
                             source = sourceManager.getOrStub(manga.source).getNameForMangaInfo(
-                                 -->
                                 if (manga.source == MERGED_SOURCE_ID) {
                                     sourceManager.getMergedSources(manga.id)
                                 } else {
                                     null
                                 },
-                                 <--
                             ),
                             parentContext = screenModelScope.coroutineContext,
-                             -->
                         ).apply {
                             if (runManually) searchResult.value = SearchResult.NotFound
-                             <--
                         }
                     }
                 }
                 .awaitAll()
                 .filterNotNull()
             mutableState.update { it.copy(items = manga.toImmutableList()) }
-             -->
             if (runManually) return@launchIO
-             <--
             runMigrations(manga)
         }
     }
@@ -135,13 +123,9 @@ class MigrationListScreenModel(
     }
 
     private suspend fun runMigrations(mangas: List<MigratingManga>) {
-         -->
         throttleManager.resetThrottle()
-         <--
-         -->
         // val prioritizeByChapters = preferences.migrationPrioritizeByChapters().get()
         // val deepSearchMode = preferences.migrationDeepSearchMode().get()
-         <--
 
         val sources = preferences.migrationSources().get()
             .mapNotNull { sourceManager.get(it) }
@@ -153,9 +137,7 @@ class MigrationListScreenModel(
             if (!manga.migrationScope.isActive) continue
 
             val result = try {
-                 -->
                 manga.searchingJob = manga.migrationScope.async {
-                     <--
                     if (prioritizeByChapters) {
                         val sourceSemaphore = Semaphore(5)
                         sources.map { source ->
@@ -177,9 +159,7 @@ class MigrationListScreenModel(
                         null
                     }
                 }
-                 -->
                 manga.searchingJob?.await()
-                 <--
             } catch (_: CancellationException) {
                 continue
             }
@@ -228,9 +208,7 @@ class MigrationListScreenModel(
                 updateMangaFromRemote(
                     manga = localManga,
                     fetchChapters = true,
-                     -->
                     throttleFunc = throttleManager::throttle,
-                     <--
                 ).getOrThrow()
             } catch (e: Exception) {
                 logcat(LogPriority.ERROR, e)
@@ -246,10 +224,8 @@ class MigrationListScreenModel(
     private suspend fun updateMigrationProgress() {
         mutableState.update { state ->
             state.copy(
-                 -->
                 finishedCount = state.items.count { it.searchResult.value != SearchResult.Searching },
                 migrationComplete = state.migrationComplete(),
-                 <--
             )
         }
         if (items.isEmpty()) {
@@ -257,9 +233,7 @@ class MigrationListScreenModel(
         }
     }
 
-     -->
     private fun State.migrationComplete() =
-         <--
         items.all { it.searchResult.value != SearchResult.Searching } &&
             items.any { it.searchResult.value is SearchResult.Success }
 
@@ -276,9 +250,7 @@ class MigrationListScreenModel(
                         source = source,
                         manga = manga,
                         fetchChapters = true,
-                         -->
                         throttleFunc = throttleManager::throttle,
-                         <--
                     ).getOrThrow().manga
                 } catch (_: Exception) {
                     null
@@ -325,9 +297,7 @@ class MigrationListScreenModel(
                                 current = manga.manga,
                                 target = target,
                                 replace = replace,
-                                 -->
                                 throttleFunc = throttleManager::throttle,
-                                 <--
                             )
                         }
                     } catch (e: Exception) {
@@ -366,7 +336,6 @@ class MigrationListScreenModel(
         }
     }
 
-     -->
     /** Cancel searching without remove it from list so user can perform manual search */
     fun cancelManga(mangaId: Long) {
         screenModelScope.launchIO {
@@ -377,7 +346,6 @@ class MigrationListScreenModel(
             updateMigrationProgress()
         }
     }
-     <--
 
     fun removeManga(mangaId: Long) {
         screenModelScope.launchIO {
@@ -404,10 +372,8 @@ class MigrationListScreenModel(
             state.copy(
                 dialog = Dialog.Migrate(
                     copy = copy,
-                     -->
                     totalCount = state.items.size,
                     skippedCount = state.items.count { it.searchResult.value == SearchResult.NotFound },
-                     <--
                 ),
             )
         }
@@ -423,7 +389,6 @@ class MigrationListScreenModel(
         mutableState.update { it.copy(dialog = null) }
     }
 
-     -->
     fun openOptionsDialog() {
         mutableState.update {
             it.copy(dialog = Dialog.Options)
@@ -436,7 +401,6 @@ class MigrationListScreenModel(
         prioritizeByChapters = preferences.migrationPrioritizeByChapters().get()
         deepSearchMode = preferences.migrationDeepSearchMode().get()
     }
-     <--
 
     data class ChapterInfo(
         val latestChapter: Double?,
@@ -448,9 +412,7 @@ class MigrationListScreenModel(
         data class Progress(@FloatRange(0.0, 1.0) val progress: Float) : Dialog
         data object Exit : Dialog
 
-         -->
         data object Options : Dialog
-         <--
     }
 
     data class State(

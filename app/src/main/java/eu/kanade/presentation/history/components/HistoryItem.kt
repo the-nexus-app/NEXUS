@@ -52,28 +52,21 @@ private val HistoryItemHeight = 96.dp
 fun HistoryItem(
     history: HistoryWithRelations,
     onClickCover: () -> Unit,
-     -->
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-     <--
     onClickDelete: () -> Unit,
     onClickFavorite: () -> Unit,
     modifier: Modifier = Modifier,
-     -->
     selected: Boolean,
     readProgress: String?,
     hasUnread: Boolean,
     usePanoramaCover: Boolean,
     coverRatio: MutableFloatState = remember { mutableFloatStateOf(1f) },
-     <--
 ) {
-     -->
     val haptic = LocalHapticFeedback.current
     val textAlpha = if (history.read) DISABLED_ALPHA else 1f
-     <--
     Row(
         modifier = modifier
-             -->
             .selectedBackground(selected)
             .combinedClickable(
                 onClick = onClick,
@@ -82,12 +75,10 @@ fun HistoryItem(
                     onLongClick()
                 },
             )
-             <--
             .height(HistoryItemHeight)
             .padding(horizontal = MaterialTheme.padding.medium, vertical = MaterialTheme.padding.small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-         -->
         val mangaCover = history.coverData
         val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
         val bgColor = mangaCover.dominantCoverColors?.first?.let { Color(it) }
@@ -103,7 +94,6 @@ fun HistoryItem(
             if (usePanoramaCover && coverIsWide) {
                 MangaCover.Panorama(
                     modifier = Modifier.fillMaxHeight()
-                         -->
                         .combinedClickable(
                             onClick = onClickCover,
                             onLongClick = {
@@ -111,9 +101,7 @@ fun HistoryItem(
                                 onLongClick()
                             },
                         ),
-                     <--
                     data = mangaCover,
-                     -->
                     bgColor = bgColor,
                     tint = onBgColor,
                     size = MangaCover.Size.Medium,
@@ -121,13 +109,10 @@ fun HistoryItem(
                         val image = result.result.image
                         coverRatio.floatValue = image.height.toFloat() / image.width
                     },
-                     <--
                 )
             } else {
-                 <--
                 MangaCover.Book(
                     modifier = Modifier.fillMaxHeight()
-                         -->
                         .combinedClickable(
                             onClick = onClickCover,
                             onLongClick = {
@@ -135,9 +120,7 @@ fun HistoryItem(
                                 onLongClick()
                             },
                         ),
-                     <--
                     data = mangaCover,
-                     -->
                     bgColor = bgColor,
                     tint = onBgColor,
                     size = MangaCover.Size.Medium,
@@ -145,7 +128,6 @@ fun HistoryItem(
                         val image = result.result.image
                         coverRatio.floatValue = image.height.toFloat() / image.width
                     },
-                     <--
                 )
             }
         }
@@ -156,16 +138,13 @@ fun HistoryItem(
         ) {
             Text(
                 text = history.title,
-                 -->
                 color = LocalContentColor.current.copy(alpha = textAlpha),
-                 <--
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium,
             )
             val readAt = remember { history.readAt?.toTimestampString() ?: "" }
-             -->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = 4.dp),
@@ -180,7 +159,6 @@ fun HistoryItem(
                         tint = MaterialTheme.colorScheme.primary,
                     )
                 }
-                 <--
                 Text(
                     text = if (history.chapterNumber > -1) {
                         stringResource(
@@ -191,12 +169,9 @@ fun HistoryItem(
                     } else {
                         readAt
                     },
-                     -->
                     color = LocalContentColor.current.copy(alpha = textAlpha),
                     style = MaterialTheme.typography.bodySmall,
-                     <--
                 )
-                 -->
                 if (readProgress != null) {
                     DotSeparatorText()
                     Text(
@@ -207,7 +182,6 @@ fun HistoryItem(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                 <--
             }
         }
 
@@ -242,18 +216,14 @@ private fun HistoryItemPreviews(
             HistoryItem(
                 history = historyWithRelations,
                 onClickCover = {},
-                 -->
                 onClick = {},
                 onLongClick = {},
-                 <--
                 onClickDelete = {},
                 onClickFavorite = {},
                 readProgress = "Page 5",
-                 -->
                 hasUnread = true,
                 selected = true,
                 usePanoramaCover = false,
-                 <--
             )
         }
     }

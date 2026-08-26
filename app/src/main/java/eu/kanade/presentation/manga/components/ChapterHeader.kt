@@ -28,7 +28,6 @@ fun ChapterHeader(
     modifier: Modifier = Modifier,
 ) {
     Row(
-         <--
         modifier = modifier
             .fillMaxWidth()
             .clickable(
@@ -36,11 +35,9 @@ fun ChapterHeader(
                 onClick = onClick,
             )
             .padding(horizontal = 16.dp, vertical = 4.dp),
-         -->
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-         <--
         Column(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
         ) {

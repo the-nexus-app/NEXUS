@@ -27,13 +27,11 @@ import kotlin.math.round
 @Composable
 fun MangaDexDescription(state: State.Success, openMetadataViewer: () -> Unit) {
     val context = LocalContext.current
-     -->
     val colorScheme = AndroidViewColorScheme(MaterialTheme.colorScheme)
     val iconColor = colorScheme.iconColor
     val ratingBarColor = colorScheme.ratingBarColor
     val ratingBarSecondaryColor = colorScheme.ratingBarSecondaryColor
     val textColor = LocalContentColor.current.toArgb()
-     <--
     AndroidView(
         modifier = Modifier.fillMaxWidth(),
         factory = { factoryContext ->
@@ -52,7 +50,6 @@ fun MangaDexDescription(state: State.Success, openMetadataViewer: () -> Unit) {
                 (round((ratingFloat ?: 0F) * 100.0) / 100.0).toString() + " - " + getRatingString(context, ratingFloat)
             binding.rating.isVisible = ratingFloat != null
             binding.ratingBar.isVisible = ratingFloat != null
-             -->
             binding.ratingBar.supportProgressTintList = ColorStateList.valueOf(ratingBarColor)
             binding.ratingBar.supportSecondaryProgressTintList = ColorStateList.valueOf(ratingBarSecondaryColor)
             binding.rating.setTextColor(textColor)
@@ -60,7 +57,6 @@ fun MangaDexDescription(state: State.Success, openMetadataViewer: () -> Unit) {
             binding.moreInfo.bindDrawable(context, R.drawable.ic_info_24dp, iconColor)
             binding.moreInfo.text = context.stringResource(SYMR.strings.more_info)
             binding.moreInfo.setTextColor(iconColor)
-             <--
 
             binding.rating.setOnLongClickListener {
                 context.copyToClipboard(

@@ -43,9 +43,7 @@ enum class MangaCover(val ratio: Float) {
     Square(1f / 1f),
     Book(2f / 3f),
 
-     -->
     Panorama(3f / 2f),
-     <--
     ;
 
     enum class Size {
@@ -61,7 +59,6 @@ enum class MangaCover(val ratio: Float) {
         contentDescription: String = "",
         shape: Shape = MaterialTheme.shapes.extraSmall,
         onClick: (() -> Unit)? = null,
-         -->
         alpha: Float = 1f,
         bgColor: Color? = null,
         @ColorInt tint: Int? = null,
@@ -69,19 +66,14 @@ enum class MangaCover(val ratio: Float) {
         onCoverLoaded: ((DomainMangaCover, result: AsyncImagePainter.State.Success) -> Unit)? = null,
         size: Size = Size.Normal,
         scale: ContentScale = ContentScale.Crop,
-         <--
     ) {
-         -->
         var succeed by remember { mutableStateOf(false) }
-         <--
 
         val modifierColored = modifier
             .aspectRatio(ratio)
             .clip(shape)
-             -->
             .alpha(if (succeed) alpha else 1f)
             .background(bgColor ?: CoverPlaceholderColor)
-             <--
             .then(
                 if (onClick != null) {
                     Modifier.clickable(
@@ -95,7 +87,6 @@ enum class MangaCover(val ratio: Float) {
 
         SubcomposeAsyncImage(
             model = data,
-             -->
             loading = {
                 Box(
                     modifier = modifierColored,
@@ -149,7 +140,6 @@ enum class MangaCover(val ratio: Float) {
                     }
                 }
             },
-             <--
             contentDescription = contentDescription,
             modifier = modifierColored,
             contentScale = scale,
@@ -174,7 +164,6 @@ enum class MangaCoverHide(private val ratio: Float) {
         contentDescription: String = "",
         shape: Shape = MaterialTheme.shapes.extraSmall,
         onClick: (() -> Unit)? = null,
-         -->
         /** background color, which used for loading/error indicator */
         bgColor: Color? = CoverPlaceholderColor,
         /** onBackground color, which used for loading/error indicator */

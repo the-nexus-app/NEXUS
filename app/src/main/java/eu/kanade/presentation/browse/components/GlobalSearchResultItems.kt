@@ -31,14 +31,10 @@ import tachiyomi.presentation.core.i18n.stringResource
 @Composable
 fun GlobalSearchResultItem(
     title: String,
-     -->
     subtitle: String?,
-     <--
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-     -->
     onLongClick: (() -> Unit)? = null,
-     <--
     content: @Composable () -> Unit,
 ) {
     Column(modifier = modifier) {
@@ -49,7 +45,6 @@ fun GlobalSearchResultItem(
                     end = MaterialTheme.padding.extraSmall,
                 )
                 .fillMaxWidth()
-                 -->
                 .let {
                     if (onLongClick == null) {
                         it.clickable(onClick = onClick)
@@ -57,7 +52,6 @@ fun GlobalSearchResultItem(
                         it.combinedClickable(onClick = onClick, onLongClick = onLongClick)
                     }
                 },
-             <--
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {

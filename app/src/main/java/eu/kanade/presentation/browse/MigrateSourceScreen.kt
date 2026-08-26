@@ -67,16 +67,12 @@ fun MigrateSourceScreen(
     onClickItem: (Source) -> Unit,
     onToggleSortingDirection: () -> Unit,
     onToggleSortingMode: () -> Unit,
-     -->
     onChangeSearchQuery: (String?) -> Unit,
-     <--
 ) {
     val context = LocalContext.current
     when {
         state.isLoading -> LoadingScreen(Modifier.padding(contentPadding))
-         -->
         state.searchQuery == null &&
-             <--
             state.isEmpty -> EmptyScreen(
             stringRes = MR.strings.information_empty_library,
             modifier = Modifier.padding(contentPadding),
@@ -94,10 +90,8 @@ fun MigrateSourceScreen(
                 onToggleSortingMode = onToggleSortingMode,
                 sortingDirection = state.sortingDirection,
                 onToggleSortingDirection = onToggleSortingDirection,
-                 -->
                 state = state,
                 onChangeSearchQuery = onChangeSearchQuery,
-                 <--
             )
     }
 }
@@ -112,12 +106,9 @@ private fun MigrateSourceList(
     onToggleSortingMode: () -> Unit,
     sortingDirection: SetMigrateSorting.Direction,
     onToggleSortingDirection: () -> Unit,
-     -->
     state: MigrateSourceScreenModel.State,
     onChangeSearchQuery: (String?) -> Unit,
-     <--
 ) {
-     -->
     val lazyListState = rememberLazyListState()
     var filterObsoleteSource by rememberSaveable { mutableStateOf(false) }
     val isHentaiEnabled = remember { Injekt.get<ExhPreferences>().isHentaiEnabled().get() }
@@ -129,7 +120,6 @@ private fun MigrateSourceList(
     Column(
         modifier = Modifier.padding(contentPadding),
     ) {
-         <--
         Row(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
@@ -142,7 +132,6 @@ private fun MigrateSourceList(
                 style = MaterialTheme.typography.header,
             )
 
-             -->
             IconButton(onClick = { filterObsoleteSource = !filterObsoleteSource }) {
                 Icon(
                     Icons.Outlined.NewReleases,
@@ -151,7 +140,6 @@ private fun MigrateSourceList(
                         .takeIf { filterObsoleteSource } ?: LocalContentColor.current,
                 )
             }
-             <--
             IconButton(onClick = onToggleSortingMode) {
                 when (sortingMode) {
                     SetMigrateSorting.Mode.ALPHABETICAL -> Icon(
@@ -178,7 +166,6 @@ private fun MigrateSourceList(
             }
         }
 
-         -->
         Box {
             val density = LocalDensity.current
             var searchBoxHeight by remember { mutableStateOf(SOURCE_SEARCH_BOX_HEIGHT) }
@@ -186,11 +173,9 @@ private fun MigrateSourceList(
             FastScrollLazyColumn(
                 state = lazyListState,
                 contentPadding = PaddingValues(top = searchBoxHeight),
-                 <--
             ) {
                 items(
                     items = list
-                         -->
                         .filter {
                             !filterObsoleteSource ||
                                 (
@@ -198,15 +183,12 @@ private fun MigrateSourceList(
                                         (!isHentaiEnabled || it.first.id !in eHentaiSourceIds)
                                     )
                         },
-                     <--
                     key = { (source, _) -> "migrate-${source.id}" },
                 ) { (source, count) ->
                     MigrateSourceItem(
-                         -->
                         // modifier = Modifier.animateItem(),
                         modifier = Modifier.animateItemFastScroll()
                             .padding(end = MaterialTheme.padding.small),
-                         <--
                         source = source,
                         count = count,
                         onClickItem = { onClickItem(source) },
@@ -215,7 +197,6 @@ private fun MigrateSourceList(
                 }
             }
 
-             -->
             AnimatedFloatingSearchBox(
                 listState = lazyListState,
                 searchQuery = state.searchQuery,
@@ -231,7 +212,6 @@ private fun MigrateSourceList(
                     searchBoxHeight = with(density) { layoutCoordinates.size.height.toDp() }
                 },
             )
-             <--
         }
     }
 }
@@ -256,7 +236,7 @@ private fun MigrateSourceItem(
                 Badge(text = "$count")
             }
         },
-        content = { _, sourceLangString, /* KMK --> */ lang /* KMK <-- */ ->
+        content = { _, sourceLangString, /* KMK*/ lang /* KMK*/ ->
             Column(
                 modifier = Modifier
                     .padding(horizontal = MaterialTheme.padding.medium)
@@ -275,7 +255,7 @@ private fun MigrateSourceItem(
                     if (sourceLangString != null) {
                         Text(
                             modifier = Modifier.secondaryItemAlpha(),
-                            text = /* KMK --> */ FlagEmoji.getEmojiLangFlag(lang) + " " + /* KMK <-- */
+                            text = /* KMK*/ FlagEmoji.getEmojiLangFlag(lang) + " " + /* KMK*/
                                 sourceLangString,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -291,7 +271,6 @@ private fun MigrateSourceItem(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
                         )
-                         -->
                     } else if (source.installedExtension?.isObsolete == true) {
                         Text(
                             modifier = Modifier.secondaryItemAlpha(),
@@ -301,7 +280,6 @@ private fun MigrateSourceItem(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
                         )
-                         <--
                     }
                 }
             }

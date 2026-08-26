@@ -48,13 +48,9 @@ include(":core:common")
 include(":data")
 include(":domain")
 include(":i18n")
- -->
 include(":i18n-kmk")
 include(":flagkit")
- <--
- -->
 include(":i18n-sy")
- <--
 include(":macrobenchmark")
 include(":presentation-core")
 include(":presentation-widget")

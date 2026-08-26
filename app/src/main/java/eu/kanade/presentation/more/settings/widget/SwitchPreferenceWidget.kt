@@ -18,10 +18,8 @@ fun SwitchPreferenceWidget(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: CharSequence? = null,
-     -->
     /** Can be either [ImageVector] or [Painter] */
     icon: Any? = null,
-     <--
     checked: Boolean = false,
     onCheckedChanged: (Boolean) -> Unit,
 ) {

@@ -35,13 +35,11 @@ fun EHentaiDescription(
     search: (String) -> Unit,
 ) {
     val context = LocalContext.current
-     -->
     val colorScheme = AndroidViewColorScheme(MaterialTheme.colorScheme)
     val iconColor = colorScheme.iconColor
     val ratingBarColor = colorScheme.ratingBarColor
     val ratingBarSecondaryColor = colorScheme.ratingBarSecondaryColor
     val textColor = LocalContentColor.current.toArgb()
-     <--
     AndroidView(
         modifier = Modifier.fillMaxWidth(),
         factory = { factoryContext ->
@@ -56,9 +54,7 @@ fun EHentaiDescription(
                 meta.genre?.let { genre -> MetadataUIUtil.getGenreAndColour(context, genre) }
                     ?.let { (genre, name) ->
                         binding.genre.setBackgroundColor(genre.color)
-                         -->
                         binding.genre.setTextColor(genreTextColor(genre))
-                         <--
                         name
                     }
                     ?: meta.genre
@@ -69,57 +65,42 @@ fun EHentaiDescription(
                     SYMR.strings.is_visible,
                     meta.visible ?: context.stringResource(MR.strings.unknown),
                 )
-             -->
             binding.visible.setTextColor(textColor)
-             <--
 
             binding.favorites.text = (meta.favorites ?: 0).toString()
-             -->
             binding.favorites.bindDrawable(context, R.drawable.ic_book_24dp, iconColor)
             binding.favorites.setTextColor(textColor)
-             <--
 
             binding.uploader.text = meta.uploader ?: context.stringResource(MR.strings.unknown)
-             -->
             binding.uploader.setTextColor(textColor)
-             <--
 
             binding.size.text = MetadataUtil.humanReadableByteCount(meta.size ?: 0, true)
-             -->
             binding.size.bindDrawable(context, R.drawable.ic_outline_sd_card_24, iconColor)
             binding.size.setTextColor(textColor)
-             <--
 
             val length = meta.length ?: 0
             binding.pages.text = context.pluralStringResource(SYMR.plurals.num_pages, length, length)
-             -->
             binding.pages.bindDrawable(context, R.drawable.ic_baseline_menu_book_24, iconColor, 4.dpToPx)
             binding.pages.setTextColor(textColor)
-             <--
 
             val language = (meta.language ?: context.stringResource(MR.strings.unknown))
-                 -->
                 .let { lang ->
                     getEmojiLangFlag(
                         SourceTagsUtil.getLocaleSourceUtil(lang.lowercase())?.toLanguageTag().orEmpty(),
                     ) + " " + lang
                 }
-             <--
             binding.language.text = if (meta.translated == true) {
                 context.stringResource(SYMR.strings.language_translated, language)
             } else {
                 language
             }
-             -->
             binding.language.setTextColor(textColor)
-             <--
 
             val ratingFloat = meta.averageRating?.toFloat()
             binding.ratingBar.rating = ratingFloat ?: 0F
             @SuppressLint("SetTextI18n")
             binding.rating.text =
                 (ratingFloat ?: 0F).toString() + " - " + MetadataUIUtil.getRatingString(context, ratingFloat?.times(2))
-             -->
             binding.ratingBar.supportProgressTintList = ColorStateList.valueOf(ratingBarColor)
             binding.ratingBar.supportSecondaryProgressTintList = ColorStateList.valueOf(ratingBarSecondaryColor)
             binding.rating.setTextColor(textColor)
@@ -127,7 +108,6 @@ fun EHentaiDescription(
             binding.moreInfo.bindDrawable(context, R.drawable.ic_info_24dp, iconColor)
             binding.moreInfo.text = context.stringResource(SYMR.strings.more_info)
             binding.moreInfo.setTextColor(iconColor)
-             <--
 
             listOf(
                 binding.favorites,

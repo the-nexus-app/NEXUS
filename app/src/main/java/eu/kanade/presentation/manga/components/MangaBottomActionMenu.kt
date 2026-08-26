@@ -191,16 +191,13 @@ internal fun RowScope.Button(
     toConfirm: Boolean,
     onLongClick: () -> Unit,
     onClick: () -> Unit,
-     -->
     enabled: Boolean = true,
-     <--
     content: (@Composable () -> Unit)? = null,
 ) {
     val animatedWeight by animateFloatAsState(
         targetValue = if (toConfirm) 2f else 1f,
         label = "weight",
     )
-     -->
     val animatedColor by animateColorAsState(
         if (enabled) {
             MaterialTheme.colorScheme.onSurface
@@ -211,7 +208,6 @@ internal fun RowScope.Button(
         },
         label = "color",
     )
-     <--
     Box(
         modifier = Modifier
             .size(48.dp)
@@ -231,9 +227,7 @@ internal fun RowScope.Button(
             Icon(
                 imageVector = icon,
                 contentDescription = title,
-                 -->
                 tint = animatedColor,
-                 <--
             )
             AnimatedVisibility(
                 visible = toConfirm,
@@ -245,9 +239,7 @@ internal fun RowScope.Button(
                     overflow = TextOverflow.Visible,
                     maxLines = 1,
                     style = MaterialTheme.typography.labelSmall,
-                     -->
                     color = animatedColor,
-                     <--
                 )
             }
         }
@@ -264,16 +256,12 @@ fun LibraryBottomActionMenu(
     onDownloadClicked: ((DownloadAction) -> Unit)?,
     onDeleteClicked: () -> Unit,
     onMigrateClicked: () -> Unit,
-     -->
     onMergeClicked: () -> Unit,
     onSelectionUpdateClicked: () -> Unit,
-     <--
-     -->
     onClickCleanTitles: (() -> Unit)?,
     onClickCollectRecommendations: (() -> Unit)?,
     onClickAddToMangaDex: (() -> Unit)?,
     onClickResetInfo: (() -> Unit)?,
-     <--
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
@@ -345,11 +333,8 @@ fun LibraryBottomActionMenu(
                         )
                     }
                 }
-                 -->
                 val configuration = LocalConfiguration.current
                 val isTabletUi = remember { configuration.isTabletUi() }
-                 <--
-                 -->
                 if (onDownloadClicked == null || isTabletUi) {
                     Button(
                         title = stringResource(KMR.strings.action_update),
@@ -360,7 +345,6 @@ fun LibraryBottomActionMenu(
                     )
                 }
                 if (isTabletUi) {
-                     <--
                     Button(
                         title = stringResource(MR.strings.migrate),
                         icon = Icons.Outlined.SwapCalls,
@@ -382,7 +366,6 @@ fun LibraryBottomActionMenu(
                         onDismissRequest = { overflowMenuOpen = false },
                         offset = BottomBarMenuDpOffset,
                     ) {
-                         -->
                         if (!isTabletUi) {
                             if (onDownloadClicked != null) {
                                 DropdownMenuItem(
@@ -390,7 +373,6 @@ fun LibraryBottomActionMenu(
                                     onClick = onSelectionUpdateClicked,
                                 )
                             }
-                             <--
                             DropdownMenuItem(
                                 text = { Text(stringResource(MR.strings.migrate)) },
                                 onClick = onMigrateClicked,
@@ -400,7 +382,6 @@ fun LibraryBottomActionMenu(
                             text = { Text(stringResource(MR.strings.action_delete)) },
                             onClick = onDeleteClicked,
                         )
-                         -->
                         DropdownMenuItem(
                             text = { Text(stringResource(SYMR.strings.merge)) },
                             onClick = onMergeClicked,
@@ -429,7 +410,6 @@ fun LibraryBottomActionMenu(
                                 onClick = onClickResetInfo,
                             )
                         }
-                         <--
                     }
                 }
             }

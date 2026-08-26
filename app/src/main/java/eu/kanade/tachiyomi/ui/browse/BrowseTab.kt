@@ -70,21 +70,16 @@ data object BrowseTab : Tab {
     override fun Content() {
         val context = LocalContext.current
         val scope = rememberCoroutineScope()
-         -->
         val hideFeedTab by remember { Injekt.get<UiPreferences>().hideFeedTab().asState(scope) }
         val feedTabInFront by remember { Injekt.get<UiPreferences>().feedTabInFront().asState(scope) }
-         <--
 
         // Hoisted for extensions tab's search bar
         val extensionsScreenModel = rememberScreenModel { ExtensionsScreenModel() }
         val extensionsState by extensionsScreenModel.state.collectAsState()
 
-         -->
         val feedScreenModel = rememberScreenModel { FeedScreenModel() }
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
-         <--
 
-         -->
         val tabs = when {
             hideFeedTab ->
                 persistentListOf(
@@ -96,10 +91,8 @@ data object BrowseTab : Tab {
             feedTabInFront ->
                 persistentListOf(
                     feedTab(
-                         -->
                         feedScreenModel,
                         bulkFavoriteScreenModel,
-                         <--
                     ),
                     sourcesTab(),
                     extensionsTab(extensionsScreenModel),
@@ -110,16 +103,13 @@ data object BrowseTab : Tab {
                 persistentListOf(
                     sourcesTab(),
                     feedTab(
-                         -->
                         feedScreenModel,
                         bulkFavoriteScreenModel,
-                         <--
                     ),
                     extensionsTab(extensionsScreenModel),
                     migrateSourceTab(),
                 )
         }
-         <--
 
         val state = rememberPagerState { tabs.size }
 
@@ -129,24 +119,22 @@ data object BrowseTab : Tab {
             state = state,
             searchQuery = extensionsState.searchQuery,
             onChangeSearchQuery = extensionsScreenModel::search,
-             -->
             feedScreenModel = feedScreenModel,
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
-             <--
         )
         LaunchedEffect(Unit) {
             switchToExtensionTabChannel.receiveAsFlow()
-                .collectLatest { state.scrollToPage(/* SY --> */2/* SY <-- */) }
+                .collectLatest { state.scrollToPage(2) }
         }
 
         LaunchedEffect(Unit) {
             (context as? MainActivity)?.ready = true
 
-            // AM (DISCORD) -->
+            // AM (DISCORD)
             with(DiscordRPCService) {
                 discordScope.launchIO { setScreen(context, DiscordScreen.BROWSE) }
             }
-            // <-- AM (DISCORD)
+            //AM (DISCORD)
         }
     }
 }

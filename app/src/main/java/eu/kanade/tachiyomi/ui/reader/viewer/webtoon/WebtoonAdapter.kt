@@ -18,9 +18,7 @@ import eu.kanade.tachiyomi.util.system.createReaderThemeContext
  */
 class WebtoonAdapter(
     val viewer: WebtoonViewer,
-     -->
     @ColorInt private val seedColor: Int? = null,
-     <--
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /**
@@ -112,9 +110,7 @@ class WebtoonAdapter(
                 WebtoonPageHolder(
                     view,
                     viewer,
-                     -->
                     seedColor = seedColor,
-                     <--
                 )
             }
             TRANSITION_VIEW -> {
@@ -122,9 +118,7 @@ class WebtoonAdapter(
                 WebtoonTransitionHolder(
                     view,
                     viewer,
-                     -->
                     seedColor = seedColor,
-                     <--
                 )
             }
             else -> error("Unknown view type")

@@ -42,7 +42,6 @@ class WebtoonConfig(
 
     var doubleTapZoomChangedListener: ((Boolean) -> Unit)? = null
 
-     -->
     var pinchToZoom = true
         private set
 
@@ -52,15 +51,12 @@ class WebtoonConfig(
         private set
 
     var webtoonScaleTypeChangedListener: ((ReaderPreferences.WebtoonScaleType) -> Unit)? = null
-     <--
 
-     -->
     var usePageTransitions = false
 
     var continuousCropBorders = false
         private set
 
-     <--
     init {
         readerPreferences.cropBordersWebtoon()
             .register({ imageCropBorders = it }, { imagePropertyChangedListener?.invoke() })
@@ -77,12 +73,10 @@ class WebtoonConfig(
             .drop(1)
             .onEach { navigationModeChangedListener?.invoke() }
             .launchIn(scope)
-         -->
         readerPreferences.smallerTapZone().changes()
             .drop(1)
             .onEach { updateNavigation(navigationMode) }
             .launchIn(scope)
-         <--
 
         readerPreferences.dualPageSplitWebtoon()
             .register({ dualPageSplit = it }, { imagePropertyChangedListener?.invoke() })
@@ -114,7 +108,6 @@ class WebtoonConfig(
                 { doubleTapZoomChangedListener?.invoke(it) },
             )
 
-         -->
         readerPreferences.webtoonPinchToZoomEnabled()
             .register(
                 { pinchToZoom = it },
@@ -126,7 +119,6 @@ class WebtoonConfig(
                 { webtoonScaleType = it },
                 { webtoonScaleTypeChangedListener?.invoke(it) },
             )
-         <--
 
         readerPreferences.readerTheme().changes()
             .drop(1)
@@ -134,13 +126,11 @@ class WebtoonConfig(
             .onEach { themeChangedListener?.invoke() }
             .launchIn(scope)
 
-         -->
         readerPreferences.cropBordersContinuousVertical()
             .register({ continuousCropBorders = it }, { imagePropertyChangedListener?.invoke() })
 
         readerPreferences.pageTransitionsWebtoon()
             .register({ usePageTransitions = it }, { imagePropertyChangedListener?.invoke() })
-         <--
     }
 
     override var navigator: ViewerNavigation = defaultNavigation()

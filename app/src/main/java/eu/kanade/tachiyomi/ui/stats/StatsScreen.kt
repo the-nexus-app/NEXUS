@@ -33,7 +33,6 @@ class StatsScreen : Screen() {
                     title = stringResource(MR.strings.label_stats),
                     navigateUp = navigator::pop,
                     scrollBehavior = scrollBehavior,
-                     -->
                     actions = {
                         val allRead by screenModel.allRead.collectAsState()
                         AppBarActions(
@@ -49,7 +48,6 @@ class StatsScreen : Screen() {
                             ),
                         )
                     },
-                     <--
                 )
             },
         ) { paddingValues ->

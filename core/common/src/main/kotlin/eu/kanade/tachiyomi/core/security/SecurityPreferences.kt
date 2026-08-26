@@ -19,7 +19,6 @@ class SecurityPreferences(
 
     fun hideNotificationContent() = preferenceStore.getBoolean("hide_notification_content", false)
 
-     -->
     fun authenticatorTimeRanges() = this.preferenceStore.getStringSet("biometric_time_ranges", mutableSetOf())
 
     fun authenticatorDays() = this.preferenceStore.getInt("biometric_days", 0x7F)
@@ -36,7 +35,6 @@ class SecurityPreferences(
     fun encryptionType() = this.preferenceStore.getEnum("encryption_type", EncryptionType.AES_256)
 
     fun cbzPassword() = this.preferenceStore.getString(Preference.appStateKey("cbz_password"), "")
-     <--
 
     /**
      * For app lock. Will be set when there is a pending timed lock.
@@ -53,11 +51,9 @@ class SecurityPreferences(
         NEVER(MR.strings.lock_never),
     }
 
-     -->
     enum class EncryptionType(val titleRes: StringResource) {
         AES_256(SYMR.strings.aes_256),
         AES_128(SYMR.strings.aes_128),
         ZIP_STANDARD(SYMR.strings.standard_zip_encryption),
     }
-     <--
 }

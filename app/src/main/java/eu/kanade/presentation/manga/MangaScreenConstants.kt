@@ -18,23 +18,17 @@ enum class MangaScreenItem {
     INFO_BOX,
     ACTION_ROW,
 
-     -->
     METADATA_INFO,
 
-     <--
     DESCRIPTION_WITH_TAG,
 
-     -->
     INFO_BUTTONS,
     CHAPTER_PREVIEW_LOADING,
     CHAPTER_PREVIEW_ROW,
     CHAPTER_PREVIEW_MORE,
 
-     <--
     CHAPTER_HEADER,
     CHAPTER,
 
-     -->
     RELATED_MANGAS,
-     <--
 }

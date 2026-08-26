@@ -7,9 +7,9 @@ class NetworkPreferences(
     private val preferenceStore: PreferenceStore,
 ) {
 
-    /* KMK --> fun verboseLogging(): Preference<Boolean> {
+    /* KMKfun verboseLogging(): Preference<Boolean> {
         return preferenceStore.getBoolean("verbose_logging", verboseLogging)
-    } KMK <-- */
+    } KMK*/
 
     fun dohProvider(): Preference<Int> {
         return preferenceStore.getInt("doh_provider", -1)

@@ -153,13 +153,11 @@ class ReaderActivity : BaseActivity() {
 
     companion object {
 
-        fun newIntent(context: Context, mangaId: Long?, chapterId: Long?/* SY --> */, page: Int? = null/* SY <-- */): Intent {
+        fun newIntent(context: Context, mangaId: Long?, chapterId: Long?, page: Int? = null): Intent {
             return Intent(context, ReaderActivity::class.java).apply {
                 putExtra("manga", mangaId)
                 putExtra("chapter", chapterId)
-                 -->
                 putExtra("page", page)
-                 <--
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
         }
@@ -168,22 +166,18 @@ class ReaderActivity : BaseActivity() {
     private val readerPreferences = Injekt.get<ReaderPreferences>()
     private val preferences = Injekt.get<BasePreferences>()
 
-     -->
     val themeCoverBased = Injekt.get<UiPreferences>().themeCoverBased().get()
-     <--
 
-    // AM (CONNECTIONS) -->
+    // AM (CONNECTIONS)
     private val connectionsPreferences: ConnectionsPreferences = Injekt.get()
-    // <-- AM (CONNECTIONS)
+    //AM (CONNECTIONS)
 
     lateinit var binding: ReaderActivityBinding
 
     val viewModel by viewModels<ReaderViewModel>()
     private var assistUrl: String? = null
 
-     -->
     private val sourceManager = Injekt.get<SourceManager>()
-     <--
 
     /**
      * Configuration at reader level, like background color or forced orientation.
@@ -232,9 +226,7 @@ class ReaderActivity : BaseActivity() {
         if (viewModel.needsInit()) {
             val manga = intent.extras?.getLong("manga", -1) ?: -1L
             val chapter = intent.extras?.getLong("chapter", -1) ?: -1L
-             -->
             val page = intent.extras?.getInt("page", -1).takeUnless { it == -1 }
-             <--
             if (manga == -1L || chapter == -1L) {
                 finish()
                 return
@@ -242,7 +234,7 @@ class ReaderActivity : BaseActivity() {
             NotificationReceiver.dismissNotification(this, manga.hashCode(), Notifications.ID_NEW_CHAPTERS)
 
             lifecycleScope.launchNonCancellable {
-                val initResult = viewModel.init(manga, chapter/* SY --> */, page/* SY <-- */)
+                val initResult = viewModel.init(manga, chapter, page)
                 if (!initResult.getOrDefault(false)) {
                     val exception = initResult.exceptionOrNull() ?: IllegalStateException("Unknown err")
                     withUIContext {
@@ -255,9 +247,9 @@ class ReaderActivity : BaseActivity() {
         config = ReaderConfig()
         setMenuVisibility(viewModel.state.value.menuVisible)
 
-        // EXH -->
+        // EXH
         enableExhAutoScroll()
-        // EXH <--
+        // EXH
 
         // Finish when incognito mode is disabled
         preferences.incognitoMode().changes()
@@ -301,7 +293,7 @@ class ReaderActivity : BaseActivity() {
                         onSaveImageResult(event.result)
                     }
                     is ReaderViewModel.Event.ShareImage -> {
-                        onShareImageResult(event.uri, event.page /* SY --> */, event.secondPage /* SY <-- */)
+                        onShareImageResult(event.uri, event.page , event.secondPage )
                     }
                     is ReaderViewModel.Event.CopyImage -> {
                         onCopyImageResult(event.uri)
@@ -315,7 +307,6 @@ class ReaderActivity : BaseActivity() {
     }
 
     private fun ReaderActivityBinding.setComposeOverlay(): Unit = composeOverlay.setComposeContent {
-         -->
         TachiyomiTheme(
             seedColor = seedColorState().takeIf { themeCoverBased },
             typography = MaterialTheme.typography.copy(
@@ -323,7 +314,6 @@ class ReaderActivity : BaseActivity() {
             ),
         ) {
             val context = LocalContext.current
-             <--
             val state by viewModel.state.collectAsState()
             val showPageNumber by readerPreferences.showPageNumber().collectAsState()
             val settingsScreenModel = remember {
@@ -337,9 +327,7 @@ class ReaderActivity : BaseActivity() {
             Box(modifier = Modifier.fillMaxSize()) {
                 if (!state.menuVisible && showPageNumber) {
                     ReaderPageIndicator(
-                         -->
                         currentPage = state.currentPageText,
-                         <--
                         totalPages = state.totalPages,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -352,7 +340,6 @@ class ReaderActivity : BaseActivity() {
                 AppBars(state = state)
             }
 
-             -->
             val externalStoragePermissionNotGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
                 context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED
@@ -362,7 +349,6 @@ class ReaderActivity : BaseActivity() {
                     toast(KMR.strings.permission_writing_external_storage_succeed)
                 },
             )
-             <--
 
             val onDismissRequest = viewModel::closeDialog
             when (state.dialog) {
@@ -376,9 +362,7 @@ class ReaderActivity : BaseActivity() {
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 CircularProgressIndicator(
-                                     -->
                                     color = MaterialTheme.colorScheme.primary,
-                                     <--
                                 )
                                 Text(stringResource(MR.strings.loading))
                             }
@@ -424,23 +408,18 @@ class ReaderActivity : BaseActivity() {
                         onDismissRequest = onDismissRequest,
                         onSetAsCover = viewModel::setAsCover,
                         onShare = viewModel::shareImage,
-                         -->
                         onSave = { extra ->
-                             -->
                             if (externalStoragePermissionNotGranted) {
                                 permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             } else {
-                                 <--
                                 viewModel.saveImage(extra)
                             }
                         },
                         onShareCombined = viewModel::shareImages,
                         onSaveCombined = {
-                             -->
                             if (externalStoragePermissionNotGranted) {
                                 permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             } else {
-                                 <--
                                 viewModel.saveImages()
                             }
                         },
@@ -471,11 +450,9 @@ class ReaderActivity : BaseActivity() {
                             }.toImmutableList()
                         },
                         state.dateRelativeTime,
-                         -->
                         onDownloadAction = { chapter, action ->
                             viewModel.handleDownloadAction(chapter, action)
                         },
-                         <--
                     )
                 }
 
@@ -511,7 +488,6 @@ class ReaderActivity : BaseActivity() {
                     title = { Text(text = stringResource(SYMR.strings.eh_retry_all_help)) },
                     text = { Text(text = stringResource(SYMR.strings.eh_retry_all_help_message)) },
                 )
-                 <--
                 null -> {}
             }
         }
@@ -533,9 +509,9 @@ class ReaderActivity : BaseActivity() {
             viewModel.updateHistory()
         }
 
-        // AM (DISCORD) -->
+        // AM (DISCORD)
         updateDiscordRPC(exitingReader = true)
-        // <-- AM (DISCORD)
+        //AM (DISCORD)
 
         super.onPause()
     }
@@ -548,9 +524,9 @@ class ReaderActivity : BaseActivity() {
         super.onResume()
         viewModel.restartReadTimer()
 
-        // AM (DISCORD) -->
+        // AM (DISCORD)
         updateDiscordRPC(exitingReader = false)
-        // <-- AM (DISCORD)
+        //AM (DISCORD)
 
         setMenuVisibility(viewModel.state.value.menuVisible)
     }
@@ -650,7 +626,6 @@ class ReaderActivity : BaseActivity() {
 
         val cropBorderPaged by readerPreferences.cropBorders().collectAsState()
         val cropBorderWebtoon by readerPreferences.cropBordersWebtoon().collectAsState()
-         -->
         val readingMode = viewModel.getMangaReadingMode()
         val isPagerType = ReadingMode.isPagerType(readingMode)
         val isWebtoon = ReadingMode.WEBTOON.flagValue == readingMode
@@ -681,7 +656,6 @@ class ReaderActivity : BaseActivity() {
             leftHandedVerticalSeekbar -> NavBarType.VerticalLeft
             else -> NavBarType.VerticalRight
         }
-         <--
 
         ReaderAppBars(
             visible = state.menuVisible,
@@ -723,7 +697,6 @@ class ReaderActivity : BaseActivity() {
                 menuToggleToast = toast(if (enabled) MR.strings.on else MR.strings.off)
             },
             onClickSettings = viewModel::openSettingsDialog,
-             -->
             isExhToolsVisible = state.ehUtilsVisible,
             onSetExhUtilsVisibility = viewModel::showEhUtils,
             isAutoScroll = state.autoScroll,
@@ -756,11 +729,9 @@ class ReaderActivity : BaseActivity() {
                 }
             },
             onClickShiftPage = ::shiftDoublePages,
-             <--
         )
     }
 
-     -->
     @Composable
     private fun seedColorState(): ComposeColor? {
         val state by viewModel.state.collectAsState()
@@ -774,9 +745,8 @@ class ReaderActivity : BaseActivity() {
                 ?.let { MangaCover.vibrantCoverColorMap[it] }
                 ?.let { ComposeColor(it) }
     }
-     <--
 
-    // EXH -->
+    // EXH
     private fun enableExhAutoScroll() {
         readerPreferences.autoscrollInterval().changes()
             .combine(viewModel.state.map { it.autoScroll }.distinctUntilChanged()) { interval, enabled ->
@@ -921,7 +891,7 @@ class ReaderActivity : BaseActivity() {
             }
         }
     }
-    // EXH <--
+    // EXH
 
     /**
      * Sets the visibility of the menu according to [visible].
@@ -943,9 +913,7 @@ class ReaderActivity : BaseActivity() {
         val newViewer = ReadingMode.toViewer(
             viewModel.getMangaReadingMode(),
             this,
-             -->
             seedColor = seedColorStatic()?.toArgb(),
-             <--
         )
 
         if (window.sharedElementEnterTransition is MaterialContainerTransform) {
@@ -966,7 +934,6 @@ class ReaderActivity : BaseActivity() {
         updateViewerInset(readerPreferences.fullscreen().get(), readerPreferences.drawUnderCutout().get())
         binding.viewerContainer.addView(newViewer.getView())
 
-         -->
         if (newViewer is PagerViewer) {
             if (readerPreferences.pageLayout().get() == PagerConfig.PageLayout.AUTOMATIC) {
                 setDoublePageMode(newViewer)
@@ -987,15 +954,12 @@ class ReaderActivity : BaseActivity() {
             readingModeToast?.cancel()
             readingModeToast = toast(SYMR.strings.eh_auto_webtoon_snack)
         } else if (readerPreferences.showReadingMode().get()) {
-             <--
             showReadingModeToast(viewModel.getMangaReadingMode())
         }
 
         loadingIndicator = ReaderProgressIndicator(
             context = this,
-             -->
             seedColor = seedColorStatic()?.toArgb(),
-             <--
         )
         binding.readerContainer.addView(loadingIndicator)
 
@@ -1053,7 +1017,6 @@ class ReaderActivity : BaseActivity() {
     @SuppressLint("RestrictedApi")
     private fun setChapters(viewerChapters: ViewerChapters) {
         binding.readerContainer.removeView(loadingIndicator)
-         -->
         val state = viewModel.state.value
         if (state.indexChapterToShift != null && state.indexPageToShift != null) {
             viewerChapters.currChapter.pages?.find {
@@ -1073,7 +1036,6 @@ class ReaderActivity : BaseActivity() {
                         )
                 ) % 2 != 0
         }
-         <--
 
         viewModel.state.value.viewer?.setChapters(viewerChapters)
 
@@ -1083,9 +1045,9 @@ class ReaderActivity : BaseActivity() {
             }
         }
 
-        // AM (DISCORD) -->
+        // AM (DISCORD)
         updateDiscordRPC(exitingReader = false)
-        // <-- AM (DISCORD)
+        //AM (DISCORD)
     }
 
     /**
@@ -1150,7 +1112,6 @@ class ReaderActivity : BaseActivity() {
      * bottom menu and delegates the change to the presenter.
      */
     fun onPageSelected(page: ReaderPage, hasExtraPage: Boolean = false) {
-         -->
         val currentPageText = if (hasExtraPage) {
             val invertDoublePage = (viewModel.state.value.viewer as? PagerViewer)?.config?.invertDoublePages ?: false
             if ((resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_LTR) xor
@@ -1163,16 +1124,15 @@ class ReaderActivity : BaseActivity() {
         } else {
             "${page.number}"
         }
-         <--
-        viewModel.onPageSelected(page, /* SY --> */ currentPageText, hasExtraPage /* SY <-- */)
+        viewModel.onPageSelected(page, currentPageText, hasExtraPage )
     }
 
     /**
      * Called from the viewer whenever a [page] is long clicked. A bottom sheet with a list of
      * actions to perform is shown.
      */
-    fun onPageLongTap(page: ReaderPage, /* SY --> */ extraPage: ReaderPage? = null /* SY <-- */) {
-        viewModel.openPageDialog(page, /* SY --> */ extraPage /* SY <-- */)
+    fun onPageLongTap(page: ReaderPage, extraPage: ReaderPage? = null ) {
+        viewModel.openPageDialog(page, extraPage )
     }
 
     /**
@@ -1213,13 +1173,13 @@ class ReaderActivity : BaseActivity() {
      * Called from the presenter when a page is ready to be shared. It shows Android's default
      * sharing tool.
      */
-    fun onShareImageResult(uri: Uri, page: ReaderPage /* SY --> */, secondPage: ReaderPage? = null /* SY <-- */) {
+    fun onShareImageResult(uri: Uri, page: ReaderPage , secondPage: ReaderPage? = null ) {
         val manga = viewModel.manga ?: return
         val chapter = page.chapter.chapter
 
         val intent = uri.toShareIntent(
             context = applicationContext,
-            message =  -->
+            message =
             if (secondPage != null) {
                 stringResource(
                     SYMR.strings.share_pages_info,
@@ -1234,7 +1194,6 @@ class ReaderActivity : BaseActivity() {
                     },
                 )
             } else {
-                 <--
                 stringResource(MR.strings.share_page_info, manga.title, chapter.name, page.number)
             },
         )
@@ -1393,7 +1352,6 @@ class ReaderActivity : BaseActivity() {
                 }
                 .launchIn(lifecycleScope)
 
-             -->
             readerPreferences.pageLayout().changes()
                 .drop(1)
                 .onEach {
@@ -1423,7 +1381,6 @@ class ReaderActivity : BaseActivity() {
                     )
                 }
                 .launchIn(lifecycleScope)
-             <--
         }
 
         /**
@@ -1508,7 +1465,6 @@ class ReaderActivity : BaseActivity() {
         }
     }
 
-     -->
     /**
      * Updates the Discord Rich Presence (RPC) status based on the current reader activity.
      *
@@ -1550,5 +1506,4 @@ class ReaderActivity : BaseActivity() {
             }
         }
     }
-     <--
 }

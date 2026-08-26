@@ -29,7 +29,7 @@ fun BaseSourceItem(
     onLongClickItem: () -> Unit = {},
     icon: @Composable RowScope.(Source) -> Unit = defaultIcon,
     action: @Composable RowScope.(Source) -> Unit = {},
-    content: @Composable RowScope.(Source, String?, /* KMK --> */ String /* KMK <-- */) -> Unit = defaultContent,
+    content: @Composable RowScope.(Source, String?, /* KMK*/ String /* KMK*/) -> Unit = defaultContent,
 ) {
     val sourceLangString = LocaleHelper.getSourceDisplayName(source.lang, LocalContext.current).takeIf {
         showLanguageInContent
@@ -40,7 +40,7 @@ fun BaseSourceItem(
         onLongClickItem = onLongClickItem,
         icon = { icon.invoke(this, source) },
         action = { action.invoke(this, source) },
-        content = { content.invoke(this, source, sourceLangString, /* KMK --> */ source.lang /* KMK <-- */) },
+        content = { content.invoke(this, source, sourceLangString, /* KMK*/ source.lang /* KMK*/) },
     )
 }
 
@@ -51,10 +51,8 @@ private val defaultIcon: @Composable RowScope.(Source) -> Unit = { source ->
 private val defaultContent: @Composable RowScope.(
     Source,
     String?,
-     -->
     String,
-     <--
-) -> Unit = { source, sourceLangString, /* KMK --> */ lang /* KMK <-- */ ->
+) -> Unit = { source, sourceLangString, /* KMK*/ lang /* KMK*/ ->
     Column(
         modifier = Modifier
             .padding(horizontal = MaterialTheme.padding.medium)
@@ -62,26 +60,22 @@ private val defaultContent: @Composable RowScope.(
     ) {
         Text(
             text = source.name +
-                 -->
                 (
                     source.installedExtension?.let { extension ->
                         " (${extension.name})".takeIf { extension.name != source.name }
                     } ?: ""
                     ),
-             <--
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyMedium,
         )
-         -->
         Row(
             modifier = Modifier.secondaryItemAlpha(),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
         ) {
-             <--
             if (sourceLangString != null) {
                 Text(
-                    text = /* KMK --> */ FlagEmoji.getEmojiLangFlag(lang) + " " + /* KMK <-- */
+                    text = /* KMK*/ FlagEmoji.getEmojiLangFlag(lang) + " " + /* KMK*/
                         sourceLangString,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -89,7 +83,6 @@ private val defaultContent: @Composable RowScope.(
                 )
             }
 
-             -->
             if (source.installedExtension?.isNsfw == true) {
                 Text(
                     text = stringResource(MR.strings.ext_nsfw_short).uppercase(),
@@ -100,6 +93,5 @@ private val defaultContent: @Composable RowScope.(
                 )
             }
         }
-         <--
     }
 }

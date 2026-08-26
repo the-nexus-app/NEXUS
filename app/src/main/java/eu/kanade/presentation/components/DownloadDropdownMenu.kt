@@ -17,7 +17,7 @@ fun DownloadDropdownMenu(
     onDismissRequest: () -> Unit,
     onDownloadClicked: (DownloadAction) -> Unit,
     modifier: Modifier = Modifier,
-    offset: DpOffset = /* KMK --> */ DefaultDropdownMenuOffset, /* KMK <-- */
+    offset: DpOffset = /* KMK*/ DefaultDropdownMenuOffset, /* KMK*/
 ) {
     DropdownMenu(
         expanded = expanded,

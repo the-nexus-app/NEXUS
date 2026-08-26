@@ -11,9 +11,7 @@ class UpsertHistory(
         historyRepository.upsertHistory(historyUpdate)
     }
 
-     -->
     suspend fun awaitAll(historyUpdates: List<HistoryUpdate>) {
         historyRepository.upsertHistory(historyUpdates)
     }
-     <--
 }

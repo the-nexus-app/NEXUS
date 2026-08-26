@@ -56,9 +56,7 @@ class SyncManager(
         NONE(0),
         SYNCYOMI(1),
         GOOGLE_DRIVE(2),
-         -->
         WEB_DAV(3),
-         <--
         ;
 
         companion object {
@@ -93,11 +91,9 @@ class SyncManager(
             sourceSettings = syncOptions.sourceSettings,
             privateSettings = syncOptions.privateSettings,
 
-             -->
             customInfo = syncOptions.customInfo,
             readEntries = syncOptions.readEntries,
             savedSearchesFeeds = syncOptions.savedSearchesFeeds,
-             <--
         )
 
         logcat(LogPriority.DEBUG) { "Begin create backup" }
@@ -110,13 +106,9 @@ class SyncManager(
             backupSourcePreferences = backupCreator.backupSourcePreferences(backupOptions),
             backupExtensionStores = backupCreator.backupExtensionStores(backupOptions),
 
-             -->
             backupSavedSearches = backupCreator.backupSavedSearches(backupOptions),
-             <--
 
-             -->
             backupFeeds = backupCreator.backupFeeds(backupOptions),
-             <--
         )
         logcat(LogPriority.DEBUG) { "End create backup" }
 
@@ -141,11 +133,9 @@ class SyncManager(
                 GoogleDriveSyncService(context, json, syncPreferences)
             }
 
-             -->
             SyncService.WEB_DAV -> {
                 WebDavSyncService(context, json, syncPreferences, notifier)
             }
-             <--
 
             else -> {
                 logcat(LogPriority.ERROR) { "Invalid sync service type: $syncService" }
@@ -194,13 +184,9 @@ class SyncManager(
             backupSourcePreferences = remoteBackup.backupSourcePreferences,
             backupExtensionStores = remoteBackup.backupExtensionStores,
 
-             -->
             backupSavedSearches = remoteBackup.backupSavedSearches,
-             <--
 
-             -->
             backupFeeds = remoteBackup.backupFeeds,
-             <--
         )
 
         // It's local sync no need to restore data. (just update remote data)
@@ -264,10 +250,8 @@ class SyncManager(
             chaptersQueries.getChaptersByMangaId(
                 localManga.id,
                 0,
-                 -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
-                 <--
             ).executeAsList()
         }
         val localCategories = getCategories.await(localManga.id).map { it.order }

@@ -33,14 +33,10 @@ class UpdatesPreferences(
         false,
     )
 
-     -->
     fun usePanoramaCover() = preferenceStore.getBoolean(
         USE_PANORAMA_COVER_PREF,
         false,
     )
-     <--
 }
 
- -->
 const val USE_PANORAMA_COVER_PREF = "pref_updates_history_screen_use_panorama_cover"
- <--

@@ -13,11 +13,9 @@ class SetupSyncDataMigration : Migration {
 
     override suspend fun invoke(migrationContext: MigrationContext): Boolean {
         val context = migrationContext.get<Application>() ?: return false
-         -->
         val syncPreferences = Injekt.get<SyncPreferences>()
         val syncEnabled = syncPreferences.isSyncEnabled()
         if (syncEnabled) {
-             <--
             SyncDataJob.setupTask(context)
         }
         return true

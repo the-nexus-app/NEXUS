@@ -50,9 +50,7 @@ abstract class BaseSmartSearchEngine<T>(
 
                     val candidates = searchAction(
                         builtQuery
-                             -->
                             .sanitize(),
-                         <--
                     )
                     candidates
                         .map {
@@ -105,7 +103,6 @@ abstract class BaseSmartSearchEngine<T>(
         val closingChars = if (readForward) ")]}>" else "([<{"
         var depth = 0
 
-         -->
         val result = buildString {
             for (char in (if (readForward) text else text.reversed())) {
                 when {
@@ -122,7 +119,6 @@ abstract class BaseSmartSearchEngine<T>(
         }
         // If reading backward, the result is reversed
         return if (readForward) result else result.reversed()
-         <--
     }
 
     private fun getDeepSearchQueries(cleanedTitle: String): List<String> {

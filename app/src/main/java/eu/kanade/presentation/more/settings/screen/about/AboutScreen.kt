@@ -76,10 +76,8 @@ class AboutScreen : Screen() {
         val navigator = LocalNavigator.currentOrThrow
         var isCheckingUpdates by remember { mutableStateOf(false) }
 
-         -->
         var isCheckingWhatsNew by remember { mutableStateOf(false) }
         var isCheckingWhatsComing by remember { mutableStateOf(false) }
-         <--
 
         Scaffold(
             topBar = { scrollBehavior ->
@@ -147,7 +145,6 @@ class AboutScreen : Screen() {
                     }
                 }
 
-                 -->
                 item {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.whats_new),
@@ -224,7 +221,6 @@ class AboutScreen : Screen() {
                         )
                     }
                 }
-                 <--
 
                 item {
                     TextPreferenceWidget(
@@ -290,14 +286,10 @@ class AboutScreen : Screen() {
         context: Context,
         onAvailableUpdate: (GetApplicationRelease.Result.NewUpdate) -> Unit,
         onFinish: () -> Unit,
-         -->
         peekIntoPreview: Boolean = false,
-         <--
     ) {
         val updateChecker = AppUpdateChecker(
-             -->
             peekIntoPreview = peekIntoPreview,
-             <--
         )
         withUIContext {
             try {
@@ -322,7 +314,6 @@ class AboutScreen : Screen() {
     }
 
     companion object {
-         -->
         suspend fun getReleaseNotes(
             context: Context,
             onAvailableUpdate: (GetApplicationRelease.Result.NewUpdate) -> Unit,
@@ -346,7 +337,6 @@ class AboutScreen : Screen() {
                 }
             }
         }
-         <--
 
         fun getVersionName(withBuildDate: Boolean): String {
             return when {

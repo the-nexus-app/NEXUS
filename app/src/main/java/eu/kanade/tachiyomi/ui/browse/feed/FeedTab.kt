@@ -44,15 +44,12 @@ import tachiyomi.presentation.core.i18n.stringResource
 
 @Composable
 fun Screen.feedTab(
-     -->
     screenModel: FeedScreenModel,
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
-     <--
 ): TabContent {
     val navigator = LocalNavigator.currentOrThrow
     val state by screenModel.state.collectAsState()
 
-     -->
     val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
     val showingFeedOrderScreen = rememberSaveable { mutableStateOf(false) }
 
@@ -61,7 +58,6 @@ fun Screen.feedTab(
     LaunchedEffect(bulkFavoriteState.selectionMode) {
         HomeScreen.showBottomNav(!bulkFavoriteState.selectionMode)
     }
-     <--
 
     DisposableEffect(navigator.lastEvent) {
         if (navigator.lastEvent == StackEvent.Push) {
@@ -80,7 +76,6 @@ fun Screen.feedTab(
     return TabContent(
         titleRes = SYMR.strings.feed,
         actions =
-         -->
         if (showingFeedOrderScreen.value) {
             persistentListOf(
                 AppBar.Action(
@@ -91,7 +86,6 @@ fun Screen.feedTab(
                 ),
             )
         } else {
-             <--
             persistentListOf(
                 AppBar.Action(
                     title = stringResource(MR.strings.action_add),
@@ -100,7 +94,6 @@ fun Screen.feedTab(
                         screenModel.openAddDialog()
                     },
                 ),
-                 -->
                 AppBar.Action(
                     title = stringResource(KMR.strings.action_sort_feed),
                     icon = Icons.Outlined.SwapVert,
@@ -110,11 +103,9 @@ fun Screen.feedTab(
                     isRunning = bulkFavoriteState.isRunning,
                     toggleSelectionMode = bulkFavoriteScreenModel::toggleSelectionMode,
                 ),
-                 <--
             )
         },
         content = { contentPadding, snackbarHostState ->
-             -->
             BackHandler(enabled = bulkFavoriteState.selectionMode || showingFeedOrderScreen.value) {
                 when {
                     bulkFavoriteState.selectionMode -> bulkFavoriteScreenModel.backHandler()
@@ -132,7 +123,6 @@ fun Screen.feedTab(
                         onChangeOrder = screenModel::changeOrder,
                     )
                 } else {
-                     <--
                     FeedScreen(
                         state = state,
                         contentPadding = contentPadding,
@@ -151,29 +141,22 @@ fun Screen.feedTab(
                             navigator.push(
                                 BrowseSourceScreen(
                                     source.id,
-                                     -->
                                     listingQuery = if (!source.supportsLatest) {
                                         GetRemoteManga.QUERY_POPULAR
                                     } else {
-                                         <--
                                         GetRemoteManga.QUERY_LATEST
                                     },
                                 ),
                             )
                         },
-                         -->
                         onLongClickFeed = screenModel::openActionsDialog,
-                         <--
                         onClickManga = { manga ->
-                             -->
                             if (bulkFavoriteState.selectionMode) {
                                 bulkFavoriteScreenModel.toggleSelection(manga)
                             } else {
-                                 <--
                                 navigator.push(MangaScreen(manga.id, true))
                             }
                         },
-                         -->
                         onLongClickManga = { manga ->
                             if (!bulkFavoriteState.selectionMode) {
                                 bulkFavoriteScreenModel.addRemoveManga(manga, haptic)
@@ -182,7 +165,6 @@ fun Screen.feedTab(
                             }
                         },
                         selection = bulkFavoriteState.selection,
-                         <--
                         onRefresh = screenModel::init,
                         getMangaState = { manga -> screenModel.getManga(initialManga = manga) },
                     )
@@ -224,7 +206,6 @@ fun Screen.feedTab(
                             },
                         )
                     }
-                     -->
                     is FeedScreenModel.Dialog.FeedActions -> {
                         FeedActionsDialog(
                             feed = dialog.feedItem.feed,
@@ -233,16 +214,13 @@ fun Screen.feedTab(
                             onClickDelete = { screenModel.openDeleteDialog(it) },
                         )
                     }
-                     <--
                 }
             }
 
-             -->
             BulkFavoriteDialogs(
                 bulkFavoriteScreenModel = bulkFavoriteScreenModel,
                 dialog = bulkFavoriteState.dialog,
             )
-             <--
 
             val internalErrString = stringResource(MR.strings.internal_error)
             val tooManyFeedsString = stringResource(KMR.strings.too_many_in_feed)

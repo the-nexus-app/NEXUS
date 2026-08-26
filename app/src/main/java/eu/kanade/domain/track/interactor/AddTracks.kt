@@ -53,17 +53,15 @@ class AddTracks(
                     ?.chapterNumber ?: -1.0
 
                 if (latestLocalReadChapterNumber > track.lastChapterRead) {
-                    /* KMK -->
+                    /* KMK
                     // This code causes issue NOT settings remote-track's status
                     track = track.copy(
                         lastChapterRead = latestLocalReadChapterNumber,
                     )
-                    KMK <-- */
+                    KMK*/
                     tracker.setRemoteLastChapterRead(track.toDbTrack(), latestLocalReadChapterNumber.toInt())
-                         -->
                         .toDomainTrack(idRequired = false)
                         ?.let { track = it }
-                     <--
                 }
 
                 if (track.startDate <= 0) {
@@ -86,14 +84,12 @@ class AddTracks(
             }
 
             syncChapterProgressWithTrack.await(mangaId, track, tracker)
-                 -->
                 ?.let {
                     val context = Injekt.get<Application>()
                     withUIContext {
                         context.toast(context.stringResource(KMR.strings.sync_progress_from_trackers_up_to_chapter, it))
                     }
                 }
-             <--
         }
     }
 
@@ -114,14 +110,12 @@ class AddTracks(
                                 track.toDomainTrack(idRequired = false)!!,
                                 service,
                             )
-                                 -->
                                 ?.let {
                                     val context = Injekt.get<Application>()
                                     withUIContext {
                                         context.toast(context.stringResource(KMR.strings.sync_progress_from_trackers_up_to_chapter, it))
                                     }
                                 }
-                             <--
                         }
                     } catch (e: Exception) {
                         logcat(

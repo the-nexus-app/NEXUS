@@ -91,14 +91,12 @@ fun DuplicateMangaDialog(
     onOpenManga: (manga: Manga) -> Unit,
     onMigrate: (manga: Manga) -> Unit,
     modifier: Modifier = Modifier,
-     -->
     targetManga: Manga,
     bulkFavoriteManga: Manga? = null,
     onAllowAllDuplicate: () -> Unit = {},
     onSkipAllDuplicate: () -> Unit = {},
     onSkipDuplicate: () -> Unit = {},
     stopRunning: () -> Unit = {},
-     <--
 ) {
     val sourceManager = remember { Injekt.get<SourceManager>() }
     val minHeight = LocalPreferenceMinHeight.current
@@ -108,9 +106,7 @@ fun DuplicateMangaDialog(
     AdaptiveSheet(
         modifier = modifier,
         onDismissRequest = {
-             -->
             stopRunning()
-             <--
             onDismissRequest()
         },
     ) {
@@ -129,13 +125,11 @@ fun DuplicateMangaDialog(
                     .padding(top = MaterialTheme.padding.small),
             )
 
-             -->
             Text(
                 text = targetManga.title,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.then(horizontalPaddingModifier),
             )
-             <--
 
             Text(
                 text = stringResource(MR.strings.possible_duplicates_summary),
@@ -144,16 +138,12 @@ fun DuplicateMangaDialog(
             )
 
             LazyRow(
-                horizontalArrangement = /* KMK --> */ Arrangement.SpaceAround, /* KMK <-- */
+                horizontalArrangement = /* KMK*/ Arrangement.SpaceAround, /* KMK*/
                 modifier = Modifier.height(getMaximumMangaCardHeight(duplicates))
-                     -->
                     .fillMaxWidth(),
-                 <--
                 contentPadding = horizontalPadding,
             ) {
-                 -->
                 itemsIndexed(
-                     <--
                     items = duplicates,
                     key = { _, it -> it.manga.id },
                 ) { index, it ->
@@ -164,15 +154,12 @@ fun DuplicateMangaDialog(
                         onOpenManga = { onOpenManga(it.manga) },
                     )
 
-                     -->
                     if (index != duplicates.lastIndex) {
                         Spacer(modifier = Modifier.width(MaterialTheme.padding.small))
                     }
-                     <--
                 }
             }
 
-             -->
             if (bulkFavoriteManga != null) {
                 Column(
                     modifier = horizontalPaddingModifier
@@ -251,7 +238,6 @@ fun DuplicateMangaDialog(
                     }
                 }
             } else {
-                 <--
                 Column(modifier = horizontalPaddingModifier) {
                     HorizontalDivider()
 
@@ -293,17 +279,14 @@ private fun DuplicateMangaListItem(
     onOpenManga: () -> Unit,
     onMigrate: () -> Unit,
 ) {
-     -->
     val usePanoramaCover by Injekt.get<UiPreferences>().usePanoramaCoverAlways().collectAsState()
     val coverRatio = remember { mutableFloatStateOf(1f) }
     val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
-     <--
 
     val source = getSource()
     val manga = duplicate.manga
     Column(
         modifier = Modifier
-             -->
             .then(
                 if (usePanoramaCover && coverIsWide) {
                     Modifier.width(MangaCardPanoramaWidth)
@@ -311,7 +294,6 @@ private fun DuplicateMangaListItem(
                     Modifier.width(MangaCardWidth)
                 },
             )
-             <--
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surface)
             .combinedClickable(
@@ -320,7 +302,6 @@ private fun DuplicateMangaListItem(
             )
             .padding(MaterialTheme.padding.small),
     ) {
-         -->
         Box(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -362,7 +343,6 @@ private fun DuplicateMangaListItem(
                 )
             }
         }
-         <--
 
         Spacer(modifier = Modifier.height(MaterialTheme.padding.extraSmall))
 
@@ -552,6 +532,4 @@ private fun TextMeasurer.measureHeight(
 private val MangaCardWidth = 152.dp
 private val MangaDetailsIconWidth = 16.dp
 
- -->
 private val MangaCardPanoramaWidth = 322.dp
- <--

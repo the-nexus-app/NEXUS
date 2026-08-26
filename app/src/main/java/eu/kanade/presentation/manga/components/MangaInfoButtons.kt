@@ -31,12 +31,10 @@ fun MangaInfoButtons(
                 }
             }
             if (showRecommendsButton) {
-                 -->
                 OutlinedButtonWithArrow(
                     text = stringResource(SYMR.strings.az_recommends),
                     onClick = onRecommendClicked,
                 )
-                 <--
             }
         }
     }

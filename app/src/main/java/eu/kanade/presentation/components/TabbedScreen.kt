@@ -40,24 +40,19 @@ fun TabbedScreen(
     state: PagerState = rememberPagerState { tabs.size },
     searchQuery: String? = null,
     onChangeSearchQuery: (String?) -> Unit = {},
-     -->
     feedScreenModel: FeedScreenModel,
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
-     <--
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-     -->
     val feedState by feedScreenModel.state.collectAsState()
     val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
-     <--
 
     Scaffold(
         topBar = {
             val tab = tabs[state.currentPage]
             val searchEnabled = tab.searchEnabled
-             -->
             if (bulkFavoriteState.selectionMode) {
                 BulkSelectionToolbar(
                     selectedCount = bulkFavoriteState.selection.size,
@@ -80,7 +75,6 @@ fun TabbedScreen(
                     },
                 )
             } else {
-                 <--
                 SearchToolbar(
                     titleContent = { AppBarTitle(stringResource(titleRes)) },
                     searchEnabled = searchEnabled,

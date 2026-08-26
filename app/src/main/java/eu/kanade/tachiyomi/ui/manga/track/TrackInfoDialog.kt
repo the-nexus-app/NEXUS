@@ -118,7 +118,6 @@ data class TrackInfoDialogHomeScreen(
         val dateFormat = remember { UiPreferences.dateFormat(Injekt.get<UiPreferences>().dateFormat().get()) }
         val state by screenModel.state.collectAsState()
 
-         -->
         Column(modifier = Modifier.animateContentSize()) {
             if (state.isLoading) {
                 Column(
@@ -136,7 +135,6 @@ data class TrackInfoDialogHomeScreen(
                     )
                 }
             }
-             <--
             else {
                 TrackInfoDialogHome(
                     trackItems = state.trackItems,
@@ -187,9 +185,7 @@ data class TrackInfoDialogHomeScreen(
                         if (it.tracker is EnhancedTracker) {
                             screenModel.registerEnhancedTracking(it)
                         } else {
-                             -->
                             screenModel.newSearch(navigator, it, mangaTitle)
-                             <--
                         }
                     },
                     onOpenInBrowser = { openTrackerInBrowser(context, it) },
@@ -230,19 +226,13 @@ data class TrackInfoDialogHomeScreen(
         private val mangaId: Long,
         private val sourceId: Long,
         private val getTracks: GetTracks = Injekt.get(),
-         -->
         private val trackerManager: TrackerManager = Injekt.get(),
         private val trackPreferences: TrackPreferences = Injekt.get(),
-         <--
-         -->
         private val sourceManager: SourceManager = Injekt.get(),
-         <--
     ) : StateScreenModel<Model.State>(State()) {
-         -->
         private val getFlatMetadataById: GetFlatMetadataById by injectLazy()
         private val getMangaById: GetManga by injectLazy()
         private val getMergedReferencesById: GetMergedReferencesById by injectLazy()
-         <--
 
         init {
             screenModelScope.launch {
@@ -258,7 +248,6 @@ data class TrackInfoDialogHomeScreen(
             }
         }
 
-         -->
         private suspend fun getMangaForTracking(item: TrackItem): Manga? {
             if (sourceId != MERGED_SOURCE_ID) {
                 return getMangaById.await(mangaId)
@@ -271,7 +260,6 @@ data class TrackInfoDialogHomeScreen(
                     ?.let { ref.mangaId?.let { mangaId -> getMangaById.await(mangaId) } }
             }
         }
-         <--
 
         fun registerEnhancedTracking(item: TrackItem) {
             item.tracker as EnhancedTracker
@@ -286,7 +274,6 @@ data class TrackInfoDialogHomeScreen(
             }
         }
 
-         -->
         fun newSearch(navigator: Navigator, item: TrackItem, mangaTitle: String) {
             screenModelScope.launchNonCancellable {
                 if (trackPreferences.resolveUsingSourceMetadata().get()) {
@@ -355,7 +342,6 @@ data class TrackInfoDialogHomeScreen(
             }
             return false
         }
-         <--
 
         private suspend fun refreshTrackers() {
             val refreshTracks = Injekt.get<RefreshTracks>()
@@ -392,7 +378,6 @@ data class TrackInfoDialogHomeScreen(
                 // Map to TrackItem
                 .map { service -> TrackItem(find { it.trackerId == service.id }, service) }
                 // Show only if the service supports this manga's source
-                 -->
                 .let { trackers ->
                     val sources = if (source is MergedSource) {
                         sourceManager.getMergedSources(mangaId)
@@ -401,15 +386,12 @@ data class TrackInfoDialogHomeScreen(
                     }
                     trackers.filter { (it.tracker as? EnhancedTracker)?.accept(sources) ?: true }
                 }
-             <--
         }
 
         @Immutable
         data class State(
             val trackItems: List<TrackItem> = emptyList(),
-             -->
             val isLoading: Boolean = false,
-             <--
         )
     }
 }

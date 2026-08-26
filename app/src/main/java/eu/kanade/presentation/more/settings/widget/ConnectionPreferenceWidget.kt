@@ -1,4 +1,4 @@
-// AM (CONNECTIONS) -->
+// AM (CONNECTIONS)
 package eu.kanade.presentation.more.settings.widget
 
 import androidx.compose.foundation.clickable
@@ -82,4 +82,4 @@ fun ConnectionPreferenceWidget(
         }
     }
 }
-// <-- AM (CONNECTIONS)
+//AM (CONNECTIONS)

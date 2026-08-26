@@ -71,7 +71,6 @@ data object HistoryTab : Tab {
         resumeLastChapterReadEvent.send(Unit)
     }
 
-     -->
     @Composable
     override fun isEnabled(): Boolean {
         val scope = rememberCoroutineScope()
@@ -79,7 +78,6 @@ data object HistoryTab : Tab {
             Injekt.get<UiPreferences>().showNavHistory().asState(scope)
         }.value
     }
-     <--
 
     @Composable
     override fun Content() {
@@ -87,10 +85,8 @@ data object HistoryTab : Tab {
         val context = LocalContext.current
         val screenModel = rememberScreenModel { HistoryScreenModel() }
         val state by screenModel.state.collectAsState()
-         -->
         val settingsScreenModel = rememberScreenModel { HistorySettingsScreenModel() }
         val usePanoramaCover by settingsScreenModel.historyPreferences.usePanoramaCover().collectAsState()
-         <--
 
         HistoryScreen(
             state = state,
@@ -100,7 +96,6 @@ data object HistoryTab : Tab {
             onClickResume = screenModel::getNextChapterForManga,
             onDialogChange = screenModel::setDialog,
             onClickFavorite = screenModel::addFavorite,
-             -->
             toggleSelectionMode = screenModel::toggleSelectionMode,
             onSelectAll = screenModel::toggleAllSelection,
             onInvertSelection = screenModel::invertSelection,
@@ -108,7 +103,6 @@ data object HistoryTab : Tab {
             onFilterClicked = screenModel::showFilterDialog,
             hasActiveFilters = state.hasActiveFilters,
             usePanoramaCover = usePanoramaCover,
-             <--
         )
 
         val onDismissRequest = { screenModel.setDialog(null) }
@@ -117,13 +111,11 @@ data object HistoryTab : Tab {
                 HistoryDeleteDialog(
                     onDismissRequest = onDismissRequest,
                     onDelete = { all ->
-                         -->
                         if (all) {
                             screenModel.removeAllFromHistory(dialog.histories)
                         } else {
                             screenModel.removeFromHistory(dialog.histories)
                         }
-                         <--
                     },
                 )
             }
@@ -140,9 +132,7 @@ data object HistoryTab : Tab {
                     onConfirm = { screenModel.addFavorite(dialog.manga) },
                     onOpenManga = { navigator.push(MangaScreen(it.id)) },
                     onMigrate = { screenModel.showMigrateDialog(dialog.manga, it) },
-                     -->
                     targetManga = dialog.manga,
-                     <--
                 )
             }
             is HistoryScreenModel.Dialog.ChangeCategory -> {
@@ -164,28 +154,24 @@ data object HistoryTab : Tab {
                     onDismissRequest = onDismissRequest,
                 )
             }
-             -->
             is HistoryScreenModel.Dialog.FilterSheet -> {
                 HistoryFilterDialog(
                     onDismissRequest = onDismissRequest,
                     screenModel = settingsScreenModel,
                 )
             }
-             <--
             null -> {}
         }
 
-         -->
         LaunchedEffect(state.isLoading) {
             if (!state.isLoading) {
-                 <--
                 (context as? MainActivity)?.ready = true
 
-                // AM (DISCORD) -->
+                // AM (DISCORD)
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.HISTORY) }
                 }
-                // <-- AM (DISCORD)
+                //AM (DISCORD)
             }
         }
 

@@ -16,7 +16,7 @@ val Source.icon: ImageBitmap?
             ?.asImageBitmap()
     }
 
-// AM (BROWSE) -->
+// AM (BROWSE)
 // Add an extra property to Source for it to get access to ExtensionManager
 val Source.installedExtension: Extension.Installed?
     get() {
@@ -25,4 +25,4 @@ val Source.installedExtension: Extension.Installed?
             .value
             .find { ext -> ext.sources.any { it.id == id } }
     }
-// <-- AM (BROWSE)
+//AM (BROWSE)

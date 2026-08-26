@@ -9,9 +9,7 @@ class SMangaImpl : SManga {
 
     override lateinit var url: String
 
-     -->
     override var title: String = ""
-     <--
 
     override var thumbnail_url: String? = null
 
@@ -31,7 +29,6 @@ class SMangaImpl : SManga {
 
     override var memo: JsonObject = JsonObject.EMPTY
 
-     -->
     override val originalTitle: String
         get() = title
     override val originalAuthor: String?
@@ -46,5 +43,4 @@ class SMangaImpl : SManga {
         get() = genre
     override val originalStatus: Int
         get() = status
-     <--
 }

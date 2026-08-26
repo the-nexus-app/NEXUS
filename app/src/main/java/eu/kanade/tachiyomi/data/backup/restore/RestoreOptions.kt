@@ -11,9 +11,7 @@ data class RestoreOptions(
     val appSettings: Boolean = true,
     val extensionStores: Boolean = true,
     val sourceSettings: Boolean = true,
-     -->
     val savedSearchesFeeds: Boolean = true,
-     <--
 ) {
 
     fun asBooleanArray() = booleanArrayOf(
@@ -22,9 +20,7 @@ data class RestoreOptions(
         appSettings,
         extensionStores,
         sourceSettings,
-         -->
         savedSearchesFeeds,
-         <--
     )
 
     fun canRestore() =
@@ -32,8 +28,8 @@ data class RestoreOptions(
             categories ||
             appSettings ||
             extensionStores ||
-            sourceSettings /* SY --> */ ||
-            savedSearchesFeeds /* SY <-- */
+            sourceSettings ||
+            savedSearchesFeeds 
 
     companion object {
         val options = persistentListOf(
@@ -62,15 +58,11 @@ data class RestoreOptions(
                 getter = RestoreOptions::sourceSettings,
                 setter = { options, enabled -> options.copy(sourceSettings = enabled) },
             ),
-             -->
             Entry(
-                -->
                 label = KMR.strings.saved_searches_feeds,
-                 <--
                 getter = RestoreOptions::savedSearchesFeeds,
                 setter = { options, enabled -> options.copy(savedSearchesFeeds = enabled) },
             ),
-             <--
         )
 
         fun fromBooleanArray(array: BooleanArray) = RestoreOptions(
@@ -79,9 +71,7 @@ data class RestoreOptions(
             appSettings = array[2],
             extensionStores = array[3],
             sourceSettings = array[4],
-             -->
             savedSearchesFeeds = array[5],
-             <--
         )
     }
 

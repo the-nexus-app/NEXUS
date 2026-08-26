@@ -20,37 +20,29 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 import kotlin.random.Random
 
-/* SY --> */ open /* SY <-- */ class NetworkHelper(
+open class NetworkHelper(
     private val context: Context,
     private val preferences: NetworkPreferences,
-     -->
     val delegateSourcePreferences: DelegateSourcePreferences,
-     <--
 ) {
 
-    /* SY --> */ open /* SY <-- */val cookieJar = AndroidCookieJar()
+    open val cookieJar = AndroidCookieJar()
 
-     -->
     private val delegatedSourcesEnabled = delegateSourcePreferences.delegateSources().get()
-     <--
 
     /**
      * Timeout in unit of seconds.
      */
-    private /* KMK --> */ fun /* KMK <-- */ clientBuilder(
-         -->
+    private /* KMK*/ fun /* KMK*/ clientBuilder(
         connectTimeout: Long = 30,
         readTimeout: Long = 30,
         callTimeout: Long = 120,
-         <--
     ): OkHttpClient.Builder = run {
         val builder = OkHttpClient.Builder()
             .cookieJar(cookieJar)
-             -->
             .connectTimeout(connectTimeout, TimeUnit.SECONDS)
             .readTimeout(readTimeout, TimeUnit.SECONDS)
             .callTimeout(callTimeout, TimeUnit.SECONDS)
-             <--
             .cache(
                 Cache(
                     directory = File(context.cacheDir, "network_cache"),
@@ -60,9 +52,7 @@ import kotlin.random.Random
             .addInterceptor(UncaughtExceptionInterceptor())
             .addInterceptor(UserAgentInterceptor(::defaultUserAgentProvider))
 
-         -->
         if (EHLogLevel.isExtraLogging()) {
-             <--
             val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.HEADERS
             }
@@ -86,12 +76,11 @@ import kotlin.random.Random
         }
     }
 
-    /* SY --> */ open /* SY <-- */ val client /* KMK --> */ by lazy /* KMK <-- */ {
+    open val client /* KMK*/ by lazy /* KMK*/ {
         clientBuilder()
             .addInterceptor(
                 CloudflareInterceptor(context, cookieJar, ::defaultUserAgentProvider),
             )
-             -->
             // FIXME (KMK): Dirty hack to fetch MangaDex covers
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
@@ -114,11 +103,9 @@ import kotlin.random.Random
 
                 chain.proceed(newRequest)
             }
-             <--
             .build()
     }
 
-     -->
     /**
      * Timeout in unit of seconds.
      */
@@ -216,22 +203,18 @@ import kotlin.random.Random
         // Apply jitter by adding a random value to avoid synchronized retries in distributed systems
         return (delay + Random.nextLong(0, 1000)).coerceAtMost(maxDelay)
     }
-     <--
 
     /**
      * @deprecated Since extension-lib 1.5
      */
     @Deprecated("The regular client handles Cloudflare by default", ReplaceWith("client"))
     @Suppress("UNUSED")
-    /* SY --> */
-    open /* SY <-- */val cloudflareClient: OkHttpClient
+    open val cloudflareClient: OkHttpClient
         get() = client
 
     fun defaultUserAgentProvider() = preferences.defaultUserAgent().get().trim()
 
     companion object {
-         -->
         private const val MAX_RETRY = 5
-         <--
     }
 }

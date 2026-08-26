@@ -1,4 +1,4 @@
-// AM (CONNECTIONS) -->
+// AM (CONNECTIONS)
 package eu.kanade.tachiyomi.data.connections
 
 import androidx.annotation.CallSuper
@@ -69,4 +69,4 @@ abstract class ConnectionsService(val id: Long) {
      */
     protected open fun getToken(): String = ""
 }
-// <-- AM (CONNECTIONS)
+//AM (CONNECTIONS)

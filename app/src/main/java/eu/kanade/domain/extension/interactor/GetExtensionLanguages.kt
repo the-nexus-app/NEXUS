@@ -37,7 +37,6 @@ class GetExtensionLanguages(
         }
     }
 
-     -->
     companion object {
         fun getLanguageIconID(lang: String): Int? {
             return when (lang) {
@@ -172,7 +171,6 @@ class GetExtensionLanguages(
             }
         }
     }
-     <--
 }
 
 @Preview

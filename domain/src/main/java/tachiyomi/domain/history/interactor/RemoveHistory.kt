@@ -10,7 +10,6 @@ class RemoveHistory(
         return repository.deleteAllHistory()
     }
 
-     -->
     suspend fun await(historyIds: List<Long>) {
         repository.resetHistory(historyIds)
     }
@@ -18,5 +17,4 @@ class RemoveHistory(
     suspend fun awaitManga(mangaIds: List<Long>) {
         repository.resetHistoryByMangaIds(mangaIds)
     }
-     <--
 }

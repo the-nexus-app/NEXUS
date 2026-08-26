@@ -21,9 +21,7 @@ import uy.kohesive.injekt.injectLazy
 class EditMergedSettingsHeaderAdapter(
     private val state: EditMergedSettingsState,
     adapter: EditMergedMangaAdapter,
-     -->
     private val colorScheme: AndroidViewColorScheme,
-     <--
 ) : RecyclerView.Adapter<EditMergedSettingsHeaderAdapter.HeaderViewHolder>() {
 
     private val sourceManager: SourceManager by injectLazy()
@@ -49,20 +47,16 @@ class EditMergedSettingsHeaderAdapter(
 
     inner class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind() {
-             -->
             // val dedupeAdapter: ArrayAdapter<String> = ArrayAdapter(
             val dedupeAdapter = SpinnerAdapter(
                 view.context,
                 android.R.layout.simple_spinner_dropdown_item,
-                 <--
                 listOfNotNull(
                     itemView.context.stringResource(SYMR.strings.dedupe_priority),
                     itemView.context.stringResource(SYMR.strings.dedupe_most_chapters),
                     itemView.context.stringResource(SYMR.strings.dedupe_highest_chapter),
                 ),
-                 -->
                 colorScheme,
-                 <--
             )
             binding.dedupeModeSpinner.adapter = dedupeAdapter
             state.mergeReference?.let {
@@ -107,18 +101,14 @@ class EditMergedSettingsHeaderAdapter(
 
             val mergedMangas = state.mergedMangas
 
-             -->
             // val mangaInfoAdapter: ArrayAdapter<String> = ArrayAdapter(
             val mangaInfoAdapter = SpinnerAdapter(
                 view.context,
                 android.R.layout.simple_spinner_dropdown_item,
-                 <--
                 mergedMangas.map {
                     sourceManager.getOrStub(it.second.mangaSourceId).toString() + " " + it.first?.title
                 },
-                 -->
                 colorScheme,
-                 <--
             )
             binding.mangaInfoSpinner.adapter = mangaInfoAdapter
 
@@ -183,7 +173,6 @@ class EditMergedSettingsHeaderAdapter(
                 false -> 0.5F
             }
 
-             -->
             binding.dedupeSwitchLabel.setTextColor(colorScheme.textColor)
             binding.dedupeModeLabel.setTextColor(colorScheme.primary)
             binding.mangaInfoLabel.setTextColor(colorScheme.primary)
@@ -194,7 +183,6 @@ class EditMergedSettingsHeaderAdapter(
             // Set Spinner's dropdown caret color
             binding.dedupeModeSpinner.backgroundTintList = ColorStateList.valueOf(colorScheme.iconColor)
             binding.mangaInfoSpinner.backgroundTintList = ColorStateList.valueOf(colorScheme.iconColor)
-             <--
         }
     }
 

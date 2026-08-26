@@ -31,19 +31,15 @@ import tachiyomi.presentation.core.i18n.stringResource
 @Composable
 fun ReaderPageActionsDialog(
     onDismissRequest: () -> Unit,
-    onSetAsCover: (/* SY --> */useExtraPage: Boolean/* SY <-- */) -> Unit,
-    onShare: (copyToClipboard: Boolean, /* SY --> */useExtraPage: Boolean/* SY <-- */) -> Unit,
-    onSave: (/* SY --> */useExtraPage: Boolean/* SY <-- */) -> Unit,
-     -->
+    onSetAsCover: (useExtraPage: Boolean) -> Unit,
+    onShare: (copyToClipboard: Boolean, useExtraPage: Boolean) -> Unit,
+    onSave: (useExtraPage: Boolean) -> Unit,
     onShareCombined: (copyToClipboard: Boolean) -> Unit,
     onSaveCombined: () -> Unit,
     hasExtraPage: Boolean,
-     <--
 ) {
     var showSetCoverDialog by remember { mutableStateOf(false) }
-     -->
     var useExtraPage by remember { mutableStateOf(false) }
-     <--
 
     AdaptiveSheet(onDismissRequest = onDismissRequest) {
         Column(modifier = Modifier.padding(vertical = 16.dp)) {
@@ -53,13 +49,11 @@ fun ReaderPageActionsDialog(
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
-                         -->
                         if (hasExtraPage) {
                             SYMR.strings.action_set_first_page_cover
                         } else {
                             MR.strings.set_as_cover
                         },
-                         <--
                     ),
                     icon = Icons.Outlined.Photo,
                     onClick = { showSetCoverDialog = true },
@@ -67,57 +61,45 @@ fun ReaderPageActionsDialog(
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
-                         -->
                         if (hasExtraPage) {
                             KMR.strings.action_copy_to_clipboard_first_page
                         } else {
                             MR.strings.action_copy_to_clipboard
                         },
-                         <--
                     ),
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
-                         -->
                         onShare(true, false)
-                         <--
                         onDismissRequest()
                     },
                 )
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
-                         -->
                         if (hasExtraPage) {
                             SYMR.strings.action_share_first_page
                         } else {
                             MR.strings.action_share
                         },
-                         <--
                     ),
                     icon = Icons.Outlined.Share,
                     onClick = {
-                         -->
                         onShare(false, false)
-                         <--
                         onDismissRequest()
                     },
                 )
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
-                         -->
                         if (hasExtraPage) {
                             SYMR.strings.action_save_first_page
                         } else {
                             MR.strings.action_save
                         },
-                         <--
                     ),
                     icon = Icons.Outlined.Save,
                     onClick = {
-                         -->
                         onSave(false)
-                         <--
                         onDismissRequest()
                     },
                 )
@@ -200,11 +182,9 @@ fun ReaderPageActionsDialog(
     if (showSetCoverDialog) {
         SetCoverDialog(
             onConfirm = {
-                 -->
                 onSetAsCover(useExtraPage)
                 showSetCoverDialog = false
                 useExtraPage = false
-                 <--
             },
             onDismiss = { showSetCoverDialog = false },
         )

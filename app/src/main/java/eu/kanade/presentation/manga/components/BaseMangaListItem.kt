@@ -25,28 +25,20 @@ fun BaseMangaListItem(
     modifier: Modifier = Modifier,
     onClickItem: () -> Unit = {},
     onClickCover: () -> Unit = onClickItem,
-     -->
     onLongClick: () -> Unit = onClickItem,
-     <--
     cover: @Composable RowScope.() -> Unit = { defaultCover(manga, onClickCover) },
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable RowScope.() -> Unit = { defaultContent(manga) },
 ) {
-     -->
     val haptic = LocalHapticFeedback.current
-     <--
     Row(
         modifier = modifier
-             -->
             .combinedClickable(
-                 <--
                 onClick = onClickItem,
-                 -->
                 onLongClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick()
                 },
-                 <--
             )
             .height(56.dp)
             .padding(horizontal = MaterialTheme.padding.medium),
@@ -65,9 +57,7 @@ private val defaultCover: @Composable RowScope.(Manga, () -> Unit) -> Unit = { m
             .fillMaxHeight(),
         data = manga,
         onClick = onClick,
-         -->
         size = MangaCover.Size.Big,
-         <--
     )
 }
 

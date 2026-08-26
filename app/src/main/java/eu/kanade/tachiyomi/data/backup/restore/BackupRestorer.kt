@@ -40,12 +40,8 @@ class BackupRestorer(
     private val preferenceRestorer: PreferenceRestorer = PreferenceRestorer(context),
     private val extensionStoreRestorer: ExtensionStoreRestorer = ExtensionStoreRestorer(),
     private val mangaRestorer: MangaRestorer = MangaRestorer(isSync),
-     -->
     private val savedSearchRestorer: SavedSearchRestorer = SavedSearchRestorer(),
-     <--
-     -->
     private val feedRestorer: FeedRestorer = FeedRestorer(),
-     <--
 ) {
 
     private var restoreAmount = 0
@@ -88,11 +84,9 @@ class BackupRestorer(
         if (options.categories) {
             restoreAmount += 1
         }
-         -->
         if (options.savedSearchesFeeds) {
             restoreAmount += 1
         }
-         <--
         if (options.appSettings) {
             restoreAmount += 1
         }
@@ -107,16 +101,12 @@ class BackupRestorer(
             if (options.categories) {
                 restoreCategories(backup.backupCategories)
             }
-             -->
             if (options.savedSearchesFeeds) {
                 restoreSavedSearches(
                     backup.backupSavedSearches,
-                     -->
                     backup.backupFeeds,
-                     <--
                 )
             }
-             <--
             if (options.appSettings) {
                 restoreAppPreferences(backup.backupPreferences, backup.backupCategories.takeIf { options.categories })
             }
@@ -135,7 +125,7 @@ class BackupRestorer(
     }
 
     context(scope: CoroutineScope)
-    private /* KMK --> */suspend /* KMK <-- */ fun restoreCategories(backupCategories: List<BackupCategory>) {
+    private /* KMK*/suspend /* KMK*/ fun restoreCategories(backupCategories: List<BackupCategory>) {
         scope.ensureActive()
         categoriesRestorer(backupCategories)
 
@@ -147,24 +137,17 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
-                 -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
-             <--
         }
     }
 
-     -->
     private fun CoroutineScope.restoreSavedSearches(
         backupSavedSearches: List<BackupSavedSearch>,
-         -->
         backupFeeds: List<BackupFeed>,
-         <--
     ) = launch {
         ensureActive()
         savedSearchRestorer.restoreSavedSearches(backupSavedSearches)
-         -->
         feedRestorer.restoreFeeds(backupFeeds)
-         <--
 
         restoreProgress += 1
         with(notifier) {
@@ -174,12 +157,9 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
-                 -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
-             <--
         }
     }
-     <--
 
     private fun CoroutineScope.restoreManga(
         backupMangas: List<BackupManga>,
@@ -199,9 +179,7 @@ class BackupRestorer(
                 restoreProgress += 1
                 with(notifier) {
                     showRestoreProgress(it.title, restoreProgress, restoreAmount, isSync)
-                         -->
                         .show(Notifications.ID_RESTORE_PROGRESS)
-                     <--
                 }
             }
     }
@@ -224,9 +202,7 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
-                 -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
-             <--
         }
     }
 
@@ -242,9 +218,7 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
-                 -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
-             <--
         }
     }
 
@@ -262,18 +236,14 @@ class BackupRestorer(
                 }
 
                 restoreProgress += 1
-                 -->
                 with(notifier) {
-                     <--
                     showRestoreProgress(
                         context.stringResource(MR.strings.extensionStores),
                         restoreProgress,
                         restoreAmount,
                         isSync,
                     )
-                         -->
                         .show(Notifications.ID_RESTORE_PROGRESS)
-                     <--
                 }
             }
     }

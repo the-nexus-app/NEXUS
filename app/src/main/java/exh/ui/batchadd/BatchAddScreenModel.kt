@@ -26,9 +26,7 @@ class BatchAddScreenModel(
 ) : StateScreenModel<BatchAddState>(BatchAddState()) {
     private val galleryAdder by lazy { GalleryAdder() }
 
-     -->
     val isHentaiEnabled by Injekt.get<ExhPreferences>().isHentaiEnabled().asState(screenModelScope)
-     <--
 
     fun addGalleries(context: Context) {
         val galleries = state.value.galleries

@@ -159,7 +159,5 @@ class Kitsu(id: Long) : BaseTracker(id, "Kitsu"), DeletableTracker {
         }
     }
 
-     -->
     override fun hasNotStartedReading(status: Long): Boolean = status == PLAN_TO_READ
-     <--
 }

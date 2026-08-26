@@ -234,9 +234,7 @@ fun ExhUtils(
                     Icons.Outlined.KeyboardArrowDown
                 },
                 contentDescription = null,
-                 -->
                 tint = MaterialTheme.colorScheme.primary,
-                 <--
             )
         }
     }

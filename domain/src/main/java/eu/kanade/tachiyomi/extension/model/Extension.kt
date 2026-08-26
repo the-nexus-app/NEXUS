@@ -15,10 +15,8 @@ sealed class Extension {
     abstract val lang: String?
     abstract val isNsfw: Boolean
 
-     -->
     abstract val signatureHash: String
     abstract val storeName: String?
-     <--
 
     data class Installed(
         override val name: String,
@@ -28,11 +26,9 @@ sealed class Extension {
         override val libVersion: Double,
         override val lang: String,
         override val isNsfw: Boolean,
-         -->
         override val signatureHash: String,
         /** Guessing store name from built-in signatures preset */
         override val storeName: String? = null,
-         <--
         val pkgFactory: String?,
         val sources: List<Source>,
         val icon: Drawable?,
@@ -40,9 +36,7 @@ sealed class Extension {
         val isObsolete: Boolean = false,
         val isShared: Boolean,
         val store: ExtensionStore? = null,
-         -->
         val isRedundant: Boolean = false,
-         <--
     ) : Extension()
 
     data class Available(
@@ -53,10 +47,8 @@ sealed class Extension {
         override val libVersion: Double,
         override val lang: String,
         override val isNsfw: Boolean,
-         -->
         override val signatureHash: String,
         override val storeName: String,
-         <--
         val sources: List<Source>,
         val apkUrl: String,
         val iconUrl: String,
@@ -85,11 +77,9 @@ sealed class Extension {
         override val versionName: String,
         override val versionCode: Long,
         override val libVersion: Double,
-        /* KMK --> */
-        override /* KMK <-- */ val signatureHash: String,
-         -->
+        /* KMK*/
+        override /* KMK*/ val signatureHash: String,
         override val storeName: String? = null,
-         <--
         override val lang: String? = null,
         override val isNsfw: Boolean = false,
     ) : Extension()

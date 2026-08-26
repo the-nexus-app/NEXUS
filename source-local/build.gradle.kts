@@ -12,9 +12,7 @@ kotlin {
             dependencies {
                 implementation(projects.sourceApi)
                 api(projects.i18n)
-                 -->
                 api(projects.i18nSy)
-                 <--
 
                 implementation(libs.unifile)
             }

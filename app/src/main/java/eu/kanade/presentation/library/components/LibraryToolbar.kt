@@ -41,10 +41,8 @@ fun LibraryToolbar(
     onClickGlobalUpdate: () -> Unit,
     onClickOpenRandomManga: () -> Unit,
     onClickSyncNow: () -> Unit,
-     -->
     onClickSyncExh: (() -> Unit)?,
     isSyncEnabled: Boolean,
-     <--
     searchQuery: String?,
     onSearchQueryChange: (String?) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior?,
@@ -66,10 +64,8 @@ fun LibraryToolbar(
         onClickGlobalUpdate = onClickGlobalUpdate,
         onClickOpenRandomManga = onClickOpenRandomManga,
         onClickSyncNow = onClickSyncNow,
-         -->
         onClickSyncExh = onClickSyncExh,
         isSyncEnabled = isSyncEnabled,
-         <--
         scrollBehavior = scrollBehavior,
         onInvalidateDownloadCache = onInvalidateDownloadCache,
     )
@@ -86,10 +82,8 @@ private fun LibraryRegularToolbar(
     onClickGlobalUpdate: () -> Unit,
     onClickOpenRandomManga: () -> Unit,
     onClickSyncNow: () -> Unit,
-     -->
     onClickSyncExh: (() -> Unit)?,
     isSyncEnabled: Boolean,
-     <--
     scrollBehavior: TopAppBarScrollBehavior?,
     onInvalidateDownloadCache: (Context) -> Unit,
 ) {
@@ -144,7 +138,6 @@ private fun LibraryRegularToolbar(
                         },
                     ),
                 ).builder().apply {
-                     -->
                     if (onClickSyncExh != null) {
                         add(
                             AppBar.OverflowAction(
@@ -161,7 +154,6 @@ private fun LibraryRegularToolbar(
                             ),
                         )
                     }
-                     <--
                 }.build(),
             )
         },

@@ -35,13 +35,11 @@ class StubSource(
     override suspend fun getPageList(chapter: SChapter): List<Page> =
         throw SourceNotInstalledException()
 
-     -->
     override suspend fun getRelatedMangaList(
         manga: SManga,
         exceptionHandler: (Throwable) -> Unit,
         pushResults: suspend (relatedManga: Pair<String, List<SManga>>, completed: Boolean) -> Unit,
     ) = throw SourceNotInstalledException()
-     <--
 
     override fun toString(): String =
         if (!isInvalid) "$name (${lang.uppercase()})" else id.toString()

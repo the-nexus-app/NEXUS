@@ -133,7 +133,6 @@ class MangaUpdates(id: Long) : BaseTracker(id, "MangaUpdates"), DeletableTracker
         }
     }
 
-     -->
     override suspend fun searchById(id: String): TrackSearch? {
         /*
          * MangaUpdates uses newer base36 IDs (in URLs displayed as an encoded string, internally as a long)
@@ -159,13 +158,10 @@ class MangaUpdates(id: Long) : BaseTracker(id, "MangaUpdates"), DeletableTracker
             null
         }
     }
-     <--
 
     fun restoreSession(): String? {
         return trackPreferences.trackPassword(this).get().ifBlank { null }
     }
 
-     -->
     override fun hasNotStartedReading(status: Long): Boolean = status == WISH_LIST
-     <--
 }

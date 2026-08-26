@@ -70,7 +70,6 @@ fun LazyListState.isScrollingDown(): Boolean {
     }.value
 }
 
- -->
 @Composable
 private fun LazyListState.isItemScrolling(
     initialValue: Boolean,
@@ -102,4 +101,3 @@ fun LazyListState.isItemScrollingUp(initiallyVisible: Boolean = true): Boolean {
 fun LazyListState.isItemScrollingDown(initiallyVisible: Boolean = false): Boolean {
     return isItemScrolling(initialValue = initiallyVisible) { previous, current -> previous < current }
 }
- <--

@@ -82,21 +82,21 @@ class WebViewActivity : BaseActivity() {
                 onClearCookies = this::clearCookies,
             )
         }
-        // AM (DISCORD) -->
+        // AM (DISCORD)
         with(DiscordRPCService) {
             discordScope.launchIO { setScreen(this@WebViewActivity, DiscordScreen.WEBVIEW) }
         }
-        // <-- AM (DISCORD)
+        //AM (DISCORD)
     }
 
-    // AM (DISCORD) -->
+    // AM (DISCORD)
     override fun onDestroy() {
         with(DiscordRPCService) {
             discordScope.launchIO { setScreen(this@WebViewActivity) }
         }
         super.onDestroy()
     }
-    // <-- AM (DISCORD)
+    //AM (DISCORD)
 
     override fun onProvideAssistContent(outContent: AssistContent) {
         super.onProvideAssistContent(outContent)

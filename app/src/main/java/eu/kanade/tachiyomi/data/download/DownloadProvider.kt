@@ -30,9 +30,7 @@ class DownloadProvider(
     private val context: Context,
     private val storageManager: StorageManager = Injekt.get(),
     private val libraryPreferences: LibraryPreferences = Injekt.get(),
-     -->
     private val downloadPreferences: DownloadPreferences = Injekt.get(),
-     <--
 ) {
 
     private val downloadsDir: UniFile?
@@ -82,11 +80,9 @@ class DownloadProvider(
      * @param source the source to query.
      */
     fun findSourceDir(source: Source): UniFile? {
-         -->
         return if (source.isLocal()) {
             storageManager.getLocalSourceDirectory()
         } else {
-             <--
             downloadsDir?.findFile(getSourceDirName(source))
         }
     }
@@ -131,9 +127,8 @@ class DownloadProvider(
      * @param source the source of the chapter.
      */
     fun findChapterDirs(chapters: List<Chapter>, manga: Manga, source: Source): Pair<UniFile?, List<UniFile>> {
-        val mangaDir = findMangaDir(/* SY --> */ manga.ogTitle /* SY <-- */, source) ?: return null to emptyList()
+        val mangaDir = findMangaDir(manga.ogTitle , source) ?: return null to emptyList()
         return mangaDir to chapters.mapNotNull { chapter ->
-             -->
             if (source.isLocal()) {
                 val splitUrl = chapter.url.split('/', limit = 2)
                 if (splitUrl.size < 2) {
@@ -144,7 +139,6 @@ class DownloadProvider(
                         ?: storageManager.getLocalSourceDirectory()?.findFile(mangaDirName)?.findFile(chapterDirName)
                 }
             } else {
-                 <--
                 getValidChapterDirNames(chapter.name, chapter.scanlator, chapter.url).asSequence()
                     .mapNotNull { mangaDir.findFile(it) }
                     .firstOrNull()
@@ -152,7 +146,6 @@ class DownloadProvider(
         }
     }
 
-     -->
     /**
      * Returns a list of all files in manga directory
      *
@@ -165,7 +158,7 @@ class DownloadProvider(
         manga: Manga,
         source: Source,
     ): List<UniFile> {
-        val mangaDir = findMangaDir(/* SY --> */ manga.ogTitle /* SY <-- */, source) ?: return emptyList()
+        val mangaDir = findMangaDir(manga.ogTitle , source) ?: return emptyList()
         return mangaDir.listFiles().orEmpty().asList().filter {
             chapters.find { chp ->
                 getValidChapterDirNames(chp.name, chp.scanlator, chp.url).any { dir ->
@@ -175,7 +168,6 @@ class DownloadProvider(
                 it.name?.endsWith(Downloader.TMP_DIR_SUFFIX) == true
         }
     }
-     <--
 
     /**
      * Returns the download directory name for a source.
@@ -213,9 +205,7 @@ class DownloadProvider(
         chapterScanlator: String?,
         chapterUrl: String,
         disallowNonAsciiFilenames: Boolean = libraryPreferences.disallowNonAsciiFilenames().get(),
-         -->
         includeChapterUrlHash: Boolean = downloadPreferences.includeChapterUrlHash().get(),
-         <--
     ): String {
         var dirName = sanitizeChapterName(chapterName)
         if (!chapterScanlator.isNullOrBlank()) {
@@ -223,7 +213,7 @@ class DownloadProvider(
         }
         // Subtract 7 bytes for hash and underscore, 4 bytes for .cbz
         dirName = DiskUtil.buildValidFilename(dirName, DiskUtil.MAX_FILE_NAME_BYTES - 11, disallowNonAsciiFilenames)
-        /* SY --> */ if (includeChapterUrlHash) /* SY <-- */ dirName += "_" + md5(chapterUrl).take(6)
+        if (includeChapterUrlHash) dirName += "_" + md5(chapterUrl).take(6)
         return dirName
     }
 
@@ -259,9 +249,7 @@ class DownloadProvider(
                 chapterScanlator,
                 chapterUrl,
                 !libraryPreferences.disallowNonAsciiFilenames().get(),
-                 -->
                 !downloadPreferences.includeChapterUrlHash().get(),
-                 <--
             )
 
         return buildList(2) {

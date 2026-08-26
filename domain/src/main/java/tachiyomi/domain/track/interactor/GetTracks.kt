@@ -19,7 +19,6 @@ class GetTracks(
         }
     }
 
-     -->
     suspend fun await(): List<Track> {
         return try {
             trackRepository.getTracks()
@@ -38,7 +37,6 @@ class GetTracks(
             emptyMap()
         }
     }
-     <--
 
     suspend fun await(mangaId: Long): List<Track> {
         return try {

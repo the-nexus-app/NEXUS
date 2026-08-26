@@ -31,9 +31,7 @@ actual class LocalCoverManager(
     actual fun update(
         manga: SManga,
         inputStream: InputStream,
-         -->
         encrypted: Boolean,
-         <--
     ): UniFile? {
         val directory = fileSystem.getMangaDirectory(manga.url)
         if (directory == null) {
@@ -43,19 +41,16 @@ actual class LocalCoverManager(
 
         var targetFile = find(manga.url)
         if (targetFile == null) {
-             -->
             targetFile = if (encrypted) {
                 directory.createFile(COVER_ARCHIVE_NAME)
             } else {
                 directory.createFile(DEFAULT_COVER_NAME)
             }
-             <--
         }
 
         targetFile!!
 
         inputStream.use { input ->
-             -->
             if (encrypted) {
                 ZipWriter(context, targetFile, encrypt = true).use { writer ->
                     writer.write(inputStream.readBytes(), DEFAULT_COVER_NAME)
@@ -65,7 +60,6 @@ actual class LocalCoverManager(
                 manga.thumbnail_url = targetFile.uri.toString()
                 return targetFile
             } else {
-                 <--
                 targetFile.openOutputStream().use { output ->
                     input.copyTo(output)
                 }

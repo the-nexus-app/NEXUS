@@ -52,13 +52,9 @@ internal fun LibraryCompactGrid(
                     LanguageBadge(
                         isLocal = libraryItem.isLocal,
                         sourceLanguage = libraryItem.sourceLanguage,
-                         -->
                         useLangIcon = libraryItem.useLangIcon,
-                         <--
                     )
-                     -->
                     SourceIconBadge(source = libraryItem.source)
-                     <--
                 },
                 onLongClick = { onLongClick(libraryItem.libraryManga) },
                 onClick = { onClick(libraryItem.libraryManga) },

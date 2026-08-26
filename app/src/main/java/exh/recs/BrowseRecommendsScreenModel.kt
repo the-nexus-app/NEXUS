@@ -46,9 +46,7 @@ class BrowseRecommendsScreenModel(
             is BrowseRecommendsScreen.Args.MergedSourceMangas -> StaticResultPagingSource(args.results)
             is BrowseRecommendsScreen.Args.SingleSourceManga -> RecommendationPagingSource.createSources(
                 manga ?: runBlocking(Dispatchers.IO) { getManga.await(args.mangaId)!! },
-                 -->
                 RecommendationSource(sourceId),
-                 <--
             ).first {
                 it::class.qualifiedName == args.recommendationSourceName
             }

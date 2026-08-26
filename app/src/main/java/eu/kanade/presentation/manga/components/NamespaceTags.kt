@@ -96,9 +96,7 @@ value class SearchMetadataChips(
 fun NamespaceTags(
     tags: SearchMetadataChips,
     onClick: (item: String) -> Unit,
-     -->
     pureDarkMode: Boolean = false,
-     <--
 ) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         tags.tags.forEach { (namespace, tags) ->
@@ -108,9 +106,7 @@ fun NamespaceTags(
                         modifier = Modifier.padding(top = 4.dp),
                         text = namespace,
                         onClick = null,
-                         -->
                         pureDarkMode = pureDarkMode,
-                         <--
                     )
                 }
                 FlowRow(
@@ -126,28 +122,20 @@ fun NamespaceTags(
                             border = borderDp?.let {
                                 SuggestionChipDefaults.suggestionChipBorder(
                                     borderWidth = it,
-                                     -->
                                     borderColor = MaterialTheme.colorScheme.primary,
-                                     <--
                                 )
                             } ?: SuggestionChipDefaults.suggestionChipBorder(
-                                 -->
                                 borderColor = MaterialTheme.colorScheme.primary,
-                                 <--
                             ),
                             borderM3 = borderDp?.let {
                                 SuggestionChipDefaultsM3.suggestionChipBorder(
                                     enabled = true,
                                     borderWidth = it,
-                                     -->
                                     borderColor = MaterialTheme.colorScheme.primary,
-                                     <--
                                 )
                             } ?: SuggestionChipDefaultsM3.suggestionChipBorder(
                                 enabled = true,
-                                 -->
                                 borderColor = MaterialTheme.colorScheme.primary,
-                                 <--
                             ),
                         )
                     }
@@ -163,17 +151,13 @@ fun TagsChip(
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     border: ChipBorder? = SuggestionChipDefaults.suggestionChipBorder(),
-     -->
     // borderM3: BorderStroke? = SuggestionChipDefaultsM3.suggestionChipBorder(enabled = true),
     borderM3: BorderStroke? = null,
     pureDarkMode: Boolean = false,
-     <--
 ) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
         if (onClick != null) {
-             -->
             if (borderM3 != null || pureDarkMode) {
-                 <--
                 SuggestionChip(
                     modifier = modifier,
                     onClick = onClick,
@@ -186,7 +170,6 @@ fun TagsChip(
                         )
                     },
                     border = borderM3
-                         -->
                         ?: SuggestionChipDefaultsM3.suggestionChipBorder(
                             enabled = true,
                             borderColor = MaterialTheme.colorScheme.primary,
@@ -209,7 +192,6 @@ fun TagsChip(
                     ),
                 )
             }
-             <--
         } else {
             SuggestionChip(
                 modifier = modifier,

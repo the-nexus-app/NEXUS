@@ -33,9 +33,7 @@ class RefreshTracks(
      */
     suspend fun await(
         mangaId: Long,
-         -->
         enhancedTrackersOnly: Boolean = true,
-         <--
     ): List<Pair<Tracker?, Throwable>> {
         return supervisorScope {
             return@supervisorScope getTracks.await(mangaId)
@@ -46,21 +44,17 @@ class RefreshTracks(
                         return@async try {
                             val updatedTrack = service!!.refresh(track.toDbTrack()).toDomainTrack()!!
                             insertTrack.await(updatedTrack)
-                             -->
                             if (!enhancedTrackersOnly) {
                                 syncChapterProgressWithTrack.sync(mangaId, updatedTrack, service)
                             } else {
-                                 <--
                                 syncChapterProgressWithTrack.await(mangaId, updatedTrack, service)
                             }
-                                 -->
                                 ?.let {
                                     val context = Injekt.get<Application>()
                                     withUIContext {
                                         context.toast(context.stringResource(KMR.strings.sync_progress_from_trackers_up_to_chapter, it))
                                     }
                                 }
-                             <--
                             null
                         } catch (e: Throwable) {
                             service to e

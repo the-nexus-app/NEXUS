@@ -42,7 +42,6 @@ class ExtensionInstallService : Service() {
             setContentTitle(stringResource(MR.strings.ext_install_service_notif))
             setProgress(100, 100, true)
         }.build()
-         -->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
                 Notifications.ID_EXTENSION_INSTALLER,
@@ -50,7 +49,6 @@ class ExtensionInstallService : Service() {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
             )
         } else {
-             <--
             startForeground(Notifications.ID_EXTENSION_INSTALLER, notification)
         }
     }

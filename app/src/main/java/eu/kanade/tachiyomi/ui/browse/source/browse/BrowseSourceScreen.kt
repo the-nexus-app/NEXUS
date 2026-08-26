@@ -88,13 +88,11 @@ import uy.kohesive.injekt.api.get
 data class BrowseSourceScreen(
     val sourceId: Long,
     private val listingQuery: String?,
-     -->
     private val filtersJson: String? = null,
     private val savedSearch: Long? = null,
     /** being set when called from [SmartSearchScreen] or when click on a manga from this screen
      * which was previously opened from `SmartSearchScreen` */
     private val smartSearchConfig: SourcesScreen.SmartSearchConfig? = null,
-     <--
 ) : Screen(), AssistContentScreen {
 
     private var assistUrl: String? = null
@@ -112,10 +110,8 @@ data class BrowseSourceScreen(
             BrowseSourceScreenModel(
                 sourceId = sourceId,
                 listingQuery = listingQuery,
-                 -->
                 filtersJson = filtersJson,
                 savedSearch = savedSearch,
-                 <--
             )
         }
         val state by screenModel.state.collectAsState()
@@ -128,13 +124,9 @@ data class BrowseSourceScreen(
             }
         }
 
-         -->
         val context = LocalContext.current
-         <--
 
-         -->
         screenModel.source.let {
-             <--
             if (it is StubSource) {
                 MissingSourceScreen(
                     source = it,
@@ -161,26 +153,22 @@ data class BrowseSourceScreen(
             )
         }
 
-         -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
-         <--
 
         LaunchedEffect(screenModel.source) {
             assistUrl = (screenModel.source as? HttpSource)?.getHomeUrl()
         }
 
-         -->
         val mangaList = screenModel.mangaPagerFlowFlow.collectAsLazyPagingItems()
 
         val isHentaiEnabled: Boolean = Injekt.get<ExhPreferences>().isHentaiEnabled().get()
         val isConfigurableSource = screenModel.source.anyIs<ConfigurableSource>() ||
             (screenModel.source.isEhBasedSource() && isHentaiEnabled)
-         <--
 
         Scaffold(
             topBar = {
@@ -189,7 +177,6 @@ data class BrowseSourceScreen(
                         .background(MaterialTheme.colorScheme.surface)
                         .pointerInput(Unit) {},
                 ) {
-                     -->
                     if (bulkFavoriteState.selectionMode) {
                         BulkSelectionToolbar(
                             selectedCount = bulkFavoriteState.selection.size,
@@ -208,22 +195,18 @@ data class BrowseSourceScreen(
                             },
                         )
                     } else {
-                         <--
                         BrowseSourceToolbar(
                             searchQuery = state.toolbarQuery,
                             onSearchQueryChange = screenModel::setToolbarQuery,
                             source = screenModel.source,
                             displayMode = screenModel.displayMode
-                                 -->
                                 .takeIf {
                                     !screenModel.source.isEhBasedSource() || !screenModel.ehentaiBrowseDisplayMode
                                 },
-                             <--
                             onDisplayModeChange = { screenModel.displayMode = it },
                             navigateUp = navigateUp,
                             onWebViewClick = onWebViewClick,
                             onHelpClick = onHelpClick,
-                             -->
                             onToggleIncognito = screenModel::toggleIncognitoMode,
                             onSettingsClick = {
                                 when {
@@ -234,12 +217,9 @@ data class BrowseSourceScreen(
                                     else -> {}
                                 }
                             }.takeIf { isConfigurableSource },
-                             <--
                             onSearch = screenModel::search,
-                             -->
                             toggleSelectionMode = bulkFavoriteScreenModel::toggleSelectionMode,
                             isRunning = bulkFavoriteState.isRunning,
-                             <--
                         )
                     }
 
@@ -287,12 +267,10 @@ data class BrowseSourceScreen(
                                 },
                             )
                         }
-                        if (/* SY --> */ state.filterable /* SY <-- */) {
+                        if (state.filterable ) {
                             FilterChip(
                                 selected = state.listing is Listing.Search &&
-                                     -->
                                     (state.listing as Listing.Search).savedSearchId == null,
-                                 <--
                                 onClick = screenModel::openFilterSheet,
                                 leadingIcon = {
                                     Icon(
@@ -303,7 +281,6 @@ data class BrowseSourceScreen(
                                     )
                                 },
                                 label = {
-                                     -->
                                     Text(
                                         text = if (state.filters.isNotEmpty()) {
                                             stringResource(MR.strings.action_filter)
@@ -311,11 +288,9 @@ data class BrowseSourceScreen(
                                             stringResource(MR.strings.action_search)
                                         },
                                     )
-                                     <--
                                 },
                             )
                         }
-                         -->
                         state.savedSearches.forEach { savedSearch ->
                             FilterChip(
                                 selected = state.listing is Listing.Search &&
@@ -332,7 +307,6 @@ data class BrowseSourceScreen(
                                 },
                             )
                         }
-                         <--
                     }
 
                     HorizontalDivider()
@@ -344,9 +318,7 @@ data class BrowseSourceScreen(
                 source = screenModel.source,
                 mangaList = mangaList,
                 columns = screenModel.getColumnsPreference(LocalConfiguration.current.orientation),
-                 -->
                 ehentaiBrowseDisplayMode = screenModel.ehentaiBrowseDisplayMode,
-                 <--
                 displayMode = screenModel.displayMode,
                 snackbarHostState = snackbarHostState,
                 contentPadding = paddingValues,
@@ -354,31 +326,25 @@ data class BrowseSourceScreen(
                 onHelpClick = { uriHandler.openUri(Constants.URL_HELP) },
                 onLocalSourceHelpClick = onHelpClick,
                 onMangaClick = { manga ->
-                     -->
                     if (bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.toggleSelection(manga)
                     } else {
-                         <--
                         navigator.push(
                             MangaScreen(
                                 mangaId = manga.id,
-                                 -->
                                 // Finding the entry to be merged to, so we don't want to expand description
                                 // so that user can see the `Merge to another` button
                                 fromSource = smartSearchConfig == null,
-                                 <--
                                 smartSearchConfig = smartSearchConfig,
                             ),
                         )
                     }
                 },
                 onMangaLongClick = { manga ->
-                     -->
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     if (bulkFavoriteState.selectionMode) {
                         navigator.push(MangaScreen(manga.id, true))
                     } else {
-                         <--
                         scope.launchIO {
                             val duplicates = screenModel.getDuplicateLibraryManga(manga)
                             when {
@@ -391,9 +357,7 @@ data class BrowseSourceScreen(
                         }
                     }
                 },
-                 -->
                 selection = bulkFavoriteState.selection,
-                 <--
             )
         }
 
@@ -406,7 +370,6 @@ data class BrowseSourceScreen(
                     onReset = screenModel::resetFilters,
                     onFilter = { screenModel.search(filters = state.filters) },
                     onUpdate = screenModel::setFilters,
-                     -->
                     startExpanded = screenModel.startExpanded,
                     onSave = screenModel::onSaveSearch,
                     savedSearches = state.savedSearches,
@@ -416,9 +379,7 @@ data class BrowseSourceScreen(
                         }
                     },
                     onSavedSearchPress = screenModel::onSavedSearchPress,
-                     -->
                     onSavedSearchPressDesc = stringResource(KMR.strings.saved_searches_delete),
-                     <--
                     openMangaDexRandom = if (screenModel.source.isMdBasedSource()) {
                         {
                             screenModel.onMangaDexRandom {
@@ -435,15 +396,12 @@ data class BrowseSourceScreen(
                     },
                     openMangaDexFollows = if (screenModel.source.isMdBasedSource()) {
                         {
-                             -->
                             // navigator.replace(MangaDexFollowsScreen(sourceId))
                             navigator.push(MangaDexFollowsScreen(sourceId))
-                             <--
                         }
                     } else {
                         null
                     },
-                     <--
                 )
             }
             is BrowseSourceScreenModel.Dialog.AddDuplicateManga -> {
@@ -453,9 +411,7 @@ data class BrowseSourceScreen(
                     onConfirm = { screenModel.addFavorite(dialog.manga) },
                     onOpenManga = { navigator.push(MangaScreen(it.id)) },
                     onMigrate = { screenModel.setDialog(BrowseSourceScreenModel.Dialog.Migrate(dialog.manga, it)) },
-                     -->
                     targetManga = dialog.manga,
-                     <--
                 )
             }
 
@@ -503,13 +459,11 @@ data class BrowseSourceScreen(
             else -> {}
         }
 
-         -->
         // Bulk-favorite actions only
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
-         <--
 
         LaunchedEffect(Unit) {
             queryEvent.receiveAsFlow()

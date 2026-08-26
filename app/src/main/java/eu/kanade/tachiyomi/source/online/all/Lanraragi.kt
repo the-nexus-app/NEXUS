@@ -210,7 +210,7 @@ class Lanraragi(delegate: HttpSource, val context: Context) :
                 }
                 var tries = 0
                 do {
-                    if (tries > /* KMK --> */ 0 /* KMK <-- */) {
+                    if (tries > /* KMK*/ 0 /* KMK*/) {
                         delay(200.milliseconds)
                     }
                     val jobDone = minionJobDone(task.job)

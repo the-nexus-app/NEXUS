@@ -20,7 +20,7 @@ class SyncPrefKeyMigration : Migration {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
         val stringRenames = listOf(
-            nc service connection
+            // Sync service connection
             "sync_client_host" to "connection_sync_client_host",
             "sync_client_api_key" to "connection_sync_client_api_key",
             // WebDAV connection (KMK)
@@ -44,7 +44,7 @@ class SyncPrefKeyMigration : Migration {
             "extensionRepoSettings" to "sync_extensionStores",
             "sourceSettings" to "sync_sourceSettings",
             "privateSettings" to "sync_privateSettings",
-             sync toggles
+            // Legacy sync toggles
             "customInfo" to "sync_customInfo",
             "readEntries" to "sync_readEntries",
             "savedSearchesFeeds" to "sync_savedSearchesFeeds",

@@ -37,9 +37,7 @@ class GalleryAdder(
     private val Pair<Set<String>, Set<Long>>.disabledSources
         get() = second
 
-     -->
     private val logger = ResettableLogger { safeXLogStackTag() }
-     <--
 
     fun pickSource(url: String): List<UrlImportableSource> {
         val uri = url.toUri()

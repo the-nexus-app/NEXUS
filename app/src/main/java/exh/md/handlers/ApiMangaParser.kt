@@ -91,14 +91,12 @@ class ApiMangaParser(
                 mdUuid = mangaDto.data.id
                 title = MdUtil.getTitleFromManga(mangaAttributesDto, lang, preferExtensionLangTitle)
                 altTitles = mangaAttributesDto.altTitles
-                     -->
                     .mapNotNull { langMap ->
                         langMap
                             .filter { it.key == lang || it.key == "${mangaAttributesDto.originalLanguage}-ro" }
                             .takeIf { it.isNotEmpty() }
                     }
                     .flatMap { it.values }
-                     <--
                     .nullIfEmpty()
 
                 val mangaRelationshipsDto = mangaDto.data.relationships

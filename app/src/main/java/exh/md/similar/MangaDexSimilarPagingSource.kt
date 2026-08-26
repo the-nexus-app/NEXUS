@@ -27,14 +27,10 @@ import uy.kohesive.injekt.api.get
  */
 internal class MangaDexSimilarPagingSource(
     manga: Manga,
-     -->
     private val recommendationSource: RecommendationSource,
-     <--
 ) : RecommendationPagingSource(
     manga,
-     -->
     recommendationSource,
-     <--
 ) {
 
     override val name: String
@@ -44,7 +40,6 @@ internal class MangaDexSimilarPagingSource(
         get() = SYMR.strings.similar_titles
 
     override val associatedSourceId: Long
-         -->
         get() = recommendationSource.id
 
     private val network by lazy { Injekt.get<NetworkHelper>() }
@@ -73,20 +68,15 @@ internal class MangaDexSimilarPagingSource(
     private val similarHandler by lazy {
         SimilarHandler(mdLang.lang, mangadexService, similarService)
     }
-     <--
 
     override suspend fun requestNextPage(currentPage: Int): MangasPage {
         val mangasPage = coroutineScope {
             try {
                 val similarPageDef = async {
-                     -->
                     similarHandler.getSimilar(manga.toSManga())
-                     <--
                 }
                 val relatedPageDef = async {
-                     -->
                     similarHandler.getRelated(manga.toSManga())
-                     <--
                 }
                 val similarPage = similarPageDef.await()
                 val relatedPage = relatedPageDef.await()

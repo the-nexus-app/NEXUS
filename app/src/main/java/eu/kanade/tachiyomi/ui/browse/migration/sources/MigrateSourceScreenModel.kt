@@ -40,12 +40,9 @@ class MigrateSourceScreenModel(
 
     init {
         screenModelScope.launchIO {
-             -->
             combine(
                 state.map { it.searchQuery }.distinctUntilChanged().debounce(SEARCH_DEBOUNCE_MILLIS),
-                 <--
                 getSourcesWithFavoriteCount.subscribe(),
-                 -->
             ) { searchQuery, sourceCounts ->
                 val queryFilter: (String?) -> ((Pair<Source, Long>) -> Boolean) = { query ->
                     filter@{ pair ->
@@ -62,7 +59,6 @@ class MigrateSourceScreenModel(
                 }
                 sourceCounts.filter(queryFilter(searchQuery))
             }
-                 <--
                 .catch {
                     logcat(LogPriority.ERROR, it)
                     _channel.send(Event.FailedFetchingSourcesWithCount)
@@ -108,13 +104,11 @@ class MigrateSourceScreenModel(
         }
     }
 
-     -->
     fun search(query: String?) {
         mutableState.update {
             it.copy(searchQuery = query)
         }
     }
-     <--
 
     @Immutable
     data class State(
@@ -122,9 +116,7 @@ class MigrateSourceScreenModel(
         val items: ImmutableList<Pair<Source, Long>> = persistentListOf(),
         val sortingMode: SetMigrateSorting.Mode = SetMigrateSorting.Mode.ALPHABETICAL,
         val sortingDirection: SetMigrateSorting.Direction = SetMigrateSorting.Direction.ASCENDING,
-         -->
         val searchQuery: String? = null,
-         <--
     ) {
         val isEmpty = items.isEmpty()
     }

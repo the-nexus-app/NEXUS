@@ -8,8 +8,6 @@ data class Release(
     val info: String,
     val releaseLink: String,
     val downloadLink: String,
-     -->
     val preRelease: Boolean = false,
     val draft: Boolean = false,
-     <--
 )

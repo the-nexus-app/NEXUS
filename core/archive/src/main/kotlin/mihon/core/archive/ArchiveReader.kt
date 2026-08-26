@@ -11,7 +11,6 @@ class ArchiveReader(pfd: ParcelFileDescriptor) : Closeable {
     val size = pfd.statSize
     val address = Os.mmap(0, size, OsConstants.PROT_READ, OsConstants.MAP_PRIVATE, pfd.fileDescriptor, 0)
 
-     -->
     var encrypted: Boolean = false
         private set
     var wrongPassword: Boolean? = null
@@ -21,18 +20,15 @@ class ArchiveReader(pfd: ParcelFileDescriptor) : Closeable {
     init {
         checkEncryptionStatus()
     }
-     <--
 
     inline fun <T> useEntries(block: (Sequence<ArchiveEntry>) -> T): T = ArchiveInputStream(
         address,
         size,
-         -->
         encrypted,
-         <--
     ).use { block(generateSequence { it.getNextEntry() }) }
 
     fun getInputStream(entryName: String): InputStream? {
-        val archive = ArchiveInputStream(address, size, /* SY --> */ encrypted /* SY <-- */)
+        val archive = ArchiveInputStream(address, size, encrypted )
         try {
             while (true) {
                 val entry = archive.getNextEntry() ?: break
@@ -48,7 +44,6 @@ class ArchiveReader(pfd: ParcelFileDescriptor) : Closeable {
         return null
     }
 
-     -->
     private fun checkEncryptionStatus() {
         val archive = ArchiveInputStream(address, size, false)
         try {
@@ -81,7 +76,6 @@ class ArchiveReader(pfd: ParcelFileDescriptor) : Closeable {
         }
         wrongPassword = false
     }
-     <--
 
     override fun close() {
         Os.munmap(address, size)

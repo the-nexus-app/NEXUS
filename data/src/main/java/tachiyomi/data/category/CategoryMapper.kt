@@ -8,18 +8,14 @@ object CategoryMapper {
         name: String,
         order: Long,
         flags: Long,
-         -->
         hidden: Long,
-         <--
     ): Category {
         return Category(
             id = id,
             name = name,
             order = order,
             flags = flags,
-             -->
             hidden = hidden == 1L,
-             <--
         )
     }
 }

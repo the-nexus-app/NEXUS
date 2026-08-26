@@ -56,7 +56,6 @@ class BrowseRecommendsScreen(
 
         val screenModel = rememberScreenModel { BrowseRecommendsScreenModel(args) }
 
-         -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
@@ -65,7 +64,6 @@ class BrowseRecommendsScreen(
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
-         <--
 
         val snackbarHostState = remember { SnackbarHostState() }
 
@@ -78,7 +76,6 @@ class BrowseRecommendsScreen(
             )
         }
 
-         -->
         val onLongClickItem = { manga: Manga ->
             when (isExternalSource) {
                 true -> WebViewActivity.newIntent(context, manga.url, title = manga.title).let(context::startActivity)
@@ -87,11 +84,9 @@ class BrowseRecommendsScreen(
         }
 
         val mangaList = screenModel.mangaPagerFlowFlow.collectAsLazyPagingItems()
-         <--
 
         Scaffold(
             topBar = { scrollBehavior ->
-                 -->
                 if (bulkFavoriteState.selectionMode) {
                     BulkSelectionToolbar(
                         selectedCount = bulkFavoriteState.selection.size,
@@ -110,7 +105,6 @@ class BrowseRecommendsScreen(
                         },
                     )
                 } else {
-                     <--
                     val title = remember {
                         val recSource = screenModel.recommendationPagingSource
                         "${recSource.name} (${recSource.category.getString(context)})"
@@ -122,12 +116,10 @@ class BrowseRecommendsScreen(
                         displayMode = screenModel.displayMode,
                         onDisplayModeChange = { screenModel.displayMode = it },
                         scrollBehavior = scrollBehavior,
-                         -->
                         toggleSelectionMode = {
                             bulkFavoriteScreenModel.toggleSelectionMode(true)
                         }.takeIf { !isExternalSource },
                         isRunning = bulkFavoriteState.isRunning,
-                         <--
                     )
                 }
             },
@@ -137,9 +129,7 @@ class BrowseRecommendsScreen(
                 source = screenModel.source,
                 mangaList = mangaList,
                 columns = screenModel.getColumnsPreference(LocalConfiguration.current.orientation),
-                 -->
                 ehentaiBrowseDisplayMode = false,
-                 <--
                 displayMode = screenModel.displayMode,
                 snackbarHostState = snackbarHostState,
                 contentPadding = paddingValues,
@@ -147,34 +137,26 @@ class BrowseRecommendsScreen(
                 onHelpClick = null,
                 onLocalSourceHelpClick = null,
                 onMangaClick = { manga ->
-                     -->
                     if (bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.toggleSelection(manga)
                     } else {
-                         <--
                         onClickItem(manga)
                     }
                 },
                 onMangaLongClick = { manga ->
-                     -->
                     if (!bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.addRemoveManga(manga, haptic)
                     } else {
                         onLongClickItem(manga)
                     }
-                     <--
                 },
-                 -->
                 selection = bulkFavoriteState.selection,
-                 <--
             )
         }
 
-         -->
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
-         <--
     }
 }

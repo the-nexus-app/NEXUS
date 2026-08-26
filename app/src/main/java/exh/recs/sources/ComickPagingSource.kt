@@ -24,14 +24,10 @@ import uy.kohesive.injekt.injectLazy
 
 internal class ComickPagingSource(
     manga: Manga,
-     -->
     private val recommendationSource: RecommendationSource,
-     <--
 ) : RecommendationPagingSource(
     manga,
-     -->
     recommendationSource,
-     <--
 ) {
 
     override val name: String
@@ -41,9 +37,7 @@ internal class ComickPagingSource(
         get() = SYMR.strings.community_recommendations
 
     override val associatedSourceId: Long
-         -->
         get() = recommendationSource.id
-     <--
 
     private val client by lazy { Injekt.get<NetworkHelper>().client }
     private val json by injectLazy<Json>()

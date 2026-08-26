@@ -30,15 +30,13 @@ import tachiyomi.presentation.core.util.plus
 
 @Composable
 fun BrowseSourceComfortableGrid(
-    mangaList: LazyPagingItems<StateFlow</* SY --> */Pair<Manga, RaisedSearchMetadata?>/* SY <-- */>>,
+    mangaList: LazyPagingItems<StateFlow<Pair<Manga, RaisedSearchMetadata?>>>,
     columns: GridCells,
     contentPadding: PaddingValues,
     onMangaClick: (Manga) -> Unit,
     onMangaLongClick: (Manga) -> Unit,
-     -->
     selection: List<Manga>,
     usePanoramaCover: Boolean = false,
-     <--
 ) {
     LazyVerticalGrid(
         columns = columns,
@@ -53,23 +51,17 @@ fun BrowseSourceComfortableGrid(
         }
 
         items(count = mangaList.itemCount) { index ->
-             -->
             val pair by mangaList[index]?.collectAsState() ?: return@items
             val manga = pair.first
             val metadata = pair.second
-             <--
 
             BrowseSourceComfortableGridItem(
                 manga = manga,
-                 -->
                 metadata = metadata,
-                 <--
                 onClick = { onMangaClick(manga) },
                 onLongClick = { onMangaLongClick(manga) },
-                 -->
                 isSelected = selection.fastAny { selected -> selected.id == manga.id },
                 usePanoramaCover = usePanoramaCover,
-                 <--
             )
         }
 
@@ -84,15 +76,11 @@ fun BrowseSourceComfortableGrid(
 @Composable
 internal fun BrowseSourceComfortableGridItem(
     manga: Manga,
-     -->
     metadata: RaisedSearchMetadata?,
-     <--
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = onClick,
-     -->
     isSelected: Boolean = false,
     usePanoramaCover: Boolean,
-     <--
 ) {
     MangaComfortableGridItem(
         title = manga.title,
@@ -103,16 +91,13 @@ internal fun BrowseSourceComfortableGridItem(
             ogUrl = manga.thumbnailUrl,
             lastModified = manga.coverLastModified,
         ),
-         -->
         isSelected = isSelected,
         usePanoramaCover = usePanoramaCover,
         fitToPanoramaCover = true,
-         <--
         coverAlpha = if (manga.favorite) CommonMangaItemDefaults.BrowseFavoriteCoverAlpha else 1f,
         coverBadgeStart = {
             InLibraryBadge(enabled = manga.favorite)
         },
-         -->
         coverBadgeEnd = {
             if (metadata is MangaDexSearchMetadata) {
                 metadata.followStatus?.let { followStatus ->
@@ -147,7 +132,6 @@ internal fun BrowseSourceComfortableGridItem(
                 }
             }
         },
-         <--
         onLongClick = onLongClick,
         onClick = onClick,
     )

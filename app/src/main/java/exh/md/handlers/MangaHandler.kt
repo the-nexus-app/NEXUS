@@ -113,12 +113,10 @@ class MangaHandler(
         return results
             .flatMap { it.relationships }
             .filter { it.type == MdConstants.Types.scanlator }
-             -->
             .mapNotNull { relationship ->
                 relationship.attributes?.name?.let { relationship.id to it }
             }
             .toMap()
-         <--
     }
 
     suspend fun fetchRandomMangaId(): String {

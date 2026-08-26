@@ -43,14 +43,12 @@ val IncognitoModeBannerBackgroundColor
 val IndexingBannerBackgroundColor
     @Composable get() = MaterialTheme.colorScheme.secondary
 
- -->
 val RestoringBannerBackgroundColor
     @Composable get() = MaterialTheme.colorScheme.error
 val SyncingBannerBackgroundColor
     @Composable get() = MaterialTheme.colorScheme.secondary
 val UpdatingBannerBackgroundColor
     @Composable get() = MaterialTheme.colorScheme.tertiary
- <--
 
 @Composable
 fun WarningBanner(
@@ -69,27 +67,21 @@ fun WarningBanner(
     )
 }
 
- -->
 private val percentFormatter = NumberFormat.getPercentInstance().apply {
     roundingMode = RoundingMode.DOWN
     maximumFractionDigits = 0
 }
- <--
 
 @Composable
 fun AppStateBanners(
     downloadedOnlyMode: Boolean,
     incognitoMode: Boolean,
     indexing: Boolean,
-     -->
     restoring: Boolean,
     syncing: Boolean,
     updating: Boolean,
-     <--
     modifier: Modifier = Modifier,
-     -->
     progress: Float? = null,
-     <--
 ) {
     val density = LocalDensity.current
     val mainInsets = WindowInsets.statusBars
@@ -97,15 +89,12 @@ fun AppStateBanners(
     SubcomposeLayout(modifier = modifier) { constraints ->
         val indexingPlaceable = subcompose(0) {
             AnimatedVisibility(
-                 -->
                 visible = indexing || restoring || syncing || updating,
-                 <--
                 enter = expandVertically(),
                 exit = shrinkVertically(),
             ) {
                 IndexingDownloadBanner(
                     modifier = Modifier.windowInsetsPadding(mainInsets),
-                     -->
                     text = when {
                         updating -> progress?.let {
                             stringResource(
@@ -121,7 +110,6 @@ fun AppStateBanners(
                         } ?: stringResource(MR.strings.restoring_backup)
                         else -> stringResource(MR.strings.download_notifier_cache_renewal)
                     },
-                     <--
                 )
             }
         }.fastMap { it.measure(constraints) }
@@ -202,9 +190,7 @@ private fun IncognitoModeBanner(modifier: Modifier = Modifier) {
 @Composable
 private fun IndexingDownloadBanner(
     modifier: Modifier = Modifier,
-     -->
     text: String = stringResource(MR.strings.download_notifier_cache_renewal),
-     <--
 ) {
     val density = LocalDensity.current
     Row(
@@ -223,9 +209,7 @@ private fun IndexingDownloadBanner(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-             -->
             text = text,
-             <--
             color = MaterialTheme.colorScheme.onSecondary,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.labelMedium,

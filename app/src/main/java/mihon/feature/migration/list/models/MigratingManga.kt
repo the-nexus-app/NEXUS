@@ -18,9 +18,7 @@ class MigratingManga(
 ) {
     val migrationScope = CoroutineScope(parentContext + SupervisorJob() + Dispatchers.Default)
 
-     -->
     var searchingJob: Deferred<Pair<Manga, ChapterInfo>?>? = null
-     <--
 
     val searchResult = MutableStateFlow<SearchResult>(SearchResult.Searching)
 

@@ -100,13 +100,9 @@ class EHentai(
     override val id: Long,
     val exh: Boolean,
     val context: Context,
-     -->
     override val lang: String = "all",
-     <--
 ) : HttpSource(),
-     -->
     EhBasedSource,
-     <--
     MetadataSource<EHentaiSearchMetadata, Document>,
     UrlImportableSource,
     NamespaceSource,
@@ -125,7 +121,6 @@ class EHentai(
 
     override val supportsLatest = true
 
-     -->
     private val ehLang = languageMapping[lang]
 
     // true if lang is a "natural human language"
@@ -134,7 +129,6 @@ class EHentai(
     private fun languageTag(): String {
         return "language:$ehLang"
     }
-     <--
 
     private val exhPreferences: ExhPreferences by injectLazy()
     private val updateHelper: EHentaiUpdateHelper by injectLazy()
@@ -497,14 +491,12 @@ class EHentai(
     }
 
     override fun popularMangaRequest(page: Int) =
-         -->
         if (isLangNatural()) {
             exGet("$baseUrl/?f_search=${languageTag()}&f_srdd=5&f_sr=on", page)
         } else {
             if (page > 1) {
                 exGet("$baseUrl/?f_srdd=5&f_sr=on", page - 1)
             } else {
-                 <--
                 exGet("$baseUrl/popular")
             }
         }
@@ -604,11 +596,9 @@ class EHentai(
     }
 
     override fun latestUpdatesRequest(page: Int) =
-         -->
         if (isLangNatural()) {
             exGet("$baseUrl/?f_search=${languageTag()}", page)
         } else {
-             <--
             exGet(baseUrl, page)
         }
 
@@ -959,7 +949,6 @@ class EHentai(
     override val client =
         network.client.newBuilder()
             // .cookieJar(CookieJar.NO_COOKIES)
-             -->
             .addNetworkInterceptor { chain ->
                 // Keep only Cloudflare cookies from incoming cookies
                 val cfCookies = chain.request().header("Cookie")?.split("; ")
@@ -967,27 +956,22 @@ class EHentai(
                         // Only accept cookie in form of name=value
                         if (!it.contains("=")) return@filter false
                         val name = it.substringBefore("=").trim().lowercase()
-                         <--
                         name.startsWith("cf") || name.startsWith("_cf") || name.startsWith("__cf")
                     }
-                     -->
                     ?.associate { it.substringBefore("=").trim() to it.substringAfter("=").trim() }
                 val newCookies = cookiesHeader(cfCookies ?: emptyMap())
                 xLogI("Overwritten Cookie: $newCookies")
-                 <--
 
                 val newReq =
                     chain
                         .request()
                         .newBuilder()
                         .removeHeader("Cookie")
-                         -->
                         .apply {
                             if (newCookies.isNotBlank()) {
                                 addHeader("Cookie", newCookies)
                             }
                         }
-                         <--
                         .build()
 
                 chain.proceed(newReq)
@@ -1438,7 +1422,6 @@ class EHentai(
             "${URLEncoder.encode(it.key, "UTF-8")}=${URLEncoder.encode(it.value, "UTF-8")}"
         }
 
-         -->
         val languageMapping = mapOf(
             "ja" to "japanese",
             "en" to "english",
@@ -1458,6 +1441,5 @@ class EHentai(
             "none" to "n/a",
             "other" to "other",
         )
-         <--
     }
 }

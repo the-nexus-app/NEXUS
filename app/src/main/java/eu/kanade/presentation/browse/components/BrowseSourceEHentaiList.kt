@@ -61,13 +61,11 @@ import java.time.ZoneId
 
 @Composable
 fun BrowseSourceEHentaiList(
-    mangaList: LazyPagingItems<StateFlow</* SY --> */Pair<Manga, RaisedSearchMetadata?>/* SY <-- */>>,
+    mangaList: LazyPagingItems<StateFlow<Pair<Manga, RaisedSearchMetadata?>>>,
     contentPadding: PaddingValues,
     onMangaClick: (Manga) -> Unit,
     onMangaLongClick: (Manga) -> Unit,
-     -->
     selection: List<Manga>,
-     <--
 ) {
     LazyColumn(
         contentPadding = contentPadding,
@@ -85,14 +83,10 @@ fun BrowseSourceEHentaiList(
 
             BrowseSourceEHentaiListItem(
                 manga = manga,
-                 -->
                 metadata = metadata,
-                 <--
                 onClick = { onMangaClick(manga) },
                 onLongClick = { onMangaLongClick(manga) },
-                 -->
                 isSelected = selection.fastAny { selected -> selected.id == manga.id },
-                 <--
             )
         }
 
@@ -107,54 +101,42 @@ fun BrowseSourceEHentaiList(
 @Composable
 fun BrowseSourceEHentaiListItem(
     manga: Manga,
-     -->
     metadata: RaisedSearchMetadata?,
-     <--
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = onClick,
-     -->
     isSelected: Boolean = false,
     libraryColored: Boolean = true,
-     <--
 ) {
     if (metadata !is EHentaiSearchMetadata) return
-     -->
     val coverData = manga.asMangaCover()
     val bgColor = coverData.dominantCoverColors?.first?.let { Color(it) }.takeIf { libraryColored }
     val onBgColor = coverData.dominantCoverColors?.second.takeIf { libraryColored }
     val coverAlpha = if (manga.favorite) CommonMangaItemDefaults.BrowseFavoriteCoverAlpha else 1f
-     <--
 
     val context = LocalContext.current
     val languageText by produceState("", metadata) {
         value = withIOContext {
-             -->
             val locale = metadata.tags
                 .filter { it.namespace == EHentaiSearchMetadata.EH_LANGUAGE_NAMESPACE }
                 .firstNotNullOfOrNull {
                     SourceTagsUtil.getLocaleSourceUtil(it.name)
                 }
-             <--
             val pageCount = metadata.length
             if (locale != null && pageCount != null) {
                 context.pluralStringResource(
                     SYMR.plurals.browse_language_and_pages,
                     pageCount,
                     pageCount,
-                     -->
                     getEmojiLangFlag(
-                         <--
-                        locale.toLanguageTag(), : .uppercase()
+                        locale.toLanguageTag(),
                     ),
                 )
             } else if (pageCount != null) {
                 context.pluralStringResource(SYMR.plurals.num_pages, pageCount, pageCount)
             } else {
                 locale?.toLanguageTag()
-                     -->
                     ?.let { getEmojiLangFlag(it) }
                     // .uppercase()
-                     <--
                     .orEmpty()
             }
         }
@@ -204,7 +186,6 @@ fun BrowseSourceEHentaiListItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box {
-             -->
             if (DebugToggles.HIDE_COVER_IMAGE_ONLY_SHOW_COLOR.enabled) {
                 MangaCoverHide.Book(
                     modifier = Modifier
@@ -213,15 +194,12 @@ fun BrowseSourceEHentaiListItem(
                     tint = onBgColor,
                 )
             } else {
-                 <--
                 MangaCover.Book(
                     modifier = Modifier
                         .fillMaxHeight(),
-                     -->
                     alpha = if (isSelected) GRID_SELECTED_COVER_ALPHA else coverAlpha,
                     bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { isSelected },
                     tint = onBgColor,
-                     <--
                     data = coverData,
                 )
             }
@@ -231,9 +209,7 @@ fun BrowseSourceEHentaiListItem(
                         .padding(4.dp)
                         .align(Alignment.TopStart),
                 ) {
-                     -->
                     InLibraryBadge(enabled = true)
-                     <--
                 }
             }
         }
@@ -278,9 +254,7 @@ fun BrowseSourceEHentaiListItem(
                         painterFilled = null,
                     )
                     val color = genre?.first?.color
-                     -->
                     val textColor = genre?.first?.let(::genreTextColor)?.let(::Color) ?: Color.Unspecified
-                     <--
                     val res = genre?.second
                     Card(
                         colors = if (color != null) {
@@ -295,9 +269,7 @@ fun BrowseSourceEHentaiListItem(
                             } else {
                                 metadata.genre.orEmpty()
                             },
-                             -->
                             color = textColor,
-                             <--
                             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
                             maxLines = 1,
                             style = MaterialTheme.typography.bodyMedium,

@@ -77,9 +77,7 @@ object SettingsDownloadScreen : SearchableSettings {
                 allCategories = allCategories,
             ),
             getDownloadAheadGroup(downloadPreferences = downloadPreferences),
-             -->
             getDownloadCacheRenewInterval(downloadPreferences = downloadPreferences),
-             <--
         )
     }
 
@@ -216,7 +214,6 @@ object SettingsDownloadScreen : SearchableSettings {
         )
     }
 
-     -->
     @Composable
     private fun getDownloadCacheRenewInterval(
         downloadPreferences: DownloadPreferences,
@@ -240,5 +237,4 @@ object SettingsDownloadScreen : SearchableSettings {
             ),
         )
     }
-     <--
 }

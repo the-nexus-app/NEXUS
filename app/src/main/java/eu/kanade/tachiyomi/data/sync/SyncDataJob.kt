@@ -31,9 +31,7 @@ class SyncDataJob(private val context: Context, workerParams: WorkerParameters) 
 
     private val notifier = SyncNotifier(context)
 
-     -->
     private val syncStatus: SyncStatus = Injekt.get()
-     <--
 
     override suspend fun doWork(): Result {
         if (tags.contains(TAG_AUTO)) {
@@ -46,9 +44,7 @@ class SyncDataJob(private val context: Context, workerParams: WorkerParameters) 
             }
         }
 
-         -->
         syncStatus.start()
-         <--
 
         setForegroundSafely()
 
@@ -60,9 +56,7 @@ class SyncDataJob(private val context: Context, workerParams: WorkerParameters) 
             notifier.showSyncError(e.message)
             Result.success() // try again next time
         } finally {
-             -->
             syncStatus.stop()
-             <--
         }
     }
 
@@ -123,10 +117,8 @@ class SyncDataJob(private val context: Context, workerParams: WorkerParameters) 
         }
 
         fun stop(context: Context) {
-             -->
             val syncPreferences = Injekt.get<SyncPreferences>()
             val syncEnabled = syncPreferences.isSyncEnabled()
-             <--
             val wm = context.workManager
             val workQuery = WorkQuery.Builder.fromTags(listOf(TAG_JOB, TAG_AUTO, TAG_MANUAL))
                 .addStates(listOf(WorkInfo.State.RUNNING))
@@ -135,13 +127,11 @@ class SyncDataJob(private val context: Context, workerParams: WorkerParameters) 
                 // Should only return one work but just in case
                 .forEach {
                     wm.cancelWorkById(it.id)
-                     -->
                     val syncStatus: SyncStatus = Injekt.get()
                     runBlocking { syncStatus.stop() }
-                     <--
 
                     // Re-enqueue cancelled scheduled work
-                    if (/* KMK --> */ syncEnabled /* KMK <-- */ && it.tags.contains(TAG_AUTO)) {
+                    if (/* KMK*/ syncEnabled /* KMK*/ && it.tags.contains(TAG_AUTO)) {
                         setupTask(context)
                     }
                 }

@@ -44,7 +44,6 @@ val Options.customDecoder: Boolean
 
 private val customDecoderKey = Extras.Key(default = false)
 
- -->
 /**
  * Calculate the best [Palette.Swatch] from [Palette]
  * @author Jays2Kings
@@ -83,4 +82,3 @@ fun Palette.getBestColor(): Int? {
             }
     }?.rgb
 }
- <--

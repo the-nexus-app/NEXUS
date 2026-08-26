@@ -51,7 +51,6 @@ class FeedSavedSearchRepositoryImpl(
     }
 
     override suspend fun insert(feedSavedSearch: FeedSavedSearch): Long {
-         -->
         return handler.await(true) {
             val currentFeeds = handler.awaitList {
                 feed_saved_searchQueries.selectAll(FeedSavedSearchMapper::map)
@@ -63,7 +62,6 @@ class FeedSavedSearchRepositoryImpl(
             }?.id
 
             existedFeedId
-                 <--
                 ?: handler.awaitOneExecutable(true) {
                     feed_saved_searchQueries.insert(
                         feedSavedSearch.source,
@@ -87,7 +85,6 @@ class FeedSavedSearchRepositoryImpl(
         }
     }
 
-     -->
     override suspend fun updatePartial(update: FeedSavedSearchUpdate) {
         handler.await {
             updatePartialBlocking(update)
@@ -111,5 +108,4 @@ class FeedSavedSearchRepositoryImpl(
             id = update.id,
         )
     }
-     <--
 }

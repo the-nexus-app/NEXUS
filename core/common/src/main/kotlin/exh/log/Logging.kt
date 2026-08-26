@@ -9,7 +9,6 @@ private fun Any.xLog(): Logger = XLog.tag(this::class.java.simpleName).build()
 
 private fun Any.xLogStack(): Logger = XLog.tag(this::class.java.simpleName).enableStackTrace(0).build()
 
- -->
 /**
  * XLog.init() runs during App#onCreate, but DI can eagerly construct components (e.g.
  * AndroidSourceManager) whose async init blocks log before that point, or before it re-runs after
@@ -53,7 +52,6 @@ fun Any.safeXLogStackTag(tag: String = (this::class.java.enclosingClass?.simpleN
 } catch (_: IllegalStateException) {
     null
 }
- <--
 
 fun Any.xLogE(log: String) = safeXLog(Log.ERROR, log) { xLog().e(log) }
 fun Any.xLogW(log: String) = safeXLog(Log.WARN, log) { xLog().w(log) }
