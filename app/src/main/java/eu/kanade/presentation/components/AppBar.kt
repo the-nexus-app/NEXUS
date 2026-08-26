@@ -132,9 +132,7 @@ fun AppBar(
     isActionMode: Boolean = false,
     onCancelActionMode: () -> Unit = {},
 
-     -->
     goHome: (() -> Boolean?)? = null,
-     <--
 
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
@@ -151,21 +149,17 @@ fun AppBar(
                         )
                     }
                 } else {
-                     -->
                     Row {
-                         <--
                         navigateUp?.let {
                             IconButton(onClick = it) {
                                 UpIcon(navigationIcon = navigationIcon)
                             }
                         }
-                         -->
                         goHome?.let {
                             IconButton(onClick = { it.invoke() }) {
                                 UpIcon(navigationIcon = Icons.Filled.Home)
                             }
                         }
-                         <--
                     }
                 }
             },
@@ -239,7 +233,6 @@ fun AppBarActions(
         }
     }
 
-     -->
     actions.filterIsInstance<AppBar.ActionCompose>().map {
         TooltipBox(
             positionProvider = rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
@@ -260,7 +253,6 @@ fun AppBarActions(
             }
         }
     }
-     <--
 
     val overflowActions = actions.filterIsInstance<AppBar.OverflowAction>()
     if (overflowActions.isNotEmpty()) {
@@ -470,12 +462,10 @@ sealed interface AppBar {
         val enabled: Boolean = true,
     ) : AppBarAction
 
-     -->
     data class ActionCompose(
         val title: String,
         val content: @Composable () -> Unit,
     ) : AppBarAction
-     <--
 
     data class OverflowAction(
         val title: String,

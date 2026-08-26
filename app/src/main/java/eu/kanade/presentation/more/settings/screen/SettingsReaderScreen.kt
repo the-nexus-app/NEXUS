@@ -38,9 +38,7 @@ object SettingsReaderScreen : SearchableSettings {
     @Composable
     override fun getPreferences(): List<Preference> {
         val readerPref = remember { Injekt.get<ReaderPreferences>() }
-         -->
         val forceHorizontalSeekbar by readerPref.forceHorizontalSeekbar().collectAsState()
-         <--
 
         return listOf(
             Preference.PreferenceItem.ListPreference(
@@ -69,13 +67,10 @@ object SettingsReaderScreen : SearchableSettings {
                 title = stringResource(MR.strings.pref_show_navigation_mode),
                 subtitle = stringResource(MR.strings.pref_show_navigation_mode_summary),
             ),
-             -->
             Preference.PreferenceItem.SwitchPreference(
                 preference = readerPref.smallerTapZone(),
                 title = stringResource(KMR.strings.pref_viewer_nav_smaller_tap_zone),
             ),
-             <--
-             -->
             Preference.PreferenceItem.SwitchPreference(
                 preference = readerPref.forceHorizontalSeekbar(),
                 title = stringResource(SYMR.strings.pref_force_horz_seekbar),
@@ -93,27 +88,22 @@ object SettingsReaderScreen : SearchableSettings {
                 subtitle = stringResource(SYMR.strings.pref_left_handed_vertical_seekbar_summary),
                 enabled = !forceHorizontalSeekbar,
             ),
-             <--
-            /* SY -->
+            /* SY
             Preference.PreferenceItem.SwitchPreference(
                 preference = readerPref.pageTransitions(),
                 title = stringResource(MR.strings.pref_page_transitions),
             ),
-            SY <-- */
+            SY*/
             getDisplayGroup(readerPreferences = readerPref),
             getEInkGroup(readerPreferences = readerPref),
             getReadingGroup(readerPreferences = readerPref),
             getPagedGroup(readerPreferences = readerPref),
             getWebtoonGroup(readerPreferences = readerPref),
-             -->
             getContinuousVerticalGroup(readerPreferences = readerPref),
-             <--
             getNavigationGroup(readerPreferences = readerPref),
             getActionsGroup(readerPreferences = readerPref),
-             -->
             getPageDownloadingGroup(readerPreferences = readerPref),
             getForkSettingsGroup(readerPreferences = readerPref),
-             <--
         )
     }
 
@@ -250,12 +240,10 @@ object SettingsReaderScreen : SearchableSettings {
         val dualPageSplit by dualPageSplitPref.collectAsState()
         val rotateToFit by rotateToFitPref.collectAsState()
 
-         -->
         val pagedDisableZoomInPref = readerPreferences.pagedDisableZoomIn()
         val landscapeZoomPref = readerPreferences.landscapeZoom()
         val pagedDisableZoomIn by pagedDisableZoomInPref.collectAsState()
         val landscapeZoom by landscapeZoomPref.collectAsState()
-         <--
 
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.pager_viewer),
@@ -301,20 +289,15 @@ object SettingsReaderScreen : SearchableSettings {
                     preference = readerPreferences.cropBorders(),
                     title = stringResource(MR.strings.pref_crop_borders),
                 ),
-                 -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = readerPreferences.pageTransitionsPager(),
                     title = stringResource(MR.strings.pref_page_transitions),
                 ),
-                 <--
                 Preference.PreferenceItem.SwitchPreference(
                     preference = landscapeZoomPref,
                     title = stringResource(MR.strings.pref_landscape_zoom),
-                     -->
                     enabled = imageScaleType in zoomWideImagesAllowedList,
-                     <--
                 ),
-                 -->
                 Preference.PreferenceItem.ListPreference(
                     preference = readerPreferences.landscapeZoomType(),
                     entries = ReaderPreferences.LandscapeZoomScaleType.entries
@@ -332,7 +315,6 @@ object SettingsReaderScreen : SearchableSettings {
                     title = stringResource(MR.strings.pref_double_tap_zoom),
                     enabled = !pagedDisableZoomIn,
                 ),
-                 <--
                 Preference.PreferenceItem.SwitchPreference(
                     preference = readerPreferences.navigateToPan(),
                     title = stringResource(MR.strings.pref_navigate_pan),
@@ -407,7 +389,6 @@ object SettingsReaderScreen : SearchableSettings {
                     title = stringResource(MR.strings.pref_read_with_tapping_inverted),
                     enabled = navMode != 5,
                 ),
-                 -->
                 Preference.PreferenceItem.ListPreference(
                     preference = readerPreferences.webtoonScaleType(),
                     entries = WebtoonScaleType.entries
@@ -419,7 +400,6 @@ object SettingsReaderScreen : SearchableSettings {
                     preference = readerPreferences.longStripGapSmartScale(),
                     title = stringResource(KMR.strings.pref_smart_scale_long_strip_gap),
                 ),
-                 <--
                 Preference.PreferenceItem.SliderPreference(
                     value = webtoonSidePadding,
                     valueRange = ReaderPreferences.let {
@@ -474,27 +454,22 @@ object SettingsReaderScreen : SearchableSettings {
                     preference = readerPreferences.webtoonDoubleTapZoomEnabled(),
                     title = stringResource(MR.strings.pref_double_tap_zoom),
                 ),
-                 -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = readerPreferences.webtoonPinchToZoomEnabled(),
                     title = stringResource(KMR.strings.pref_pinch_to_zoom),
                 ),
-                 <--
                 Preference.PreferenceItem.SwitchPreference(
                     preference = readerPreferences.webtoonDisableZoomOut(),
                     title = stringResource(MR.strings.pref_webtoon_disable_zoom_out),
                 ),
-                 -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = readerPreferences.pageTransitionsWebtoon(),
                     title = stringResource(MR.strings.pref_page_transitions),
                 ),
-                 <--
             ),
         )
     }
 
-     -->
     @Composable
     private fun getContinuousVerticalGroup(readerPreferences: ReaderPreferences): Preference.PreferenceGroup {
         return Preference.PreferenceGroup(
@@ -512,7 +487,6 @@ object SettingsReaderScreen : SearchableSettings {
             ),
         )
     }
-     <--
 
     @Composable
     private fun getNavigationGroup(readerPreferences: ReaderPreferences): Preference.PreferenceGroup {
@@ -552,7 +526,6 @@ object SettingsReaderScreen : SearchableSettings {
         )
     }
 
-     -->
     @Composable
     private fun getPageDownloadingGroup(readerPreferences: ReaderPreferences): Preference.PreferenceGroup {
         return Preference.PreferenceGroup(
@@ -674,5 +647,4 @@ object SettingsReaderScreen : SearchableSettings {
             ),
         )
     }
-     <--
 }

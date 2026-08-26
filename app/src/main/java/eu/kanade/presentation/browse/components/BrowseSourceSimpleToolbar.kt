@@ -27,17 +27,14 @@ fun BrowseSourceSimpleToolbar(
     displayMode: LibraryDisplayMode?,
     onDisplayModeChange: (LibraryDisplayMode) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-     -->
     toggleSelectionMode: (() -> Unit)?,
     isRunning: Boolean,
-     <--
 ) {
     AppBar(
         navigateUp = navigateUp,
         title = title,
         actions = {
             var selectingDisplayMode by remember { mutableStateOf(false) }
-             -->
             AppBarActions(
                 actions = persistentListOf<AppBar.AppBarAction>().builder().apply {
                     displayMode?.let { mode ->
@@ -61,12 +58,10 @@ fun BrowseSourceSimpleToolbar(
                 }
                     .build(),
             )
-             <--
             DropdownMenu(
                 expanded = selectingDisplayMode,
                 onDismissRequest = { selectingDisplayMode = false },
             ) {
-                 -->
                 RadioMenuItem(
                     text = { Text(text = stringResource(MR.strings.action_display_comfortable_grid)) },
                     isChecked = displayMode == LibraryDisplayMode.ComfortableGrid,
@@ -95,7 +90,6 @@ fun BrowseSourceSimpleToolbar(
                     selectingDisplayMode = false
                     onDisplayModeChange(LibraryDisplayMode.List)
                 }
-                 <--
             }
         },
         scrollBehavior = scrollBehavior,

@@ -28,7 +28,6 @@ interface ChapterRepository {
 
     suspend fun getChapterByUrlAndMangaId(url: String, mangaId: Long): Chapter?
 
-     -->
     suspend fun getChapterByUrl(url: String): List<Chapter>
 
     suspend fun getMergedChapterByMangaId(mangaId: Long, applyFilter: Boolean = false): List<Chapter>
@@ -41,5 +40,4 @@ interface ChapterRepository {
     suspend fun getScanlatorsByMergeId(mangaId: Long): List<String>
 
     fun getScanlatorsByMergeIdAsFlow(mangaId: Long): Flow<List<String>>
-     <--
 }

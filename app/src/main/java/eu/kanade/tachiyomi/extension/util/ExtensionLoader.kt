@@ -44,9 +44,7 @@ internal object ExtensionLoader {
     private val preferences: SourcePreferences by injectLazy()
     private val trustExtension: TrustExtension by injectLazy()
 
-     -->
     private val getExtensionStores: GetExtensionStores by injectLazy()
-     <--
 
     private val loadNsfwSource by lazy {
         preferences.showNsfwSource().get()
@@ -171,17 +169,13 @@ internal object ExtensionLoader {
 
         // Load each extension concurrently and wait for completion
         return runBlocking {
-             -->
             val extStores = getExtensionStores.get()
-             <--
             val deferred = extPkgs.map {
                 async {
                     loadExtension(
                         context,
                         it,
-                         -->
                         extStores,
-                         <--
                     )
                 }
             }
@@ -247,13 +241,9 @@ internal object ExtensionLoader {
     private suspend fun loadExtension(
         context: Context,
         extensionInfo: ExtensionInfo,
-         -->
         extStores: List<ExtensionStore>? = null,
-         <--
     ): LoadResult {
-         -->
         val stores = extStores ?: getExtensionStores.get()
-         <--
         val pkgManager = context.packageManager
         val pkgInfo = extensionInfo.packageInfo
         val appInfo = pkgInfo.applicationInfo!!
@@ -294,13 +284,11 @@ internal object ExtensionLoader {
                 versionCode,
                 libVersion,
                 signatures.last(),
-                 -->
                 storeName = stores.firstOrNull { store ->
                     signatures.all { it == store.signingKey }
                 }?.let { store ->
                     store.badgeLabel.takeIf(String::isNotBlank) ?: store.name
                 },
-                 <--
             )
             logcat(LogPriority.WARN) { "Extension $pkgName isn't trusted" }
             return LoadResult.Untrusted(extension)
@@ -362,14 +350,12 @@ internal object ExtensionLoader {
             pkgFactory = appInfo.metaData.getString(METADATA_SOURCE_FACTORY),
             icon = appInfo.loadIcon(pkgManager),
             isShared = extensionInfo.isShared,
-             -->
             signatureHash = signatures.last(),
             storeName = stores.firstOrNull { store ->
                 signatures.all { it == store.signingKey }
             }?.let { store ->
                 store.badgeLabel.takeIf(String::isNotBlank) ?: store.name
             },
-             <--
         )
         return LoadResult.Success(extension)
     }

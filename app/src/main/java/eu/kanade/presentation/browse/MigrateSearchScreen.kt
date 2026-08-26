@@ -27,18 +27,13 @@ fun MigrateSearchScreen(
     onClickSource: (Source) -> Unit,
     onClickItem: (Manga) -> Unit,
     onLongClickItem: (Manga) -> Unit,
-     -->
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
     hasPinnedSources: Boolean,
-     <--
 ) {
-     -->
     val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
-     <--
 
     Scaffold(
         topBar = { scrollBehavior ->
-             -->
             if (bulkFavoriteState.selectionMode) {
                 BulkSelectionToolbar(
                     selectedCount = bulkFavoriteState.selection.size,
@@ -59,7 +54,6 @@ fun MigrateSearchScreen(
                     },
                 )
             } else {
-                 <--
                 GlobalSearchToolbar(
                     searchQuery = state.searchQuery,
                     progress = state.progress,
@@ -73,11 +67,9 @@ fun MigrateSearchScreen(
                     onlyShowHasResults = state.onlyShowHasResults,
                     onToggleResults = onToggleResults,
                     scrollBehavior = scrollBehavior,
-                     -->
                     toggleSelectionMode = bulkFavoriteScreenModel::toggleSelectionMode,
                     isRunning = bulkFavoriteState.isRunning,
                     hasPinnedSources = hasPinnedSources,
-                     <--
                 )
             }
         },
@@ -90,9 +82,7 @@ fun MigrateSearchScreen(
             onClickSource = onClickSource,
             onClickItem = onClickItem,
             onLongClickItem = onLongClickItem,
-             -->
             selection = bulkFavoriteState.selection,
-             <--
         )
     }
 }

@@ -1,4 +1,4 @@
-// AM (DISCORD) -->
+// AM (DISCORD)
 
 // Taken from Animiru. Thank you Quickdev for permission!
 // Original library from https://github.com/dead8309/KizzyRPC (Thank you)
@@ -208,4 +208,4 @@ private const val BROWSE_IMAGE_URL = "emojis/1365263374992146576.webp?quality=lo
 private const val MORE_IMAGE_URL = "emojis/1365261438276599849.webp?quality=lossless"
 private const val WEBVIEW_IMAGE_URL = "emojis/1365262268811579443.webp?quality=lossless"
 private const val MANGA_IMAGE_URL = "emojis/1365263962622529576.webp?quality=lossless"
-// <-- AM (DISCORD)
+//AM (DISCORD)

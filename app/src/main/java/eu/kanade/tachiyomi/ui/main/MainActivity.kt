@@ -141,17 +141,13 @@ class MainActivity : BaseActivity() {
     private val libraryPreferences: LibraryPreferences by injectLazy()
     private val preferences: BasePreferences by injectLazy()
 
-     -->
     private val exhPreferences: ExhPreferences by injectLazy()
-     <--
 
-     -->
     private val backupPreferences: BackupPreferences by injectLazy()
     private val syncPreferences: SyncPreferences by injectLazy()
     private val backupRestoreStatus: BackupRestoreStatus by injectLazy()
     private val syncStatus: SyncStatus by injectLazy()
     private val libraryUpdateStatus: LibraryUpdateStatus by injectLazy()
-     <--
 
     private val downloadCache: DownloadCache by injectLazy()
     private val chapterCache: ChapterCache by injectLazy()
@@ -163,15 +159,14 @@ class MainActivity : BaseActivity() {
 
     private var navigator: Navigator? = null
 
-    // AM (CONNECTIONS) -->
+    // AM (CONNECTIONS)
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
-    // <-- AM (CONNECTIONS)
+    //AM (CONNECTIONS)
 
     init {
         registerSecureActivity(this)
     }
 
-     -->
     // Idle-until-urgent
     private var firstPaint = false
     private val iuuQueue = LinkedList<() -> Unit>()
@@ -190,7 +185,6 @@ class MainActivity : BaseActivity() {
     }
 
     private var runExhConfigureDialog by mutableStateOf(false)
-     <--
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val isLaunch = savedInstanceState == null
@@ -212,10 +206,8 @@ class MainActivity : BaseActivity() {
             return
         }
 
-         -->
         @Suppress("KotlinConstantConditions")
         val hasDebugOverlay = (isDebugBuildType || BuildConfig.BUILD_TYPE == "releaseTest")
-         <--
 
         setComposeContent {
             val context = LocalContext.current
@@ -223,7 +215,6 @@ class MainActivity : BaseActivity() {
             var incognito by remember { mutableStateOf(getIncognitoState.await(null)) }
             val downloadOnly by preferences.downloadedOnly().collectAsState()
             val indexing by downloadCache.isInitializing.collectAsState()
-             -->
             val restoringState by backupRestoreStatus.isRunning.collectAsState()
             val syncingState by syncStatus.isRunning.collectAsState()
             val updatingState by libraryUpdateStatus.isRunning.collectAsState()
@@ -236,15 +227,12 @@ class MainActivity : BaseActivity() {
             val restoringProgress by backupRestoreStatus.progress.collectAsState()
             val syncingProgress by syncStatus.progress.collectAsState()
             val updatingProgress by libraryUpdateStatus.progress.collectAsState()
-             <--
 
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val statusBarBackgroundColor = when {
-                 -->
                 updating -> UpdatingBannerBackgroundColor
                 syncing -> SyncingBannerBackgroundColor
                 restoring -> RestoringBannerBackgroundColor
-                 <--
                 indexing -> IndexingBannerBackgroundColor
                 downloadOnly -> DownloadedOnlyBannerBackgroundColor
                 incognito -> IncognitoModeBannerBackgroundColor
@@ -274,7 +262,6 @@ class MainActivity : BaseActivity() {
                         // Reset Incognito Mode on relaunch
                         preferences.incognitoMode().set(false)
 
-                         -->
                         initWhenIdle {
                             // Upload settings
                             if (exhPreferences.enableExhentai().get() &&
@@ -286,15 +273,12 @@ class MainActivity : BaseActivity() {
 
                             EHentaiUpdateWorker.scheduleBackground(this@MainActivity)
                         }
-                         <--
                     }
                 }
                 LaunchedEffect(navigator.lastItem) {
                     (
                         (navigator.lastItem as? BrowseSourceScreen)?.sourceId
-                             -->
                             ?: (navigator.lastItem as? SourceFeedScreen)?.sourceId
-                         <--
                         )
                         .let(getIncognitoState::subscribe)
                         .collectLatest { incognito = it }
@@ -307,14 +291,12 @@ class MainActivity : BaseActivity() {
                             downloadedOnlyMode = downloadOnly,
                             incognitoMode = incognito,
                             indexing = indexing,
-                             -->
                             restoring = restoring,
                             syncing = syncing,
                             updating = updating,
                             progress = updatingProgress.takeIf { updating }
                                 ?: syncingProgress.takeIf { syncing }
                                 ?: restoringProgress.takeIf { restoring },
-                             <--
                             modifier = Modifier.windowInsetsPadding(scaffoldInsets),
                         )
                     },
@@ -359,7 +341,7 @@ class MainActivity : BaseActivity() {
                         }
                         .launchIn(this)
 
-                    // AM (DISCORD) -->
+                    // AM (DISCORD)
                     connectionsPreferences.enableDiscordRPC().changes()
                         .drop(1)
                         .onEach {
@@ -379,19 +361,16 @@ class MainActivity : BaseActivity() {
                                 }
                             }
                         }.launchIn(this)
-                    // <-- AM (DISCORD)
+                    //AM (DISCORD)
                 }
 
                 HandleOnNewIntent(context = context, navigator = navigator)
 
-                 -->
                 RearmJobs()
-                 <--
                 CheckForUpdates()
                 ShowOnboarding()
             }
 
-             -->
             if (hasDebugOverlay) {
                 val isDebugOverlayEnabled by remember {
                     DebugToggles.ENABLE_DEBUG_OVERLAY.asPref(lifecycleScope)
@@ -400,27 +379,21 @@ class MainActivity : BaseActivity() {
                     DebugModeOverlay()
                 }
             }
-             <--
 
-             -->
             val previewLastVersion = Injekt.get<PreferenceStore>().getInt(
                 Preference.appStateKey("preview_last_version_code"),
                 0,
             )
             val previewCurrentVersion = BuildConfig.COMMIT_COUNT.toInt()
             var isCheckingWhatsNew by remember { mutableStateOf(false) }
-             <--
 
             var showChangelog by remember {
                 mutableStateOf(
-                     -->
                     (isReleaseBuildType && didMigration) ||
                         (isPreviewBuildType && previewCurrentVersion > previewLastVersion.get()),
-                     <--
                 )
             }
             if (showChangelog) {
-                 -->
                 WhatsNewDialog(
                     onDismissRequest = { showChangelog = false },
                     onOpenWhatsNew = {
@@ -448,15 +421,10 @@ class MainActivity : BaseActivity() {
                         }
                     },
                 )
-                 <--
             }
-             -->
             previewLastVersion.set(previewCurrentVersion)
-             <--
 
-             -->
             ConfigureExhDialog(run = runExhConfigureDialog, onRunning = { runExhConfigureDialog = false })
-             <--
         }
 
         val startTime = System.currentTimeMillis()
@@ -473,12 +441,10 @@ class MainActivity : BaseActivity() {
         }
     }
 
-     -->
     override fun onPause() {
         super.onPause()
         MangaCoverMetadata.savePrefs()
     }
-     <--
 
     override fun onProvideAssistContent(outContent: AssistContent) {
         super.onProvideAssistContent(outContent)
@@ -502,7 +468,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-     -->
     @Composable
     private fun RearmJobs() {
         val context = LocalContext.current
@@ -540,7 +505,6 @@ class MainActivity : BaseActivity() {
             }
         }
     }
-     <--
 
     @Composable
     private fun CheckForUpdates() {
@@ -551,9 +515,7 @@ class MainActivity : BaseActivity() {
         LaunchedEffect(Unit) {
             if (updaterEnabled) {
                 try {
-                     -->
                     AppUpdateJob.setupTask(context)
-                     <--
                     val result = AppUpdateChecker().checkForUpdate(context)
                     if (result is GetApplicationRelease.Result.NewUpdate) {
                         val updateScreen = NewUpdateScreen(
@@ -660,12 +622,10 @@ class MainActivity : BaseActivity() {
                 navigator.popUntilRoot()
                 HomeScreen.Tab.More(toDownloads = true)
             }
-             -->
             Constants.SHORTCUT_LIBRARY_UPDATE_ERRORS -> {
                 navigator.popUntilRoot()
                 HomeScreen.Tab.More(toDownloads = false, toLibraryUpdateErrors = true)
             }
-             <--
             Intent.ACTION_SEARCH, Intent.ACTION_SEND, "com.google.android.gms.actions.SEARCH_ACTION" -> {
                 // If the intent match the "standard" Android search intent
                 // or the Google-specific search intent (triggered by saying or typing "search *query* on *Tachiyomi*" in Google Search/Google Assistant)

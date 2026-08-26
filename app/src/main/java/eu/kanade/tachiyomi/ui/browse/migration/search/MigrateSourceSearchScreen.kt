@@ -77,7 +77,6 @@ data class MigrateSourceSearchScreen(
 
         val snackbarHostState = remember { SnackbarHostState() }
 
-         -->
         val context = LocalContext.current
 
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
@@ -88,11 +87,9 @@ data class MigrateSourceSearchScreen(
         }
 
         val mangaList = screenModel.mangaPagerFlowFlow.collectAsLazyPagingItems()
-         <--
 
         Scaffold(
             topBar = { scrollBehavior ->
-                 -->
                 if (bulkFavoriteState.selectionMode) {
                     BulkSelectionToolbar(
                         selectedCount = bulkFavoriteState.selection.size,
@@ -111,14 +108,12 @@ data class MigrateSourceSearchScreen(
                         },
                     )
                 } else {
-                     <--
                     SearchToolbar(
                         searchQuery = state.toolbarQuery,
                         onChangeSearchQuery = screenModel::setToolbarQuery,
                         onClickCloseSearch = navigator::pop,
                         onSearch = screenModel::search,
                         scrollBehavior = scrollBehavior,
-                         -->
                         actions = {
                             AppBarActions(
                                 actions = persistentListOf(
@@ -129,7 +124,6 @@ data class MigrateSourceSearchScreen(
                                 ),
                             )
                         },
-                         <--
                     )
                 }
             },
@@ -162,9 +156,7 @@ data class MigrateSourceSearchScreen(
                 source = screenModel.source,
                 mangaList = mangaList,
                 columns = screenModel.getColumnsPreference(LocalConfiguration.current.orientation),
-                 -->
                 ehentaiBrowseDisplayMode = screenModel.ehentaiBrowseDisplayMode,
-                 <--
                 displayMode = screenModel.displayMode,
                 snackbarHostState = snackbarHostState,
                 contentPadding = paddingValues,
@@ -181,18 +173,14 @@ data class MigrateSourceSearchScreen(
                 onHelpClick = { uriHandler.openUri(Constants.URL_HELP) },
                 onLocalSourceHelpClick = { uriHandler.openUri(LocalSource.HELP_URL) },
                 onMangaClick = { manga ->
-                     -->
                     if (bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.toggleSelection(manga)
                     } else {
-                         <--
                         openMigrateDialog(manga)
                     }
                 },
                 onMangaLongClick = { navigator.push(MangaScreen(it.id, true)) },
-                 -->
                 selection = bulkFavoriteState.selection,
-                 <--
             )
         }
 
@@ -205,10 +193,8 @@ data class MigrateSourceSearchScreen(
                     onReset = screenModel::resetFilters,
                     onFilter = { screenModel.search(filters = state.filters) },
                     onUpdate = screenModel::setFilters,
-                     -->
                     startExpanded = screenModel.startExpanded,
                     onSave = {},
-                     -->
                     savedSearches = state.savedSearches,
                     onSavedSearch = { search ->
                         screenModel.onSavedSearch(search) {
@@ -217,11 +203,9 @@ data class MigrateSourceSearchScreen(
                     },
                     onSavedSearchPressDesc = stringResource(SYMR.strings.saved_searches),
                     shouldShowSavingButton = false,
-                     <--
                     onSavedSearchPress = {},
                     openMangaDexRandom = null,
                     openMangaDexFollows = null,
-                     <--
                 )
             }
             is BrowseSourceScreenModel.Dialog.Migrate -> {
@@ -243,12 +227,10 @@ data class MigrateSourceSearchScreen(
             else -> {}
         }
 
-         -->
         // Bulk-favorite actions only
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
-         <--
     }
 }

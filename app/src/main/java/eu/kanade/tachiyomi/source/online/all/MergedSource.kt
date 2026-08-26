@@ -68,10 +68,8 @@ class MergedSource : HttpSource() {
         fetchDetails: Boolean,
         fetchChapters: Boolean,
     ): SMangaUpdate {
-         -->
         val asyncManga = if (fetchDetails) getMangaDetails(manga) else null
         return SMangaUpdate(asyncManga ?: manga, chapters)
-         <--
     }
 
     private suspend fun getMangaDetails(manga: SManga): SManga {

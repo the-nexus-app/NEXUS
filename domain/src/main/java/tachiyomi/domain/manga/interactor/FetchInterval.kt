@@ -125,8 +125,6 @@ class FetchInterval(
 
         private const val GRACE_PERIOD = 1L
 
-         -->
         const val MANUAL_DISABLE = 99999 // 274 years in future
-         <--
     }
 }

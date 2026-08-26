@@ -64,7 +64,6 @@ class CategoryScreen : Screen() {
             onChangeOrder = screenModel::changeOrder,
 
 
-             -->
             onClickHide = { category ->
                 if (category.hidden) {
                     // Category is currently hidden — require auth before unhiding

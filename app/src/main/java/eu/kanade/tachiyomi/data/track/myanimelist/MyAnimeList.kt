@@ -158,7 +158,6 @@ class MyAnimeList(id: Long) : BaseTracker(id, "MyAnimeList"), DeletableTracker {
         return api.getMangaMetadata(track)
     }
 
-     -->
     override suspend fun searchById(id: String): TrackSearch? {
         val searchId = id.toIntOrNull()
             ?: run {
@@ -172,7 +171,6 @@ class MyAnimeList(id: Long) : BaseTracker(id, "MyAnimeList"), DeletableTracker {
             null
         }
     }
-     <--
 
     fun getIfAuthExpired(): Boolean {
         return trackPreferences.trackAuthExpired(this).get()
@@ -194,7 +192,5 @@ class MyAnimeList(id: Long) : BaseTracker(id, "MyAnimeList"), DeletableTracker {
         }
     }
 
-     -->
     override fun hasNotStartedReading(status: Long): Boolean = status == PLAN_TO_READ
-     <--
 }

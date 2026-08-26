@@ -64,10 +64,8 @@ fun MoreScreen(
     onDownloadedOnlyChange: (Boolean) -> Unit,
     incognitoMode: Boolean,
     onIncognitoModeChange: (Boolean) -> Unit,
-     -->
     showNavUpdates: Boolean,
     showNavHistory: Boolean,
-     <--
     onClickDownloadQueue: () -> Unit,
     onClickCategories: () -> Unit,
     onClickStats: () -> Unit,
@@ -77,19 +75,15 @@ fun MoreScreen(
     onClickBatchAdd: () -> Unit,
     onClickUpdates: () -> Unit,
     onClickHistory: () -> Unit,
-     -->
     onClickLibraryUpdateErrors: () -> Unit,
-     <--
 ) {
     val uriHandler = LocalUriHandler.current
-     -->
     val exhPreferences = remember { Injekt.get<ExhPreferences>() }
     val delegateSourcePreferences = remember { Injekt.get<DelegateSourcePreferences>() }
-     <--
 
     Scaffold { contentPadding ->
         ScrollbarLazyColumn(
-            : use contentPadding as preferable padding for ScrollbarLazyColumn when not using stickyHeader
+            // use contentPadding as preferable padding for ScrollbarLazyColumn when not using stickyHeader
             contentPadding = contentPadding,
         ) {
             item {
@@ -108,12 +102,10 @@ fun MoreScreen(
                 SwitchPreferenceWidget(
                     title = stringResource(MR.strings.pref_incognito_mode),
                     subtitle = stringResource(MR.strings.pref_incognito_mode_summary),
-                     -->
                     icon = rememberAnimatedVectorPainter(
                         AnimatedImageVector.animatedVectorResource(R.drawable.anim_incognito),
                         incognitoMode,
                     ),
-                     <--
                     checked = incognitoMode,
                     onCheckedChanged = onIncognitoModeChange,
                 )
@@ -121,7 +113,6 @@ fun MoreScreen(
 
             item { HorizontalDivider() }
 
-             -->
             if (!showNavUpdates) {
                 item {
                     TextPreferenceWidget(
@@ -140,7 +131,6 @@ fun MoreScreen(
                     )
                 }
             }
-             <--
 
             item {
                 val downloadQueueState = downloadQueueStateProvider()
@@ -185,7 +175,6 @@ fun MoreScreen(
                     onPreferenceClick = onClickStats,
                 )
             }
-             -->
             item {
                 TextPreferenceWidget(
                     title = stringResource(KMR.strings.option_label_library_update_errors),
@@ -193,7 +182,6 @@ fun MoreScreen(
                     onPreferenceClick = onClickLibraryUpdateErrors,
                 )
             }
-             <--
             item {
                 TextPreferenceWidget(
                     title = stringResource(MR.strings.label_data_storage),
@@ -201,7 +189,6 @@ fun MoreScreen(
                     onPreferenceClick = onClickDataAndStorage,
                 )
             }
-             -->
             if (exhPreferences.isHentaiEnabled().get() || delegateSourcePreferences.delegateSources().get()) {
                 item {
                     TextPreferenceWidget(
@@ -211,7 +198,6 @@ fun MoreScreen(
                     )
                 }
             }
-             <--
 
             item { HorizontalDivider() }
 
@@ -236,13 +222,7 @@ fun MoreScreen(
                     onPreferenceClick = { uriHandler.openUri(Constants.URL_HELP) },
                 )
             }
-             -->
 
-             <--
         }
     }
 }
-
- -->
-
- <--

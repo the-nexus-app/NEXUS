@@ -60,29 +60,22 @@ import uy.kohesive.injekt.api.addSingletonFactory
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 
- -->
 private const val LEGACY_DATABASE_NAME = "tachiyomi.db"
- <--
 
 class AppModule(val app: Application) : InjektModule {
-     -->
     private val securityPreferences: SecurityPreferences by injectLazy()
-     <--
 
     override fun InjektRegistrar.registerInjectables() {
         addSingleton(app)
 
         addSingletonFactory<SqlDriver> {
-             -->
             if (securityPreferences.encryptDatabase().get()) {
                 System.loadLibrary("sqlcipher")
             }
 
-             <--
             AndroidSqliteDriver(
                 schema = Database.Schema,
                 context = app,
-                 -->
                 name = if (securityPreferences.encryptDatabase().get()) {
                     CbzCrypto.DATABASE_NAME
                 } else {
@@ -96,7 +89,6 @@ class AppModule(val app: Application) : InjektModule {
                 } else {
                     RequerySQLiteOpenHelperFactory()
                 },
-                 <--
                 callback = object : AndroidSqliteDriver.Callback(Database.Schema) {
                     override fun onOpen(db: SupportSQLiteDatabase) {
                         super.onOpen(db)
@@ -176,21 +168,17 @@ class AppModule(val app: Application) : InjektModule {
         addSingletonFactory { LocalCoverManager(app, get()) }
         addSingletonFactory { StorageManager(app, get()) }
 
-         -->
         addSingletonFactory { EHentaiUpdateHelper(app) }
 
         addSingletonFactory { PagePreviewCache(app) }
-         <--
 
-         -->
         addSingletonFactory { BackupRestoreStatus() }
         addSingletonFactory { SyncStatus() }
         addSingletonFactory { LibraryUpdateStatus() }
-         <--
 
-        // AM (CONNECTIONS) -->
+        // AM (CONNECTIONS)
         addSingletonFactory { ConnectionsManager() }
-        // <-- AM (CONNECTIONS)
+        //AM (CONNECTIONS)
 
         // Asynchronously init expensive components for a faster cold start
         ContextCompat.getMainExecutor(app).execute {
@@ -202,9 +190,7 @@ class AppModule(val app: Application) : InjektModule {
 
             get<DownloadManager>()
 
-             -->
             get<GetCustomMangaInfo>()
-             <--
         }
 
         addSingletonFactory { GoogleDriveService(app) }

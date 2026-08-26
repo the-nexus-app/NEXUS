@@ -102,7 +102,6 @@ interface Source {
      */
     suspend fun getPageList(chapter: SChapter): List<Page>
 
-     -->
 
     /**
      * Whether parsing related mangas in manga page or extension provide custom related mangas request.
@@ -235,7 +234,6 @@ interface Source {
             }
         }
     }
-     <--
 
     @Deprecated("Use the combined suspend API instead", ReplaceWith("getMangaUpdate"))
     fun fetchMangaDetails(manga: SManga): Observable<SManga> = throw UnsupportedOperationException()

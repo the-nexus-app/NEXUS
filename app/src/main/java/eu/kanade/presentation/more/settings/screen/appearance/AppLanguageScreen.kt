@@ -85,7 +85,6 @@ class AppLanguageScreen : Screen() {
                                 Text(it)
                             }
                         },
-                         -->
                         leadingContent = {
                             val iconResId = getLanguageIconID(it.langTag) ?: R.drawable.globe
                             Icon(
@@ -97,7 +96,6 @@ class AppLanguageScreen : Screen() {
                                     .height(32.dp),
                             )
                         },
-                         <--
                         trailingContent = {
                             if (currentLanguage == it.langTag) {
                                 Icon(

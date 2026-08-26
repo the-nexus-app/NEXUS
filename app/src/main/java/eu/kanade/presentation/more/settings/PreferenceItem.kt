@@ -175,7 +175,7 @@ internal fun PreferenceItem(
                     onClick = { if (isLoggedIn) item.logout() else item.login() },
                 )
             }
-            // AM (CONNECTIONS) -->
+            // AM (CONNECTIONS)
             is Preference.PreferenceItem.ConnectionPreference -> {
                 val isLoggedIn by item.service.isLoggedInFlow.collectAsState(item.service.isLogged)
                 ConnectionPreferenceWidget(
@@ -185,7 +185,7 @@ internal fun PreferenceItem(
                     subtitle = item.subtitle,
                 )
             }
-            // <-- AM (CONNECTIONS)
+            //AM (CONNECTIONS)
             is Preference.PreferenceItem.InfoPreference -> {
                 InfoWidget(text = item.title)
             }

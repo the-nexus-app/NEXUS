@@ -74,9 +74,7 @@ class UpdatesScreenModel(
     private val libraryPreferences: LibraryPreferences = Injekt.get(),
     private val updatesPreferences: UpdatesPreferences = Injekt.get(),
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
-     -->
     readerPreferences: ReaderPreferences = Injekt.get(),
-     <--
 ) : StateScreenModel<UpdatesScreenModel.State>(State()) {
 
     private val _events: Channel<Event> = Channel(Int.MAX_VALUE)
@@ -84,9 +82,7 @@ class UpdatesScreenModel(
 
     val lastUpdated by libraryPreferences.lastUpdatedTimestamp().asState(screenModelScope)
 
-     -->
     val preserveReadingPosition by readerPreferences.preserveReadingPosition().asState(screenModelScope)
-     <--
 
     // First and last selected index in list
     private val selectedPositions: Array<Int> = arrayOf(-1, -1)
@@ -136,7 +132,6 @@ class UpdatesScreenModel(
                         state.copy(
                             isLoading = false,
                             items = updateItems
-                                 -->
                                 .groupBy { it.update.dateFetch.toLocalDate() }
                                 .flatMap { (_, mangas) ->
                                     mangas.groupBy { it.update.mangaId }
@@ -148,7 +143,6 @@ class UpdatesScreenModel(
                                         }
                                 }
                                 .toPersistentList(),
-                             <--
                         )
                     }
                 }
@@ -206,9 +200,7 @@ class UpdatesScreenModel(
                     update.chapterName,
                     update.scanlator,
                     update.chapterUrl,
-                     -->
                     update.ogMangaTitle,
-                     <--
                     update.sourceId,
                 )
                 val downloadState = when {
@@ -357,9 +349,7 @@ class UpdatesScreenModel(
                         chapters,
                         manga,
                         source,
-                         -->
                         ignoreCategoryExclusion = true,
-                         <--
                     )
                 }
         }
@@ -370,7 +360,6 @@ class UpdatesScreenModel(
         setDialog(Dialog.DeleteConfirmation(updatesItem))
     }
 
-     -->
     /** Bundles all of the boolean flags for update‐selection into one type */
     data class UpdateSelectionOptions(
         val selected: Boolean,
@@ -378,31 +367,23 @@ class UpdatesScreenModel(
         val isGroup: Boolean = false,
         val isExpanded: Boolean = false,
     )
-     <--
 
     fun toggleSelection(
         item: UpdatesItem,
-         -->
         selectionOptions: UpdateSelectionOptions,
-         <--
     ) {
-         -->
         val (selected, fromLongPress, isGroup, isExpanded) = selectionOptions
-         <--
         mutableState.update { state ->
-             -->
             val selectedIndex = state.items.indexOfFirst { it.update.chapterId == item.update.chapterId }
             if (selectedIndex < 0) return@update state
             val selectedItem = state.items[selectedIndex]
             if (selectedItem.selected == selected) return@update state
-             <--
 
             val newItems = state.items.toMutableList().apply {
                 val firstSelection = none { it.selected }
                 set(selectedIndex, selectedItem.copy(selected = selected))
                 selectedChapterIds.addOrRemove(item.update.chapterId, selected)
 
-                 -->
                 if (isGroup && !isExpanded) {
                     val selectedItemDate = selectedItem.update.dateFetch.toLocalDate()
                     val zone = java.time.ZoneId.systemDefault()
@@ -419,7 +400,6 @@ class UpdatesScreenModel(
                             selectedChapterIds.addOrRemove(item.update.chapterId, selected)
                         }
                 }
-                 <--
 
                 if (selected && fromLongPress) {
                     if (firstSelection) {
@@ -473,10 +453,8 @@ class UpdatesScreenModel(
                 selectedChapterIds.addOrRemove(it.update.chapterId, selected)
                 it.copy(selected = selected)
             }
-             -->
             selectedPositions[0] = -1
             selectedPositions[1] = -1
-             <--
             state.copy(items = newItems.toPersistentList())
         }
     }
@@ -487,10 +465,8 @@ class UpdatesScreenModel(
                 selectedChapterIds.addOrRemove(it.update.chapterId, !it.selected)
                 it.copy(selected = !it.selected)
             }
-             -->
             selectedPositions[0] = -1
             selectedPositions[1] = -1
-             <--
             state.copy(items = newItems.toPersistentList())
         }
     }
@@ -503,7 +479,6 @@ class UpdatesScreenModel(
         libraryPreferences.newUpdatesCount().set(0)
     }
 
-     -->
     fun toggleExpandedState(key: String) {
         mutableState.update {
             it.copy(
@@ -559,7 +534,6 @@ class UpdatesScreenModel(
             LibraryPreferences.ChapterSwipeAction.Disabled -> throw IllegalStateException()
         }
     }
-     <--
     private fun getHiddenMangaIdsFlow(): Flow<Set<Long>> {
         return combine(getCategories.subscribe(), getLibraryManga.subscribe()) { categories, libraryManga ->
             val hiddenCategoryIds = categories.filter { it.hidden }.map { it.id }.toSet()
@@ -610,18 +584,15 @@ class UpdatesScreenModel(
         val isLoading: Boolean = true,
         val hasActiveFilters: Boolean = false,
         val items: PersistentList<UpdatesItem> = persistentListOf(),
-         -->
         val expandedState: Set<String> = persistentSetOf(),
         val hiddenMangaIds: Set<Long> = emptySet(),
         val showHiddenUpdates: Boolean = false,
-         <--
         val dialog: Dialog? = null,
     ) {
         val selected = items.filter { it.selected }
         val selectionMode = selected.isNotEmpty()
 
         fun getUiModel(): List<UpdatesUiModel> {
-             -->
             val visibleItems = if (showHiddenUpdates) items else items.filterNot { it.update.mangaId in hiddenMangaIds }
             return visibleItems
             .groupBy { it.update.dateFetch.toLocalDate() }
@@ -650,7 +621,6 @@ class UpdatesScreenModel(
                         is UpdatesUiModel.Item -> "${it.item.update.mangaId}-${it.item.update.chapterId}"
                     }
                 }
-             <--
         }
     }
 
@@ -680,14 +650,10 @@ data class UpdatesItem(
     val downloadProgressProvider: () -> Int,
     val selected: Boolean = false,
 ) {
-     -->
     fun isEhBasedUpdate(): Boolean {
         return update.sourceId == EH_SOURCE_ID || update.sourceId == EXH_SOURCE_ID
     }
-     <--
 }
 
- -->
 /** String to identify which manga's update on which day it is collapsing */
 fun UpdatesWithRelations.groupByDateAndManga() = "${dateFetch.toLocalDate().toEpochDay()}-$mangaId"
- <--

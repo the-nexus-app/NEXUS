@@ -126,23 +126,17 @@ fun MangaInfoBox(
     manga: Manga,
     sourceName: String,
     isStubSource: Boolean,
-     -->
     isSourceIncognito: Boolean,
-     <--
     onCoverClick: () -> Unit,
     doSearch: (query: String, global: Boolean) -> Unit,
     modifier: Modifier = Modifier,
-     -->
     librarySearch: (query: String) -> Unit,
     onSourceClick: () -> Unit,
     onCoverLoaded: (DomainMangaCover) -> Unit,
     coverRatio: MutableFloatState,
-     <--
 ) {
-     -->
     val usePanoramaCover by Injekt.get<UiPreferences>().usePanoramaCoverMangaInfo().collectAsState()
     val topAlignCover by Injekt.get<UiPreferences>().topAlignCover().collectAsState()
-     <--
     Box(modifier = modifier) {
         // Backdrop
         val backdropGradientColors = listOf(
@@ -156,12 +150,10 @@ fun MangaInfoBox(
                 .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-             -->
             onSuccess = { result ->
                 val image = result.result.image
                 coverRatio.floatValue = image.height.toFloat() / image.width
             },
-             <--
             modifier = Modifier
                 .matchParentSize()
                 .drawWithContent {
@@ -169,17 +161,13 @@ fun MangaInfoBox(
                     drawRect(
                         brush = Brush.verticalGradient(
                             colors = backdropGradientColors,
-                             -->
                             startY = size.height / 2,
-                             <--
                         ),
                     )
                 }
-                 -->
                 .background(MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.4f))
                 .blur(7.dp)
                 // .blur(4.dp)
-                 <--
                 .alpha(0.2f),
         )
 
@@ -191,19 +179,15 @@ fun MangaInfoBox(
                     manga = manga,
                     sourceName = sourceName,
                     isStubSource = isStubSource,
-                     -->
                     isSourceIncognito = isSourceIncognito,
-                     <--
                     onCoverClick = onCoverClick,
                     doSearch = doSearch,
-                     -->
                     librarySearch = librarySearch,
                     onSourceClick = onSourceClick,
                     onCoverLoaded = onCoverLoaded,
                     coverRatio = coverRatio,
                     usePanoramaCover = usePanoramaCover,
                     topAlignCover = topAlignCover,
-                     <--
                 )
             } else {
                 MangaAndSourceTitlesLarge(
@@ -211,18 +195,14 @@ fun MangaInfoBox(
                     manga = manga,
                     sourceName = sourceName,
                     isStubSource = isStubSource,
-                     -->
                     isSourceIncognito = isSourceIncognito,
-                     <--
                     onCoverClick = onCoverClick,
                     doSearch = doSearch,
-                     -->
                     librarySearch = librarySearch,
                     onSourceClick = onSourceClick,
                     onCoverLoaded = onCoverLoaded,
                     coverRatio = coverRatio,
                     usePanoramaCover = usePanoramaCover,
-                     <--
                 )
             }
         }
@@ -241,36 +221,26 @@ fun MangaActionRow(
     onTrackingClicked: () -> Unit,
     onEditIntervalClicked: (() -> Unit)?,
     onEditCategory: (() -> Unit)?,
-     -->
     onMergeClicked: (() -> Unit)?,
-     <--
-     -->
     status: Long,
     interval: Int,
-     <--
     modifier: Modifier = Modifier,
 ) {
-     -->
     val libraryPreferences: LibraryPreferences = Injekt.get()
     val restrictions = libraryPreferences.autoUpdateMangaRestrictions().get()
     val notSkipCompleted = MANGA_NON_COMPLETED !in restrictions || status != SManga.COMPLETED.toLong()
     val selectedInterval by remember(interval) { mutableIntStateOf(if (interval < 0) -interval else 0) }
-     <--
     val defaultActionButtonColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_ALPHA)
 
     // TODO: show something better when using custom interval
     val nextUpdateDays = remember(nextUpdate, selectedInterval, notSkipCompleted) {
         return@remember if (nextUpdate != null &&
-             -->
             notSkipCompleted
-             <--
         ) {
             val now = Instant.now()
             now.until(nextUpdate, ChronoUnit.DAYS).toInt().coerceAtLeast(0)
-                 -->
                 .takeIf { selectedInterval != FetchInterval.MANUAL_DISABLE }
                 ?: FetchInterval.MANUAL_DISABLE
-             <--
         } else {
             null
         }
@@ -292,9 +262,7 @@ fun MangaActionRow(
             title = when (nextUpdateDays) {
                 null -> stringResource(MR.strings.not_applicable)
                 0 -> stringResource(MR.strings.manga_interval_expected_update_soon)
-                 -->
                 FetchInterval.MANUAL_DISABLE -> stringResource(MR.strings.disabled)
-                 <--
                 else -> pluralStringResource(
                     MR.plurals.day,
                     count = nextUpdateDays,
@@ -302,14 +270,10 @@ fun MangaActionRow(
                 )
             },
             icon = Icons.Default.HourglassEmpty
-                 -->
                 .takeIf { nextUpdateDays != FetchInterval.MANUAL_DISABLE }
                 ?: Icons.Default.HourglassDisabled,
-             <--
             color = if (isUserIntervalMode ||
-                 -->
                 nextUpdateDays?.let { it <= 1 } == true
-                 <--
             ) {
                 MaterialTheme.colorScheme.primary
             } else {
@@ -331,21 +295,19 @@ fun MangaActionRow(
             MangaActionButton(
                 title = stringResource(MR.strings.action_web_view),
                 icon = Icons.Outlined.Public,
-                color = MaterialTheme.colorScheme.primary, : defaultActionButtonColor
+                color = MaterialTheme.colorScheme.primary,
                 onClick = onWebViewClicked,
                 onLongClick = onWebViewLongClicked,
             )
         }
-         -->
         if (onMergeClicked != null) {
             MangaActionButton(
                 title = stringResource(SYMR.strings.merge),
                 icon = Icons.AutoMirrored.Outlined.CallMerge,
-                color = MaterialTheme.colorScheme.primary, : defaultActionButtonColor
+                color = MaterialTheme.colorScheme.primary,
                 onClick = onMergeClicked,
             )
         }
-         <--
     }
 }
 
@@ -358,16 +320,12 @@ fun ExpandableMangaDescription(
     onTagSearch: (String) -> Unit,
     onCopyTagToClipboard: (tag: String) -> Unit,
     onEditNotes: () -> Unit,
-     -->
     searchMetadataChips: SearchMetadataChips?,
     doSearch: (query: String, global: Boolean) -> Unit,
-     <--
     modifier: Modifier = Modifier,
 ) {
-     -->
     val uiPreferences = Injekt.get<UiPreferences>()
     val pureDarkMode = uiPreferences.themeDarkAmoled().get()
-     <--
     Column(modifier = modifier) {
         val (expanded, onExpanded) = rememberSaveable {
             mutableStateOf(defaultExpandState)
@@ -407,7 +365,6 @@ fun ExpandableMangaDescription(
                             showMenu = false
                         },
                     )
-                     -->
                     DropdownMenuItem(
                         text = { Text(text = stringResource(MR.strings.action_global_search)) },
                         onClick = {
@@ -415,7 +372,6 @@ fun ExpandableMangaDescription(
                             showMenu = false
                         },
                     )
-                     <--
                     DropdownMenuItem(
                         text = { Text(text = stringResource(MR.strings.action_copy_to_clipboard)) },
                         onClick = {
@@ -425,7 +381,6 @@ fun ExpandableMangaDescription(
                     )
                 }
                 if (expanded) {
-                     -->
                     if (searchMetadataChips != null) {
                         NamespaceTags(
                             tags = searchMetadataChips,
@@ -433,12 +388,9 @@ fun ExpandableMangaDescription(
                                 tagSelected = it
                                 showMenu = true
                             },
-                             -->
                             pureDarkMode = pureDarkMode,
-                             <--
                         )
                     } else {
-                         <--
                         FlowRow(
                             modifier = Modifier.padding(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.padding.extraSmall),
@@ -451,9 +403,7 @@ fun ExpandableMangaDescription(
                                         tagSelected = it
                                         showMenu = true
                                     },
-                                     -->
                                     pureDarkMode = pureDarkMode,
-                                     <--
                                 )
                             }
                         }
@@ -471,9 +421,7 @@ fun ExpandableMangaDescription(
                                     tagSelected = it
                                     showMenu = true
                                 },
-                                 -->
                                 pureDarkMode = pureDarkMode,
-                                 <--
                             )
                         }
                     }
@@ -489,18 +437,14 @@ private fun MangaAndSourceTitlesLarge(
     manga: Manga,
     sourceName: String,
     isStubSource: Boolean,
-     -->
     isSourceIncognito: Boolean,
-     <--
     onCoverClick: () -> Unit,
     doSearch: (query: String, global: Boolean) -> Unit,
-     -->
     librarySearch: (query: String) -> Unit,
     onSourceClick: () -> Unit,
     onCoverLoaded: (DomainMangaCover) -> Unit,
     coverRatio: MutableFloatState,
     usePanoramaCover: Boolean = false,
-     <--
 ) {
     Column(
         modifier = Modifier
@@ -508,7 +452,6 @@ private fun MangaAndSourceTitlesLarge(
             .padding(start = 16.dp, top = appBarPadding + 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-         -->
         if (usePanoramaCover && coverRatio.floatValue <= RatioSwitchToPanorama) {
             MangaCover.Panorama(
                 modifier = Modifier.fillMaxWidth(0.65f),
@@ -518,16 +461,13 @@ private fun MangaAndSourceTitlesLarge(
                     .build(),
                 contentDescription = stringResource(MR.strings.manga_cover),
                 onClick = onCoverClick,
-                 -->
                 onCoverLoaded = { mangaCover, result ->
                     val image = result.result.image
                     coverRatio.floatValue = image.height.toFloat() / image.width
                     onCoverLoaded(mangaCover)
                 },
-                 <--
             )
         } else {
-             <--
             MangaCover.Book(
                 modifier = Modifier.fillMaxWidth(0.65f),
                 data = ImageRequest.Builder(LocalContext.current)
@@ -536,13 +476,11 @@ private fun MangaAndSourceTitlesLarge(
                     .build(),
                 contentDescription = stringResource(MR.strings.manga_cover),
                 onClick = onCoverClick,
-                 -->
                 onCoverLoaded = { mangaCover, result ->
                     val image = result.result.image
                     coverRatio.floatValue = image.height.toFloat() / image.width
                     onCoverLoaded(mangaCover)
                 },
-                 <--
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -553,15 +491,11 @@ private fun MangaAndSourceTitlesLarge(
             status = manga.status,
             sourceName = sourceName,
             isStubSource = isStubSource,
-             -->
             isSourceIncognito = isSourceIncognito,
-             <--
             doSearch = doSearch,
             textAlign = TextAlign.Center,
-             -->
             librarySearch = librarySearch,
             onSourceClick = onSourceClick,
-             <--
         )
     }
 }
@@ -572,19 +506,15 @@ private fun MangaAndSourceTitlesSmall(
     manga: Manga,
     sourceName: String,
     isStubSource: Boolean,
-     -->
     isSourceIncognito: Boolean,
-     <--
     onCoverClick: () -> Unit,
     doSearch: (query: String, global: Boolean) -> Unit,
-     -->
     librarySearch: (query: String) -> Unit,
     onSourceClick: () -> Unit,
     onCoverLoaded: (DomainMangaCover) -> Unit,
     coverRatio: MutableFloatState,
     usePanoramaCover: Boolean = false,
     topAlignCover: Boolean = false,
-     <--
 ) {
     Row(
         modifier = Modifier
@@ -593,49 +523,39 @@ private fun MangaAndSourceTitlesSmall(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = if (topAlignCover) Alignment.Top else Alignment.CenterVertically,
     ) {
-         -->
         if (usePanoramaCover && coverRatio.floatValue <= RatioSwitchToPanorama) {
             MangaCover.Panorama(
                 modifier = Modifier
                     .sizeIn(maxHeight = 100.dp)
-                     -->
                     .align(if (topAlignCover) Alignment.Top else Alignment.CenterVertically),
-                 <--
                 data = ImageRequest.Builder(LocalContext.current)
                     .data(manga)
                     .crossfade(true)
                     .build(),
                 contentDescription = stringResource(MR.strings.manga_cover),
                 onClick = onCoverClick,
-                 -->
                 onCoverLoaded = { mangaCover, result ->
                     val image = result.result.image
                     coverRatio.floatValue = image.height.toFloat() / image.width
                     onCoverLoaded(mangaCover)
                 },
-                 <--
             )
         } else {
-             <--
             MangaCover.Book(
                 modifier = Modifier
                     .sizeIn(maxWidth = 100.dp)
-                     -->
                     .align(if (topAlignCover) Alignment.Top else Alignment.CenterVertically),
-                 <--
                 data = ImageRequest.Builder(LocalContext.current)
                     .data(manga)
                     .crossfade(true)
                     .build(),
                 contentDescription = stringResource(MR.strings.manga_cover),
                 onClick = onCoverClick,
-                 -->
                 onCoverLoaded = { mangaCover, result ->
                     val image = result.result.image
                     coverRatio.floatValue = image.height.toFloat() / image.width
                     onCoverLoaded(mangaCover)
                 },
-                 <--
             )
         }
         Column(
@@ -648,14 +568,10 @@ private fun MangaAndSourceTitlesSmall(
                 status = manga.status,
                 sourceName = sourceName,
                 isStubSource = isStubSource,
-                 -->
                 isSourceIncognito = isSourceIncognito,
-                 <--
                 doSearch = doSearch,
-                 -->
                 librarySearch = librarySearch,
                 onSourceClick = onSourceClick,
-                 <--
             )
         }
     }
@@ -670,18 +586,13 @@ private fun ColumnScope.MangaContentInfo(
     status: Long,
     sourceName: String,
     isStubSource: Boolean,
-     -->
     isSourceIncognito: Boolean,
-     <--
     doSearch: (query: String, global: Boolean) -> Unit,
     textAlign: TextAlign? = LocalTextStyle.current.textAlign,
-     -->
     librarySearch: (query: String) -> Unit,
     onSourceClick: () -> Unit,
-     <--
 ) {
     val context = LocalContext.current
-     -->
     var showMenu by remember { mutableStateOf(false) }
     var tagSelected by remember { mutableStateOf("") }
     DropdownMenu(
@@ -713,17 +624,14 @@ private fun ColumnScope.MangaContentInfo(
             },
         )
     }
-     <--
     Text(
         text = title.ifBlank { stringResource(MR.strings.unknown_title) },
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.clickableNoIndication(
             onLongClick = {
                 if (title.isNotBlank()) {
-                     -->
                     tagSelected = title
                     showMenu = true
-                     <--
                 }
             },
             onClick = { if (title.isNotBlank()) doSearch(title, true) },
@@ -751,10 +659,8 @@ private fun ColumnScope.MangaContentInfo(
                 .clickableNoIndication(
                     onLongClick = {
                         if (!author.isNullOrBlank()) {
-                             -->
                             tagSelected = author
                             showMenu = true
-                             <--
                         }
                     },
                     onClick = { if (!author.isNullOrBlank()) doSearch(author, true) },
@@ -780,10 +686,8 @@ private fun ColumnScope.MangaContentInfo(
                 modifier = Modifier
                     .clickableNoIndication(
                         onLongClick = {
-                             -->
                             tagSelected = artist
                             showMenu = true
-                             <--
                         },
                         onClick = { doSearch(artist, true) },
                     ),
@@ -827,7 +731,6 @@ private fun ColumnScope.MangaContentInfo(
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
             )
-             -->
             if (isSourceIncognito) {
                 DotSeparatorText()
                 Icon(
@@ -839,7 +742,6 @@ private fun ColumnScope.MangaContentInfo(
                     tint = MaterialTheme.colorScheme.primary,
                 )
             }
-             <--
             DotSeparatorText()
             if (isStubSource) {
                 Icon(
@@ -854,7 +756,6 @@ private fun ColumnScope.MangaContentInfo(
             Text(
                 text = sourceName,
                 modifier = Modifier.clickableNoIndication(
-                     -->
                     onLongClick = {
                         tagSelected = sourceName
                         showMenu = true
@@ -862,7 +763,6 @@ private fun ColumnScope.MangaContentInfo(
                     onClick = {
                         onSourceClick()
                     },
-                     <--
                 ),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
@@ -978,9 +878,7 @@ private fun MangaSummary(
                         contentDescription = stringResource(
                             if (expanded) MR.strings.manga_info_collapse else MR.strings.manga_info_expand,
                         ),
-                         -->
-                        tint = MaterialTheme.colorScheme.primary, : onBackground
-                         <--
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.background(Brush.radialGradient(colors = colors.asReversed())),
                     )
                 }

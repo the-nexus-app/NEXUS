@@ -115,7 +115,6 @@ private fun CalendarGrid(
     }
 }
 
- -->
 @Preview
 @Composable
 fun CalendarDayPreview() {
@@ -134,4 +133,3 @@ fun CalendarDayPreview() {
         }
     }
 }
- <--

@@ -27,7 +27,7 @@ class ReleaseServiceImpl(
 
         return Release(
             version = release.version,
-            info = release.info.substringBeforeLast("<!-->").replace(gitHubUsernameMentionRegex) { mention ->
+            info = release.info.substringBeforeLast("<!").replace(gitHubUsernameMentionRegex) { mention ->
                 "[${mention.value}](https://github.com/${mention.value.substring(1)})"
             },
             releaseLink = release.releaseLink,
@@ -35,7 +35,6 @@ class ReleaseServiceImpl(
         )
     }
 
-     -->
     override suspend fun releaseNotes(arguments: GetApplicationRelease.Arguments): List<Release> {
         return with(json) {
             networkService.client
@@ -50,8 +49,7 @@ class ReleaseServiceImpl(
                         info = release.info.replace(gitHubUsernameMentionRegex) { mention ->
                             "[${mention.value}](https://github.com/${mention.value.substring(1)})"
                         }
-                            .substringBeforeLast("<!-->")
-                             -->
+                            .substringBeforeLast("<!")
                             .replace(getHubDownloadBadgeRegex, "")
                             .replace(gitHubCommitsCompareRegex) { matchResult ->
                                 val owner = matchResult.groups["owner"]!!.value
@@ -60,18 +58,14 @@ class ReleaseServiceImpl(
                                 val to = matchResult.groups["to"]!!.value
                                 "[$owner/$repo@$from...$to](https://github.com/$owner/$repo/compare/$from...$to)"
                             },
-                         <--
                         releaseLink = release.releaseLink,
                         downloadLink = downloadLink,
-                         -->
                         preRelease = release.preRelease,
                         draft = release.draft,
-                         <--
                     )
                 }
         }
     }
-     <--
 
     private fun getDownloadLink(release: GithubRelease, isFoss: Boolean): String? {
         val map = release.assets.associate { asset ->
@@ -104,7 +98,6 @@ class ReleaseServiceImpl(
         private val gitHubUsernameMentionRegex = """\B@([a-z0-9](?:-(?=[a-z0-9])|[a-z0-9]){0,38}(?<=[a-z0-9]))"""
             .toRegex(RegexOption.IGNORE_CASE)
 
-         -->
         private val getHubDownloadBadgeRegex = """\[!\[GitHub downloads]\(.*\)]\(.*\)"""
             .toRegex(RegexOption.IGNORE_CASE)
 
@@ -114,6 +107,5 @@ class ReleaseServiceImpl(
          */
         private val gitHubCommitsCompareRegex = """(\[[^]]+]\()?https://github\.com/(?<owner>[^/]+)/(?<repo>[^/]+)/compare/(?<from>[0-9a-f.rv]+)\.\.\.(?<to>[0-9a-f.rv]+)\)?"""
             .toRegex(RegexOption.IGNORE_CASE)
-         <--
     }
 }

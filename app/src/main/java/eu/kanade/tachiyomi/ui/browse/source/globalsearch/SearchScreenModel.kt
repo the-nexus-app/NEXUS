@@ -71,13 +71,11 @@ abstract class SearchScreenModel(
                 mutableState.update { it.copy(onlyShowHasResults = state) }
             }
         }
-         -->
         screenModelScope.launch {
             preferences.globalSearchPinnedState().changes().collectLatest { state ->
                 mutableState.update { it.copy(sourceFilter = state) }
             }
         }
-         <--
     }
 
     @Composable
@@ -102,7 +100,6 @@ abstract class SearchScreenModel(
             )
     }
 
-     -->
     fun hasPinnedSources(): Boolean = getEnabledSources().any { "${it.id}" in pinnedSources }
 
     fun shouldPinnedSourcesHidden() {
@@ -110,7 +107,6 @@ abstract class SearchScreenModel(
             preferences.globalSearchPinnedState().set(SourceFilter.All)
         }
     }
-     <--
 
     private fun getSelectedSources(): List<Source> {
         val enabledSources = getEnabledSources()
@@ -120,13 +116,11 @@ abstract class SearchScreenModel(
             return enabledSources
         }
 
-         -->
         val filteredSourceIds = extensionManager.installedExtensionsFlow.value
             .filter { it.pkgName == filter }
             .flatMap { it.sources }
             .map { it.id }
         return enabledSources.filter { it.id in filteredSourceIds }
-         <--
     }
 
     fun updateSearchQuery(query: String?) {

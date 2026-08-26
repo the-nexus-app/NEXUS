@@ -146,7 +146,6 @@ class LibraryScreenModel(
     private val downloadManager: DownloadManager = Injekt.get(),
     private val downloadCache: DownloadCache = Injekt.get(),
     private val trackerManager: TrackerManager = Injekt.get(),
-     -->
     private val exhPreferences: ExhPreferences = Injekt.get(),
     private val sourcePreferences: SourcePreferences = Injekt.get(),
     private val getMergedMangaById: GetMergedMangaById = Injekt.get(),
@@ -158,18 +157,13 @@ class LibraryScreenModel(
     private val setCustomMangaInfo: SetCustomMangaInfo = Injekt.get(),
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId = Injekt.get(),
     syncPreferences: SyncPreferences = Injekt.get(),
-     <--
-     -->
     private val smartSearchMerge: SmartSearchMerge = Injekt.get(),
-     <--
 ) : StateScreenModel<LibraryScreenModel.State>(State()) {
 
-     -->
     val favoritesSync = FavoritesSyncHelper(preferences.context)
     val recommendationSearch = RecommendationSearchHelper(preferences.context)
 
     private var recommendationSearchJob: Job? = null
-     <--
 
     init {
         mutableState.update { state ->
@@ -184,13 +178,11 @@ class LibraryScreenModel(
                     ::Triple,
                 ),
                 combine(getTracksPerManga.subscribe(), getTrackingFiltersFlow(), ::Pair),
-                 -->
                 combine(
                     state.map { it.includedCategories }.distinctUntilChanged(),
                     state.map { it.excludedCategories }.distinctUntilChanged(),
                     ::Pair,
                 ),
-                 <--
                 getLibraryItemPreferencesFlow(),
             ) { (searchQuery, categories, favorites), (tracksMap, trackingFilters), (includedCategories, excludedCategories), itemPreferences ->
                 val filteredFavorites = favorites
@@ -198,10 +190,8 @@ class LibraryScreenModel(
                         tracksMap,
                         trackingFilters,
                         itemPreferences,
-                         -->
                         includedCategories,
                         excludedCategories,
-                         <--
                     )
                     .let {
                         if (searchQuery == null) {
@@ -209,11 +199,9 @@ class LibraryScreenModel(
                             it
                         } else {
                             // Filter query
-                             -->
                             // it.filter { m -> m.matches(searchQuery) }
                             // Filter query
                             filterLibrary(it, searchQuery, trackingFilters)
-                             <--
                         }
                     }
 
@@ -240,16 +228,11 @@ class LibraryScreenModel(
                     .map {
                         Triple(
                             it.libraryData,
-                             -->
                             it.groupType,
-                             <--
-                             -->
                             it.searchQuery.isNullOrBlank() && !it.hasActiveFilters,
-                             <--
                         )
                     }
                     .distinctUntilChanged(),
-                 -->
                 combine(
                     libraryPreferences.sortingMode().changes(),
                     libraryPreferences.showHiddenCategories().changes(),
@@ -261,29 +244,23 @@ class LibraryScreenModel(
                     state.map { it.includedCategories }.distinctUntilChanged(),
                     ::Pair,
                 ),
-                 <--
             ) { (data, groupType, noActiveFilterOrSearch), (sort, showHiddenCategories, showEmptyCategoriesSearch), (filterCategory, includedCategories) ->
                 data.favorites
                     .applyGrouping(
                         data.categories,
-                         -->
                         if (filterCategory && includedCategories.isNotEmpty()) {
                             LibraryGroup.UNGROUPED
                         } else {
                             groupType
                         },
                         showHiddenCategories,
-                         <--
                     )
                     .applySort(
                         data.favoritesById,
                         data.tracksMap,
                         data.loggedInTrackerIds,
-                         -->
                         sort.takeIf { groupType != LibraryGroup.BY_DEFAULT },
-                         <--
                     )
-                     -->
                     .filter {
                         // Hide empty categories unless the setting is enabled or there are no active filters/search
                         showEmptyCategoriesSearch || noActiveFilterOrSearch || it.value.isNotEmpty()
@@ -302,7 +279,6 @@ class LibraryScreenModel(
                             )
                         }
                     }
-                 <--
             }
                 .collectLatest {
                     mutableState.update { state ->
@@ -341,15 +317,11 @@ class LibraryScreenModel(
                 prefs.filterBookmarked,
                 prefs.filterCompleted,
                 prefs.filterIntervalCustom,
-                 -->
                 prefs.filterLewd,
-                 <--
                 *trackFilters.values.toTypedArray(),
             )
                 .fastAny { it != TriState.DISABLED } ||
-                 -->
                 prefs.filterCategories
-             <--
         }
             .distinctUntilChanged()
             .onEach {
@@ -359,7 +331,6 @@ class LibraryScreenModel(
             }
             .launchIn(screenModelScope)
 
-         -->
         combine(
             exhPreferences.isHentaiEnabled().changes(),
             sourcePreferences.disabledSources().changes(),
@@ -389,9 +360,7 @@ class LibraryScreenModel(
                 mutableState.update { it.copy(isSyncEnabled = syncService != 0) }
             }
             .launchIn(screenModelScope)
-         <--
 
-         -->
         combine(
             libraryPreferences.filterCategories().changes(),
             libraryPreferences.filterCategoriesInclude().changes(),
@@ -420,17 +389,14 @@ class LibraryScreenModel(
                 mangaDexDmcaUuids = loadMangaDexDmcaUuids(context = Injekt.get<Application>())
             }
         }
-         <--
     }
 
     private suspend fun List<LibraryItem>.applyFilters(
         trackMap: Map<Long, List<Track>>,
         trackingFilter: Map<Long, TriState>,
         preferences: ItemPreferences,
-         -->
         includedCategories: ImmutableSet<Long>,
         excludedCategories: ImmutableSet<Long>,
-         <--
     ): List<LibraryItem> {
         val downloadedOnly = preferences.globalFilterDownloaded
         val skipOutsideReleasePeriod = preferences.skipOutsideReleasePeriod
@@ -448,22 +414,18 @@ class LibraryScreenModel(
         val includedTracks = trackingFilter.mapNotNull { if (it.value == TriState.ENABLED_IS) it.key else null }
         val trackFiltersIsIgnored = includedTracks.isEmpty() && excludedTracks.isEmpty()
 
-         -->
         val filterLewd = preferences.filterLewd
-         <--
 
         val filterFnDownloaded: suspend (LibraryItem) -> Boolean = {
             applyFilter(filterDownloaded) {
                 it.libraryManga.manga.isLocal() ||
                     it.downloadCount > 0 ||
-                     -->
                     if (it.libraryManga.manga.source == MERGED_SOURCE_ID) {
                         // FIXME: Calling await in filter could lead to N+1 performance issues.
                         //  Should include all the merged references in library query instead.
                         getMergedMangaById.await(it.libraryManga.manga.id)
                             .sumOf { manga -> downloadManager.getDownloadCount(manga) } > 0
                     } else {
-                         <--
                         downloadManager.getDownloadCount(it.libraryManga.manga) > 0
                     }
             }
@@ -493,26 +455,21 @@ class LibraryScreenModel(
             }
         }
 
-         -->
         val filterFnLewd: (LibraryItem) -> Boolean = {
             applyFilter(filterLewd) { it.libraryManga.manga.isLewd() }
         }
-         <--
 
         val filterFnTracking: (LibraryItem) -> Boolean = tracking@{ item ->
             if (isNotLoggedInAnyTrack || trackFiltersIsIgnored) return@tracking true
 
-             -->
             val mangaTracks = trackMap[item.id].orEmpty()
 
             val isExcluded = excludedTracks.isNotEmpty() && mangaTracks.fastAny { it.trackerId in excludedTracks }
             val isIncluded = includedTracks.isEmpty() || mangaTracks.fastAny { it.trackerId in includedTracks }
-             <--
 
             !isExcluded && isIncluded
         }
 
-         -->
         val filterFnCategories: (LibraryItem) -> Boolean = categories@{ item ->
             if (!filterCategories) return@categories true
 
@@ -528,7 +485,6 @@ class LibraryScreenModel(
 
             !isExcluded && isIncluded
         }
-         <--
 
         return fastFilter {
             filterFnDownloaded(it) &&
@@ -538,53 +494,38 @@ class LibraryScreenModel(
                 filterFnCompleted(it) &&
                 filterFnIntervalCustom(it) &&
                 filterFnTracking(it) &&
-                 -->
                 filterFnLewd(it) &&
-                 <--
-                 -->
                 filterFnCategories(it)
-             <--
         }
     }
 
     private fun List<LibraryItem>.applyGrouping(
         categories: List<Category>,
-         -->
         groupType: Int,
         showHiddenCategories: Boolean,
-         <--
     ): Map<Category, List</* LibraryItem */ Long>> {
-         -->
         when (groupType) {
             LibraryGroup.BY_DEFAULT -> {
                 var showSystemCategory = false
-                 <--
                 val groupCache = mutableMapOf</* Category.id */ Long, MutableList</* LibraryItem */ Long>>()
                 forEach { item ->
                     item.libraryManga.categories.forEach { categoryId ->
-                         -->
                         if (categoryId == UNCATEGORIZED_ID) {
                             showSystemCategory = true
                         }
-                         <--
                         groupCache.getOrPut(categoryId) { mutableListOf() }.add(item.id)
                     }
                 }
                 return categories.fastFilter {
                     (showSystemCategory || !it.isSystemCategory) &&
-                         -->
                         (showHiddenCategories || !it.hidden)
-                     <--
                 }
                     .associateWith {
                         groupCache[it.id]?.toList()
-                             -->
                             ?.distinct()
-                             <--
                             .orEmpty()
                     }
             }
-             -->
             LibraryGroup.UNGROUPED -> {
                 return mapOf(
                     Category(
@@ -592,9 +533,7 @@ class LibraryScreenModel(
                         preferences.context.stringResource(SYMR.strings.ungrouped),
                         0,
                         0,
-                         -->
                         false,
-                         <--
                     ) to
                         map { it.id },
                 )
@@ -606,18 +545,14 @@ class LibraryScreenModel(
                 )
             }
         }
-         <--
     }
 
     private fun Map<Category, List</* LibraryItem */ Long>>.applySort(
         favoritesById: Map<Long, LibraryItem>,
         trackMap: Map<Long, List<Track>>,
         loggedInTrackerIds: Set<Long>,
-         -->
         groupSort: LibrarySort? = null,
-         <--
     ): Map<Category, List</* LibraryItem */ Long>> {
-         -->
         val listOfTags by lazy {
             libraryPreferences.sortTagsForLibrary().get()
                 .asSequence()
@@ -630,7 +565,6 @@ class LibraryScreenModel(
                 .map { it.second }
                 .toList()
         }
-         <--
 
         val sortAlphabetically: (LibraryItem, LibraryItem) -> Int = { manga1, manga2 ->
             val title1 = manga1.libraryManga.manga.title.lowercase()
@@ -653,9 +587,7 @@ class LibraryScreenModel(
         }
 
         fun LibrarySort.comparator(): Comparator<LibraryItem> = Comparator { manga1, manga2 ->
-             -->
             val sort = groupSort ?: this
-             <--
             when (sort.type) {
                 LibrarySort.Type.Alphabetical -> {
                     sortAlphabetically(manga1, manga2)
@@ -693,7 +625,6 @@ class LibraryScreenModel(
                 LibrarySort.Type.Random -> {
                     error("Why Are We Still Here? Just To Suffer?")
                 }
-                 -->
                 LibrarySort.Type.TagList -> {
                     val manga1IndexOfTag = listOfTags.indexOfFirst {
                         manga1.libraryManga.manga.genre?.contains(it) ?: false
@@ -703,24 +634,19 @@ class LibraryScreenModel(
                     }
                     manga1IndexOfTag.compareTo(manga2IndexOfTag)
                 }
-                 <--
             }
         }
 
         return mapValues { (key, value) ->
-             -->
             val sort = groupSort ?: key.sort
             if (sort.type == LibrarySort.Type.Random) {
-                 <--
                 return@mapValues value.shuffled(Random(libraryPreferences.randomSortSeed().get()))
             }
 
             val manga = value.mapNotNull { favoritesById[it] }
 
-             -->
             val comparator = sort.comparator()
-                 <--
-                .let { if (/* SY --> */ sort.isAscending /* SY <-- */) it else it.reversed() }
+                .let { if (sort.isAscending ) it else it.reversed() }
                 .thenComparator(sortAlphabetically)
 
             manga.sortedWith(comparator).map { it.id }
@@ -742,14 +668,10 @@ class LibraryScreenModel(
             libraryPreferences.filterBookmarked().changes(),
             libraryPreferences.filterCompleted().changes(),
             libraryPreferences.filterIntervalCustom().changes(),
-             -->
             libraryPreferences.filterLewd().changes(),
-             <--
-             -->
             libraryPreferences.sourceBadge().changes(),
             libraryPreferences.useLangIcon().changes(),
             libraryPreferences.filterCategories().changes(),
-             <--
         ) {
             ItemPreferences(
                 downloadBadge = it[0] as Boolean,
@@ -764,10 +686,7 @@ class LibraryScreenModel(
                 filterBookmarked = it[9] as TriState,
                 filterCompleted = it[10] as TriState,
                 filterIntervalCustom = it[11] as TriState,
-                 -->
                 filterLewd = it[12] as TriState,
-                 <--
-                 -->
                 sourceBadge = it[13] as Boolean,
                 useLangIcon = it[14] as Boolean,
                 filterCategories = it[15] as Boolean,
@@ -783,20 +702,16 @@ class LibraryScreenModel(
         ) { libraryManga, preferences, _ ->
             libraryManga.map { manga ->
                 // Display mode based on user preference: take it from global library setting or category
-                 -->
                 val source = sourceManager.getOrStub(manga.manga.source)
-                 <--
                 LibraryItem(
                     libraryManga = manga,
                     downloadCount = if (preferences.downloadBadge) {
-                         -->
                         if (manga.manga.source == MERGED_SOURCE_ID) {
                             // FIXME: N+1 performance issues.
                             //  Should include all the merged references in library query instead.
                             getMergedMangaById.await(manga.manga.id)
                                 .sumOf { downloadManager.getDownloadCount(it) }.toLong()
                         } else {
-                             <--
                             downloadManager.getDownloadCount(manga.manga).toLong()
                         }
                     } else {
@@ -817,7 +732,6 @@ class LibraryScreenModel(
                     } else {
                         ""
                     },
-                     -->
                     useLangIcon = preferences.useLangIcon,
                     source = if (preferences.sourceBadge) {
                         DomainSource(
@@ -830,7 +744,6 @@ class LibraryScreenModel(
                     } else {
                         null
                     },
-                     <--
                 )
             }
         }
@@ -867,14 +780,12 @@ class LibraryScreenModel(
     }
 
     suspend fun getNextUnreadChapter(manga: Manga): Chapter? {
-         -->
         val mergedManga = getMergedMangaById.await(manga.id).associateBy { it.id }
         return if (manga.id == MERGED_SOURCE_ID) {
             getMergedChaptersByMangaId.await(manga.id, applyFilter = true)
         } else {
             getChaptersByMangaId.await(manga.id, applyFilter = true)
         }.getNextUnread(manga, downloadManager, mergedManga)
-         <--
     }
 
     /**
@@ -908,7 +819,6 @@ class LibraryScreenModel(
         val mangas = state.value.selectedManga
         screenModelScope.launchNonCancellable {
             mangas.forEach { manga ->
-                 -->
                 if (manga.source == MERGED_SOURCE_ID) {
                     val mergedMangas = getMergedMangaById.await(manga.id)
                         .associateBy { it.id }
@@ -934,7 +844,6 @@ class LibraryScreenModel(
                     return@forEach
                 }
 
-                 <--
                 val chapters = getNextChapters.await(manga.id)
                     .fastFilterNot { chapter ->
                         downloadManager.getQueuedDownloadOrNull(chapter.id) != null ||
@@ -942,9 +851,7 @@ class LibraryScreenModel(
                                 chapter.name,
                                 chapter.scanlator,
                                 chapter.url,
-                                 -->
                                 manga.ogTitle,
-                                 <--
                                 manga.source,
                             )
                     }
@@ -959,7 +866,6 @@ class LibraryScreenModel(
         val mangas = state.value.selectedManga
         screenModelScope.launchNonCancellable {
             mangas.forEach { manga ->
-                 -->
                 if (manga.source == MERGED_SOURCE_ID) {
                     val mergedMangas = getMergedMangaById.await(manga.id)
                         .associateBy { it.id }
@@ -983,7 +889,6 @@ class LibraryScreenModel(
 
                     return@forEach
                 }
-                 <--
 
                 val chapters = getBookmarkedChaptersByMangaId.await(manga.id)
                     .fastFilterNot { chapter ->
@@ -992,9 +897,7 @@ class LibraryScreenModel(
                                 chapter.name,
                                 chapter.scanlator,
                                 chapter.url,
-                                 -->
                                 manga.ogTitle,
-                                 <--
                                 manga.source,
                             )
                     }
@@ -1003,7 +906,6 @@ class LibraryScreenModel(
         }
     }
 
-     -->
     fun cleanTitles() {
         val regex1 = "\\[.*?]".toRegex()
         val regex2 = "\\(.*?\\)".toRegex()
@@ -1070,9 +972,7 @@ class LibraryScreenModel(
         }
         clearSelection()
     }
-     <--
 
-     -->
     /**
      * Update Selected Mangas
      */
@@ -1084,7 +984,6 @@ class LibraryScreenModel(
             target = LibraryUpdateJob.Target.CHAPTERS,
         )
     }
-     <--
 
     /**
      * Marks mangas' chapters read status.
@@ -1186,7 +1085,6 @@ class LibraryScreenModel(
         mutableState.update { it.copy(dialog = Dialog.SettingsSheet) }
     }
 
-     -->
     fun showRecommendationSearchDialog() {
         val mangaList = state.value.selectedManga
         mutableState.update { it.copy(dialog = Dialog.RecommendationSearchSheet(mangaList)) }
@@ -1194,7 +1092,7 @@ class LibraryScreenModel(
 
     private suspend fun filterLibrary(unfiltered: List<LibraryItem>, query: String?, loggedInTrackServices: Map<Long, TriState>): List<LibraryItem> {
         return if (unfiltered.isNotEmpty() && !query.isNullOrBlank()) {
-            // AZ -->
+            // AZ
             if (query.trim().lowercase() == "mangadex-dmca") {
                 // Special easter egg query
                 return unfiltered.fastFilter {
@@ -1202,7 +1100,7 @@ class LibraryScreenModel(
                         it.libraryManga.manga.url.removePrefix("/manga/").lowercase() in mangaDexDmcaUuids
                 }
             }
-            // AZ <--
+            // AZ
             // Prepare filter object
             val parsedQuery = searchEngine.parseQuery(query)
             val mangaWithMetaIds = getIdsOfFavoriteMangaWithMetadata.await()
@@ -1364,7 +1262,6 @@ class LibraryScreenModel(
             }
         }
     }
-     <--
 
     private var lastSelectionCategory: Long? = null
 
@@ -1444,9 +1341,7 @@ class LibraryScreenModel(
         val newIndex = mutableState.updateAndGet { state ->
             state.copy(
                 activeCategoryIndex = index,
-                 -->
                 activeCategoryId = state.displayedCategories.getOrNull(index)?.id,
-                 <--
             )
         }
             .coercedActiveCategoryIndex
@@ -1460,9 +1355,7 @@ class LibraryScreenModel(
             val mangaList = state.value.selectedManga
 
             // Hide the default category because it has a different behavior than the ones from db.
-             -->
             val categories = state.value.libraryData.categories.fastFilter { it.id != 0L }
-             <--
 
             // Get indexes of the common categories to preselect.
             val common = getCommonCategories(mangaList)
@@ -1497,14 +1390,11 @@ class LibraryScreenModel(
         ) : Dialog
         data class DeleteManga(val manga: List<Manga>) : Dialog
 
-         -->
         data object SyncFavoritesWarning : Dialog
         data object SyncFavoritesConfirm : Dialog
         data class RecommendationSearchSheet(val manga: List<Manga>) : Dialog
-         <--
     }
 
-     -->
     private fun List<LibraryItem>.getGroupedMangaItems(
         groupType: Int,
     ): Map<Category, List</* LibraryItem */ Long>> {
@@ -1512,7 +1402,6 @@ class LibraryScreenModel(
         return when (groupType) {
             LibraryGroup.BY_TRACK_STATUS -> {
                 val tracks = runBlocking { getTracks.await() }.groupBy { it.mangaId }
-                 -->
                 val groupCache = mutableMapOf</* Track.status */ Int, MutableList</* LibraryItem */ Long>>()
                 forEach { item ->
                     val statuses = tracks[item.libraryManga.manga.id]?.fastMapNotNull { track ->
@@ -1524,29 +1413,19 @@ class LibraryScreenModel(
                         groupCache.getOrPut(status.int) { mutableListOf() }.add(item.id)
                     }
                 }
-                 <--
                 groupCache.mapKeys { (id) ->
-                     -->
                     val trackStatus = TrackStatus.entries.find { it.int == id } ?: TrackStatus.OTHER
-                     <--
                     Category(
                         id = id.toLong(),
-                         -->
                         name = context.stringResource(trackStatus.res),
                         order = trackStatus.ordinal.toLong(),
-                         <--
                         flags = 0,
-                         -->
                         hidden = false,
-                         <--
                     )
                 }
-                     -->
                     .mapValues { (_, values) -> values.distinct() }
-                 <--
             }
             LibraryGroup.BY_SOURCE -> {
-                 -->
                 val groupCache = mutableMapOf</* Source.id */ Long, MutableList</* LibraryItem */ Long>>()
                 forEach { item ->
                     groupCache.getOrPut(item.libraryManga.manga.source) { mutableListOf() }.add(item.id)
@@ -1566,40 +1445,30 @@ class LibraryScreenModel(
                         },
                         order = sourceOrderMap[it.id] ?: Long.MAX_VALUE,
                         flags = 0,
-                         -->
                         hidden = false,
-                         <--
                     )
                     category to groupCache[it.id].orEmpty()
                 }
-                 <--
             }
             LibraryGroup.BY_STATUS -> {
                 groupBy { item ->
                     item.libraryManga.manga.status
                 }.mapKeys {
-                     -->
                     val (nameRes, order) = statusMap[it.key] ?: (MR.strings.unknown to 7L)
-                     <--
                     Category(
                         id = it.key + 1,
                         name = context.stringResource(nameRes),
                         order = order,
                         flags = 0,
-                         -->
                         hidden = false,
-                         <--
                     )
                 }
-                     -->
                     .mapValues { (_, libraryItem) -> libraryItem.fastMap { it.id } }
-                 <--
             }
             else -> emptyMap()
         }.toSortedMap(compareBy { it.order })
     }
 
-     -->
     private val statusMap = mapOf(
         SManga.ONGOING.toLong() to (MR.strings.ongoing to 1L),
         SManga.COMPLETED.toLong() to (MR.strings.completed to 2L),
@@ -1608,7 +1477,6 @@ class LibraryScreenModel(
         SManga.ON_HIATUS.toLong() to (MR.strings.on_hiatus to 5L),
         SManga.CANCELLED.toLong() to (MR.strings.cancelled to 6L),
     )
-     <--
 
     fun runRecommendationSearch(selection: List<Manga>) {
         recommendationSearch.runSearch(screenModelScope, selection)?.let {
@@ -1639,9 +1507,7 @@ class LibraryScreenModel(
             )
         }
     }
-     <--
 
-     -->
     /**
      * Will get first merged manga in the list as target merging.
      * If there is no merged manga, then it will use the first one in list to create a new target.
@@ -1659,7 +1525,6 @@ class LibraryScreenModel(
         }
         return mergingMangaId
     }
-     <--
 
     @Immutable
     private data class ItemPreferences(
@@ -1667,10 +1532,8 @@ class LibraryScreenModel(
         val unreadBadge: Boolean,
         val localBadge: Boolean,
         val languageBadge: Boolean,
-         -->
         val useLangIcon: Boolean,
         val sourceBadge: Boolean,
-         <--
         val skipOutsideReleasePeriod: Boolean,
 
         val globalFilterDownloaded: Boolean,
@@ -1680,12 +1543,8 @@ class LibraryScreenModel(
         val filterBookmarked: TriState,
         val filterCompleted: TriState,
         val filterIntervalCustom: TriState,
-         -->
         val filterLewd: TriState,
-         <--
-         -->
         val filterCategories: Boolean,
-         <--
     )
 
     @Immutable
@@ -1712,20 +1571,14 @@ class LibraryScreenModel(
         val dialog: Dialog? = null,
         val libraryData: LibraryData = LibraryData(),
         private val activeCategoryIndex: Int = 0,
-         -->
         private val activeCategoryId: Long? = null,
-         <--
         private val groupedFavorites: Map<Category, List</* LibraryItem */ Long>> = emptyMap(),
-         -->
         val showSyncExh: Boolean = false,
         val isSyncEnabled: Boolean = false,
         val groupType: Int = LibraryGroup.BY_DEFAULT,
-         <--
-         -->
         val filterCategory: Boolean = false,
         val includedCategories: ImmutableSet<Long> = persistentSetOf(),
         val excludedCategories: ImmutableSet<Long> = persistentSetOf(),
-         <--
     ) {
         /**
          * The grouped tabs which is displayed above the library screen.
@@ -1733,9 +1586,8 @@ class LibraryScreenModel(
          */
         val displayedCategories: List<Category> = groupedFavorites.keys.toList()
 
-        val coercedActiveCategoryIndex = /* KMK --> */ displayedCategories.indexOfFirst { it.id == activeCategoryId }
+        val coercedActiveCategoryIndex = /* KMK*/ displayedCategories.indexOfFirst { it.id == activeCategoryId }
             .takeIf { it != -1 } ?: activeCategoryIndex
-             <--
             .coerceIn(
                 minimumValue = 0,
                 maximumValue = displayedCategories.lastIndex.coerceAtLeast(0),
@@ -1749,7 +1601,6 @@ class LibraryScreenModel(
 
         val selectedManga by lazy { selection.mapNotNull { libraryData.favoritesById[it]?.libraryManga?.manga } }
 
-         -->
         val showCleanTitles: Boolean by lazy {
             selectedManga.fastAny {
                 it.isEhBasedManga() ||
@@ -1772,7 +1623,6 @@ class LibraryScreenModel(
                     manga.status != manga.ogStatus
             }
         }
-         <--
 
         fun getItemsForCategoryId(categoryId: Long?): List<LibraryItem> {
             if (categoryId == null) return emptyList()
@@ -1808,7 +1658,6 @@ class LibraryScreenModel(
         }
     }
 
-     -->
     companion object {
         /** List of MangaDex UUIDs subject to DMCA takedowns */
         @Volatile
@@ -1835,5 +1684,4 @@ class LibraryScreenModel(
             }
         }
     }
-     <--
 }

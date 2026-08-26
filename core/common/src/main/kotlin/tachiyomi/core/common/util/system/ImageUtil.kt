@@ -42,9 +42,7 @@ object ImageUtil {
 
     fun isImage(name: String?, openStream: (() -> InputStream)? = null): Boolean {
         if (name == null) return false
-         -->
         if (File(name).extension.equals("cbi", ignoreCase = true)) return true
-         <--
 
         val extension = name.substringAfterLast('.')
         return ImageType.entries.any { it.extension == extension } || openStream?.let { findImageType(it) } != null
@@ -206,7 +204,6 @@ object ImageUtil {
         LEFT,
     }
 
-     -->
     /**
      * Split the image into left and right parts, then merge them into a
      * new image with added center padding scaled relative to the height of the display view
@@ -242,7 +239,6 @@ object ImageUtil {
         result.compress(Bitmap.CompressFormat.JPEG, 100, output.outputStream())
         return output
     }
-     <--
 
     /**
      * Check whether the image is considered a tall image.
@@ -629,7 +625,6 @@ object ImageUtil {
             logcat(LogPriority.ERROR, e)
         }
     }
-     <--
 
     private fun getBitmapRegionDecoder(imageStream: InputStream): BitmapRegionDecoder? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -757,7 +752,6 @@ object ImageUtil {
         else -> false
     }
 
-     -->
     fun mergeBitmaps(
         imageBitmap: Bitmap,
         imageBitmap2: Bitmap,
@@ -803,7 +797,6 @@ object ImageUtil {
 
     private val Bitmap.rect: Rect
         get() = Rect(0, 0, width, height)
-     <--
 }
 
 val getDisplayMaxHeightInPx: Int

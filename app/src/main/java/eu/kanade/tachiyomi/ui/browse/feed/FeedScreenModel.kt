@@ -68,9 +68,7 @@ open class FeedScreenModel(
     private val getSavedSearchBySourceId: GetSavedSearchBySourceId = Injekt.get(),
     private val insertFeedSavedSearch: InsertFeedSavedSearch = Injekt.get(),
     private val deleteFeedSavedSearchById: DeleteFeedSavedSearchById = Injekt.get(),
-     -->
     private val reorderFeed: ReorderFeed = Injekt.get(),
-     <--
 ) : StateScreenModel<FeedScreenState>(FeedScreenState()) {
 
     private val _events = Channel<Event>(Int.MAX_VALUE)
@@ -95,9 +93,7 @@ open class FeedScreenModel(
                 mutableState.update { state ->
                     state.copy(
                         items = items
-                             -->
                             .toImmutableList(),
-                         <--
                     )
                 }
                 getFeed(items)
@@ -113,9 +109,7 @@ open class FeedScreenModel(
             mutableState.update { state ->
                 state.copy(
                     items = newItems
-                         -->
                         .toImmutableList(),
-                     <--
                 )
             }
             getFeed(newItems)
@@ -143,10 +137,8 @@ open class FeedScreenModel(
                     dialog = Dialog.AddFeedSearch(
                         source,
                         (
-                             -->
                             // (if (source.supportsLatest) persistentListOf(null) else persistentListOf()) +
                             persistentListOf(null) +
-                                 <-->
                                 getSourceSavedSearches(source.id)
                             ).toImmutableList(),
                     ),
@@ -165,7 +157,6 @@ open class FeedScreenModel(
         }
     }
 
-     -->
     fun openActionsDialog(
         feed: FeedItemUI,
     ) {
@@ -179,7 +170,6 @@ open class FeedScreenModel(
             }
         }
     }
-     <--
 
     private suspend fun hasTooManyFeeds(): Boolean {
         return countFeedSavedSearchGlobal.await() > MaxFeedItems
@@ -223,13 +213,11 @@ open class FeedScreenModel(
         }
     }
 
-     -->
     fun changeOrder(feed: FeedSavedSearch, newIndex: Int) {
         screenModelScope.launch {
             reorderFeed.changeOrder(feed, newIndex)
         }
     }
-     <--
 
     private suspend fun getSourcesToGetFeed(feedSavedSearch: List<FeedSavedSearch>): List<Pair<FeedSavedSearch, SavedSearch?>> {
         val savedSearches = getSavedSearchGlobalFeed.await()
@@ -261,9 +249,7 @@ open class FeedScreenModel(
         )
     }
 
-     -->
     private val hideInLibraryFeedItems = sourcePreferences.hideInLibraryFeedItems()
-     <--
 
     /**
      * Initiates get manga per feed.
@@ -276,15 +262,11 @@ open class FeedScreenModel(
                         if (itemUI.source != null) {
                             withContext(coroutineDispatcher) {
                                 if (itemUI.savedSearch == null) {
-                                     -->
                                     if (itemUI.source.supportsLatest) {
-                                         <--
                                         itemUI.source.getLatestUpdates(1)
-                                         -->
                                     } else {
                                         itemUI.source.getPopularManga(1)
                                     }
-                                     <--
                                 } else {
                                     itemUI.source.getSearchManga(
                                         1,
@@ -306,18 +288,14 @@ open class FeedScreenModel(
                                 .map { it.toDomainManga(itemUI.source!!.id) }
                                 .distinctBy { it.url }
                                 .let { networkToLocalManga(it) }
-                                 -->
                                 .filter { !hideInLibraryFeedItems.get() || !it.favorite },
-                             <--
                         )
                     }
 
                     mutableState.update { state ->
                         state.copy(
                             items = state.items?.map { if (it.feed.id == result.feed.id) result else it }
-                                 -->
                                 ?.toImmutableList(),
-                             <--
                         )
                     }
                 }
@@ -354,7 +332,6 @@ open class FeedScreenModel(
         coroutineDispatcher.close()
     }
 
-     -->
     fun showDialog(dialog: Dialog) {
         if (!state.value.isLoading) {
             mutableState.update {
@@ -362,7 +339,6 @@ open class FeedScreenModel(
             }
         }
     }
-     <--
 
     fun dismissDialog() {
         mutableState.update { it.copy(dialog = null) }
@@ -373,11 +349,9 @@ open class FeedScreenModel(
         data class AddFeedSearch(val source: Source, val options: ImmutableList<SavedSearch?>) : Dialog()
         data class DeleteFeed(val feed: FeedSavedSearch) : Dialog()
 
-         -->
         data class FeedActions(
             val feedItem: FeedItemUI,
         ) : Dialog()
-         <--
     }
 
     sealed class Event {

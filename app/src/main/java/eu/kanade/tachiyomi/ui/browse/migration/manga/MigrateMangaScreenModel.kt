@@ -33,10 +33,8 @@ class MigrateMangaScreenModel(
     private val _events: Channel<MigrationMangaEvent> = Channel()
     val events: Flow<MigrationMangaEvent> = _events.receiveAsFlow()
 
-     -->
     // First and last selected index in list
     private val selectedPositions: Array<Int> = arrayOf(-1, -1)
-     <--
 
     init {
         screenModelScope.launch {
@@ -51,9 +49,7 @@ class MigrateMangaScreenModel(
                     mutableState.update { state ->
                         state.copy(
                             titleList = persistentListOf(),
-                             -->
                             selection = emptySet(),
-                             <--
                         )
                     }
                 }
@@ -63,7 +59,6 @@ class MigrateMangaScreenModel(
                         .toImmutableList()
                 }
                 .collectLatest { list ->
-                     -->
                     mutableState.update { state ->
                         val titleIds = list.map { it.id }.toSet()
                         val selection = state.selection.intersect(titleIds).toMutableSet()
@@ -73,14 +68,12 @@ class MigrateMangaScreenModel(
                             selection = selection,
                         )
                     }
-                     <--
                 }
         }
     }
 
     fun toggleSelection(
         item: Manga,
-         -->
         selected: Boolean,
         fromLongPress: Boolean = false,
     ) {
@@ -136,12 +129,10 @@ class MigrateMangaScreenModel(
                     }
                 }
             }
-             <--
             state.copy(selection = selection)
         }
     }
 
-     -->
     private fun updateSelectedPositions(titles: List<Manga>, selection: Set<Long>) {
         if (selection.isEmpty()) {
             selectedPositions[0] = -1
@@ -178,12 +169,9 @@ class MigrateMangaScreenModel(
             state.copy(selection = selection)
         }
     }
-     <--
 
     fun clearSelection() {
-         -->
         toggleAllSelection(false)
-         <--
     }
 
     @Immutable

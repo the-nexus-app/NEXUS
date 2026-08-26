@@ -32,9 +32,7 @@ class PagerTransitionHolder(
     readerThemedContext: Context,
     val viewer: PagerViewer,
     val transition: ChapterTransition,
-     -->
     @ColorInt private val seedColor: Int? = null,
-     <--
 ) : LinearLayout(readerThemedContext), ViewPagerAdapter.PositionableView {
 
     private val scope = MainScope()
@@ -64,9 +62,7 @@ class PagerTransitionHolder(
 
         val transitionView = ReaderTransitionView(
             context,
-             -->
             seedColor = seedColor,
-             <--
         )
         addView(transitionView)
         addView(pagesContainer)
@@ -109,12 +105,10 @@ class PagerTransitionHolder(
      * Sets the loading state on the pages container.
      */
     private fun setLoading() {
-         -->
         val progress = ReaderProgressIndicator(
             context = context,
             seedColor = seedColor,
         )
-         <--
 
         val textView = AppCompatTextView(context).apply {
             wrapContent()

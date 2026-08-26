@@ -25,14 +25,12 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
         val screenModel = rememberScreenModel { MigrateSearchScreenModel(mangaId = mangaId) }
         val state by screenModel.state.collectAsState()
 
-         -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
-         <--
 
         MigrateSearchScreen(
             state = state,
@@ -45,11 +43,9 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
             onToggleResults = screenModel::toggleFilterResults,
             onClickSource = { navigator.push(MigrateSourceSearchScreen(state.from!!, it.id, state.searchQuery)) },
             onClickItem = {
-                 -->
                 if (bulkFavoriteState.selectionMode) {
                     bulkFavoriteScreenModel.toggleSelection(it)
                 } else {
-                     <--
                     val migrateListScreen = navigator.items
                         .filterIsInstance<MigrationListScreen>()
                         .lastOrNull()
@@ -63,10 +59,8 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
                 }
             },
             onLongClickItem = { navigator.push(MangaScreen(it.id, true)) },
-             -->
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             hasPinnedSources = screenModel.hasPinnedSources(),
-             <--
         )
 
         when (val dialog = state.dialog) {
@@ -91,12 +85,10 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
             else -> {}
         }
 
-         -->
         // Bulk-favorite actions only
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
-         <--
     }
 }

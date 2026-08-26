@@ -111,9 +111,7 @@ object SettingsMainScreen : Screen() {
             containerColor = containerColor,
             content = { contentPadding ->
                 val state = rememberLazyListState()
-                 -->
                 val items = items.filter { it.screen !is SearchableSettings || it.screen.isEnabled() }
-                 <--
                 val indexSelected = if (twoPane) {
                     items.indexOfFirst { it.screen::class == navigator.items.first()::class }
                         .also {
@@ -213,14 +211,14 @@ object SettingsMainScreen : Screen() {
             icon = Icons.Outlined.Sync,
             screen = SettingsTrackingScreen,
         ),
-        // AM (CONNECTIONS) -->
+        // AM (CONNECTIONS)
         Item(
             titleRes = KMR.strings.pref_category_connections,
             subtitleRes = KMR.strings.pref_connections_summary,
             icon = Icons.Outlined.Link,
             screen = SettingsConnectionScreen,
         ),
-        // <-- AM (CONNECTIONS)
+        //AM (CONNECTIONS)
         Item(
             titleRes = MR.strings.browse,
             subtitleRes = MR.strings.pref_browse_summary,
@@ -239,7 +237,6 @@ object SettingsMainScreen : Screen() {
             icon = Icons.Outlined.Security,
             screen = SettingsSecurityScreen,
         ),
-         -->
         Item(
             titleRes = SYMR.strings.pref_category_eh,
             subtitleRes = SYMR.strings.pref_ehentai_summary,
@@ -252,7 +249,6 @@ object SettingsMainScreen : Screen() {
             icon = EhAssets.MangadexLogo,
             screen = SettingsMangadexScreen,
         ),
-         <--
         Item(
             titleRes = MR.strings.pref_category_advanced,
             subtitleRes = MR.strings.pref_advanced_summary,

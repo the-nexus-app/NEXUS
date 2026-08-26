@@ -26,10 +26,8 @@ object MangaMapper {
         chapterFlags: Long,
         coverLastModified: Long,
         dateAdded: Long,
-         -->
         @Suppress("UNUSED_PARAMETER")
         filteredScanlators: String?,
-         <--
         updateStrategy: UpdateStrategy,
         calculateInterval: Long,
         lastModifiedAt: Long,
@@ -51,7 +49,6 @@ object MangaMapper {
         chapterFlags = chapterFlags,
         coverLastModified = coverLastModified,
         url = url,
-         -->
         ogTitle = title,
         ogArtist = artist,
         ogAuthor = author,
@@ -59,7 +56,6 @@ object MangaMapper {
         ogDescription = description,
         ogGenre = genre,
         ogStatus = status,
-         <--
         updateStrategy = updateStrategy,
         initialized = initialized,
         lastModifiedAt = lastModifiedAt,
@@ -88,9 +84,7 @@ object MangaMapper {
         chapterFlags: Long,
         coverLastModified: Long,
         dateAdded: Long,
-         -->
         filteredScanlators: String?,
-         <--
         updateStrategy: UpdateStrategy,
         calculateInterval: Long,
         lastModifiedAt: Long,
@@ -105,9 +99,7 @@ object MangaMapper {
         chapterFetchedAt: Long,
         lastRead: Long,
         bookmarkCount: Double,
-         -->
         bookmarkedReadCount: Long,
-         <--
         categories: String,
     ): LibraryManga = LibraryManga(
         manga = mapManga(
@@ -129,9 +121,7 @@ object MangaMapper {
             chapterFlags,
             coverLastModified,
             dateAdded,
-             -->
             filteredScanlators,
-             <--
             updateStrategy,
             calculateInterval,
             lastModifiedAt,
@@ -145,10 +135,8 @@ object MangaMapper {
         totalChapters = totalCount,
         readCount = readCount.toLong(),
         bookmarkCount = bookmarkCount.toLong(),
-         -->
         bookmarkReadCount = bookmarkedReadCount,
         chapterFlags = chapterFlags,
-         <--
         latestUpload = latestUpload,
         chapterFetchedAt = chapterFetchedAt,
         lastRead = lastRead,
@@ -173,9 +161,7 @@ object MangaMapper {
         chapterFlags: Long,
         coverLastModified: Long,
         dateAdded: Long,
-         -->
         filteredScanlators: String?,
-         <--
         updateStrategy: UpdateStrategy,
         calculateInterval: Long,
         lastModifiedAt: Long,
@@ -205,9 +191,7 @@ object MangaMapper {
             chapterFlags,
             coverLastModified,
             dateAdded,
-             -->
             filteredScanlators,
-             <--
             updateStrategy,
             calculateInterval,
             lastModifiedAt,

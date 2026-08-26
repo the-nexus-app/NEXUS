@@ -30,19 +30,17 @@ class ChapterLoader(
     private val downloadProvider: DownloadProvider,
     private val manga: Manga,
     private val source: Source,
-     -->
     private val sourceManager: SourceManager,
     private val readerPrefs: ReaderPreferences,
     private val mergedReferences: List<MergedMangaReference>,
     private val mergedManga: Map<Long, Manga>?,
-     <--
 ) {
 
     /**
      * Assigns the chapter's page loader and loads the its pages. Returns immediately if the chapter
      * is already loaded.
      */
-    suspend fun loadChapter(chapter: ReaderChapter /* SY --> */, page: Int? = null/* SY <-- */) {
+    suspend fun loadChapter(chapter: ReaderChapter , page: Int? = null) {
         if (chapterIsReady(chapter)) {
             return
         }
@@ -63,13 +61,13 @@ class ChapterLoader(
 
                 // If the chapter is partially read, set the starting page to the last the user read
                 // otherwise use the requested page.
-                if (!chapter.chapter.read /* --> EH */ ||
+                if (!chapter.chapter.read /*EH */ ||
                     readerPrefs
                         .preserveReadingPosition()
                         .get() ||
-                    page != null // <-- EH
+                    page != null //EH
                 ) {
-                    chapter.requestedPage = /* SY --> */ page ?: /* SY <-- */ chapter.chapter.last_page_read
+                    chapter.requestedPage = page ?: chapter.chapter.last_page_read
                 }
 
                 chapter.state = ReaderChapter.State.Loaded(pages)
@@ -96,14 +94,11 @@ class ChapterLoader(
             chapterName = dbChapter.name,
             chapterScanlator = dbChapter.scanlator,
             chapterUrl = dbChapter.url,
-             -->
             mangaTitle = manga.ogTitle,
-             <--
             sourceId = manga.source,
             skipCache = true,
         )
         return when {
-             -->
             source is MergedSource -> {
                 val mangaReference = mergedReferences.firstOrNull {
                     it.mangaId == chapter.chapter.manga_id
@@ -138,7 +133,6 @@ class ChapterLoader(
                     else -> error(context.stringResource(MR.strings.loader_not_implemented_error))
                 }
             }
-             <--
             isDownloaded -> DownloadPageLoader(
                 chapter,
                 manga,

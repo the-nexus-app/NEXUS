@@ -121,10 +121,8 @@ class SyncChaptersWithSource(
                             dbChapter.name,
                             dbChapter.scanlator,
                             dbChapter.url,
-                             -->
                             // manga.title,
                             manga.ogTitle,
-                             <--
                             manga.source,
                         )
 
@@ -212,7 +210,7 @@ class SyncChaptersWithSource(
             chapter
         }
 
-        // --> EXH (carry over reading progress)
+        //EXH (carry over reading progress)
         if (manga.isEhBasedManga()) {
             val hasNewChapters = updatedToAdd.any { it.url !in changedOrDuplicateReadUrls }
             if (hasNewChapters) {
@@ -228,7 +226,7 @@ class SyncChaptersWithSource(
                 }
             }
         }
-        // <-- EXH
+        //EXH
 
         if (removedChapters.isNotEmpty()) {
             val toDeleteIds = removedChapters.map { it.id }

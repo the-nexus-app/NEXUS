@@ -16,9 +16,7 @@ import tachiyomi.source.local.isLocal
 fun List<Chapter>.applyFilters(
     manga: Manga,
     downloadManager: DownloadManager,
-     -->
     mergedManga: Map<Long, Manga>,
-     <--
 ): List<Chapter> {
     val isLocalManga = manga.isLocal()
     val unreadFilter = manga.unreadFilter
@@ -28,18 +26,14 @@ fun List<Chapter>.applyFilters(
     return filter { chapter -> applyFilter(unreadFilter) { !chapter.read } }
         .filter { chapter -> applyFilter(bookmarkedFilter) { chapter.bookmark } }
         .filter { chapter ->
-             -->
             @Suppress("NAME_SHADOWING")
             val manga = mergedManga.getOrElse(chapter.mangaId) { manga }
-             <--
             applyFilter(downloadedFilter) {
                 val downloaded = downloadManager.isChapterDownloaded(
                     chapter.name,
                     chapter.scanlator,
                     chapter.url,
-                     -->
                     manga.ogTitle,
-                     <--
                     manga.source,
                 )
                 downloaded || isLocalManga

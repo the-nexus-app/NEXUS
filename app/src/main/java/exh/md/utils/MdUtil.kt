@@ -108,9 +108,7 @@ class MdUtil {
             titleMap[lang]?.let { return it }
 
             val mainTitle = titleMap.values.firstOrNull()
-             -->
             val langAltTitle = altTitles.firstNotNullOfOrNull { it[lang] }
-             <--
             val enTitle = findTitleInMaps("en", titleMap, altTitles)
             val originalLangTitle = findTitleInMaps("$originalLang-ro", titleMap, altTitles) ?: findTitleInMaps(
                 originalLang,
@@ -124,9 +122,9 @@ class MdUtil {
                 listOf(mainTitle, langAltTitle, enTitle, originalLangTitle)
             }
 
-            // KMM -->
+            // KMM
             return ordered.firstNotNullOfOrNull { it } ?: ""
-            // KMM <--
+            // KMM
         }
 
         fun getFromLangMap(langMap: Map<String, String>, currentLang: String, originalLanguage: String): String? {

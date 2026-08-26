@@ -70,41 +70,29 @@ enum class ReadingMode(
         fun toViewer(
             preference: Int?,
             activity: ReaderActivity,
-             -->
             @ColorInt seedColor: Int?,
-             <--
         ): Viewer {
             return when (fromPreference(preference)) {
                 LEFT_TO_RIGHT -> L2RPagerViewer(
                     activity,
-                     -->
                     seedColor = seedColor,
-                     <--
                 )
                 RIGHT_TO_LEFT -> R2LPagerViewer(
                     activity,
-                     -->
                     seedColor = seedColor,
-                     <--
                 )
                 VERTICAL -> VerticalPagerViewer(
                     activity,
-                     -->
                     seedColor = seedColor,
-                     <--
                 )
                 WEBTOON -> WebtoonViewer(
                     activity,
-                     -->
                     seedColor = seedColor,
-                     <--
                 )
                 CONTINUOUS_VERTICAL -> WebtoonViewer(
                     activity,
                     isContinuous = false,
-                     -->
                     seedColor = seedColor,
-                     <--
                 )
                 DEFAULT -> throw IllegalStateException("Preference value must be resolved: $preference")
             }

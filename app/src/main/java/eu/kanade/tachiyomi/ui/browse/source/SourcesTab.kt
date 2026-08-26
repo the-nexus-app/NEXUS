@@ -44,7 +44,6 @@ fun Screen.sourcesTab(
     val state by screenModel.state.collectAsState()
 
     return TabContent(
-         -->
         titleRes = when (smartSearchConfig == null) {
             true -> MR.strings.label_sources
             false -> SYMR.strings.find_in_another_source
@@ -55,14 +54,12 @@ fun Screen.sourcesTab(
                 icon = Icons.Outlined.TravelExplore,
                 onClick = { navigator.push(GlobalSearchScreen(smartSearchConfig?.origTitle ?: "")) },
             ),
-             -->
             AppBar.Action(
                 title = stringResource(KMR.strings.action_toggle_nsfw_only),
                 icon = Icons.Outlined._18UpRating,
                 iconTint = if (state.nsfwOnly) MaterialTheme.colorScheme.error else LocalContentColor.current,
                 onClick = { screenModel.toggleNsfwOnly() },
             ),
-             <--
         ).let {
             when (smartSearchConfig) {
                 null -> {
@@ -78,13 +75,11 @@ fun Screen.sourcesTab(
                 else -> it
             }
         },
-         <--
         content = { contentPadding, snackbarHostState ->
             SourcesScreen(
                 state = state,
                 contentPadding = contentPadding,
                 onClickItem = { source, listing ->
-                     -->
                     val screen = when {
                         // Search selected source for entries to merge or for the recommending entry
                         smartSearchConfig != null -> SmartSearchScreen(source.id, smartSearchConfig)
@@ -92,13 +87,10 @@ fun Screen.sourcesTab(
                         else -> BrowseSourceScreen(source.id, listing.query)
                     }
                     navigator.push(screen)
-                     <--
                 },
                 onClickPin = screenModel::togglePin,
                 onLongClickItem = screenModel::showSourceDialog,
-                 -->
                 onChangeSearchQuery = screenModel::search,
-                 <--
             )
 
             when (val dialog = state.dialog) {
@@ -114,7 +106,6 @@ fun Screen.sourcesTab(
                             screenModel.toggleSource(source)
                             screenModel.closeDialog()
                         },
-                         -->
                         onClickSetCategories = {
                             screenModel.showSourceCategoriesDialog(source)
                         }.takeIf { state.categories.isNotEmpty() },
@@ -122,16 +113,13 @@ fun Screen.sourcesTab(
                             screenModel.toggleExcludeFromDataSaver(source)
                             screenModel.closeDialog()
                         }.takeIf { state.dataSaverEnabled },
-                         <--
                         onDismiss = screenModel::closeDialog,
-                         -->
                         onClickSettings = {
                             if (source.installedExtension !== null) {
                                 navigator.push(ExtensionDetailsScreen(source.installedExtension!!.pkgName))
                             }
                             screenModel.closeDialog()
                         },
-                         <--
                     )
                 }
                 is SourcesScreenModel.Dialog.SourceCategories -> {

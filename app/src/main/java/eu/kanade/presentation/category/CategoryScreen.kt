@@ -37,9 +37,7 @@ fun CategoryScreen(
     onClickRename: (Category) -> Unit,
     onClickDelete: (Category) -> Unit,
     onChangeOrder: (Category, Int) -> Unit,
-     -->
     onClickHide: (Category) -> Unit,
-     <--
     navigateUp: () -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
@@ -73,9 +71,7 @@ fun CategoryScreen(
             onClickRename = onClickRename,
             onClickDelete = onClickDelete,
             onChangeOrder = onChangeOrder,
-             -->
             onClickHide = onClickHide,
-             <--
         )
     }
 }
@@ -88,9 +84,7 @@ private fun CategoryContent(
     onClickRename: (Category) -> Unit,
     onClickDelete: (Category) -> Unit,
     onChangeOrder: (Category, Int) -> Unit,
-     -->
     onClickHide: (Category) -> Unit,
-     <--
 ) {
     val categoriesState = remember { categories.toMutableStateList() }
     val reorderableState = rememberReorderableLazyListState(lazyListState, paddingValues) { from, to ->
@@ -124,9 +118,7 @@ private fun CategoryContent(
                     category = category,
                     onRename = { onClickRename(category) },
                     onDelete = { onClickDelete(category) },
-                     -->
                     onHide = { onClickHide(category) },
-                     <--
                 )
             }
         }

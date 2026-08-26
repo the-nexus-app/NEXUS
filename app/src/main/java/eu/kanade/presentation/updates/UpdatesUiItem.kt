@@ -90,24 +90,18 @@ internal fun LazyListScope.updatesLastUpdatedItem(
 
 internal fun LazyListScope.updatesUiItems(
     uiModels: List<UpdatesUiModel>,
-     -->
     expandedState: Set<String>,
     collapseToggle: (key: String) -> Unit,
     usePanoramaCover: Boolean,
-     <--
     selectionMode: Boolean,
-     -->
     preserveReadingPosition: Boolean,
-     <--
-    onUpdateSelected: (UpdatesItem, /* KMK --> */ UpdateSelectionOptions /* KMK <-- */) -> Unit,
+    onUpdateSelected: (UpdatesItem, /* KMK*/ UpdateSelectionOptions /* KMK*/) -> Unit,
     onClickCover: (UpdatesItem) -> Unit,
     onClickUpdate: (UpdatesItem) -> Unit,
     onDownloadChapter: (List<UpdatesItem>, ChapterDownloadAction) -> Unit,
-     -->
     updateSwipeStartAction: LibraryPreferences.ChapterSwipeAction,
     updateSwipeEndAction: LibraryPreferences.ChapterSwipeAction,
     onUpdateSwipe: (UpdatesItem, LibraryPreferences.ChapterSwipeAction) -> Unit,
-     <--
 ) {
     items(
         items = uiModels,
@@ -126,18 +120,15 @@ internal fun LazyListScope.updatesUiItems(
     ) { item ->
         when (item) {
             is UpdatesUiModel.Header -> {
-                 -->
                 DateHeading(
                     modifier = Modifier.animateItemFastScroll()
                         .padding(top = MaterialTheme.padding.extraSmall),
                     date = item.date,
                     mangaCount = item.mangaCount,
                 )
-                 <--
             }
             is UpdatesUiModel.Item -> {
                 val updatesItem = item.item
-                 -->
                 val isLeader = item is UpdatesUiModel.Leader
                 val isExpanded = expandedState.contains(updatesItem.update.groupByDateAndManga())
 
@@ -146,17 +137,16 @@ internal fun LazyListScope.updatesUiItems(
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically(),
                 ) {
-                     <--
                     UpdatesUiItem(
                         modifier = Modifier.animateItemFastScroll(),
                         update = updatesItem.update,
                         selected = updatesItem.selected,
                         readProgress = updatesItem.update.lastPageRead
                             .takeIf {
-                                /* SY --> */(
+                                (
                                     !updatesItem.update.read ||
                                         (preserveReadingPosition && updatesItem.isEhBasedUpdate())
-                                    )/* SY <-- */ &&
+                                    )&&
                                     it > 0L
                             }
                             ?.let {
@@ -168,28 +158,24 @@ internal fun LazyListScope.updatesUiItems(
                         onLongClick = {
                             onUpdateSelected(
                                 updatesItem,
-                                 -->
                                 UpdateSelectionOptions(
                                     selected = !updatesItem.selected,
                                     fromLongPress = true,
                                     isGroup = isLeader && item.isExpandable,
                                     isExpanded = isExpanded,
                                 ),
-                                 <--
                             )
                         },
                         onClick = {
                             when {
                                 selectionMode -> onUpdateSelected(
                                     updatesItem,
-                                     -->
                                     UpdateSelectionOptions(
                                         selected = !updatesItem.selected,
                                         fromLongPress = false,
                                         isGroup = isLeader && item.isExpandable,
                                         isExpanded = isExpanded,
                                     ),
-                                     <--
                                 )
                                 else -> onClickUpdate(updatesItem)
                             }
@@ -200,7 +186,6 @@ internal fun LazyListScope.updatesUiItems(
                         }.takeIf { !selectionMode },
                         downloadStateProvider = updatesItem.downloadStateProvider,
                         downloadProgressProvider = updatesItem.downloadProgressProvider,
-                         -->
                         updateSwipeStartAction = updateSwipeStartAction,
                         updateSwipeEndAction = updateSwipeEndAction,
                         onUpdateSwipe = {
@@ -211,7 +196,6 @@ internal fun LazyListScope.updatesUiItems(
                         expanded = isExpanded,
                         collapseToggle = collapseToggle,
                         usePanoramaCover = usePanoramaCover,
-                         <--
                     )
                 }
             }
@@ -231,7 +215,6 @@ private fun UpdatesUiItem(
     // Download Indicator
     downloadStateProvider: () -> Download.State,
     downloadProgressProvider: () -> Int,
-     -->
     updateSwipeStartAction: LibraryPreferences.ChapterSwipeAction,
     updateSwipeEndAction: LibraryPreferences.ChapterSwipeAction,
     onUpdateSwipe: (LibraryPreferences.ChapterSwipeAction) -> Unit,
@@ -240,16 +223,12 @@ private fun UpdatesUiItem(
     expanded: Boolean,
     collapseToggle: (key: String) -> Unit,
     usePanoramaCover: Boolean,
-     <--
     modifier: Modifier = Modifier,
-     -->
     coverRatio: MutableFloatState = remember { mutableFloatStateOf(1f) },
-     <--
 ) {
     val haptic = LocalHapticFeedback.current
     val textAlpha = if (update.read) DISABLED_ALPHA else 1f
 
-     -->
     val swipeBackground = MaterialTheme.colorScheme.primaryContainer
     val swipeStart = remember(updateSwipeStartAction, update.read, update.bookmark, downloadStateProvider()) {
         getSwipeAction(
@@ -279,7 +258,6 @@ private fun UpdatesUiItem(
         swipeThreshold = swipeActionThreshold,
         backgroundUntilSwipeThreshold = MaterialTheme.colorScheme.surfaceContainerLowest,
     ) {
-         <--
         Row(
             modifier = Modifier
                 .selectedBackground(selected)
@@ -292,14 +270,11 @@ private fun UpdatesUiItem(
                 )
                 .padding(top = if (isLeader) MaterialTheme.padding.small else 0.dp)
                 .padding(
-                     -->
                     vertical = if (isLeader) MaterialTheme.padding.extraSmall else 0.dp,
-                     <--
                     horizontal = MaterialTheme.padding.medium,
                 ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-             -->
             val mangaCover = update.coverData
             val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
             val bgColor = mangaCover.dominantCoverColors?.first?.let { Color(it) }
@@ -320,7 +295,6 @@ private fun UpdatesUiItem(
                                 .width(UpdateItemPanoramaWidth),
                             data = mangaCover,
                             onClick = onClickCover,
-                             -->
                             bgColor = bgColor,
                             tint = onBgColor,
                             size = MangaCover.Size.Medium,
@@ -328,18 +302,13 @@ private fun UpdatesUiItem(
                                 val image = result.result.image
                                 coverRatio.floatValue = image.height.toFloat() / image.width
                             },
-                             <--
                         )
                     } else {
-                         <--
                         MangaCover.Book(
                             modifier = Modifier
-                                 -->
                                 .width(UpdateItemWidth),
-                             <--
                             data = mangaCover,
                             onClick = onClickCover,
-                             -->
                             bgColor = bgColor,
                             tint = onBgColor,
                             size = MangaCover.Size.Medium,
@@ -355,7 +324,6 @@ private fun UpdatesUiItem(
                     modifier = Modifier
                         .width(if (usePanoramaCover && coverIsWide) UpdateItemPanoramaWidth else UpdateItemWidth),
                 )
-                 <--
             }
 
             Column(
@@ -363,9 +331,7 @@ private fun UpdatesUiItem(
                     .padding(horizontal = MaterialTheme.padding.medium)
                     .weight(1f),
             ) {
-                 -->
                 if (isLeader) {
-                     <--
                     Text(
                         text = update.mangaTitle,
                         maxLines = 1,
@@ -419,14 +385,12 @@ private fun UpdatesUiItem(
                 }
             }
 
-             -->
             if (isLeader && isExpandable) {
                 CollapseButton(
                     expanded = expanded,
                     collapseToggle = { collapseToggle(update.groupByDateAndManga()) },
                 )
             }
-             <--
 
             ChapterDownloadIndicator(
                 enabled = onDownloadChapter != null,
@@ -439,7 +403,6 @@ private fun UpdatesUiItem(
     }
 }
 
- -->
 @Composable
 fun CollapseButton(
     expanded: Boolean,
@@ -473,4 +436,3 @@ private val IndicatorSize = MaterialTheme.padding.large
 
 private val UpdateItemPanoramaWidth = 108.dp // Book cover
 private val UpdateItemWidth = 48.dp
- <--

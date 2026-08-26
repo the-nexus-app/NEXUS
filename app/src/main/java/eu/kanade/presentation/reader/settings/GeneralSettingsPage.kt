@@ -61,7 +61,6 @@ internal fun GeneralPage(screenModel: ReaderSettingsScreenModel) {
         pref = screenModel.preferences.showPageNumber(),
     )
 
-     -->
     val forceHorizontalSeekbar by screenModel.preferences.forceHorizontalSeekbar().collectAsState()
     CheckboxItem(
         label = stringResource(SYMR.strings.pref_force_horz_seekbar),
@@ -79,7 +78,6 @@ internal fun GeneralPage(screenModel: ReaderSettingsScreenModel) {
             pref = screenModel.preferences.leftVerticalSeekbar(),
         )
     }
-     <--
 
     CheckboxItem(
         label = stringResource(MR.strings.pref_fullscreen),
@@ -109,11 +107,10 @@ internal fun GeneralPage(screenModel: ReaderSettingsScreenModel) {
         pref = screenModel.preferences.alwaysShowChapterTransition(),
     )
 
-     -->
     /*CheckboxItem(
         label = stringResource(MR.strings.pref_page_transitions),
         pref = screenModel.preferences.pageTransitions(),
-    ) SY <-- */
+    ) SY*/
 
     CheckboxItem(
         label = stringResource(MR.strings.pref_flash_page),
@@ -150,10 +147,8 @@ internal fun GeneralPage(screenModel: ReaderSettingsScreenModel) {
         }
     }
 
-     -->
     CheckboxItem(
         label = stringResource(SYMR.strings.auto_webtoon_mode),
         pref = screenModel.preferences.useAutoWebtoon(),
     )
-     <--
 }

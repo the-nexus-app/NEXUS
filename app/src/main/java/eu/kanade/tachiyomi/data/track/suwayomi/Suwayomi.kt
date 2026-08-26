@@ -118,7 +118,5 @@ class Suwayomi(id: Long) : BaseTracker(id, "Suwayomi"), EnhancedTracker {
         return preferences.getBoolean(TRACKER_DELETE_KEY, TRACKER_DELETE_DEFAULT)
     }
 
-     -->
     override fun hasNotStartedReading(status: Long): Boolean = status == UNREAD
-     <--
 }

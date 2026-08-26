@@ -19,11 +19,9 @@ class EditMergedMangaHolder(view: View, val adapter: EditMergedMangaAdapter) : F
 
     init {
         setDragHandleView(binding.reorder)
-         -->
         binding.cover.setOnClickListener {
             adapter.editMergedMangaItemListener.onOpenEntryClick(bindingAdapterPosition)
         }
-         <--
         binding.remove.setOnClickListener {
             adapter.editMergedMangaItemListener.onDeleteClick(bindingAdapterPosition)
         }
@@ -54,10 +52,8 @@ class EditMergedMangaHolder(view: View, val adapter: EditMergedMangaAdapter) : F
         updateDownloadChaptersIcon(item.mergedMangaReference.downloadChapters)
         updateChapterUpdatesIcon(item.mergedMangaReference.getChapterUpdates)
 
-         -->
         binding.holder.setCardBackgroundColor(adapter.colorScheme.surfaceElevation)
         binding.remove.imageTintList = adapter.colorScheme.imageButtonTintList
-         <--
     }
 
     fun setHandelAlpha(isPriorityOrder: Boolean) {
@@ -69,11 +65,9 @@ class EditMergedMangaHolder(view: View, val adapter: EditMergedMangaAdapter) : F
 
     fun updateDownloadChaptersIcon(setTint: Boolean) {
         val color = if (setTint) {
-             -->
             adapter.colorScheme.secondary
         } else {
             adapter.colorScheme.onSurface
-             <--
         }
 
         binding.download.drawable.setTint(color)
@@ -81,11 +75,9 @@ class EditMergedMangaHolder(view: View, val adapter: EditMergedMangaAdapter) : F
 
     fun updateChapterUpdatesIcon(setTint: Boolean) {
         val color = if (setTint) {
-             -->
             adapter.colorScheme.secondary
         } else {
             adapter.colorScheme.onSurface
-             <--
         }
 
         binding.getChapterUpdates.drawable.setTint(color)

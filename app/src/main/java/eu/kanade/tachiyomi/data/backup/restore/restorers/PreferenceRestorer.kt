@@ -44,9 +44,7 @@ class PreferenceRestorer(
 
         LibraryUpdateJob.setupTask(context)
         BackupCreateJob.setupTask(context)
-         -->
         AppUpdateJob.setupTask(context)
-         <--
     }
 
     suspend fun restoreSource(preferences: List<BackupSourcePreferences>) {
@@ -110,7 +108,6 @@ class PreferenceRestorer(
                                 categoriesByName,
                             )
                             if (!restored) {
-                                 -->
                                 when (key) {
                                     SourcePreferences.PINNED_SOURCES_PREF_KEY ->
                                         restorePinnedSourcesPreference(
@@ -119,7 +116,6 @@ class PreferenceRestorer(
                                             preferenceStore,
                                         )
                                     else ->
-                                         <--
                                         preferenceStore.getStringSet(key).set(value.value)
                                 }
                             }
@@ -127,9 +123,7 @@ class PreferenceRestorer(
                     }
                 }
             } catch (e: Exception) {
-                 -->
                 xLogE("Failed to restore preference <$key>", e)
-                 <--
             }
         }
     }

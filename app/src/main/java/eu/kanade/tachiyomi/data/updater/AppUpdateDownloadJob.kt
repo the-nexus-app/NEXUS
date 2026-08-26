@@ -58,12 +58,9 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
     private val notifier = AppUpdateNotifier(context)
     private val network: NetworkHelper by injectLazy()
 
-     -->
     private val exhPreferences = Injekt.get<ExhPreferences>()
-     <--
 
     override suspend fun doWork(): Result {
-         -->
         val idleRun = inputData.getBoolean(SCHEDULED_RUN, false)
         if (idleRun) {
             if (!context.packageManager.canRequestPackageInstalls()) {
@@ -84,7 +81,6 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                 }
             }
         }
-         <--
 
         val url = inputData.getString(EXTRA_DOWNLOAD_URL)
         val title = inputData.getString(EXTRA_DOWNLOAD_TITLE) ?: context.stringResource(MR.strings.app_name)
@@ -94,17 +90,13 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
         }
 
         setForegroundSafely()
-         -->
         instance = WeakReference(this)
-         <--
 
         withIOContext {
             downloadApk(title, url)
         }
 
-         -->
         instance = null
-         <--
 
         return Result.success()
     }
@@ -130,16 +122,12 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
         // Show notification download starting.
         with(notifier) {
             onDownloadStarted(title)
-                 -->
                 .show()
-             <--
         }
 
         val progressListener = object : ProgressListener {
-             -->
             // Total size of the downloading file, should be set when starting and kept over retries
             var totalSize = 0L
-             <--
 
             // Progress of the download
             var savedProgress = 0
@@ -148,7 +136,6 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             var lastTick = 0L
 
             override fun update(bytesRead: Long, contentLength: Long, done: Boolean) {
-                 -->
                 val downloadedSize: Long
                 if (totalSize == 0L) {
                     totalSize = contentLength
@@ -156,7 +143,6 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                 } else {
                     downloadedSize = totalSize - contentLength + bytesRead
                 }
-                 <--
                 val progress = (100 * (downloadedSize.toFloat() / totalSize)).toInt()
                 val currentTime = System.currentTimeMillis()
                 if (progress > savedProgress && currentTime - 200 > lastTick) {
@@ -171,20 +157,16 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             // File where the apk will be saved.
             val apkFile = File(context.externalCacheDir, "update.apk")
 
-             -->
             network.downloadFileWithResume(url, apkFile, progressListener)
             if (isStopped) {
                 cancel()
                 return@coroutineScope
             }
-             <--
 
             notifier.cancel()
-             -->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 startInstalling(apkFile, title)
             } else {
-                 <--
                 notifier.promptInstall(apkFile.getUriCompat(context))
             }
         } catch (e: Exception) {
@@ -197,15 +179,12 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             } else {
                 notifier.onDownloadError(
                     url,
-                     -->
                     e.message,
-                     <--
                 )
             }
         }
     }
 
-     -->
     @RequiresApi(31)
     private suspend fun startInstalling(file: File, title: String) {
         try {
@@ -258,32 +237,25 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             notifier.promptInstall(file.getUriCompat(context))
         }
     }
-     <--
 
     companion object {
         private const val TAG = "AppUpdateDownload"
 
-         -->
         const val PACKAGE_INSTALLED_ACTION =
             "${BuildConfig.APPLICATION_ID}.SESSION_SELF_API_PACKAGE_INSTALLED"
         internal const val EXTRA_FILE_URI = "${BuildConfig.APPLICATION_ID}.AppInstaller.FILE_URI"
         private const val SCHEDULED_RUN = "scheduled_run"
-         <--
 
         const val EXTRA_DOWNLOAD_URL = "DOWNLOAD_URL"
         const val EXTRA_DOWNLOAD_TITLE = "DOWNLOAD_TITLE"
 
-         -->
         private var instance: WeakReference<AppUpdateDownloadJob>? = null
-         <--
 
         fun start(
             context: Context,
             url: String,
             title: String? = null,
-             -->
             scheduled: Boolean = false,
-             <--
         ) {
             val data = Data.Builder()
             data.putString(EXTRA_DOWNLOAD_URL, url)
@@ -291,7 +263,6 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             val request = OneTimeWorkRequestBuilder<AppUpdateDownloadJob>()
                 .addTag(TAG)
                 .apply {
-                     -->
                     if (scheduled) {
                         data.putBoolean(SCHEDULED_RUN, true)
                         val restrictions = Injekt.get<ExhPreferences>().appShouldAutoUpdate().get()
@@ -319,7 +290,6 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                         setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.MINUTES)
                     } else {
                         setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                         <--
                         setConstraints(
                             Constraints(
                                 requiredNetworkType = NetworkType.CONNECTED,

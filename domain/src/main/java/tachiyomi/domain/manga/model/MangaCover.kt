@@ -11,21 +11,16 @@ data class MangaCover(
     val mangaId: Long,
     val sourceId: Long,
     val isMangaFavorite: Boolean,
-     -->
     val ogUrl: String?,
-     <--
     val lastModified: Long,
 ) {
-     -->
     private val customThumbnailUrl = if (isMangaFavorite) {
         getCustomMangaInfo.get(mangaId)?.thumbnailUrl
     } else {
         null
     }
     val url: String? = customThumbnailUrl ?: ogUrl
-     <--
 
-     -->
 
     /**
      * [vibrantCoverColor] is used to set the color theme in manga detail page.
@@ -85,11 +80,8 @@ data class MangaCover(
         var dominantCoverColorMap = ConcurrentHashMap<Long, Pair<Int, Int>>()
 
         var coverRatioMap = ConcurrentHashMap<Long, Float>()
-         <--
 
-         -->
         private val getCustomMangaInfo: GetCustomMangaInfo by injectLazy()
-         <--
     }
 }
 

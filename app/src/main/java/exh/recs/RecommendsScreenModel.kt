@@ -55,9 +55,7 @@ open class RecommendsScreenModel(
 
                     RecommendationPagingSource.createSources(
                         manga,
-                         -->
                         RecommendationSource(args.sourceId),
-                         <--
                     )
                 }
                 is RecommendsScreen.Args.MergedSourceMangas -> {

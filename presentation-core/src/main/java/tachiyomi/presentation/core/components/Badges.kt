@@ -38,9 +38,7 @@ fun BadgeGroup(
 ) {
     Row(
         modifier = modifier.clip(shape)
-             -->
             .height(18.dp),
-         <--
     ) {
         content()
     }
@@ -112,7 +110,6 @@ fun Badge(
     )
 }
 
- -->
 @Composable
 fun Badge(
     painter: Painter,
@@ -158,4 +155,3 @@ fun Badge(
         )
     }
 }
- <--

@@ -103,11 +103,9 @@ internal class AppUpdateNotifier(private val context: Context) {
             )
         }
 
-         -->
         // Avoid calling show() before returning builder for ForegroundInfo.
         // Calling show() here can cause duplicate notifications, as setForegroundSafely will display the notification using the returned builder.
         // notificationBuilder.show()
-         <--
 
         return notificationBuilder
     }
@@ -133,9 +131,7 @@ internal class AppUpdateNotifier(private val context: Context) {
     fun promptInstall(uri: Uri, title: String? = null) {
         val installIntent = NotificationHandler.installApkPendingActivity(context, uri)
         with(notificationBuilder) {
-             -->
             title?.let { setContentTitle(title) }
-             <--
             setContentText(context.stringResource(MR.strings.update_check_notification_download_complete))
             setSmallIcon(android.R.drawable.stat_sys_download_done)
             setOnlyAlertOnce(false)
@@ -165,16 +161,12 @@ internal class AppUpdateNotifier(private val context: Context) {
      */
     fun onDownloadError(
         url: String,
-         -->
         error: String? = null,
-         <--
     ) {
         with(notificationBuilder) {
             setContentText(
                 context.stringResource(MR.strings.update_check_notification_download_error) +
-                     -->
                     (": $error".takeIf { error != null } ?: ""),
-                 <--
             )
             setSmallIcon(R.drawable.ic_warning_white_24dp)
             setOnlyAlertOnce(false)
@@ -191,7 +183,6 @@ internal class AppUpdateNotifier(private val context: Context) {
                 context.stringResource(MR.strings.action_cancel),
                 NotificationReceiver.dismissNotificationPendingBroadcast(context, Notifications.ID_APP_UPDATE_ERROR),
             )
-             -->
             addAction(
                 R.drawable.ic_get_app_24dp,
                 context.stringResource(KMR.strings.manual_download),
@@ -200,12 +191,10 @@ internal class AppUpdateNotifier(private val context: Context) {
                     url,
                 ),
             )
-             <--
         }
         notificationBuilder.show(Notifications.ID_APP_UPDATE_ERROR)
     }
 
-     -->
     fun onInstalling(uri: Uri) {
         val installIntent = NotificationHandler.installApkPendingActivity(context, uri)
         with(notificationBuilder) {
@@ -302,5 +291,4 @@ internal class AppUpdateNotifier(private val context: Context) {
     companion object {
         var releasePageUrl: String? = null
     }
-     <--
 }

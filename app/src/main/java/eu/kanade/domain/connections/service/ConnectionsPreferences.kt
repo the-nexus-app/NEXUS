@@ -1,4 +1,4 @@
-// AM (CONNECTIONS) -->
+// AM (CONNECTIONS)
 package eu.kanade.domain.connections.service
 
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
@@ -64,4 +64,4 @@ class ConnectionsPreferences(
         private fun connectionsToken(syncId: Long) = "connection_token_$syncId"
     }
 }
-// <-- AM (CONNECTIONS)
+//AM (CONNECTIONS)

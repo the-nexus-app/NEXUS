@@ -11,7 +11,6 @@ object MigrateUtils {
         val handler = migrationContext.get<DatabaseHandler>() ?: return
         runBlocking {
             handler.await { ehQueries.migrateSource(newId, oldId) }
-             -->
             handler.await { ehQueries.migrateMergedSource(newId, oldId) }
             // Migrate saved searches & feeds
             handler.await { ehQueries.migrateSourceSavedSearch(newId, oldId) }
@@ -27,7 +26,6 @@ object MigrateUtils {
                     .plus(newId.toString())
             }
         }
-         <--
     }
 
     @Suppress("UNCHECKED_CAST")

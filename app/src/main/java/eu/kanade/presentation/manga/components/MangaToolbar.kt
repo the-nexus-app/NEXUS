@@ -48,18 +48,14 @@ fun MangaToolbar(
     onClickRefresh: () -> Unit,
     onClickMigrate: (() -> Unit)?,
     onClickEditNotes: () -> Unit,
-     -->
     onClickEditInfo: (() -> Unit)?,
-     -->
     onClickRelatedMangas: (() -> Unit)?,
     onClickSourceSettings: (() -> Unit)?,
     onClearManga: () -> Unit,
     onOpenMangaFolder: (() -> Unit)?,
-     <--
     onClickRecommend: (() -> Unit)?,
     onClickMerge: (() -> Unit)?,
     onClickMergedSettings: (() -> Unit)?,
-     <--
 
     // For action mode
     actionModeCounter: Int,
@@ -69,18 +65,14 @@ fun MangaToolbar(
 
     titleAlphaProvider: () -> Float,
     backgroundAlphaProvider: () -> Float,
-     -->
     onPaletteScreenClick: () -> Unit,
-     <--
     modifier: Modifier = Modifier,
 ) {
-     -->
     val navigator = LocalNavigator.current
     fun onHomeClicked() = navigator?.popUntil { screen ->
         screen is SourceFeedScreen || screen is BrowseSourceScreen
     }
     val isHomeEnabled = Injekt.get<UiPreferences>().showHomeOnRelatedMangas().get()
-     <--
 
     val isActionMode = actionModeCounter > 0
     AppBar(
@@ -95,7 +87,6 @@ fun MangaToolbar(
         backgroundColor = MaterialTheme.colorScheme
             .surfaceColorAtElevation(3.dp)
             .copy(alpha = if (isActionMode) 1f else backgroundAlphaProvider()),
-         -->
         goHome = { onHomeClicked() }.takeIf {
             isHomeEnabled &&
                 navigator != null &&
@@ -104,7 +95,6 @@ fun MangaToolbar(
                         (navigator.size >= 2 && navigator.items[navigator.size - 2] is MangaScreen)
                     )
         },
-         <--
         navigateUp = navigateUp,
         actions = {
             var downloadExpanded by remember { mutableStateOf(false) }
@@ -190,7 +180,6 @@ fun MangaToolbar(
                             onClick = onClickEditNotes,
                         ),
                     )
-                     -->
                     if (onClickMerge != null) {
                         add(
                             AppBar.OverflowAction(
@@ -207,7 +196,6 @@ fun MangaToolbar(
                             ),
                         )
                     }
-                     -->
                     if (onClickRelatedMangas != null) {
                         add(
                             AppBar.OverflowAction(
@@ -216,7 +204,6 @@ fun MangaToolbar(
                             ),
                         )
                     }
-                     <--
                     if (onClickRecommend != null) {
                         add(
                             AppBar.OverflowAction(
@@ -233,8 +220,6 @@ fun MangaToolbar(
                             ),
                         )
                     }
-                     <--
-                     -->
                     if (onOpenMangaFolder != null) {
                         add(
                             AppBar.OverflowAction(
@@ -265,7 +250,6 @@ fun MangaToolbar(
                             ),
                         )
                     }
-                     <--
                 }
                     .build(),
             )

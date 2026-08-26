@@ -14,23 +14,17 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 
 class AppUpdateChecker(
-     -->
     private val peekIntoPreview: Boolean = false,
-     <--
 ) {
 
     private val getApplicationRelease: GetApplicationRelease by injectLazy()
 
-     -->
     private val exhPreferences by lazy { Injekt.get<ExhPreferences>() }
-     <--
 
     suspend fun checkForUpdate(
         context: Context,
         forceCheck: Boolean = false,
-         -->
         autoUpdate: Boolean = AppUpdatePolicy.DISABLE_AUTO_DOWNLOAD !in exhPreferences.appShouldAutoUpdate().get(),
-         <--
     ): GetApplicationRelease.Result {
         return withIOContext {
             val result = getApplicationRelease.await(
@@ -44,21 +38,16 @@ class AppUpdateChecker(
                 ),
             )
 
-             -->
             if (!peekIntoPreview) {
-                 <--
                 when (result) {
                     is GetApplicationRelease.Result.NewUpdate -> {
-                         -->
                         AppUpdateNotifier.releasePageUrl = result.release.releaseLink
-                         <--
                         AppUpdateNotifier(context).promptUpdate(result.release)
                     }
 
                     else -> {}
                 }
 
-                 -->
                 if (autoUpdate && result is GetApplicationRelease.Result.NewUpdate) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         AppUpdateDownloadJob.start(
@@ -69,14 +58,12 @@ class AppUpdateChecker(
                         )
                     }
                 }
-                 <--
             }
 
             result
         }
     }
 
-     -->
     suspend fun getReleaseNotes(): GetApplicationRelease.Result {
         return withIOContext {
             getApplicationRelease.awaitReleaseNotes(
@@ -90,7 +77,6 @@ class AppUpdateChecker(
             )
         }
     }
-     <--
 }
 
 val GITHUB_REPO: String by lazy { getGithubRepo() }

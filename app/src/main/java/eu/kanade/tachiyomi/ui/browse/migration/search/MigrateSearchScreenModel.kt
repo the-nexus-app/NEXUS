@@ -40,9 +40,7 @@ class MigrateSearchScreenModel(
             search()
         }
 
-         -->
         shouldPinnedSourcesHidden()
-         <--
     }
 
     override fun getEnabledSources(): List<Source> {

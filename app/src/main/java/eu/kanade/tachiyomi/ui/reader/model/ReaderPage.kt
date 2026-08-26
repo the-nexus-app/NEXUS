@@ -7,12 +7,10 @@ open class ReaderPage(
     index: Int,
     url: String = "",
     imageUrl: String? = null,
-     -->
     /** Value to check if this page is used to as if it was too wide */
     var shiftedPage: Boolean = false,
     /** Value to check if a page is can be doubled up, but can't because the next page is too wide */
     var isolatedPage: Boolean = false,
-     <--
     var stream: (() -> InputStream)? = null,
 
 ) : Page(index, url, imageUrl, null), ReaderItem {

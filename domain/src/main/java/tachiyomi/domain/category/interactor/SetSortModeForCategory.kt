@@ -15,12 +15,10 @@ class SetSortModeForCategory(
 ) {
 
     suspend fun await(categoryId: Long?, type: LibrarySort.Type, direction: LibrarySort.Direction) {
-         -->
         if (preferences.groupLibraryBy().get() != LibraryGroup.BY_DEFAULT) {
             preferences.sortingMode().set(LibrarySort(type, direction))
             return
         }
-         <--
         val category = categoryId?.let { categoryRepository.get(it) }
         val flags = (category?.flags ?: 0) + type + direction
         if (type == LibrarySort.Type.Random) {

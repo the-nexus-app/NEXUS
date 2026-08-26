@@ -51,14 +51,10 @@ object SettingsAppearanceScreen : SearchableSettings {
 
         return listOf(
             getThemeGroup(uiPreferences = uiPreferences),
-             -->
             getMangaInfoThemeGroup(uiPreferences = uiPreferences),
-             <--
             getDisplayGroup(uiPreferences = uiPreferences),
-             -->
             getNavbarGroup(uiPreferences = uiPreferences),
             getForkGroup(uiPreferences = uiPreferences),
-             <--
         )
     }
 
@@ -100,7 +96,6 @@ object SettingsAppearanceScreen : SearchableSettings {
                         )
                     }
                 },
-                 -->
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(KMR.strings.pref_custom_color),
                     subtitle = stringResource(KMR.strings.custom_color_description),
@@ -140,7 +135,6 @@ object SettingsAppearanceScreen : SearchableSettings {
                         true
                     },
                 ),
-                 <--
                 Preference.PreferenceItem.SwitchPreference(
                     preference = amoledPref,
                     title = stringResource(MR.strings.pref_dark_theme_pure_black),
@@ -154,7 +148,6 @@ object SettingsAppearanceScreen : SearchableSettings {
         )
     }
 
-     -->
     @Composable
     private fun getMangaInfoThemeGroup(
         uiPreferences: UiPreferences,
@@ -212,7 +205,6 @@ object SettingsAppearanceScreen : SearchableSettings {
             ),
         )
     }
-     <--
 
     @Composable
     private fun getDisplayGroup(
@@ -278,7 +270,6 @@ object SettingsAppearanceScreen : SearchableSettings {
         )
     }
 
-     -->
     @Composable
     fun getForkGroup(uiPreferences: UiPreferences): Preference.PreferenceGroup {
         val previewsRowCount by uiPreferences.previewsRowCount().collectAsState()
@@ -286,13 +277,11 @@ object SettingsAppearanceScreen : SearchableSettings {
         return Preference.PreferenceGroup(
             stringResource(SYMR.strings.pref_category_fork),
             preferenceItems = persistentListOf(
-                 -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = uiPreferences.usePanoramaCoverFlow(),
                     title = stringResource(KMR.strings.pref_panorama_cover_flow),
                     subtitle = stringResource(KMR.strings.pref_panorama_cover_flow_summary),
                 ),
-                 <--
                 Preference.PreferenceItem.SwitchPreference(
                     preference = uiPreferences.expandFilters(),
                     title = stringResource(SYMR.strings.toggle_expand_search_filters),
@@ -346,7 +335,6 @@ object SettingsAppearanceScreen : SearchableSettings {
             ),
         )
     }
-     <--
 }
 
 private val DateFormats = listOf(

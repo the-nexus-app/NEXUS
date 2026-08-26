@@ -25,7 +25,6 @@ class GetApplicationRelease(
             return Result.NoNewUpdate
         }
 
-         -->
         val releases = service.releaseNotes(arguments)
             .filter {
                 !it.preRelease &&
@@ -38,7 +37,6 @@ class GetApplicationRelease(
             }
 
         val latest = releases.getLatest() ?: return Result.NoNewUpdate
-         <--
 
         lastChecked.set(now.toEpochMilli())
 
@@ -55,7 +53,6 @@ class GetApplicationRelease(
         }
     }
 
-     -->
     suspend fun awaitReleaseNotes(arguments: Arguments): Result {
         val releases = service.releaseNotes(arguments)
             .filter { !it.preRelease }
@@ -63,7 +60,6 @@ class GetApplicationRelease(
         val latest = releases.getLatest() ?: return Result.NoNewUpdate
         return Result.NewUpdate(latest)
     }
-     <--
 
     /**
      * [isPreview] is if current version is Preview (beta) build
@@ -126,7 +122,6 @@ class GetApplicationRelease(
     }
 }
 
- --.
 internal fun List<Release>.getLatest(): Release? {
     return firstOrNull()
         ?.copy(
@@ -136,4 +131,3 @@ internal fun List<Release>.getLatest(): Release? {
             },
         )
 }
- <--

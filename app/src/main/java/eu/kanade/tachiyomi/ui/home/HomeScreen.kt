@@ -87,12 +87,10 @@ object HomeScreen : Screen() {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-         -->
         val scope = rememberCoroutineScope()
         val alwaysShowLabel by remember {
             Injekt.get<UiPreferences>().bottomBarLabels().asState(scope)
         }
-         <--
 
         TabNavigator(
             tab = LibraryTab,
@@ -105,11 +103,9 @@ object HomeScreen : Screen() {
                         if (isTabletUi()) {
                             NavigationRail {
                                 TABS
-                                     -->
                                     .fastFilter { it.isEnabled() }
-                                     <--
                                     .fastForEach {
-                                        NavigationRailItem(it/* SY --> */, alwaysShowLabel/* SY <-- */)
+                                        NavigationRailItem(it, alwaysShowLabel)
                                     }
                             }
                         }
@@ -126,11 +122,9 @@ object HomeScreen : Screen() {
                             ) {
                                 NavigationBar {
                                     TABS
-                                         -->
                                         .fastFilter { it.isEnabled() }
-                                         <--
                                         .fastForEach {
-                                            NavigationBarItem(it/* SY --> */, alwaysShowLabel/* SY <-- */)
+                                            NavigationBarItem(it, alwaysShowLabel)
                                         }
                                 }
                             }
@@ -197,10 +191,8 @@ object HomeScreen : Screen() {
                         if (it is Tab.More) {
                             if (it.toDownloads) {
                                 navigator.push(DownloadQueueScreen)
-                                 -->
                             } else if (it.toLibraryUpdateErrors) {
                                 navigator.push(LibraryUpdateErrorScreen())
-                                 <--
                             }
                         }
                     }
@@ -212,9 +204,7 @@ object HomeScreen : Screen() {
     @Composable
     private fun RowScope.NavigationBarItem(
         tab: eu.kanade.presentation.util.Tab,
-         -->
         alwaysShowLabel: Boolean,
-         <--
     ) {
         val tabNavigator = LocalTabNavigator.current
         val navigator = LocalNavigator.currentOrThrow
@@ -238,16 +228,14 @@ object HomeScreen : Screen() {
                     overflow = TextOverflow.Ellipsis,
                 )
             },
-            alwaysShowLabel = /* SY --> */alwaysShowLabel, /* SY <-- */
+            alwaysShowLabel = alwaysShowLabel, 
         )
     }
 
     @Composable
     fun NavigationRailItem(
         tab: eu.kanade.presentation.util.Tab,
-         -->
         alwaysShowLabel: Boolean,
-         <--
     ) {
         val tabNavigator = LocalTabNavigator.current
         val navigator = LocalNavigator.currentOrThrow
@@ -271,7 +259,7 @@ object HomeScreen : Screen() {
                     overflow = TextOverflow.Ellipsis,
                 )
             },
-            alwaysShowLabel = /* SY --> */alwaysShowLabel, /* SY <-- */
+            alwaysShowLabel = alwaysShowLabel, 
         )
     }
 
@@ -353,9 +341,7 @@ object HomeScreen : Screen() {
         data class Browse(val toExtensions: Boolean = false) : Tab
         data class More(
             val toDownloads: Boolean,
-             -->
             val toLibraryUpdateErrors: Boolean = false,
-             <--
         ) : Tab
     }
 }

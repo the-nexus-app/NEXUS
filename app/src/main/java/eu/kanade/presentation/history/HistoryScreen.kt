@@ -51,7 +51,6 @@ fun HistoryScreen(
     onClickResume: (mangaId: Long, chapterId: Long) -> Unit,
     onClickFavorite: (mangaId: Long) -> Unit,
     onDialogChange: (HistoryScreenModel.Dialog?) -> Unit,
-     -->
     toggleSelectionMode: () -> Unit,
     onSelectAll: (Boolean) -> Unit,
     onInvertSelection: () -> Unit,
@@ -59,15 +58,11 @@ fun HistoryScreen(
     onFilterClicked: () -> Unit,
     hasActiveFilters: Boolean,
     usePanoramaCover: Boolean,
-     <--
 ) {
-     -->
     BackHandler(enabled = state.selectionMode, onBack = toggleSelectionMode)
-     <--
 
     Scaffold(
         topBar = { scrollBehavior ->
-             -->
             when {
                 state.selectionMode -> HistorySelectionToolbar(
                     selectedCount = state.selection.size,
@@ -76,7 +71,6 @@ fun HistoryScreen(
                     onClickInvertSelection = onInvertSelection,
                     onClickClearHistory = { onDialogChange(HistoryScreenModel.Dialog.Delete(state.selected)) },
                 )
-                 <--
                 else -> SearchToolbar(
                     titleContent = { AppBarTitle(stringResource(MR.strings.history)) },
                     searchQuery = state.searchQuery,
@@ -84,20 +78,16 @@ fun HistoryScreen(
                     actions = {
                         AppBarActions(
                             persistentListOf(
-                                 -->
                                 AppBar.Action(
                                     title = stringResource(MR.strings.action_filter),
                                     icon = Icons.Outlined.FilterList,
                                     iconTint = if (hasActiveFilters) MaterialTheme.colorScheme.active else LocalContentColor.current,
                                     onClick = onFilterClicked,
                                 ),
-                                 <--
                                 AppBar.Action(
                                     title = stringResource(MR.strings.pref_clear_history),
-                                     -->
                                     icon = Icons.Outlined.Checklist,
                                     onClick = toggleSelectionMode,
-                                     <--
                                 ),
                             ),
                         )
@@ -109,9 +99,7 @@ fun HistoryScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { contentPadding ->
         state.list.let {
-             -->
             if (state.isLoading) {
-                 <--
                 LoadingScreen(Modifier.padding(contentPadding))
             } else if (it.isEmpty()) {
                 val msg = if (!state.searchQuery.isNullOrEmpty()) {
@@ -124,24 +112,18 @@ fun HistoryScreen(
                     modifier = Modifier.padding(contentPadding),
                 )
             } else {
-                 -->
                 val uiModels = remember(state.list) { state.getUiModel() }
-                 <--
                 HistoryScreenContent(
-                     -->
                     state = state,
                     history = uiModels,
-                     <--
                     contentPadding = contentPadding,
                     onClickCover = { history -> onClickCover(history.mangaId) },
                     onClickResume = { history -> onClickResume(history.mangaId, history.chapterId) },
                     onClickDelete = { item -> onDialogChange(HistoryScreenModel.Dialog.Delete(item)) },
                     onClickFavorite = { history -> onClickFavorite(history.mangaId) },
-                     -->
                     selectionMode = state.selectionMode,
                     onHistorySelected = onHistorySelected,
                     usePanoramaCover = usePanoramaCover,
-                     <--
                 )
             }
         }
@@ -150,7 +132,6 @@ fun HistoryScreen(
 
 @Composable
 private fun HistoryScreenContent(
-     -->
     state: HistoryScreenModel.State,
 
     history: List<HistoryUiModel>,
@@ -159,11 +140,9 @@ private fun HistoryScreenContent(
     onClickResume: (HistoryWithRelations) -> Unit,
     onClickDelete: (HistoryWithRelations) -> Unit,
     onClickFavorite: (HistoryWithRelations) -> Unit,
-     -->
     selectionMode: Boolean,
     onHistorySelected: (HistoryWithRelations, HistorySelectionOptions) -> Unit,
     usePanoramaCover: Boolean,
-     <--
 ) {
     FastScrollLazyColumn(
         contentPadding = contentPadding,
@@ -187,14 +166,11 @@ private fun HistoryScreenContent(
                 }
                 is HistoryUiModel.Item -> {
                     val value = item.item
-                     -->
                     val isSelected = remember(state.selection) { value.chapterId in state.selection }
-                     <--
                     HistoryItem(
                         modifier = Modifier.animateItemFastScroll(),
                         history = value,
                         onClickCover = { onClickCover(value) },
-                         -->
                         onClick = {
                             when {
                                 selectionMode -> onHistorySelected(
@@ -216,10 +192,8 @@ private fun HistoryScreenContent(
                                 ),
                             )
                         },
-                         <--
                         onClickDelete = { onClickDelete(value) },
                         onClickFavorite = { onClickFavorite(value) },
-                         -->
                         selected = isSelected,
                         readProgress = value.lastPageRead
                             .takeIf { !value.read && it > 0L }
@@ -231,7 +205,6 @@ private fun HistoryScreenContent(
                             },
                         hasUnread = value.unreadCount > 0,
                         usePanoramaCover = usePanoramaCover,
-                         <--
                     )
                 }
             }
@@ -241,12 +214,9 @@ private fun HistoryScreenContent(
 
 sealed interface HistoryUiModel {
     data class Header(val date: LocalDate) : HistoryUiModel
-     -->
     data class Item(val item: HistoryWithRelations) : HistoryUiModel
-     <--
 }
 
- -->
 @Composable
 private fun HistorySelectionToolbar(
     selectedCount: Int,
@@ -283,7 +253,6 @@ private fun HistorySelectionToolbar(
         onCancelActionMode = onCancelActionMode,
     )
 }
- <--
 
 @PreviewLightDark
 @Composable
@@ -300,7 +269,6 @@ internal fun HistoryScreenPreviews(
             onClickResume = { _, _ -> run {} },
             onDialogChange = {},
             onClickFavorite = {},
-             -->
             toggleSelectionMode = {},
             onSelectAll = {},
             onInvertSelection = {},
@@ -308,7 +276,6 @@ internal fun HistoryScreenPreviews(
             onFilterClicked = {},
             hasActiveFilters = true,
             usePanoramaCover = true,
-             <--
         )
     }
 }

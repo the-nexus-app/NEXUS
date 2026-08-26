@@ -67,7 +67,6 @@ fun DeleteChaptersDialog(
     )
 }
 
- -->
 @Composable
 fun ClearMangaDialog(
     onDismissRequest: () -> Unit,
@@ -122,7 +121,6 @@ fun ClearMangaDialog(
         },
     )
 }
- <--
 
 @Composable
 fun SetIntervalDialog(
@@ -179,10 +177,8 @@ fun SetIntervalDialog(
                     ) {
                         val size = DpSize(width = maxWidth / 2, height = 128.dp)
                         val items =
-                             -->
                             (
                                 listOf(stringResource(MR.strings.action_disable)) +
-                                     <--
                                     (0..FetchInterval.MAX_INTERVAL)
                                         .map {
                                             if (it == 0) {
@@ -198,17 +194,13 @@ fun SetIntervalDialog(
                             size = size,
                             startIndex = (
                                 selectedInterval +
-                                     -->
                                     1
                                 ).takeIf { selectedInterval != FetchInterval.MANUAL_DISABLE } ?: 0,
-                             <--
                             onSelectionChanged = { idx ->
                                 selectedInterval = (
                                     idx -
-                                         -->
                                         1
                                     ).takeIf { idx != 0 } ?: FetchInterval.MANUAL_DISABLE
-                                 <--
                             },
                         )
                     }

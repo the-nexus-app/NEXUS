@@ -47,7 +47,7 @@ class BackupManga(
     @ProtoNumber(111) var initialized: Boolean = false,
     @ProtoNumber(112) var memo: ByteArray = JsonObjectEmptyBytes,
 
-     specific values
+    // SY specific values
     @ProtoNumber(600) var mergedMangaReferences: List<BackupMergedMangaReference> = emptyList(),
     @ProtoNumber(601) var flatMetadata: BackupFlatMetadata? = null,
     @ProtoNumber(602) var customStatus: Int = 0,
@@ -65,7 +65,6 @@ class BackupManga(
     fun getMangaImpl(): Manga {
         return Manga.create().copy(
             url = this@BackupManga.url,
-             -->
             ogTitle = this@BackupManga.title,
             ogArtist = this@BackupManga.artist,
             ogAuthor = this@BackupManga.author,
@@ -73,7 +72,6 @@ class BackupManga(
             ogDescription = this@BackupManga.description,
             ogGenre = this@BackupManga.genre,
             ogStatus = this@BackupManga.status.toLong(),
-             <--
             favorite = this@BackupManga.favorite,
             source = this@BackupManga.source,
             dateAdded = this@BackupManga.dateAdded,

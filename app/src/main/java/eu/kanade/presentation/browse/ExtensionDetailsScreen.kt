@@ -73,9 +73,7 @@ fun ExtensionDetailsScreen(
     navigateUp: () -> Unit,
     state: ExtensionDetailsScreenModel.State,
     onClickSourcePreferences: (sourceId: Long) -> Unit,
-     -->
     onOpenWebView: (() -> Unit)?,
-     <--
     onClickEnableAll: () -> Unit,
     onClickDisableAll: () -> Unit,
     onClickClearCookies: () -> Unit,
@@ -185,13 +183,11 @@ private fun ExtensionDetails(
     ScrollbarLazyColumn(
         contentPadding = contentPadding,
     ) {
-         -->
         if (extension.isRedundant) {
             item {
                 WarningBanner(SYMR.strings.redundant_extension_message)
             }
         }
-         <--
         if (extension.isObsolete) {
             item {
                 WarningBanner(MR.strings.obsolete_extension_message)
@@ -378,12 +374,10 @@ private fun DetailsHeader(
             modifier = Modifier.padding(horizontal = MaterialTheme.padding.small),
             title = stringResource(MR.strings.pref_incognito_mode),
             subtitle = stringResource(MR.strings.pref_incognito_mode_extension_summary),
-             -->
             icon = rememberAnimatedVectorPainter(
                 AnimatedImageVector.animatedVectorResource(R.drawable.anim_incognito),
                 extIncognitoMode,
             ),
-             <--
             widget = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

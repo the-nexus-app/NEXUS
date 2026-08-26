@@ -15,19 +15,15 @@ class GetHistory(
 
     fun subscribe(
         query: String,
-         -->
         unfinishedManga: Boolean?,
         unfinishedChapter: Boolean?,
         nonLibraryEntries: Boolean?,
-         <--
     ): Flow<List<HistoryWithRelations>> {
         return repository.getHistory(
             query,
-             -->
             unfinishedManga,
             unfinishedChapter,
             nonLibraryEntries,
-             <--
         )
     }
 }

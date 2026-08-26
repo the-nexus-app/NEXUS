@@ -85,7 +85,6 @@ fun SourceFeedDeleteDialog(
     )
 }
 
- -->
 private val PaddingSize = 16.dp
 
 private val ButtonPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
@@ -170,4 +169,3 @@ private fun FeedActionsDialogPreview() {
         onClickDelete = { },
     )
 }
- <--

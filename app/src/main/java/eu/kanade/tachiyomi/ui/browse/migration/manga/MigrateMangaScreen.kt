@@ -91,7 +91,6 @@ data class MigrateMangaScreen(
 
         val lazyListState = rememberLazyListState()
 
-         -->
         val scope = rememberCoroutineScope()
         val enableScrollToTop by remember {
             derivedStateOf {
@@ -104,16 +103,12 @@ data class MigrateMangaScreen(
                 lazyListState.canScrollForward
             }
         }
-         <--
 
         Scaffold(
             topBar = { scrollBehavior ->
-                 -->
                 MigrateMangaAppBar(
-                     <--
                     title = state.source!!.name,
                     navigateUp = {
-                         -->
                         navigator.pop()
                     },
                     itemCnt = state.titles.size,
@@ -121,11 +116,9 @@ data class MigrateMangaScreen(
                     onClickUnselectAll = screenModel::clearSelection,
                     onClickSelectAll = screenModel::toggleAllSelection,
                     onClickInvertSelection = screenModel::invertSelection,
-                     <--
                     scrollBehavior = scrollBehavior,
                 )
             },
-             -->
             bottomBar = {
                 MigrateMangaBottomBar(
                     selectionMode = state.selectionMode,
@@ -146,7 +139,6 @@ data class MigrateMangaScreen(
                     },
                 )
             },
-             <--
         ) { contentPadding ->
             if (state.isEmpty) {
                 EmptyScreen(
@@ -160,10 +152,8 @@ data class MigrateMangaScreen(
                 lazyListState = lazyListState,
                 contentPadding = contentPadding,
                 state = state,
-                 -->
                 onMangaSelected = screenModel::toggleSelection,
                 onClickItem = { navigator.push(MigrationConfigScreen(it.id)) },
-                 <--
                 onClickCover = { navigator.push(MangaScreen(it.id)) },
             )
         }
@@ -184,9 +174,7 @@ data class MigrateMangaScreen(
         lazyListState: LazyListState,
         contentPadding: PaddingValues,
         state: MigrateMangaScreenModel.State,
-         -->
         onMangaSelected: (Manga, Boolean, Boolean) -> Unit,
-         <--
         onClickItem: (Manga) -> Unit,
         onClickCover: (Manga) -> Unit,
     ) {
@@ -195,25 +183,19 @@ data class MigrateMangaScreen(
             contentPadding = contentPadding,
         ) {
             items(items = state.titles) { manga ->
-                 -->
                 val isSelected = manga.id in state.selection
-                 <--
                 MigrateMangaItem(
                     manga = manga,
                     isSelected = isSelected,
                     onClickItem = {
-                         -->
                         when {
                             state.selectionMode -> onMangaSelected(manga, !isSelected, false)
-                             <--
                             else -> onClickItem(it)
                         }
                     },
                     onClickCover = onClickCover,
-                     -->
                     onLongClick = { onMangaSelected(manga, !isSelected, true) },
                     modifier = Modifier.animateItemFastScroll(),
-                     <--
                 )
             }
         }
@@ -225,9 +207,7 @@ data class MigrateMangaScreen(
         isSelected: Boolean,
         onClickItem: (Manga) -> Unit,
         onClickCover: (Manga) -> Unit,
-         -->
         onLongClick: () -> Unit,
-         <--
         modifier: Modifier = Modifier,
     ) {
         BaseMangaListItem(
@@ -235,13 +215,10 @@ data class MigrateMangaScreen(
             manga = manga,
             onClickItem = { onClickItem(manga) },
             onClickCover = { onClickCover(manga) },
-             -->
             onLongClick = onLongClick,
-             <--
         )
     }
 
-     -->
     @Composable
     private fun MigrateMangaAppBar(
         title: String,
@@ -364,5 +341,4 @@ data class MigrateMangaScreen(
             }
         }
     }
- <--
 }

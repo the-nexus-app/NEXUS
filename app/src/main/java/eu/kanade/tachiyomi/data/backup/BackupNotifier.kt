@@ -28,9 +28,7 @@ class BackupNotifier(private val context: Context) {
 
     private val preferences: SecurityPreferences by injectLazy()
 
-     -->
     private val backupRestoreStatus: BackupRestoreStatus = Injekt.get()
-     <--
 
     private val progressNotificationBuilder = context.notificationBuilder(
         Notifications.CHANNEL_BACKUP_RESTORE_PROGRESS,
@@ -63,11 +61,9 @@ class BackupNotifier(private val context: Context) {
             setProgress(0, 0, true)
         }
 
-         -->
         // Avoid calling show() before returning builder for ForegroundInfo.
         // Calling show() here can cause duplicate notifications, as setForegroundSafely will display the notification using the returned builder.
         // builder.show(Notifications.ID_BACKUP_PROGRESS)
-         <--
 
         return builder
     }
@@ -121,9 +117,7 @@ class BackupNotifier(private val context: Context) {
 
             setProgress(maxAmount, progress, false)
             setOnlyAlertOnce(true)
-             -->
             backupRestoreStatus.updateProgress(progress.toFloat() / maxAmount)
-             <--
 
             clearActions()
             addAction(
@@ -133,11 +127,9 @@ class BackupNotifier(private val context: Context) {
             )
         }
 
-         -->
         // Avoid calling show() before returning builder for ForegroundInfo.
         // Calling show() here can cause duplicate notifications, as setForegroundSafely will display the notification using the returned builder.
         // builder.show(Notifications.ID_RESTORE_PROGRESS)
-         <--
 
         return builder
     }

@@ -153,13 +153,11 @@ abstract class DelegatedHttpSource(val delegate: HttpSource) : HttpSource() {
         fetchChapters: Boolean,
     ): SMangaUpdate {
         ensureDelegateCompatible()
-         -->
         return supervisorScope {
             val asyncManga = if (fetchDetails) async { fetchMangaDetails(manga).awaitSingle() } else null
             val asyncChapters = if (fetchChapters) async { fetchChapterList(manga).awaitSingle() } else null
             SMangaUpdate(asyncManga?.await() ?: manga, asyncChapters?.await() ?: chapters)
         }
-         <--
     }
 
     /**

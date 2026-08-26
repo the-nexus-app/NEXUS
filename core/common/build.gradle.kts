@@ -20,9 +20,7 @@ kotlin {
 
 dependencies {
     implementation(projects.i18n)
-     -->
     implementation(projects.i18nSy)
-     <--
 
     api(libs.logcat)
 
@@ -56,8 +54,6 @@ dependencies {
     testImplementation(libs.bundles.test)
     testRuntimeOnly(libs.junit.platform.launcher)
 
-     -->
     implementation(sylibs.xlog)
     implementation(sylibs.exifinterface)
-     <--
 }

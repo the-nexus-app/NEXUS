@@ -43,9 +43,7 @@ fun ChapterListDialog(
     onClickChapter: (Chapter) -> Unit,
     onBookmark: (Chapter) -> Unit,
     dateRelativeTime: Boolean,
-     -->
     onDownloadAction: ((Chapter, ChapterDownloadAction) -> Unit)? = null,
-     <--
 ) {
     val manga by screenModel.mangaFlow.collectAsState()
     val context = LocalContext.current
@@ -93,7 +91,6 @@ fun ChapterListDialog(
                     date = chapterItem.chapter.dateUpload
                         .takeIf { it > 0L }
                         ?.let {
-                             -->
                             if (manga?.isEhBasedManga() == true) {
                                 MetadataUtil.EX_DATE_FORMAT
                                     .format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault()))
@@ -103,7 +100,6 @@ fun ChapterListDialog(
                                     ZoneId.systemDefault(),
                                 ).toRelativeString(context, dateRelativeTime, chapterItem.dateFormat)
                             }
-                             <--
                         },
                     readProgress = null,
                     scanlator = chapterItem.chapter.scanlator,
@@ -111,22 +107,18 @@ fun ChapterListDialog(
                     read = chapterItem.chapter.read,
                     bookmark = chapterItem.chapter.bookmark,
                     selected = false,
-                     -->
                     downloadIndicatorEnabled = onDownloadAction != null,
-                     <--
                     downloadStateProvider = { downloadState },
                     downloadProgressProvider = { progress },
                     chapterSwipeStartAction = LibraryPreferences.ChapterSwipeAction.ToggleBookmark,
                     chapterSwipeEndAction = LibraryPreferences.ChapterSwipeAction.ToggleBookmark,
                     onLongClick = { /*TODO*/ },
                     onClick = { onClickChapter(chapterItem.chapter) },
-                     -->
                     onDownloadClick = if (onDownloadAction != null) {
                         { action -> onDownloadAction(chapterItem.chapter, action) }
                     } else {
                         null
                     },
-                     <--
                     onChapterSwipe = {
                         onBookmark(chapterItem.chapter)
                     },

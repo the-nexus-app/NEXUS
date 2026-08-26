@@ -53,9 +53,7 @@ class ExtensionsScreenModel(
                     it,
                     map[
                         it.pkgName +
-                             -->
                             "_${it.signatureHash}",
-                         <--
                     ] ?: InstallStep.Idle,
                 )
             }
@@ -67,40 +65,30 @@ class ExtensionsScreenModel(
                     .distinctUntilChanged()
                     .debounce(SEARCH_DEBOUNCE_MILLIS)
                     .map { searchQueryPredicate(it ?: "") },
-                 -->
                 state.map { it.nsfwOnly }
                     .distinctUntilChanged()
                     .debounce(SEARCH_DEBOUNCE_MILLIS),
-                 <--
                 currentDownloads,
                 getExtensions.subscribe(),
             ) { predicate, nsfwOnly, downloads, (_updates, _installed, _available, _untrusted) ->
                 buildMap {
                     val updates = _updates.filter(predicate).map(extensionMapper(downloads))
-                         -->
                         .filter { !nsfwOnly || it.extension.isNsfw }
-                     <--
                     if (updates.isNotEmpty()) {
                         put(ExtensionUiModel.Header.Resource(MR.strings.ext_updates_pending), updates)
                     }
 
                     val installed = _installed.filter(predicate).map(extensionMapper(downloads))
-                         -->
                         .filter { !nsfwOnly || it.extension.isNsfw }
-                     <--
                     val untrusted = _untrusted.filter(predicate).map(extensionMapper(downloads))
-                         -->
                         .filter { !nsfwOnly || it.extension.isNsfw }
-                     <--
                     if (installed.isNotEmpty() || untrusted.isNotEmpty()) {
                         put(ExtensionUiModel.Header.Resource(MR.strings.ext_installed), installed + untrusted)
                     }
 
                     val languagesWithExtensions = _available
                         .filter(predicate)
-                         -->
                         .filter { !nsfwOnly || it.isNsfw }
-                         <--
                         .groupBy { it.lang }
                         .toSortedMap(LocaleHelper.comparator)
                         .map { (lang, exts) ->
@@ -111,12 +99,10 @@ class ExtensionsScreenModel(
                         putAll(languagesWithExtensions)
                     }
 
-                     -->
                     // Show "More..." header if no available extensions
                     if (_available.isEmpty()) {
                         put(ExtensionUiModel.Header.Resource(KMR.strings.extensions_page_more), emptyList())
                     }
-                     <--
                 }
             }
                 .collectLatest { items ->
@@ -207,9 +193,7 @@ class ExtensionsScreenModel(
         currentDownloads.update {
             it + Pair(
                 extension.pkgName +
-                     -->
                     "_${extension.signatureHash}",
-                 <--
                 installStep,
             )
         }
@@ -219,9 +203,7 @@ class ExtensionsScreenModel(
         currentDownloads.update {
             it - (
                 extension.pkgName +
-                     -->
                     "_${extension.signatureHash}"
-                 <--
                 )
         }
     }
@@ -256,13 +238,11 @@ class ExtensionsScreenModel(
         }
     }
 
-     -->
     fun toggleNsfwOnly() {
         mutableState.update {
             it.copy(nsfwOnly = !it.nsfwOnly)
         }
     }
-     <--
 
     @Immutable
     data class State(
@@ -272,9 +252,7 @@ class ExtensionsScreenModel(
         val updates: Int = 0,
         val installer: BasePreferences.ExtensionInstaller? = null,
         val searchQuery: String? = null,
-         -->
         val nsfwOnly: Boolean = false,
-         <--
     ) {
         val isEmpty = items.isEmpty()
     }

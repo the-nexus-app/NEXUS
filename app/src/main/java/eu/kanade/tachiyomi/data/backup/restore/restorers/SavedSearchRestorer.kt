@@ -13,28 +13,20 @@ class SavedSearchRestorer(
     suspend fun restoreSavedSearches(backupSavedSearches: List<BackupSavedSearch>) {
         if (backupSavedSearches.isEmpty()) return
 
-         -->
         handler.await(true) {
-             <--
             val currentSavedSearches = handler.awaitList {
-                 -->
                 // saved_searchQueries.selectNamesAndSources()
                 saved_searchQueries.selectAll()
-                 <--
             }
 
             backupSavedSearches.map {
-                 -->
                 EXHMigrations.migrateBackupSavedSearch(it)
-                 <--
             }.filter { backupSavedSearch ->
                 currentSavedSearches.none { currentSavedSearch ->
                     currentSavedSearch.source == backupSavedSearch.source &&
                         currentSavedSearch.name == backupSavedSearch.name &&
-                         -->
                         currentSavedSearch.query.orEmpty() == backupSavedSearch.query &&
                         (currentSavedSearch.filters_json ?: "[]") == backupSavedSearch.filterList
-                     <--
                 }
             }.forEach { backupSavedSearch ->
                 saved_searchQueries.insert(

@@ -45,11 +45,8 @@ internal fun UnreadBadge(count: Long) {
 internal fun LanguageBadge(
     isLocal: Boolean,
     sourceLanguage: String,
-     -->
     useLangIcon: Boolean = true,
-     <--
 ) {
-     -->
     if (!isLocal && sourceLanguage.isNotEmpty()) {
         if (useLangIcon) {
             val iconResId = getLanguageIconID(sourceLanguage) ?: R.drawable.globe
@@ -61,7 +58,6 @@ internal fun LanguageBadge(
                     .height(18.dp),
             )
         } else {
-             <--
             Badge(
                 text = sourceLanguage.uppercase(),
                 color = MaterialTheme.colorScheme.tertiary,
@@ -71,7 +67,6 @@ internal fun LanguageBadge(
     }
 }
 
- -->
 @Composable
 fun SourceIconBadge(
     source: Source?,
@@ -112,7 +107,6 @@ fun SourceIconBadge(
         }
     }
 }
- <--
 
 @PreviewLightDark
 @Composable

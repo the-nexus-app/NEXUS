@@ -34,16 +34,12 @@ fun BrowseSourceToolbar(
     navigateUp: () -> Unit,
     onWebViewClick: () -> Unit,
     onHelpClick: () -> Unit,
-     -->
     onToggleIncognito: () -> Unit,
     onSettingsClick: (() -> Unit)?,
-     <--
     onSearch: (String) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-     -->
     toggleSelectionMode: () -> Unit,
     isRunning: Boolean,
-     <--
 ) {
     // Avoid capturing unstable source in actions lambda
     val title = source?.name
@@ -75,7 +71,6 @@ fun BrowseSourceToolbar(
                                 ),
                             )
                         }
-                         -->
                         add(bulkSelectionButton(isRunning, toggleSelectionMode))
                         add(
                             AppBar.OverflowAction(
@@ -83,7 +78,6 @@ fun BrowseSourceToolbar(
                                 onClick = onToggleIncognito,
                             ),
                         )
-                         <--
                         if (isLocalSource) {
                             add(
                                 AppBar.OverflowAction(
@@ -99,10 +93,7 @@ fun BrowseSourceToolbar(
                                 ),
                             )
                         }
-                         <--
-                         -->
                         onSettingsClick?.let {
-                             <--
                             add(
                                 AppBar.OverflowAction(
                                     title = stringResource(MR.strings.action_settings),
@@ -125,7 +116,6 @@ fun BrowseSourceToolbar(
                     selectingDisplayMode = false
                     onDisplayModeChange(LibraryDisplayMode.ComfortableGrid)
                 }
-                 -->
                 RadioMenuItem(
                     text = { Text(text = stringResource(KMR.strings.action_display_comfortable_grid_panorama)) },
                     isChecked = displayMode == LibraryDisplayMode.ComfortableGridPanorama,
@@ -133,7 +123,6 @@ fun BrowseSourceToolbar(
                     selectingDisplayMode = false
                     onDisplayModeChange(LibraryDisplayMode.ComfortableGridPanorama)
                 }
-                 <--
                 RadioMenuItem(
                     text = { Text(text = stringResource(MR.strings.action_display_grid)) },
                     isChecked = displayMode == LibraryDisplayMode.CompactGrid,

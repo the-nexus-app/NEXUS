@@ -96,16 +96,13 @@ fun SourceFeedScreen(
     onClickBrowse: () -> Unit,
     onClickLatest: () -> Unit,
     onClickSavedSearch: (SavedSearch) -> Unit,
-     -->
     // onClickDelete: (FeedSavedSearch) -> Unit,
     onLongClickFeed: (SourceFeedUI.SourceSavedSearch) -> Unit,
-     <--
     onClickManga: (Manga) -> Unit,
     onClickSearch: (String) -> Unit,
     searchQuery: String?,
     onSearchQueryChange: (String?) -> Unit,
     getMangaState: @Composable (Manga) -> State<Manga>,
-     -->
     navigateUp: () -> Unit,
     onWebViewClick: (() -> Unit)?,
     onToggleIncognito: () -> Unit,
@@ -113,15 +110,11 @@ fun SourceFeedScreen(
     onSortFeedClick: (() -> Unit)?,
     onLongClickManga: (Manga) -> Unit,
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
-     <--
 ) {
-     -->
     val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
-     <--
 
     Scaffold(
         topBar = { scrollBehavior ->
-             -->
             if (bulkFavoriteState.selectionMode) {
                 BulkSelectionToolbar(
                     selectedCount = bulkFavoriteState.selection.size,
@@ -140,14 +133,12 @@ fun SourceFeedScreen(
                     },
                 )
             } else {
-                 <--
                 SourceFeedToolbar(
                     title = name,
                     searchQuery = searchQuery,
                     onSearchQueryChange = onSearchQueryChange,
                     scrollBehavior = scrollBehavior,
                     onClickSearch = onClickSearch,
-                     -->
                     navigateUp = navigateUp,
                     onWebViewClick = onWebViewClick,
                     onToggleIncognito = onToggleIncognito,
@@ -155,12 +146,10 @@ fun SourceFeedScreen(
                     onSortFeedClick = onSortFeedClick,
                     toggleSelectionMode = bulkFavoriteScreenModel::toggleSelectionMode,
                     isRunning = bulkFavoriteState.isRunning,
-                     <--
                 )
             }
         },
         floatingActionButton = {
-             -->
             SmallExtendedFloatingActionButton(
                 text = {
                     Text(
@@ -174,7 +163,6 @@ fun SourceFeedScreen(
                 icon = { Icon(Icons.Outlined.FilterList, contentDescription = "") },
                 onClick = onFabClick,
             )
-             <--
         },
     ) { paddingValues ->
         Crossfade(targetState = isLoading, label = "source_feed") { state ->
@@ -188,15 +176,11 @@ fun SourceFeedScreen(
                         onClickBrowse = onClickBrowse,
                         onClickLatest = onClickLatest,
                         onClickSavedSearch = onClickSavedSearch,
-                         -->
                         // onClickDelete = onClickDelete,
                         onLongClickFeed = onLongClickFeed,
-                         <--
                         onClickManga = onClickManga,
-                         -->
                         onLongClickManga = onLongClickManga,
                         selection = bulkFavoriteState.selection,
-                         <--
                     )
                 }
             }
@@ -212,41 +196,31 @@ fun SourceFeedList(
     onClickBrowse: () -> Unit,
     onClickLatest: () -> Unit,
     onClickSavedSearch: (SavedSearch) -> Unit,
-     -->
     // onClickDelete: (FeedSavedSearch) -> Unit,
     onLongClickFeed: (SourceFeedUI.SourceSavedSearch) -> Unit,
-     <--
     onClickManga: (Manga) -> Unit,
-     -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
-     <--
 ) {
     ScrollbarLazyColumn(
         contentPadding = paddingValues + topSmallPaddingValues,
     ) {
-         -->
         items(
             items,
             key = { "source-feed-${it.id}" },
         ) { item ->
-             <--
             GlobalSearchResultItem(
                 modifier = Modifier.animateItem(),
                 title =
-                 -->
                 if (item !is SourceFeedUI.SourceSavedSearch) {
                     stringResource(item.title as StringResource)
                 } else {
-                     <--
                     item.title
                 },
                 subtitle = null,
                 onLongClick = if (item is SourceFeedUI.SourceSavedSearch) {
                     {
-                         -->
                         onLongClickFeed(item)
-                         <--
                     }
                 } else {
                     null
@@ -263,10 +237,8 @@ fun SourceFeedList(
                     item = item,
                     getMangaState = { getMangaState(it) },
                     onClickManga = onClickManga,
-                     -->
                     onLongClickManga = onLongClickManga,
                     selection = selection,
-                     <--
                 )
             }
         }
@@ -278,10 +250,8 @@ fun SourceFeedItem(
     item: SourceFeedUI,
     getMangaState: @Composable ((Manga) -> State<Manga>),
     onClickManga: (Manga) -> Unit,
-     -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
-     <--
 ) {
     val results = item.results
     when {
@@ -296,10 +266,8 @@ fun SourceFeedItem(
                 titles = item.results.orEmpty(),
                 getManga = getMangaState,
                 onClick = onClickManga,
-                 -->
                 onLongClick = onLongClickManga,
                 selection = selection,
-                 <--
             )
         }
     }
@@ -312,7 +280,6 @@ fun SourceFeedToolbar(
     onSearchQueryChange: (String?) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     onClickSearch: (String) -> Unit,
-     -->
     navigateUp: () -> Unit,
     onWebViewClick: (() -> Unit)?,
     onToggleIncognito: () -> Unit,
@@ -320,20 +287,16 @@ fun SourceFeedToolbar(
     onSortFeedClick: (() -> Unit)?,
     toggleSelectionMode: () -> Unit,
     isRunning: Boolean,
-     <--
 ) {
     SearchToolbar(
         titleContent = { AppBarTitle(title) },
         searchQuery = searchQuery,
         onChangeSearchQuery = onSearchQueryChange,
         onSearch = onClickSearch,
-         -->
         navigateUp = navigateUp,
         onClickCloseSearch = navigateUp,
-         <--
         scrollBehavior = scrollBehavior,
         placeholderText = stringResource(MR.strings.action_search_hint),
-         -->
         actions = {
             AppBarActions(
                 actions = persistentListOf<AppBar.AppBarAction>().builder().apply {
@@ -349,14 +312,12 @@ fun SourceFeedToolbar(
                         )
                     }
 
-                     -->
                     add(
                         AppBar.OverflowAction(
                             title = stringResource(MR.strings.pref_incognito_mode),
                             onClick = onToggleIncognito,
                         ),
                     )
-                     <--
 
                     onSortFeedClick?.let { func ->
                         add(
@@ -379,6 +340,5 @@ fun SourceFeedToolbar(
                     .build(),
             )
         },
-         <--
     )
 }

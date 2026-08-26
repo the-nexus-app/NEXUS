@@ -34,19 +34,14 @@ class GetUpdates(
             bookmarked = bookmarked,
             hideExcludedScanlators = hideExcludedScanlators,
         )
-             -->
             .catchNPE()
-         <--
     }
 
     fun subscribe(read: Boolean, after: Long): Flow<List<UpdatesWithRelations>> {
         return repository.subscribeWithRead(read, after, limit = 500)
-             -->
             .catchNPE()
-         <--
     }
 
-     -->
     private fun <T> Flow<T>.catchNPE() = retry {
         if (it is NullPointerException) {
             delay(0.5.seconds)
@@ -57,5 +52,4 @@ class GetUpdates(
     }.catch {
         this@GetUpdates.logcat(LogPriority.ERROR, it)
     }
-     <--
 }
