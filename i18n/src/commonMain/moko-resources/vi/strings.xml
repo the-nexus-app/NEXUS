@@ -298,7 +298,7 @@
     <string name="pref_skip_filtered_chapters">Bỏ qua các chương đã lọc</string>
     <string name="filter_mode_screen">Màn hình</string>
     <string name="pref_cutout_short">Hiển thị nội dung ở phần rìa</string>
-    <string name="obsolete_extension_message">Phần mở rộng này không liên kết với cửa hành nào. Nó có thể không nhận bản cập nhật, có thể không hoạt động đúng cách và có thể gây ra lỗi với Komikku. Kiến nghị nên Gỡ cài đặt.</string>
+    <string name="obsolete_extension_message">Phần mở rộng này không liên kết với cửa hành nào. Nó có thể không nhận bản cập nhật, có thể không hoạt động đúng cách và có thể gây ra lỗi với NEXUS. Kiến nghị nên Gỡ cài đặt.</string>
     <string name="ext_updates_pending">Đang chờ cập nhật</string>
     <string name="pref_category_library_update">Cập nhật toàn bộ</string>
     <string name="pref_category_display">Hiển thị</string>
@@ -387,7 +387,7 @@
     <string name="channel_errors">Lỗi</string>
     <string name="channel_complete">Hoàn thành</string>
     <string name="channel_progress">Quá trình</string>
-    <string name="information_webview_required">Komikku yêu cầu phải có WebView</string>
+    <string name="information_webview_required">NEXUS yêu cầu phải có WebView</string>
     <string name="update_check_eol">Phiên bản Android này không còn được hỗ trợ</string>
     <string name="notification_chapters_multiple">Chương %1$s</string>
     <string name="notification_chapters_single_and_more">Chương %1$s và thêm %2$d</string>
@@ -898,13 +898,13 @@
     <string name="supportUsScreen.perks">Người bảo trợ có quyền truy cập vào các kênh độc quyền và nhận được nhiều đặc quyền hơn.</string>
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (ưu tiên)</string>
     <string name="supportUsScreen.donationPlatform.opencollective">OpenCollective</string>
-    <string name="supportUsScreen.currentlySupportedBy">Komikku hiện được hỗ trợ bởi %d+ người bảo trợ. Chúng tôi muốn cảm ơn từng người và tất cả các bạn. Hãy cùng nhau làm cho Komikku trở nên tốt hơn nữa.</string>
+    <string name="supportUsScreen.currentlySupportedBy">NEXUS hiện được hỗ trợ bởi %d+ người bảo trợ. Chúng tôi muốn cảm ơn từng người và tất cả các bạn. Hãy cùng nhau làm cho NEXUS trở nên tốt hơn nữa.</string>
     <string name="supportUsScreen.contactForDetailsMessage">Để biết các lựa chọn thay thế hoặc bất kỳ câu hỏi liên quan nào, hãy tham gia máy chủ Discord của chúng tôi.</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
     <string name="donationCampaign.title">Bạn thích ứng dụng này?</string>
-    <string name="donationCampaign.paragraph1">Chào! Tôi là nhà phát triển chính đằng sau Komikku và tôi muốn đề nghị bạn xem xét hỗ trợ tài chính cho sự phát triển của nó. Nếu có đủ sự hỗ trợ, tôi sẽ có thể làm việc toàn thời gian trên Komikku và tập trung vào các vấn đề tồn tại lâu dài cũng như các tính năng được yêu cầu cao.</string>
-    <string name="donationCampaign.paragraph2">Bạn có thể quyên góp thông qua Patreon (ưu tiên) hoặc OpenCollective. Nếu bạn có thắc mắc hoặc muốn hỗ trợ bằng các phương pháp thay thế, vui lòng liên hệ với tôi thông qua máy chủ Discord của Komikku.</string>
-    <string name="donationCampaign.paragraph3">Dù thế nào đi nữa, Komikku sẽ tiếp tục được tôi và các tình nguyện viên duy trì và nó sẽ vẫn là nguồn mở.</string>
+    <string name="donationCampaign.paragraph1">Chào! Tôi là nhà phát triển chính đằng sau NEXUS và tôi muốn đề nghị bạn xem xét hỗ trợ tài chính cho sự phát triển của nó. Nếu có đủ sự hỗ trợ, tôi sẽ có thể làm việc toàn thời gian trên NEXUS và tập trung vào các vấn đề tồn tại lâu dài cũng như các tính năng được yêu cầu cao.</string>
+    <string name="donationCampaign.paragraph2">Bạn có thể quyên góp thông qua Patreon (ưu tiên) hoặc OpenCollective. Nếu bạn có thắc mắc hoặc muốn hỗ trợ bằng các phương pháp thay thế, vui lòng liên hệ với tôi thông qua máy chủ Discord của NEXUS.</string>
+    <string name="donationCampaign.paragraph3">Dù thế nào đi nữa, NEXUS sẽ tiếp tục được tôi và các tình nguyện viên duy trì và nó sẽ vẫn là nguồn mở.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">Miễn nhiệm</string>
     <string name="action.addExtensionStore">Thêm cửa hành tiện ích mở rộng</string>

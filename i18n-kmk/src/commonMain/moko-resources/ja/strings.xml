@@ -186,7 +186,7 @@
     <string name="discord_status_description">%1$s %2$s</string>
     <string name="discord_status_using">使用:</string>
     <string name="discord_download_button">%s で読む</string>
-    <string name="discord_app_description">Komikku - 漫画リーダーアプリ</string>
+    <string name="discord_app_description">NEXUS - 漫画リーダーアプリ</string>
     <string name="pref_discord_show_progress_summary">現在読書中の章を表示します</string>
     <string name="pref_discord_show_timestamp_summary">アクティビティ時間を表示します</string>
     <string name="show_chapters_titles_title">章タイトルを表示</string>

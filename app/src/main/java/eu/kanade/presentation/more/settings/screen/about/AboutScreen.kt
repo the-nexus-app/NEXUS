@@ -169,6 +169,7 @@ class AboutScreen : Screen() {
                                                 versionName = result.release.version,
                                                 changelogInfo = result.release.info,
                                                 releaseLink = result.release.releaseLink,
+                                                downloadLink = result.release.downloadLink,
                                             )
                                             navigator.push(whatsNewScreen)
                                         },

@@ -95,7 +95,7 @@
     <string name="ext_untrusted">신뢰되지않음</string>
     <string name="ext_uninstall">삭제</string>
     <string name="untrusted_extension">신뢰할 수 없는 확장 앱</string>
-    <string name="untrusted_extension_message">일부 악의적인 확장 앱은 Komikku에 저장된 로그인 정보를 읽거나 임의의 코드를 실행할 수도 있습니다.
+    <string name="untrusted_extension_message">일부 악의적인 확장 앱은 NEXUS에 저장된 로그인 정보를 읽거나 임의의 코드를 실행할 수도 있습니다.
 \n
 \n이 확장 앱을 신뢰하면 이러한 위험에 노출될 수 있습니다.</string>
     <string name="pref_fullscreen">전체화면</string>
@@ -471,7 +471,7 @@
     <string name="skipped_reason_not_started">읽지 않은 만화를 건너 뛰었습니다</string>
     <string name="update_check_eol">이 안드로이드 버전은 더이상 지원되지 않습니다</string>
     <string name="information_cloudflare_bypass_failure">Cloudflare를 통과하지 못했습니다</string>
-    <string name="information_webview_required">Komikku 앱의 기능을 사용하려면 WebView가 필요합니다</string>
+    <string name="information_webview_required">NEXUS 앱의 기능을 사용하려면 WebView가 필요합니다</string>
     <string name="information_webview_outdated">호환성을 위해 WebView 어플리케이션을 업데이트 해 주세요</string>
     <string name="pref_navigate_pan">넓은 이미지 이동</string>
     <string name="obsolete_extension_message">이 확장 프로그램은 어떤 스토어와도 연결되어 있지 않습니다. 업데이트되지 않으며, 제대로 작동하지 않을 수 있고, 앱에 문제가 발생할 수 있습니다. 제거하는 것을 권장합니다.</string>
@@ -899,13 +899,13 @@
     <string name="supportUsScreen.perks">후원해 주시는 분들은 더 많은 혜택이 적용될 예정인 독점 채널에 접속할 수 있습니다.</string>
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (선호됨)</string>
     <string name="supportUsScreen.donationPlatform.opencollective">OpenCollective</string>
-    <string name="supportUsScreen.currentlySupportedBy">Komikku은 현재 %d+의 후원자 분들의 도움을 받고 있습니다. 모든 분들께 감사를 전하고 싶습니다. 함께 Komikku을 더욱 발전시켜 나갑시다.</string>
+    <string name="supportUsScreen.currentlySupportedBy">NEXUS은 현재 %d+의 후원자 분들의 도움을 받고 있습니다. 모든 분들께 감사를 전하고 싶습니다. 함께 NEXUS을 더욱 발전시켜 나갑시다.</string>
     <string name="supportUsScreen.contactForDetailsMessage">대체 옵션 또는 관련 질문이 있으실 경우, Discord 서버에 방문해 주십시오.</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
     <string name="donationCampaign.title">앱을 즐기고 있으신가요?</string>
-    <string name="donationCampaign.paragraph1">안녕하세요! Komikku 메인 개발자입니다. 귀하께서 이 앱 개발에 대한 재정적 지원을 고려해주셨으면 합니다. 충분한 지원이 있다면 Komikku을 풀 타임으로 작업하여 오랫동안 지속되어 온 이슈와 요청이 많았던 기능들에 집중할 수 있을 것입니다.</string>
-    <string name="donationCampaign.paragraph2">Pateron(선호됨) 또는 OpenCollective를 통해 기부하실 수 있습니다. 질문이 있거나 다른 기부 방법에 대한 지원이 필요하신 경우, 언제든지 Komikku의 Discord 서버를 통해 연락해 주십시오.</string>
-    <string name="donationCampaign.paragraph3">기부 여부와 무관하게, Komikku은 저와 자원봉사자 분들에 의해 계속 유지보수되며 오픈 소스로 남아있을 것입니다.</string>
+    <string name="donationCampaign.paragraph1">안녕하세요! NEXUS 메인 개발자입니다. 귀하께서 이 앱 개발에 대한 재정적 지원을 고려해주셨으면 합니다. 충분한 지원이 있다면 NEXUS을 풀 타임으로 작업하여 오랫동안 지속되어 온 이슈와 요청이 많았던 기능들에 집중할 수 있을 것입니다.</string>
+    <string name="donationCampaign.paragraph2">Pateron(선호됨) 또는 OpenCollective를 통해 기부하실 수 있습니다. 질문이 있거나 다른 기부 방법에 대한 지원이 필요하신 경우, 언제든지 NEXUS의 Discord 서버를 통해 연락해 주십시오.</string>
+    <string name="donationCampaign.paragraph3">기부 여부와 무관하게, NEXUS은 저와 자원봉사자 분들에 의해 계속 유지보수되며 오픈 소스로 남아있을 것입니다.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">닫기</string>
     <string name="extensionStores">확장 앱 스토어</string>

@@ -899,13 +899,13 @@
     <string name="supportUsScreen.perks">Patronlar, özel kanallara ve gelecekte daha fazlasına erişim elde eder.</string>
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (tercih edilen)</string>
     <string name="supportUsScreen.donationPlatform.opencollective">OpenCollective</string>
-    <string name="supportUsScreen.currentlySupportedBy">Komikku, şu anda %d+ patron tarafından desteklenmektedir. Her birinize ayrı olarak teşekkür etmek istiyoruz. Hadi Komikku\'u birlikte daha iyi yapalım.</string>
+    <string name="supportUsScreen.currentlySupportedBy">NEXUS, şu anda %d+ patron tarafından desteklenmektedir. Her birinize ayrı olarak teşekkür etmek istiyoruz. Hadi NEXUS\'u birlikte daha iyi yapalım.</string>
     <string name="supportUsScreen.contactForDetailsMessage">Başka seçenekler ve sorularınız için Discord sunucumuza katılın.</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
     <string name="donationCampaign.title">Uygulamayı beğendiniz mi?</string>
-    <string name="donationCampaign.paragraph1">Merhaba! Ben, Komikku\'un ana geliştiricisiyim ve geliştirme sürecine maddi olarak destek olmayı düşünmenizi isterim. Yeterli destek olursa Komikku üzerinde tam zamanlı olarak çalışabilirim ve uzun zamandır olan sorunlara ve çok istenen özelliklere odaklanabilirim.</string>
-    <string name="donationCampaign.paragraph2">Patreon (tercih edilen) veya OpenCollective üzerinden bağışta bulunabilirsiniz. Sorularınız varsa veya başka bir yolla destek olmak isterseniz Komikku\'un Discord sunucusu üzerinden bana ulaşmaktan çekinmeyin.</string>
-    <string name="donationCampaign.paragraph3">Ancak ne olursa olsun Komikku, ben ve gönüllü insanlar tarafından geliştirilmeye devam edecek ve açık kaynak kodlu olarak kalacaktır.</string>
+    <string name="donationCampaign.paragraph1">Merhaba! Ben, NEXUS\'un ana geliştiricisiyim ve geliştirme sürecine maddi olarak destek olmayı düşünmenizi isterim. Yeterli destek olursa NEXUS üzerinde tam zamanlı olarak çalışabilirim ve uzun zamandır olan sorunlara ve çok istenen özelliklere odaklanabilirim.</string>
+    <string name="donationCampaign.paragraph2">Patreon (tercih edilen) veya OpenCollective üzerinden bağışta bulunabilirsiniz. Sorularınız varsa veya başka bir yolla destek olmak isterseniz NEXUS\'un Discord sunucusu üzerinden bana ulaşmaktan çekinmeyin.</string>
+    <string name="donationCampaign.paragraph3">Ancak ne olursa olsun NEXUS, ben ve gönüllü insanlar tarafından geliştirilmeye devam edecek ve açık kaynak kodlu olarak kalacaktır.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">Kapat</string>
     <string name="extensionStores">Uzantı mağazaları</string>
