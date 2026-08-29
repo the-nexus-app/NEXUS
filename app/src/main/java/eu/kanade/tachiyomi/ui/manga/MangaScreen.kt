@@ -78,6 +78,8 @@ import eu.kanade.tachiyomi.ui.manga.merged.EditMergedSettingsDialog
 import eu.kanade.tachiyomi.ui.manga.notes.MangaNotesScreen
 import eu.kanade.tachiyomi.ui.manga.track.TrackInfoDialogHomeScreen
 import eu.kanade.tachiyomi.ui.reader.ReaderActivity
+import eu.kanade.presentation.manga.components.MangaBookmarksSheet
+import tachiyomi.domain.bookmark.model.BookmarkWithChapter
 import eu.kanade.tachiyomi.ui.setting.SettingsScreen
 import eu.kanade.tachiyomi.ui.webview.WebViewScreen
 import eu.kanade.tachiyomi.util.system.copyToClipboard
@@ -354,6 +356,9 @@ class MangaScreen(
                     successState.seedColor,
                 )
             },
+            // FIX: this argument was missing, which caused
+            // "No value passed for parameter 'onOpenBookmarks'" at compile time.
+            onOpenBookmarks = screenModel::showBookmarksDialog,
             onEditInfoClicked = screenModel::showEditMangaInfoDialog,
             onRecommendClicked = {
                 openRecommends(navigator, screenModel.source?.getMainSource(), successState.manga)
@@ -511,6 +516,17 @@ class MangaScreen(
                     onDismissRequest = onDismissRequest,
                 )
             }
+            MangaScreenModel.Dialog.BookmarksSheet -> {
+                MangaBookmarksSheet(
+                    bookmarks = successState.bookmarks,
+                    onDismissRequest = onDismissRequest,
+                    onBookmarkClick = { bookmark ->
+                        openBookmark(context, bookmark)
+                        onDismissRequest()
+                    },
+                    onBookmarkDelete = screenModel::removeBookmark,
+                )
+            }
             MangaScreenModel.Dialog.FullCover -> {
                 val sm = rememberScreenModel { MangaCoverScreenModel(successState.manga.id) }
                 val manga by sm.state.collectAsState()
@@ -614,6 +630,12 @@ class MangaScreen(
 
     private fun openChapter(context: Context, chapter: Chapter) {
         context.startActivity(ReaderActivity.newIntent(context, mangaId, chapter.id))
+    }
+
+    private fun openBookmark(context: Context, bookmark: BookmarkWithChapter) {
+        context.startActivity(
+            ReaderActivity.newIntent(context, mangaId, bookmark.chapterId, bookmark.pageIndex, bookmarkNav = true),
+        )
     }
 
     @Suppress("LocalVariableName")

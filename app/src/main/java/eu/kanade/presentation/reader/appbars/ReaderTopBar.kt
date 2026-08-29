@@ -2,6 +2,8 @@ package eu.kanade.presentation.reader.appbars
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkAdd
+import androidx.compose.material.icons.outlined.BookmarkAdded
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +21,8 @@ fun ReaderTopBar(
     navigateUp: () -> Unit,
     bookmarked: Boolean,
     onToggleBookmarked: () -> Unit,
+    pageBookmarked: Boolean,
+    onTogglePageBookmarked: () -> Unit,
     onOpenInWebView: (() -> Unit)?,
     onOpenInBrowser: (() -> Unit)?,
     onShare: (() -> Unit)?,
@@ -49,6 +53,17 @@ fun ReaderTopBar(
                                     Icons.Outlined.BookmarkBorder
                                 },
                                 onClick = onToggleBookmarked,
+                            ),
+                        )
+                        add(
+                            AppBar.Action(
+                                title = if (pageBookmarked) "Remove page bookmark" else "Bookmark page",
+                                icon = if (pageBookmarked) {
+                                    Icons.Outlined.BookmarkAdded
+                                } else {
+                                    Icons.Outlined.BookmarkAdd
+                                },
+                                onClick = onTogglePageBookmarked,
                             ),
                         )
                         onOpenInWebView?.let {

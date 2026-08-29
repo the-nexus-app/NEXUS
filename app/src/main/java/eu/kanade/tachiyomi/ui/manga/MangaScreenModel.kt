@@ -65,6 +65,7 @@ import eu.kanade.tachiyomi.source.online.all.MergedSource
 import eu.kanade.tachiyomi.ui.manga.RelatedManga.Companion.isLoading
 import eu.kanade.tachiyomi.ui.manga.RelatedManga.Companion.removeDuplicates
 import eu.kanade.tachiyomi.ui.manga.RelatedManga.Companion.sorted
+import eu.kanade.tachiyomi.ui.reader.ReaderActivity
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import eu.kanade.tachiyomi.util.chapter.getNextUnread
 import eu.kanade.tachiyomi.util.removeCovers
@@ -85,10 +86,13 @@ import exh.util.nullIfEmpty
 import exh.util.trimOrNull
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -100,6 +104,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -116,6 +121,9 @@ import tachiyomi.core.common.util.lang.launchNonCancellable
 import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.core.common.util.lang.withUIContext
 import tachiyomi.core.common.util.system.logcat
+import tachiyomi.domain.bookmark.interactor.DeleteBookmark
+import tachiyomi.domain.bookmark.interactor.GetBookmarksByMangaId
+import tachiyomi.domain.bookmark.model.BookmarkWithChapter
 import tachiyomi.domain.category.interactor.GetCategories
 import tachiyomi.domain.category.interactor.SetMangaCategories
 import tachiyomi.domain.category.model.Category
@@ -191,6 +199,8 @@ class MangaScreenModel(
     private val sourceManager: SourceManager = Injekt.get(),
     private val getManga: GetManga = Injekt.get(),
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId = Injekt.get(),
+    private val getBookmarksByMangaId: GetBookmarksByMangaId = Injekt.get(),
+    private val deleteBookmark: DeleteBookmark = Injekt.get(),
     private val getMergedMangaById: GetMergedMangaById = Injekt.get(),
     private val getMergedReferencesById: GetMergedReferencesById = Injekt.get(),
     private val smartSearchMerge: SmartSearchMerge = Injekt.get(),
@@ -405,6 +415,15 @@ class MangaScreenModel(
                     updateSuccessState {
                         it.copy(availableScanlators = availableScanlators.toImmutableSet())
                     }
+                }
+        }
+
+        screenModelScope.launchIO {
+            getBookmarksByMangaId.subscribe(mangaId)
+                .flowWithLifecycle(lifecycle)
+                .distinctUntilChanged()
+                .collectLatest { bookmarks ->
+                    updateSuccessState { it.copy(bookmarks = bookmarks.toImmutableList()) }
                 }
         }
 
@@ -1818,6 +1837,7 @@ class MangaScreenModel(
         data object SettingsSheet : Dialog
         data object TrackSheet : Dialog
         data object FullCover : Dialog
+        data object BookmarksSheet : Dialog
     }
 
     fun dismissDialog() {
@@ -1878,6 +1898,14 @@ class MangaScreenModel(
         updateSuccessState { it.copy(dialog = Dialog.ClearManga) }
     }
 
+    fun showBookmarksDialog() {
+        updateSuccessState { it.copy(dialog = Dialog.BookmarksSheet) }
+    }
+
+    fun removeBookmark(id: Long) {
+        screenModelScope.launchNonCancellable { deleteBookmark.await(id) }
+    }
+
     sealed interface State {
         @Immutable
         data object Loading : State
@@ -1905,6 +1933,7 @@ class MangaScreenModel(
             val pagePreviewsState: PagePreviewState,
             val alwaysShowReadingProgress: Boolean,
             val previewsRowCount: Int,
+            val bookmarks: ImmutableList<BookmarkWithChapter> = persistentListOf(),
             /**
              * status of fetching related mangas
              * - null: not started
