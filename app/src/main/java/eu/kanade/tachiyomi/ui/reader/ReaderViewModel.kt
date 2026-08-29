@@ -90,6 +90,8 @@ import tachiyomi.domain.chapter.interactor.UpdateChapter
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.chapter.model.ChapterUpdate
 import tachiyomi.domain.chapter.service.getChapterSort
+import tachiyomi.domain.bookmark.interactor.GetBookmark
+import tachiyomi.domain.bookmark.interactor.ToggleBookmark
 import tachiyomi.domain.download.service.DownloadPreferences
 import tachiyomi.domain.history.interactor.GetNextChapters
 import tachiyomi.domain.history.interactor.UpsertHistory
@@ -136,6 +138,8 @@ class ReaderViewModel @JvmOverloads constructor(
     private val getMergedMangaById: GetMergedMangaById = Injekt.get(),
     private val getMergedReferencesById: GetMergedReferencesById = Injekt.get(),
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId = Injekt.get(),
+    private val toggleBookmark: ToggleBookmark = Injekt.get(),
+    private val getBookmark: GetBookmark = Injekt.get(),
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(State())
@@ -143,6 +147,15 @@ class ReaderViewModel @JvmOverloads constructor(
 
     private val eventChannel = Channel<Event>()
     val eventFlow = eventChannel.receiveAsFlow()
+
+    /**
+     * True only for the very first page-settle event after the reader was opened via manual
+     * bookmark navigation. Suppresses persisting last_page_read/read-complete for that single
+     * landing event so opening a bookmark can never itself move Auto-Resume. Any page turn the
+     * user actually makes afterward clears this and persists normally.
+     */
+
+    private var suppressNextProgressPersist = false
 
     /**
      * The manga loaded in the reader. It can be null when instantiated for a short time.
@@ -401,8 +414,11 @@ class ReaderViewModel @JvmOverloads constructor(
      * Initializes this presenter with the given [mangaId] and [initialChapterId]. This method will
      * fetch the manga from the database and initialize the initial chapter.
      */
-    suspend fun init(mangaId: Long, initialChapterId: Long , page: Int?): Result<Boolean> {
+    suspend fun init(mangaId: Long, initialChapterId: Long, page: Int?, isBookmarkNav: Boolean = false): Result<Boolean> {
         if (!needsInit()) return Result.success(true)
+        // Only suppress when an explicit page was supplied - a plain chapter-only deep link
+        // should keep behaving exactly as it does today (restore from last_page_read).
+        suppressNextProgressPersist = isBookmarkNav && page != null
         return withIOContext {
             try {
                 val manga = getManga.await(mangaId)
@@ -777,6 +793,17 @@ class ReaderViewModel @JvmOverloads constructor(
         readerChapter.requestedPage = pageIndex
         chapterPageIndex = pageIndex
 
+        // Refresh the page-bookmark icon regardless of the suppression branch below - this is
+        // just a read for UI state, not a write, so it never affects Auto-Resume.
+        refreshPageBookmarkState(readerChapter.chapter.id, pageIndex)
+
+        if (suppressNextProgressPersist) {
+            // Landing page from a bookmark open: skip persisting last_page_read / read-complete
+            // for this one event only, then re-arm normal tracking.
+            suppressNextProgressPersist = false
+            return
+        }
+
         if (!incognitoMode && page.status !is Page.State.Error) {
             readerChapter.chapter.last_page_read = pageIndex
 
@@ -802,6 +829,35 @@ class ReaderViewModel @JvmOverloads constructor(
             // Check if syncing is enabled for chapter open:
             if (isSyncEnabled && syncTriggerOpt.syncOnChapterOpen && readerChapter.chapter.last_page_read == 0) {
                 SyncDataJob.startNow(Injekt.get<Application>())
+            }
+        }
+    }
+
+    /**
+     * Manual page-level bookmark toggle for the currently displayed page (distinct from the
+     * existing whole-chapter [toggleChapterBookmark]). Mirrors that function's fire-and-forget
+     * + optimistic-state-update style.
+     */
+    fun toggleManualBookmark() {
+        val readerChapter = getCurrentChapter() ?: return
+        val chapterId = readerChapter.chapter.id ?: return
+        val pageIndex = state.value.currentPage - 1
+        if (pageIndex < 0) return
+
+        viewModelScope.launchNonCancellable {
+            val nowBookmarked = toggleBookmark.await(chapterId, pageIndex, scrollPosition = null)
+            withUIContext {
+                mutableState.update { it.copy(pageBookmarked = nowBookmarked) }
+            }
+        }
+    }
+
+    private fun refreshPageBookmarkState(chapterId: Long?, pageIndex: Int) {
+        if (chapterId == null) return
+        viewModelScope.launchNonCancellable {
+            val bookmarked = getBookmark.await(chapterId, pageIndex) != null
+            withUIContext {
+                mutableState.update { it.copy(pageBookmarked = bookmarked) }
             }
         }
     }
@@ -1395,6 +1451,7 @@ class ReaderViewModel @JvmOverloads constructor(
         val manga: Manga? = null,
         val viewerChapters: ViewerChapters? = null,
         val bookmarked: Boolean = false,
+        val pageBookmarked: Boolean = false,
         val isLoadingAdjacentChapter: Boolean = false,
         val currentPage: Int = -1,
 

@@ -48,6 +48,7 @@ fun MangaToolbar(
     onClickRefresh: () -> Unit,
     onClickMigrate: (() -> Unit)?,
     onClickEditNotes: () -> Unit,
+    onClickBookmarks: (() -> Unit)?,
     onClickEditInfo: (() -> Unit)?,
     onClickRelatedMangas: (() -> Unit)?,
     onClickSourceSettings: (() -> Unit)?,
@@ -180,6 +181,14 @@ fun MangaToolbar(
                             onClick = onClickEditNotes,
                         ),
                     )
+                    if (onClickBookmarks != null) {
+                        add(
+                            AppBar.OverflowAction(
+                                title = "Bookmarks",
+                                onClick = onClickBookmarks,
+                            ),
+                        )
+                    }
                     if (onClickMerge != null) {
                         add(
                             AppBar.OverflowAction(

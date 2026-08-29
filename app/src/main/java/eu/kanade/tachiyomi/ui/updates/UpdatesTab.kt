@@ -104,7 +104,7 @@ data object UpdatesTab : Tab {
             showHiddenUpdates = state.showHiddenUpdates,
             onToggleHiddenUpdates = {
                 if (state.showHiddenUpdates) {
-                    screenModel.setShowHiddenUpdates(false)
+                    screenModel.onHiddenUpdatesLocked()
                 } else {
                     scope.launch {
                         val authSupported = context.isAuthenticationSupported()
@@ -116,7 +116,7 @@ data object UpdatesTab : Tab {
                             true
                         }
                         if (authenticated) {
-                            screenModel.setShowHiddenUpdates(true)
+                            screenModel.onHiddenUpdatesUnlocked()
                         }
                     }
                 }
