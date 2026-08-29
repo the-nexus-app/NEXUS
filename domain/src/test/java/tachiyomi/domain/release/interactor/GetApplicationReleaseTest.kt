@@ -56,7 +56,7 @@ class GetApplicationReleaseTest {
             ),
         )
 
-        : Don't cast, will throw exception if the result is different from expected
+        // Don't cast, will throw exception if the result is different from expected
         result shouldBe GetApplicationRelease.Result.NewUpdate(releases.getLatest()!!)
     }
 
@@ -87,7 +87,7 @@ class GetApplicationReleaseTest {
             ),
         )
 
-        : Don't cast, will throw exception if the result is different from expected
+        // Don't cast, will throw exception if the result is different from expected
         result shouldBe GetApplicationRelease.Result.NewUpdate(releases.getLatest()!!)
     }
 

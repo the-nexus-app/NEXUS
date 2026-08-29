@@ -153,11 +153,20 @@ class ReaderActivity : BaseActivity() {
 
     companion object {
 
-        fun newIntent(context: Context, mangaId: Long?, chapterId: Long?, page: Int? = null): Intent {
+            fun newIntent(
+                context: Context,
+                mangaId: Long?,
+                chapterId: Long?,
+                page: Int? = null,
+                // True when this open comes from opening a manual bookmark: tells the reader to
+                // restore the given page without treating it as new Auto-Resume progress.
+                bookmarkNav: Boolean = false,
+            ): Intent {         
             return Intent(context, ReaderActivity::class.java).apply {
                 putExtra("manga", mangaId)
                 putExtra("chapter", chapterId)
                 putExtra("page", page)
+                putExtra("bookmark_nav", bookmarkNav)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
         }
@@ -227,6 +236,7 @@ class ReaderActivity : BaseActivity() {
             val manga = intent.extras?.getLong("manga", -1) ?: -1L
             val chapter = intent.extras?.getLong("chapter", -1) ?: -1L
             val page = intent.extras?.getInt("page", -1).takeUnless { it == -1 }
+            val bookmarkNav = intent.extras?.getBoolean("bookmark_nav", false) ?: false
             if (manga == -1L || chapter == -1L) {
                 finish()
                 return
@@ -234,7 +244,7 @@ class ReaderActivity : BaseActivity() {
             NotificationReceiver.dismissNotification(this, manga.hashCode(), Notifications.ID_NEW_CHAPTERS)
 
             lifecycleScope.launchNonCancellable {
-                val initResult = viewModel.init(manga, chapter, page)
+                val initResult = viewModel.init(manga, chapter, page, bookmarkNav)
                 if (!initResult.getOrDefault(false)) {
                     val exception = initResult.exceptionOrNull() ?: IllegalStateException("Unknown err")
                     withUIContext {
@@ -666,6 +676,8 @@ class ReaderActivity : BaseActivity() {
             onClickTopAppBar = ::openMangaScreen,
             bookmarked = state.bookmarked,
             onToggleBookmarked = viewModel::toggleChapterBookmark,
+            pageBookmarked = state.pageBookmarked,
+            onTogglePageBookmarked = viewModel::toggleManualBookmark,
             onOpenInWebView = ::openChapterInWebView.takeIf { isHttpSource },
             onOpenInBrowser = ::openChapterInBrowser.takeIf { isHttpSource },
             onShare = ::shareChapter.takeIf { isHttpSource },
