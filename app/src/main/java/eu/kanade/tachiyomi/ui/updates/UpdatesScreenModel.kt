@@ -17,6 +17,7 @@ import eu.kanade.presentation.updates.UpdatesUiModel
 import eu.kanade.tachiyomi.data.download.DownloadCache
 import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.data.download.model.Download
+import eu.kanade.tachiyomi.data.library.HiddenUpdatesUnlock
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import eu.kanade.tachiyomi.util.lang.toLocalDate
@@ -73,6 +74,7 @@ class UpdatesScreenModel(
     private val getLibraryManga: GetLibraryManga = Injekt.get(),
     private val libraryPreferences: LibraryPreferences = Injekt.get(),
     private val updatesPreferences: UpdatesPreferences = Injekt.get(),
+    private val hiddenUpdatesUnlock: HiddenUpdatesUnlock = Injekt.get(),
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
     readerPreferences: ReaderPreferences = Injekt.get(),
 ) : StateScreenModel<UpdatesScreenModel.State>(State()) {
@@ -94,6 +96,16 @@ class UpdatesScreenModel(
             mutableState.update { it.copy(hiddenMangaIds = ids) }
             }
             }
+        screenModelScope.launchIO {
+            // Hidden Category Updates: the shared, process-scoped unlock state is the single
+            // source of truth for both this UI and LibraryUpdateJob's update-checking scope.
+            // NOTE: hiddenUpdatesUnlock.isUnlocked is already a StateFlow, which conflates
+            // duplicate values internally (via equals()) as part of its Operator Fusion
+            // contract, so .distinctUntilChanged() here would be a redundant no-op.
+            hiddenUpdatesUnlock.isUnlocked.collectLatest { unlocked ->
+                mutableState.update { it.copy(showHiddenUpdates = unlocked) }
+            }
+        }
         screenModelScope.launchIO {
             // Set date limit for recent chapters
             val limit = ZonedDateTime.now().minusMonths(3).toInstant()
@@ -173,9 +185,30 @@ class UpdatesScreenModel(
             .launchIn(screenModelScope)
     }
 
-    fun setShowHiddenUpdates(show: Boolean) {
-        mutableState.update { it.copy(showHiddenUpdates = show) }
+    /**
+     * Called after [eu.kanade.tachiyomi.util.system.AuthenticatorUtil.authenticate] succeeds
+     * from the Updates tab lock button. Unlocks Hidden Category Updates and immediately
+     * triggers a catch-up check so newly-eligible hidden-category manga don't have to wait
+     * for the next periodic update. Never modifies Category.hidden.
+     */
+    fun onHiddenUpdatesUnlocked() {
+        hiddenUpdatesUnlock.unlock()
+        val hiddenIds = state.value.hiddenMangaIds
+        if (hiddenIds.isNotEmpty()) {
+            LibraryUpdateJob.startNow(Injekt.get<Application>(), mangaIds = hiddenIds.toList())
         }
+    }
+
+    /**
+     * Called when the user taps the unlocked lock icon. Locking is immediate: the UI hides
+     * hidden-category updates right away (state.showHiddenUpdates reacts to this via the
+     * shared HiddenUpdatesUnlock flow), and any update job still in flight will have its
+     * badge/notification exposure re-checked against this state when it finishes.
+     */
+    fun onHiddenUpdatesLocked() {
+        hiddenUpdatesUnlock.lock()
+    }
+
     private fun List<UpdatesItem>.applyFilters(
         preferences: ItemPreferences,
     ): List<UpdatesItem> {

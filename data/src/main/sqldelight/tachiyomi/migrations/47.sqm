@@ -1,0 +1,14 @@
+-- Adds manual page bookmarks (bookmarks table). Purely additive - no existing table touched.
+
+CREATE TABLE bookmarks(
+    _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    chapter_id INTEGER NOT NULL,
+    page_index INTEGER NOT NULL,
+    scroll_position REAL,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY(chapter_id) REFERENCES chapters (_id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX bookmarks_chapter_id_index ON bookmarks(chapter_id);
+CREATE UNIQUE INDEX bookmarks_chapter_page_unique ON bookmarks(chapter_id, page_index);

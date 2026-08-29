@@ -1,0 +1,55 @@
+CREATE TABLE bookmarks(
+    _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    chapter_id INTEGER NOT NULL,
+    page_index INTEGER NOT NULL,
+    scroll_position REAL,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY(chapter_id) REFERENCES chapters (_id)
+    ON DELETE CASCADE
+);
+
+CREATE INDEX bookmarks_chapter_id_index ON bookmarks(chapter_id);
+
+-- Prevents duplicate bookmarks for the exact same location at the DB level.
+CREATE UNIQUE INDEX bookmarks_chapter_page_unique ON bookmarks(chapter_id, page_index);
+
+getBookmarksByMangaId:
+SELECT
+    B._id,
+    B.chapter_id,
+    B.page_index,
+    B.scroll_position,
+    B.created_at,
+    C.manga_id,
+    C.name AS chapter_name,
+    C.chapter_number
+FROM bookmarks B
+JOIN chapters C
+ON B.chapter_id = C._id
+WHERE C.manga_id = :mangaId
+ORDER BY B.created_at DESC;
+
+getBookmarkByChapterAndPage:
+SELECT *
+FROM bookmarks
+WHERE chapter_id = :chapterId AND page_index = :pageIndex;
+
+getBookmarkById:
+SELECT *
+FROM bookmarks
+WHERE _id = :id;
+
+insert:
+INSERT INTO bookmarks(chapter_id, page_index, scroll_position, created_at)
+VALUES (:chapterId, :pageIndex, :scrollPosition, :createdAt);
+
+deleteById:
+DELETE FROM bookmarks
+WHERE _id = :id;
+
+deleteByChapterAndPage:
+DELETE FROM bookmarks
+WHERE chapter_id = :chapterId AND page_index = :pageIndex;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();
