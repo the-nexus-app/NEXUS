@@ -832,8 +832,8 @@
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (föredragen)</string>
     <string name="supportUsScreen.donationPlatform.opencollective">OpenCollective</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
-    <string name="donationCampaign.paragraph1">Hej! Jag är den huvudsakliga utvecklaren på Komikku och jag skulle vilja be dig överväga att stödja utvecklingen ekonomiskt. Med nog med stöd skulle jag kunna jobba heltid på Komikku och fokusera på långvariga problem så väl som synnerligen efterfrågade funktioner.</string>
-    <string name="donationCampaign.paragraph3">Oavsett vad så kommer Komikku fortsättas att underhållas av mig och volontärerna, och kommer förbli öppen källkod.</string>
+    <string name="donationCampaign.paragraph1">Hej! Jag är den huvudsakliga utvecklaren på NEXUS och jag skulle vilja be dig överväga att stödja utvecklingen ekonomiskt. Med nog med stöd skulle jag kunna jobba heltid på NEXUS och fokusera på långvariga problem så väl som synnerligen efterfrågade funktioner.</string>
+    <string name="donationCampaign.paragraph3">Oavsett vad så kommer NEXUS fortsättas att underhållas av mig och volontärerna, och kommer förbli öppen källkod.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">Avfärda</string>
     <string name="label_support_us">Stöd oss</string>
@@ -903,10 +903,10 @@
     <string name="migrationListScreen.migrateDialog.migrateLabel">Migrera</string>
     <string name="migrationListScreen.matchWithoutChapterToast">Inga kapitel fanns, den här artikeln kan inte användas för migrering</string>
     <string name="supportUsScreen.perks">Stödjare på Patreon får tillgång till exklusiva kanaler, med fler förmåner i framtiden.</string>
-    <string name="supportUsScreen.currentlySupportedBy">Komikku stöds för närvarande av %d+ personer på Patreon. Vi vill tacka var och en av er. Låt oss göra Komikku ännu bättre tillsammans.</string>
+    <string name="supportUsScreen.currentlySupportedBy">NEXUS stöds för närvarande av %d+ personer på Patreon. Vi vill tacka var och en av er. Låt oss göra NEXUS ännu bättre tillsammans.</string>
     <string name="supportUsScreen.contactForDetailsMessage">För alternativa alternativ eller andra relaterade frågor, gå med i vår Discord-server.</string>
     <string name="donationCampaign.title">Tycker du om appen?</string>
-    <string name="donationCampaign.paragraph2">Du kan donera antingen via Patreon (föredraget) eller OpenCollective. Om du har frågor eller skulle vilja ge stöd via alternativa metoder, tveka inte att kontakta mig genom Komikkus Discord-server.</string>
+    <string name="donationCampaign.paragraph2">Du kan donera antingen via Patreon (föredraget) eller OpenCollective. Om du har frågor eller skulle vilja ge stöd via alternativa metoder, tveka inte att kontakta mig genom NEXUSs Discord-server.</string>
     <string name="label_auto">Automatisk</string>
     <string name="extensionStores">Tilläggsdepåer</string>
     <string name="action.addExtensionStore">Lägg till tilläggsdepå</string>

@@ -910,13 +910,13 @@
     <string name="supportUsScreen.perks">Οι Patrons έχουν πρόσβαση σε αποκλειστικά κανάλια, ενώ θα ακολουθήσουν και άλλα προνόμια.</string>
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (προτιμάται)</string>
     <string name="supportUsScreen.donationPlatform.opencollective">OpenCollective</string>
-    <string name="supportUsScreen.currentlySupportedBy">Το Komikku υποστηρίζεται αυτήν τη στιγμή από %d+ χρήστες. Θέλουμε να ευχαριστήσουμε τον καθένα από εσάς ξεχωριστά. Ας κάνουμε το Komikku ακόμα καλύτερο μαζί.</string>
+    <string name="supportUsScreen.currentlySupportedBy">Το NEXUS υποστηρίζεται αυτήν τη στιγμή από %d+ χρήστες. Θέλουμε να ευχαριστήσουμε τον καθένα από εσάς ξεχωριστά. Ας κάνουμε το NEXUS ακόμα καλύτερο μαζί.</string>
     <string name="supportUsScreen.contactForDetailsMessage">Για εναλλακτικές επιλογές ή οποιεσδήποτε σχετικές ερωτήσεις, εγγραφείτε στον Discord server.</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
     <string name="donationCampaign.title">Σας αρέσει η εφαρμογή;</string>
-    <string name="donationCampaign.paragraph1">Γεια σας! Είμαι ο κύριος προγραμματιστής πίσω από το Komikku και θα ήθελα να σας ζητήσω να εξετάσετε το ενδεχόμενο οικονομικής υποστήριξης στην ανάπτυξή του. Με επαρκή υποστήριξη, θα μπορώ να εργάζομαι στο Komikku με πλήρη απασχόληση και να επικεντρωθώ σε μακροχρόνια προβλήματα καθώς και σε λειτουργίες που έχουν μεγάλη ζήτηση.</string>
-    <string name="donationCampaign.paragraph2">Μπορείτε να κάνετε δωρεά μέσω του Patreon (προτιμάται) ή του OpenCollective. Εάν έχετε ερωτήσεις ή θέλετε να υποστηρίξετε χρησιμοποιώντας εναλλακτικές μεθόδους, μη διστάσετε να επικοινωνήσετε μαζί μου μέσω του Discord server του Komikku.</string>
-    <string name="donationCampaign.paragraph3">Ανεξάρτητα από αυτό, το Komikku θα συνεχίσει να συντηρείται από εμένα και τους εθελοντές και θα παραμείνει ανοιχτού κώδικα.</string>
+    <string name="donationCampaign.paragraph1">Γεια σας! Είμαι ο κύριος προγραμματιστής πίσω από το NEXUS και θα ήθελα να σας ζητήσω να εξετάσετε το ενδεχόμενο οικονομικής υποστήριξης στην ανάπτυξή του. Με επαρκή υποστήριξη, θα μπορώ να εργάζομαι στο NEXUS με πλήρη απασχόληση και να επικεντρωθώ σε μακροχρόνια προβλήματα καθώς και σε λειτουργίες που έχουν μεγάλη ζήτηση.</string>
+    <string name="donationCampaign.paragraph2">Μπορείτε να κάνετε δωρεά μέσω του Patreon (προτιμάται) ή του OpenCollective. Εάν έχετε ερωτήσεις ή θέλετε να υποστηρίξετε χρησιμοποιώντας εναλλακτικές μεθόδους, μη διστάσετε να επικοινωνήσετε μαζί μου μέσω του Discord server του NEXUS.</string>
+    <string name="donationCampaign.paragraph3">Ανεξάρτητα από αυτό, το NEXUS θα συνεχίσει να συντηρείται από εμένα και τους εθελοντές και θα παραμείνει ανοιχτού κώδικα.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">Απόρριψη</string>
 </resources>

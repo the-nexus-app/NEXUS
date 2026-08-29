@@ -174,7 +174,7 @@
     <string name="discord_status_scrolling">Scrollt durch</string>
     <string name="discord_status_messing">Experimentiert mit</string>
     <string name="discord_download_button">Auf %s lesen</string>
-    <string name="discord_app_description">Komikku - eine App zum Lesen von Manga</string>
+    <string name="discord_app_description">NEXUS - eine App zum Lesen von Manga</string>
     <string name="discord_accounts">Discord-Accounts</string>
     <string name="pref_category_discord_customization">Anpassung von Discord RPC</string>
     <string name="pref_discord_custom_message">Benutzerdefinierte Nachricht</string>
