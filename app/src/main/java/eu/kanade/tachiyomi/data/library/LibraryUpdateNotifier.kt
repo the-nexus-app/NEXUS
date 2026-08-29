@@ -52,13 +52,31 @@ class LibraryUpdateNotifier(
     private val getCategories: GetCategories = Injekt.get(),
 ) {
     private val libraryUpdateStatus: LibraryUpdateStatus = Injekt.get()
+    private val hiddenUpdatesUnlock: HiddenUpdatesUnlock = Injekt.get()
     private val percentFormatter = NumberFormat.getPercentInstance().apply {
         roundingMode = RoundingMode.DOWN
         maximumFractionDigits = 0
     }
 
+    /**
+     * True if [manga] belongs to at least one hidden category. This alone does not mean the
+     * manga should be suppressed from notifications -- see [isHiddenAndLocked], which is the
+     * lock-aware check that should gate actual notification content/counts. Kept separate so
+     * hidden-category manga behave exactly like normal manga once Hidden Updates is unlocked.
+     */
     private suspend fun isMangaHidden(manga: Manga): Boolean {
         return getCategories.await(manga.id).any { it.hidden }
+    }
+
+    /**
+     * Hidden Category Updates: true only when [manga] is hidden AND Hidden Updates is
+     * currently locked. This is what should gate whether a manga's title/update leaks through
+     * a notification or contributes to a count -- using [isMangaHidden] alone would keep
+     * suppressing hidden manga even after the user unlocks.
+     */
+    private suspend fun isHiddenAndLocked(manga: Manga): Boolean {
+        if (hiddenUpdatesUnlock.isUnlocked.value) return false
+        return isMangaHidden(manga)
     }
 
     /**
@@ -110,7 +128,7 @@ class LibraryUpdateNotifier(
 
         if (!securityPreferences.hideNotificationContent().get()) {
 
-            val visibleManga = manga.filterNot { isMangaHidden(it) }
+            val visibleManga = manga.filterNot { isHiddenAndLocked(it) }
 
             val updatingText = visibleManga.joinToString("\n") { it.title.chop(40) }
             progressNotificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(updatingText))
@@ -181,8 +199,12 @@ class LibraryUpdateNotifier(
      * @param updates a list of manga with new updates.
      */
     suspend fun showUpdateNotifications(updates: List<Pair<Manga, Array<Chapter>>>) {
-        val hiddenMap = updates.associate { (manga, _) -> manga.id to isMangaHidden(manga) }
+        // Hidden Category Updates: re-check the lock state right here, at the point the
+        // notification is actually posted. If everything left is hidden-category and locked,
+        // skip the notification entirely rather than revealing that "something" updated.
+        val hiddenMap = updates.associate { (manga, _) -> manga.id to isHiddenAndLocked(manga) }
         val visibleUpdates = updates.filterNot { hiddenMap[it.first.id] == true }
+        if (visibleUpdates.isEmpty()) return
 
         // Parent group notification
         context.notify(
@@ -190,14 +212,14 @@ class LibraryUpdateNotifier(
             Notifications.CHANNEL_NEW_CHAPTERS,
         ) {
             setContentTitle(context.stringResource(MR.strings.notification_new_chapters))
-            if (updates.size == 1 && !securityPreferences.hideNotificationContent().get() && !hiddenMap[updates.first().first.id]!!) {
-                setContentText(updates.first().first.title.chop(NOTIF_TITLE_MAX_LEN))
+            if (visibleUpdates.size == 1 && !securityPreferences.hideNotificationContent().get()) {
+                setContentText(visibleUpdates.first().first.title.chop(NOTIF_TITLE_MAX_LEN))
             } else {
                 setContentText(
                     context.pluralStringResource(
                         MR.plurals.notification_new_chapters_summary,
-                        updates.size,
-                        updates.size,
+                        visibleUpdates.size,
+                        visibleUpdates.size,
                     ),
                 )
 

@@ -4,6 +4,12 @@ import eu.kanade.domain.chapter.interactor.GetAvailableScanlators
 import eu.kanade.domain.chapter.interactor.SetReadStatus
 import eu.kanade.domain.chapter.interactor.SyncChaptersWithSource
 import eu.kanade.domain.download.interactor.DeleteDownload
+import tachiyomi.data.bookmark.BookmarkRepositoryImpl
+import tachiyomi.domain.bookmark.interactor.DeleteBookmark
+import tachiyomi.domain.bookmark.interactor.GetBookmark
+import tachiyomi.domain.bookmark.interactor.GetBookmarksByMangaId
+import tachiyomi.domain.bookmark.interactor.ToggleBookmark
+import tachiyomi.domain.bookmark.repository.BookmarkRepository
 import eu.kanade.domain.extension.interactor.GetExtensionLanguages
 import eu.kanade.domain.extension.interactor.GetExtensionSources
 import eu.kanade.domain.extension.interactor.GetExtensionsByType
@@ -174,6 +180,12 @@ class DomainModule : InjektModule {
         addFactory { UpsertHistory(get()) }
         addFactory { RemoveHistory(get()) }
         addFactory { GetTotalReadDuration(get()) }
+
+        addSingletonFactory<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
+        addFactory { GetBookmarksByMangaId(get()) }
+        addFactory { GetBookmark(get()) }
+        addFactory { ToggleBookmark(get()) }
+        addFactory { DeleteBookmark(get()) }
 
         addFactory { DeleteDownload(get(), get()) }
 
