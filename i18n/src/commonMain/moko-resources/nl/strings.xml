@@ -324,7 +324,7 @@
     <string name="restoring_backup_error">Herstellen mislukt</string>
     <string name="restore_in_progress">Er wordt al een back-up hersteld</string>
     <string name="channel_ext_updates">Extensie-updates</string>
-    <string name="information_webview_required">WebView is vereist voor Komikku</string>
+    <string name="information_webview_required">WebView is vereist voor NEXUS</string>
     <string name="notification_chapters_multiple">Hoofdstukken %1$s</string>
     <string name="notification_chapters_single_and_more">Hoofdstuk %1$s en %2$d meer</string>
     <string name="notification_chapters_single">Hoofdstuk %1$s</string>
@@ -903,13 +903,13 @@
     <string name="supportUsScreen.perks">Donateurs krijgen toegang tot exclusieve kanalen, met meer voordelen in de toekomst.</string>
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (bij voorkeur)</string>
     <string name="supportUsScreen.donationPlatform.opencollective">OpenCollective</string>
-    <string name="supportUsScreen.currentlySupportedBy">Komikku wordt op dit moment gesteund door %d+ donateurs. Wij willen ieder van jullie bedanken. Laten we Komikku samen nog beter maken.</string>
+    <string name="supportUsScreen.currentlySupportedBy">NEXUS wordt op dit moment gesteund door %d+ donateurs. Wij willen ieder van jullie bedanken. Laten we NEXUS samen nog beter maken.</string>
     <string name="supportUsScreen.contactForDetailsMessage">Voor alternatieve opties of gerelateerde vragen, wordt lid van onze Discord server.</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
     <string name="donationCampaign.title">Bevalt de app je?</string>
-    <string name="donationCampaign.paragraph1">Hoi! Ik ben de hoofddeveloper van Komikku en ik wil je vragen om te overwegen de ontwikkeling financieel te ondersteunen. Met genoeg steun zal ik voltijds aan Komikku kunnen werken en mij kunnen focussen op lang bestaande problemen alsook veelgevraagde functies.</string>
-    <string name="donationCampaign.paragraph2">Je kan doneren via Patreon (bij voorkeur) of OpenCollective. Als je vragen hebt of op een andere manier wil steunen, kan je altijd naar mij uitreiken via Komikku\'s Discord server.</string>
-    <string name="donationCampaign.paragraph3">Hoe dan ook, Komikku zal blijven onderhouden worden door mij en de vrijwilligers, en het zal open source blijven.</string>
+    <string name="donationCampaign.paragraph1">Hoi! Ik ben de hoofddeveloper van NEXUS en ik wil je vragen om te overwegen de ontwikkeling financieel te ondersteunen. Met genoeg steun zal ik voltijds aan NEXUS kunnen werken en mij kunnen focussen op lang bestaande problemen alsook veelgevraagde functies.</string>
+    <string name="donationCampaign.paragraph2">Je kan doneren via Patreon (bij voorkeur) of OpenCollective. Als je vragen hebt of op een andere manier wil steunen, kan je altijd naar mij uitreiken via NEXUS\'s Discord server.</string>
+    <string name="donationCampaign.paragraph3">Hoe dan ook, NEXUS zal blijven onderhouden worden door mij en de vrijwilligers, en het zal open source blijven.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">Afwijzen</string>
     <string name="considering">Aan het overwegen</string>

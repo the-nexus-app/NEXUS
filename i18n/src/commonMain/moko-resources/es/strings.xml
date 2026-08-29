@@ -893,13 +893,13 @@
     <string name="supportUsScreen.perks">Las personas que contribuyan obtendrán acceso a canales exclusivos, y en el futuro tendréis muchas más ventajas.</string>
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (preferido)</string>
     <string name="supportUsScreen.donationPlatform.opencollective">OpenCollective</string>
-    <string name="supportUsScreen.currentlySupportedBy">Komikku cuenta ahora mismo con el apoyo de %d+ personas. Os damos las gracias de corazón por hacer que Komikku mejore día a día.</string>
+    <string name="supportUsScreen.currentlySupportedBy">NEXUS cuenta ahora mismo con el apoyo de %d+ personas. Os damos las gracias de corazón por hacer que NEXUS mejore día a día.</string>
     <string name="supportUsScreen.contactForDetailsMessage">Únete a nuestro servidor de Discord si tienes dudas u otras formas de pago.</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
     <string name="donationCampaign.title">¿Te gusta la aplicación?</string>
-    <string name="donationCampaign.paragraph1">¡Hola! Soy el desarrollador principal de Komikku y me gustaría pedirte que apoyes su desarrollo económicamente. Así podré trabajar en Komikku a tiempo completo, centrarme en arreglar lo importante y añadir todo lo que me pedís.</string>
-    <string name="donationCampaign.paragraph2">Puedes donar a través de Patreon (la mejor opción) u OpenCollective. Si tienes alguna pregunta o quieres utilizar otras opciones de pago no dudes en contactarme a través del servidor de Discord de Komikku.</string>
-    <string name="donationCampaign.paragraph3">Pase lo que pase los voluntarios y yo seguiremos mejorando Komikku y seguirá siendo de código abierto.</string>
+    <string name="donationCampaign.paragraph1">¡Hola! Soy el desarrollador principal de NEXUS y me gustaría pedirte que apoyes su desarrollo económicamente. Así podré trabajar en NEXUS a tiempo completo, centrarme en arreglar lo importante y añadir todo lo que me pedís.</string>
+    <string name="donationCampaign.paragraph2">Puedes donar a través de Patreon (la mejor opción) u OpenCollective. Si tienes alguna pregunta o quieres utilizar otras opciones de pago no dudes en contactarme a través del servidor de Discord de NEXUS.</string>
+    <string name="donationCampaign.paragraph3">Pase lo que pase los voluntarios y yo seguiremos mejorando NEXUS y seguirá siendo de código abierto.</string>
     <string name="donationCampaign.dismiss">Cerrar</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="extensionStores">Listados de extensiones</string>

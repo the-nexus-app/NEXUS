@@ -151,7 +151,7 @@
     <string name="discord_status_scrolling">Nagso-scroll sa</string>
     <string name="discord_status_messing">Nagsusubok-subok sa</string>
     <string name="discord_download_button">Nagbabasa sa %s</string>
-    <string name="discord_app_description">Komikku - isang manga reader app</string>
+    <string name="discord_app_description">NEXUS - isang manga reader app</string>
     <string name="pref_category_discord_customization">Pag-customize ng Discord</string>
     <string name="pref_discord_custom_message">Custom na mensahe</string>
     <string name="pref_discord_custom_message_summary">Custom na mensahe na ipapakita sa Discord</string>

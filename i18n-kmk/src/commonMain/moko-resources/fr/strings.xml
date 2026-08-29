@@ -178,7 +178,7 @@
     <string name="discord_status_scrolling">Fait défiler</string>
     <string name="discord_status_messing">Bidouille avec</string>
     <string name="discord_download_button">Lit sur %s</string>
-    <string name="discord_app_description">Komikku - une application de lecture de mangas</string>
+    <string name="discord_app_description">NEXUS - une application de lecture de mangas</string>
     <string name="pref_category_discord_customization">Personnalisation de Discord</string>
     <string name="pref_discord_custom_message">Message personnalisé</string>
     <string name="pref_discord_custom_message_summary">Message personnalisé qui s\'affichera sur Discord</string>

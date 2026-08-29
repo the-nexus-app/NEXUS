@@ -7,6 +7,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import eu.kanade.presentation.more.WhatsNewScreen
 import eu.kanade.presentation.util.Screen
+import eu.kanade.tachiyomi.data.updater.AppUpdateDownloadJob
 import eu.kanade.tachiyomi.util.system.openInBrowser
 
 class WhatsNewScreen(
@@ -14,6 +15,7 @@ class WhatsNewScreen(
     private val versionName: String,
     private val changelogInfo: String,
     private val releaseLink: String,
+    private val downloadLink: String,
 ) : Screen() {
 
     @Composable
@@ -29,7 +31,14 @@ class WhatsNewScreen(
             versionName = versionName,
             changelogInfo = changelogInfoNoChecksum,
             onOpenInBrowser = { context.openInBrowser(releaseLink) },
-            onAcceptUpdate = { navigator.pop() },
+            onDownloadUpdate = {
+                AppUpdateDownloadJob.start(
+                    context = context,
+                    url = downloadLink,
+                    title = versionName,
+                )
+                navigator.pop()
+            },
         )
     }
 }

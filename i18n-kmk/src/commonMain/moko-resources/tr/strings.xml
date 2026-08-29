@@ -200,7 +200,7 @@
     <string name="login_failed">Giriş yapılamadı</string>
     <string name="discord_status_scrolling">Geziniyor:</string>
     <string name="discord_status_messing">Takılıyor:</string>
-    <string name="discord_app_description">Komikku - manga okuma uygulaması</string>
+    <string name="discord_app_description">NEXUS - manga okuma uygulaması</string>
     <string name="pref_category_discord_customization">Discord Özelleştirmesi</string>
     <string name="pref_discord_custom_message">Özel Mesaj</string>
     <string name="pref_discord_custom_message_summary">Discord üzerinde gösterilecek özel mesaj</string>

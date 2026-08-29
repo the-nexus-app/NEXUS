@@ -344,7 +344,7 @@
     <string name="add_tracking">Urmărește</string>
     <string name="in_library">În bibliotecă</string>
     <string name="add_to_library">Adaugă în bibliotecă</string>
-    <string name="information_webview_required">WebView este necesar pentru Komikku</string>
+    <string name="information_webview_required">WebView este necesar pentru NEXUS</string>
     <string name="recent_manga_time">Ch. %1$s - %2$s</string>
     <string name="manga_info_collapse">Mai puțin</string>
     <string name="manga_info_expand">Mai mult</string>
@@ -896,13 +896,13 @@
     <string name="action_filter_excluded_scanlators">Filtreaza scanatorii exclusi</string>
     <string name="supportUsScreen.perks">Abonatii au acces la canale exclusive, iar in viitor vor beneficia de si mai multe beneficii.</string>
     <string name="supportUsScreen.donationPlatform.patreon">Patreon (preferabil)</string>
-    <string name="supportUsScreen.currentlySupportedBy">Komikku este sustinut de %d+ contribuitori. Va multumim tuturor pentru sustinere. Haideti sa imbunatatim impreuna Komikku.</string>
+    <string name="supportUsScreen.currentlySupportedBy">NEXUS este sustinut de %d+ contribuitori. Va multumim tuturor pentru sustinere. Haideti sa imbunatatim impreuna NEXUS.</string>
     <string name="supportUsScreen.contactForDetailsMessage">Pentru optiuni alternative, sau orice intrebare despre subiect, alatura-te serverului nostru de Discord.</string>
     <string name="supportUsScreen.contactPlatform">Discord</string>
     <string name="donationCampaign.title">Iti place aplicatia?</string>
-    <string name="donationCampaign.paragraph1">Salut! Sunt dezvoltatorul principal al Komikku si as dori sa va rog sa luati in considerare sprijinirea financiara a proiectului. Cu un sprijin suficient, voi putea lucra la Komikku cu norma intreaga si ma voi puteam concentra atat pe probleme vechi, cat si pe functii noi solicitatate de comunitate.</string>
-    <string name="donationCampaign.paragraph2">Puteti face o donatie fie prin Patreon (metoda preferata), fie prin OpenCollective. Daca aveti intrebari sau doriti sa ne sprijiniti prin alte metode, nu ezitati sa ma contactati pe serverul de Discord al aplicatie Komikku.</string>
-    <string name="donationCampaign.paragraph3">In orice caz, Komikku va continua sa fie intretinut de mine si de voluntari si va ramane open source.</string>
+    <string name="donationCampaign.paragraph1">Salut! Sunt dezvoltatorul principal al NEXUS si as dori sa va rog sa luati in considerare sprijinirea financiara a proiectului. Cu un sprijin suficient, voi putea lucra la NEXUS cu norma intreaga si ma voi puteam concentra atat pe probleme vechi, cat si pe functii noi solicitatate de comunitate.</string>
+    <string name="donationCampaign.paragraph2">Puteti face o donatie fie prin Patreon (metoda preferata), fie prin OpenCollective. Daca aveti intrebari sau doriti sa ne sprijiniti prin alte metode, nu ezitati sa ma contactati pe serverul de Discord al aplicatie NEXUS.</string>
+    <string name="donationCampaign.paragraph3">In orice caz, NEXUS va continua sa fie intretinut de mine si de voluntari si va ramane open source.</string>
     <string name="donationCampaign.contactPlatform">Discord</string>
     <string name="donationCampaign.dismiss">Ignora</string>
 </resources>

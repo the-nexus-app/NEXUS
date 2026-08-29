@@ -31,15 +31,15 @@ fun WhatsNewScreen(
     versionName: String,
     changelogInfo: String,
     onOpenInBrowser: () -> Unit,
-    onAcceptUpdate: () -> Unit,
+    onDownloadUpdate: () -> Unit,
 ) {
     InfoScreen(
         icon = Icons.Outlined.NewReleases,
         headingText = stringResource(MR.strings.whats_new),
         subtitleText = stringResource(SYMR.strings.latest_, versionName) +
             " - " + stringResource(KMR.strings.current_, currentVersion),
-        acceptText = stringResource(MR.strings.action_ok),
-        onAcceptClick = onAcceptUpdate,
+        acceptText = stringResource(MR.strings.whats_new_download_update),
+        onAcceptClick = onDownloadUpdate,
     ) {
         Column(
             modifier = Modifier
@@ -81,7 +81,7 @@ private fun WhatsNewScreenPreview() {
                 - Fix: NaN when dragging `Start/Resume` reading button in MangaScreen ([@cuong-tran](https://github.com/cuong-tran))
 
 
-                **Full Changelog**: [komikku-app/komikku@v1.13.0...v1.13.1](https://github.com/komikku-app/komikku/compare/v1.13.0...v1.13.1)
+                **Full Changelog**: [the-nexus-app/NEXUS@v1.13.0...v1.13.1](https://github.com/the-nexus-app/NEXUS/compare/v1.13.0...v1.13.1)
 
 
                 -----
@@ -90,10 +90,10 @@ private fun WhatsNewScreenPreview() {
 
                 #### What's Changed
                 ##### Fix
-                - bump version ([@cuong-tran](https://github.com/cuong-tran))
-                - rename repo ([@cuong-tran](https://github.com/cuong-tran))
+                - bump version ([@cuong-tran](https://github.com/the-nexus-app))
+                - rename repo ([@cuong-tran](https://github.com/the-nexus-app))
 
-                **Full Changelog**: [komikku-app/komikku@v1.12.5...v1.12.6](https://github.com/komikku-app/komikku/compare/v1.12.5...v1.12.6)
+                **Full Changelog**: [the-nexus-app/NEXUS@v1.12.5...v1.12.6](https://github.com/the-nexus-app/NEXUS/compare/v1.12.5...v1.12.6)
 
 
                 -----
@@ -106,10 +106,10 @@ private fun WhatsNewScreenPreview() {
 
                 - Fix (MangasPage): crash when extensions trying to destructuring MangasPage ([@cuong-tran](https://github.com/cuong-tran))
 
-                **Full Changelog**: [komikku-app/komikku@v1.12.4...v1.12.5](https://github.com/komikku-app/komikku/compare/v1.12.4...v1.12.5)
+                **Full Changelog**: [the-nexus-app/NEXUS@v1.12.4...v1.12.5](https://github.com/the-nexus-app/NEXUS/compare/v1.12.4...v1.12.5)
             """,
             onOpenInBrowser = {},
-            onAcceptUpdate = {},
+            onDownloadUpdate = {},
         )
     }
 }

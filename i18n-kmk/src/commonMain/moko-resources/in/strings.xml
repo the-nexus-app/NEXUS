@@ -178,7 +178,7 @@
     <string name="discord_status_scrolling">Menggulir</string>
     <string name="discord_status_messing">Bermain-main dengan</string>
     <string name="discord_download_button">Baca di %s</string>
-    <string name="discord_app_description">Komikku - aplikasi pembaca manga</string>
+    <string name="discord_app_description">NEXUS - aplikasi pembaca manga</string>
     <string name="pref_category_discord_customization">Kustomisasi Discord</string>
     <string name="pref_discord_custom_message">Pesan Khusus</string>
     <string name="pref_discord_custom_message_summary">Pesan khusus yang akan ditampilkan Discord</string>
