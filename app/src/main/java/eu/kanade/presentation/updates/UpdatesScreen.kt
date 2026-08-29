@@ -106,16 +106,23 @@ fun UpdateScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { contentPadding ->
+        // Recomputed whenever the update items, the hidden manga IDs, or the Hidden Updates
+        // lock state change, so toggling the lock immediately reveals/hides hidden-category
+        // updates without needing to navigate away and back. When everything visible ends up
+        // filtered out (e.g. every update is hidden-category while locked), uiModels is empty
+        // and the empty-state screen below is shown instead of a blank list.
+        val uiModels = remember(state.items, state.showHiddenUpdates, state.hiddenMangaIds) {
+            state.getUiModel()
+        }
         when {
             state.isLoading -> LoadingScreen(Modifier.padding(contentPadding))
-            state.items.isEmpty() -> EmptyScreen(
+            uiModels.isEmpty() -> EmptyScreen(
                 stringRes = MR.strings.information_no_recent,
                 modifier = Modifier.padding(contentPadding),
             )
             else -> {
                 val scope = rememberCoroutineScope()
                 var isRefreshing by remember { mutableStateOf(false) }
-                val uiModels = remember(state.items) { state.getUiModel() }
 
                 PullRefresh(
                     refreshing = isRefreshing,

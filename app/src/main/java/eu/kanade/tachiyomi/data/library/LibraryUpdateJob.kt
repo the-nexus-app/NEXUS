@@ -59,6 +59,7 @@ import tachiyomi.core.common.i18n.stringResource
 import tachiyomi.core.common.preference.getAndSet
 import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.core.common.util.system.logcat
+import tachiyomi.domain.category.interactor.GetCategories
 import tachiyomi.domain.category.model.Category
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.chapter.model.NoChaptersException
@@ -120,6 +121,8 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private val insertFlatMetadata: InsertFlatMetadata = Injekt.get()
     private val networkToLocalManga: NetworkToLocalManga = Injekt.get()
     private val getMergedMangaForDownloading: GetMergedMangaForDownloading = Injekt.get()
+    private val getCategories: GetCategories = Injekt.get()
+    private val hiddenUpdatesUnlock: HiddenUpdatesUnlock = Injekt.get()
     private val getTracks: GetTracks = Injekt.get()
     private val insertTrack: InsertTrack = Injekt.get()
     private val trackerManager: TrackerManager = Injekt.get()
@@ -283,11 +286,26 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             }
         }
 
+        // Hidden Category Updates: while locked, exclude manga belonging to at least one
+        // hidden category from the Updates/background update-checking scope. This does not
+        // affect targeted updates (KEY_MANGA_IDS branch above, used e.g. for manga-detail
+        // refresh callers and the unlock catch-up check) and never modifies Category.hidden.
+        val filteredListToUpdate = if (hiddenUpdatesUnlock.isUnlocked.value) {
+            listToUpdate
+        } else {
+            val hiddenCategoryIds = getCategories.await().filter { it.hidden }.map { it.id }.toSet()
+            if (hiddenCategoryIds.isEmpty()) {
+                listToUpdate
+            } else {
+                listToUpdate.filterNot { it.categories.any { catId -> catId in hiddenCategoryIds } }
+            }
+        }
+
         val restrictions = libraryPreferences.autoUpdateMangaRestrictions().get()
         val skippedUpdates = mutableListOf<Pair<Manga, String?>>()
         val (_, fetchWindowUpperBound) = fetchInterval.getWindow(ZonedDateTime.now())
 
-        mangaToUpdate = listToUpdate
+        mangaToUpdate = filteredListToUpdate
             .distinctBy { it.manga.id }
             .filter {
                 when {
@@ -430,7 +448,14 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                                                 hasDownloads.store(true)
                                             }
 
-                                            libraryPreferences.newUpdatesCount().getAndSet { it + newChapters.size }
+                                            // Hidden Category Updates: re-check the current lock state right
+                                            // here, since this manga may have entered the queue while unlocked
+                                            // and finished checking after the user locked again. The update
+                                            // itself (and its history) is still stored below; only the badge
+                                            // count is gated so it can't leak through while locked.
+                                            if (!isHiddenAndLocked(manga)) {
+                                                libraryPreferences.newUpdatesCount().getAndSet { it + newChapters.size }
+                                            }
 
                                             // Convert to the manga that contains new chapters
                                             newUpdates.add(manga to newChapters.toTypedArray())
@@ -632,6 +657,17 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             completed.load(),
             mangaToUpdate.size,
         )
+    }
+
+    /**
+     * Hidden Category Updates: true if [manga] belongs to at least one hidden category AND
+     * Hidden Updates is currently locked. Checked at the point badge/notification information
+     * would otherwise be exposed, so an in-flight check that started while unlocked can't leak
+     * once the user locks again. Never modifies Category.hidden.
+     */
+    private suspend fun isHiddenAndLocked(manga: Manga): Boolean {
+        if (hiddenUpdatesUnlock.isUnlocked.value) return false
+        return getCategories.await(manga.id).any { it.hidden }
     }
 
     private suspend fun clearErrorFromDB(mangaId: Long) {

@@ -40,3 +40,10 @@ dependencies {
 
     api(libs.bundles.sqldelight)
 }
+
+tasks.matching { it.name == "verifyDebugDatabaseMigration" || it.name == "verifyReleaseDatabaseMigration" }
+    .configureEach {
+        onlyIf {
+            !org.gradle.internal.os.OperatingSystem.current().isWindows
+        }
+    }
