@@ -8,7 +8,7 @@
 
 *Requires Android 8.0 or higher.*
 
-[![Discord](https://img.shields.io/discord/1242381704459452488.svg?label=&labelColor=6A7EC2&color=7389D8&logo=discord&logoColor=FFFFFF)](https://discord.gg/QGrs2VVyP)
+[![Discord](https://img.shields.io/discord/1242381704459452488.svg?label=&labelColor=6A7EC2&color=7389D8&logo=discord&logoColor=FFFFFF)](https://discord.gg/hvxekwMP4Q)
 [![License: Apache-2.0](https://img.shields.io/github/license/the-nexus-app/NEXUS?labelColor=27303D&color=0877d2)](/LICENSE)
 
 <div align="left">
