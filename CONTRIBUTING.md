@@ -16,7 +16,7 @@ This project won't teach these from scratch — some baseline familiarity is exp
 - Android Studio
 - A phone (with developer options enabled) or emulator for testing
 
-**Questions while developing?** Come chat on [Discord](https://discord.gg/QGrs2VVyP).
+**Questions while developing?** Come chat on [Discord](https://discord.gg/hvxekwMP4Q).
 
 ## Forking NEXUS
 

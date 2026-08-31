@@ -22,7 +22,7 @@ internal const val RICH_PRESENCE_APPLICATION_ID = "1536710551747563580"
 val DOWNLOAD_BUTTON_LABEL_RES = R.string.discord_download_button
 const val DOWNLOAD_BUTTON_URL = "https://github.com/the-nexus-app/NEXUS/releases"
 const val DISCORD_BUTTON_LABEL = "Discord"
-const val DISCORD_BUTTON_URL = "https://discord.gg/85jB7V5AJR"
+const val DISCORD_BUTTON_URL = "https://discord.gg/hvxekwMP4Q"
 
 @Serializable
 data class Activity(
