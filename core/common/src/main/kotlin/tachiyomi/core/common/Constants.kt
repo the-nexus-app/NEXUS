@@ -3,7 +3,7 @@ package tachiyomi.core.common
 object Constants {
 
     const val URL_HELP = "https://github.com/the-nexus-app/NEXUS"
-    const val URL_HELP_UPCOMING = "https://github.com/the-nexus-app/NEXUS"
+    const val URL_HELP_UPCOMING = "https://github.com/the-nexus-app/NEXUS/releases"
 
     const val MANGA_EXTRA = "manga"
 
