@@ -8,12 +8,13 @@
 
 *Requires Android 8.0 or higher.*
 
+[![Website](https://img.shields.io/badge/Website-the--nexus--app.github.io-0877d2?logo=googlechrome&logoColor=FFFFFF)](https://the-nexus-app.github.io/nexus-website/)
 [![Discord](https://img.shields.io/discord/1242381704459452488.svg?label=&labelColor=6A7EC2&color=7389D8&logo=discord&logoColor=FFFFFF)](https://discord.gg/hvxekwMP4Q)
 [![License: Apache-2.0](https://img.shields.io/github/license/the-nexus-app/NEXUS?labelColor=27303D&color=0877d2)](/LICENSE)
 
 <div align="left">
 
-A free and open source manga reader, personally forked from [Komikku](https://github.com/komikku-app/komikku), which is itself based on TachiyomiSY & Mihon/Tachiyomi.
+A free and open source manga reader, personally forked from [Komikku](https://github.com/komikku-app/komikku), which is itself based on [TachiyomiSY](https://github.com/jobobby04/tachiyomisy) & [mihon](https://github.com/mihonapp/mihon).
 
 NEXUS adds a personal privacy layer on top of Komikku's existing hidden categories feature: **opening or deleting a hidden category now requires authentication**, keeping your hidden library entries protected from casual snooping.
 
@@ -24,6 +25,7 @@ NEXUS adds a personal privacy layer on top of Komikku's existing hidden categori
 ### NEXUS additions:
 - `Authenticated hidden categories` — opening *or deleting* a hidden category now requires you to authenticate first, adding a real layer of protection beyond Komikku's original hide-only behavior.
 - `Hidden category updates` — hidden categories can now be unlocked from the Update tab, allowing their contents to be included when checking for new chapters while keeping them excluded from normal updates by default.
+- `Bookmarks` — you can now bookmark chapters and pages while reading, making it easier to save important pages or moments and quickly return to them later.
 
 ### Inherited from Komikku:
 - `Suggestions` automatically showing source-website's recommendations for all sources.

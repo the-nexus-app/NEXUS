@@ -247,7 +247,7 @@ class AboutScreen : Screen() {
                         LinkIcon(
                             label = stringResource(MR.strings.website),
                             icon = Icons.Outlined.Public,
-                            url = "https://github.com/the-nexus-app/NEXUS",
+                            url = "https://the-nexus-app.github.io/nexus-website/",
                         )
                         LinkIcon(
                             label = "Discord",
