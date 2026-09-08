@@ -4,6 +4,7 @@ CREATE TABLE bookmarks(
     page_index INTEGER NOT NULL,
     scroll_position REAL,
     created_at INTEGER NOT NULL,
+    note TEXT,
     FOREIGN KEY(chapter_id) REFERENCES chapters (_id)
     ON DELETE CASCADE
 );
@@ -20,6 +21,7 @@ SELECT
     B.page_index,
     B.scroll_position,
     B.created_at,
+    B.note,
     C.manga_id,
     C.name AS chapter_name,
     C.chapter_number
@@ -50,6 +52,11 @@ WHERE _id = :id;
 deleteByChapterAndPage:
 DELETE FROM bookmarks
 WHERE chapter_id = :chapterId AND page_index = :pageIndex;
+
+updateNote:
+UPDATE bookmarks
+SET note = :note
+WHERE _id = :id;
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();

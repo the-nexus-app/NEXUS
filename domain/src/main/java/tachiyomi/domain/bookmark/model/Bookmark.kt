@@ -6,4 +6,5 @@ data class Bookmark(
     val pageIndex: Int,
     val scrollPosition: Float?,
     val createdAt: Long,
+    val note: String? = null,
 )

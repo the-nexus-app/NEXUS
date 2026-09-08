@@ -69,4 +69,12 @@ class BookmarkRepositoryImpl(
             logcat(LogPriority.ERROR, e)
         }
     }
+
+    override suspend fun updateBookmarkNote(id: Long, note: String?) {
+        try {
+            handler.await { bookmarksQueries.updateNote(note, id) }
+        } catch (e: Exception) {
+            logcat(LogPriority.ERROR, e)
+        }
+    }
 }

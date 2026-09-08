@@ -1,0 +1,4 @@
+-- Adds an optional personal note to manual page bookmarks. Purely additive -
+-- existing bookmarks are untouched and get note = NULL.
+
+ALTER TABLE bookmarks ADD COLUMN note TEXT;

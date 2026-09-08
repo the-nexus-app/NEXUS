@@ -11,6 +11,7 @@ object BookmarkMapper {
         pageIndex: Long,
         scrollPosition: Double?,
         createdAt: Long,
+        note: String?,
     ): Bookmark {
         return Bookmark(
             id = id,
@@ -18,6 +19,7 @@ object BookmarkMapper {
             pageIndex = pageIndex.toInt(),
             scrollPosition = scrollPosition?.toFloat(),
             createdAt = createdAt,
+            note = note,
         )
     }
 
@@ -27,6 +29,7 @@ object BookmarkMapper {
         pageIndex: Long,
         scrollPosition: Double?,
         createdAt: Long,
+        note: String?,
         mangaId: Long,
         chapterName: String,
         chapterNumber: Double,
@@ -40,6 +43,7 @@ object BookmarkMapper {
             createdAt = createdAt,
             chapterName = chapterName,
             chapterNumber = chapterNumber,
+            note = note,
         )
     }
 }
