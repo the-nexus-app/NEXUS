@@ -123,6 +123,7 @@ import tachiyomi.core.common.util.lang.withUIContext
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.bookmark.interactor.DeleteBookmark
 import tachiyomi.domain.bookmark.interactor.GetBookmarksByMangaId
+import tachiyomi.domain.bookmark.interactor.UpdateBookmarkNote
 import tachiyomi.domain.bookmark.model.BookmarkWithChapter
 import tachiyomi.domain.category.interactor.GetCategories
 import tachiyomi.domain.category.interactor.SetMangaCategories
@@ -201,6 +202,7 @@ class MangaScreenModel(
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId = Injekt.get(),
     private val getBookmarksByMangaId: GetBookmarksByMangaId = Injekt.get(),
     private val deleteBookmark: DeleteBookmark = Injekt.get(),
+    private val updateBookmarkNoteInteractor: UpdateBookmarkNote = Injekt.get(),
     private val getMergedMangaById: GetMergedMangaById = Injekt.get(),
     private val getMergedReferencesById: GetMergedReferencesById = Injekt.get(),
     private val smartSearchMerge: SmartSearchMerge = Injekt.get(),
@@ -1904,6 +1906,10 @@ class MangaScreenModel(
 
     fun removeBookmark(id: Long) {
         screenModelScope.launchNonCancellable { deleteBookmark.await(id) }
+    }
+
+    fun updateBookmarkNote(id: Long, note: String?) {
+        screenModelScope.launchNonCancellable { updateBookmarkNoteInteractor.await(id, note) }
     }
 
     sealed interface State {

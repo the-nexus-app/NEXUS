@@ -525,6 +525,7 @@ class MangaScreen(
                         onDismissRequest()
                     },
                     onBookmarkDelete = screenModel::removeBookmark,
+                    onBookmarkNoteUpdate = screenModel::updateBookmarkNote,
                 )
             }
             MangaScreenModel.Dialog.FullCover -> {
