@@ -13,4 +13,5 @@ data class BookmarkWithChapter(
     val createdAt: Long,
     val chapterName: String,
     val chapterNumber: Double,
+    val note: String? = null,
 )

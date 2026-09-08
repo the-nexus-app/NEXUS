@@ -17,4 +17,6 @@ interface BookmarkRepository {
     suspend fun deleteBookmark(id: Long)
 
     suspend fun deleteBookmark(chapterId: Long, pageIndex: Int)
+
+    suspend fun updateBookmarkNote(id: Long, note: String?)
 }

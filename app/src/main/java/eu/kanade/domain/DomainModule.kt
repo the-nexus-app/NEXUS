@@ -9,6 +9,7 @@ import tachiyomi.domain.bookmark.interactor.DeleteBookmark
 import tachiyomi.domain.bookmark.interactor.GetBookmark
 import tachiyomi.domain.bookmark.interactor.GetBookmarksByMangaId
 import tachiyomi.domain.bookmark.interactor.ToggleBookmark
+import tachiyomi.domain.bookmark.interactor.UpdateBookmarkNote
 import tachiyomi.domain.bookmark.repository.BookmarkRepository
 import eu.kanade.domain.extension.interactor.GetExtensionLanguages
 import eu.kanade.domain.extension.interactor.GetExtensionSources
@@ -186,6 +187,7 @@ class DomainModule : InjektModule {
         addFactory { GetBookmark(get()) }
         addFactory { ToggleBookmark(get()) }
         addFactory { DeleteBookmark(get()) }
+        addFactory { UpdateBookmarkNote(get()) }
 
         addFactory { DeleteDownload(get(), get()) }
 
