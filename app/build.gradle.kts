@@ -50,7 +50,7 @@ android {
         applicationId = "com.nexus.app"
 
         versionCode = 4
-        versionName = "1.2.0"
+        versionName = "1.2.1"
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
         buildConfigField("String", "COMMIT_SHA", "\"${getGitSha()}\"")
