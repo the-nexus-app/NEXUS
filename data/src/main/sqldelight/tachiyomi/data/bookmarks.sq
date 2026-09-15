@@ -31,6 +31,29 @@ ON B.chapter_id = C._id
 WHERE C.manga_id = :mangaId
 ORDER BY B.created_at DESC;
 
+getAllBookmarks:
+SELECT
+    B._id,
+    B.chapter_id,
+    B.page_index,
+    B.scroll_position,
+    B.created_at,
+    B.note,
+    C.manga_id,
+    C.name AS chapter_name,
+    C.chapter_number,
+    M.title AS manga_title,
+    M.source AS source_id,
+    M.favorite,
+    M.thumbnail_url,
+    M.cover_last_modified
+FROM bookmarks B
+JOIN chapters C
+ON B.chapter_id = C._id
+JOIN mangas M
+ON C.manga_id = M._id
+ORDER BY B.created_at DESC;
+
 getBookmarkByChapterAndPage:
 SELECT *
 FROM bookmarks

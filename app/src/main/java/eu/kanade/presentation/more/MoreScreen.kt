@@ -15,7 +15,9 @@ import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.automirrored.outlined.PlaylistAdd
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.CollectionsBookmark
 import androidx.compose.material.icons.outlined.GetApp
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
@@ -75,6 +77,8 @@ fun MoreScreen(
     onClickBatchAdd: () -> Unit,
     onClickUpdates: () -> Unit,
     onClickHistory: () -> Unit,
+    onClickBookmarkedChapters: () -> Unit,
+    onClickBookmarkedPages: () -> Unit,
     onClickLibraryUpdateErrors: () -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
@@ -130,6 +134,21 @@ fun MoreScreen(
                         onPreferenceClick = onClickHistory,
                     )
                 }
+            }
+
+            item {
+                TextPreferenceWidget(
+                    title = stringResource(MR.strings.label_bookmarked_chapters),
+                    icon = Icons.Outlined.CollectionsBookmark,
+                    onPreferenceClick = onClickBookmarkedChapters,
+                )
+            }
+            item {
+                TextPreferenceWidget(
+                    title = stringResource(MR.strings.label_bookmarked_pages),
+                    icon = Icons.Outlined.Bookmarks,
+                    onPreferenceClick = onClickBookmarkedPages,
+                )
             }
 
             item {

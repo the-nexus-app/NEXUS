@@ -1,7 +1,9 @@
 package tachiyomi.data.chapter
 
 import kotlinx.serialization.json.JsonObject
+import tachiyomi.domain.chapter.model.BookmarkedChapterWithManga
 import tachiyomi.domain.chapter.model.Chapter
+import tachiyomi.domain.manga.model.MangaCover
 
 object ChapterMapper {
     fun mapChapter(
@@ -38,5 +40,41 @@ object ChapterMapper {
         lastModifiedAt = lastModifiedAt,
         version = version,
         memo = memo,
+    )
+
+    fun mapBookmarkedChapterWithManga(
+        mangaId: Long,
+        mangaTitle: String,
+        source: Long,
+        favorite: Boolean,
+        thumbnailUrl: String?,
+        coverLastModified: Long,
+        chapterId: Long,
+        chapterName: String,
+        chapterNumber: Double,
+        scanlator: String?,
+        read: Boolean,
+        lastPageRead: Long,
+        dateUpload: Long,
+        bookmarkedAt: Long,
+    ): BookmarkedChapterWithManga = BookmarkedChapterWithManga(
+        mangaId = mangaId,
+        ogMangaTitle = mangaTitle,
+        chapterId = chapterId,
+        chapterName = chapterName,
+        chapterNumber = chapterNumber,
+        scanlator = scanlator,
+        read = read,
+        lastPageRead = lastPageRead,
+        sourceId = source,
+        dateUpload = dateUpload,
+        bookmarkedAt = bookmarkedAt,
+        coverData = MangaCover(
+            mangaId = mangaId,
+            sourceId = source,
+            isMangaFavorite = favorite,
+            ogUrl = thumbnailUrl,
+            lastModified = coverLastModified,
+        ),
     )
 }

@@ -3,10 +3,13 @@ package tachiyomi.domain.bookmark.repository
 import kotlinx.coroutines.flow.Flow
 import tachiyomi.domain.bookmark.model.Bookmark
 import tachiyomi.domain.bookmark.model.BookmarkWithChapter
+import tachiyomi.domain.bookmark.model.BookmarkWithManga
 
 interface BookmarkRepository {
 
     fun getBookmarksByMangaIdAsFlow(mangaId: Long): Flow<List<BookmarkWithChapter>>
+
+    fun getAllBookmarksAsFlow(): Flow<List<BookmarkWithManga>>
 
     suspend fun getBookmarksByMangaId(mangaId: Long): List<BookmarkWithChapter>
 

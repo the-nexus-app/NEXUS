@@ -6,6 +6,7 @@ import tachiyomi.core.common.util.lang.toLong
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.data.DatabaseHandler
 import tachiyomi.data.MemoColumnAdapter
+import tachiyomi.domain.chapter.model.BookmarkedChapterWithManga
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.chapter.model.ChapterUpdate
 import tachiyomi.domain.chapter.repository.ChapterRepository
@@ -114,6 +115,12 @@ class ChapterRepositoryImpl(
                 mangaId,
                 ChapterMapper::mapChapter,
             )
+        }
+    }
+
+    override fun subscribeAllBookmarkedChapters(): Flow<List<BookmarkedChapterWithManga>> {
+        return handler.subscribeToList {
+            chaptersQueries.getBookmarkedChapters(ChapterMapper::mapBookmarkedChapterWithManga)
         }
     }
 

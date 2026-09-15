@@ -1,6 +1,7 @@
 package tachiyomi.domain.chapter.repository
 
 import kotlinx.coroutines.flow.Flow
+import tachiyomi.domain.chapter.model.BookmarkedChapterWithManga
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.chapter.model.ChapterUpdate
 
@@ -21,6 +22,14 @@ interface ChapterRepository {
     fun getScanlatorsByMangaIdAsFlow(mangaId: Long): Flow<List<String>>
 
     suspend fun getBookmarkedChaptersByMangaId(mangaId: Long): List<Chapter>
+
+    /**
+     * All bookmarked chapters (chapters.bookmark = 1) across the entire library, joined with
+     * enough manga info to render a grouped, cross-library list. Merged-manga chapters are
+     * attributed to their merged (parent) manga entry. Emits again whenever any chapter's
+     * bookmark state changes anywhere.
+     */
+    fun subscribeAllBookmarkedChapters(): Flow<List<BookmarkedChapterWithManga>>
 
     suspend fun getChapterById(id: Long): Chapter?
 

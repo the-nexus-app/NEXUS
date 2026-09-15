@@ -6,6 +6,7 @@ import tachiyomi.core.common.util.system.logcat
 import tachiyomi.data.DatabaseHandler
 import tachiyomi.domain.bookmark.model.Bookmark
 import tachiyomi.domain.bookmark.model.BookmarkWithChapter
+import tachiyomi.domain.bookmark.model.BookmarkWithManga
 import tachiyomi.domain.bookmark.repository.BookmarkRepository
 import java.time.Instant
 
@@ -16,6 +17,12 @@ class BookmarkRepositoryImpl(
     override fun getBookmarksByMangaIdAsFlow(mangaId: Long): Flow<List<BookmarkWithChapter>> {
         return handler.subscribeToList {
             bookmarksQueries.getBookmarksByMangaId(mangaId, BookmarkMapper::mapBookmarkWithChapter)
+        }
+    }
+
+    override fun getAllBookmarksAsFlow(): Flow<List<BookmarkWithManga>> {
+        return handler.subscribeToList {
+            bookmarksQueries.getAllBookmarks(BookmarkMapper::mapBookmarkWithManga)
         }
     }
 

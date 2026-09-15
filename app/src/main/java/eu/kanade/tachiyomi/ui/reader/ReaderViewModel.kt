@@ -92,6 +92,7 @@ import tachiyomi.domain.chapter.model.ChapterUpdate
 import tachiyomi.domain.chapter.service.getChapterSort
 import tachiyomi.domain.bookmark.interactor.GetBookmark
 import tachiyomi.domain.bookmark.interactor.ToggleBookmark
+import tachiyomi.domain.bookmark.interactor.UpdateBookmarkNote
 import tachiyomi.domain.download.service.DownloadPreferences
 import tachiyomi.domain.history.interactor.GetNextChapters
 import tachiyomi.domain.history.interactor.UpsertHistory
@@ -140,6 +141,7 @@ class ReaderViewModel @JvmOverloads constructor(
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId = Injekt.get(),
     private val toggleBookmark: ToggleBookmark = Injekt.get(),
     private val getBookmark: GetBookmark = Injekt.get(),
+    private val updateBookmarkNote: UpdateBookmarkNote = Injekt.get(),
 ) : ViewModel() {
 
     private val mutableState = MutableStateFlow(State())
@@ -849,6 +851,27 @@ class ReaderViewModel @JvmOverloads constructor(
             withUIContext {
                 mutableState.update { it.copy(pageBookmarked = nowBookmarked) }
             }
+
+            if (nowBookmarked) {
+                val bookmark = getBookmark.await(chapterId, pageIndex) ?: return@launchNonCancellable
+                withUIContext {
+                    mutableState.update {
+                        it.copy(
+                            dialog = Dialog.BookmarkNote(
+                                bookmarkId = bookmark.id,
+                                initialNote = bookmark.note.orEmpty(),
+                            ),
+                        )
+                    }
+                }
+            }
+         }
+     }
+
+    fun saveBookmarkNote(bookmarkId: Long, note: String?) {
+        viewModelScope.launchNonCancellable {
+            updateBookmarkNote.await(bookmarkId, note)
+            withUIContext { closeDialog() }
         }
     }
 
@@ -1500,6 +1523,10 @@ class ReaderViewModel @JvmOverloads constructor(
         data object AutoScrollHelp : Dialog
         data object RetryAllHelp : Dialog
         data object BoostPageHelp : Dialog
+        data class BookmarkNote(
+            val bookmarkId: Long,
+            val initialNote: String,
+        ) : Dialog
     }
 
     sealed interface Event {

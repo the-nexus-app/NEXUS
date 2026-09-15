@@ -66,6 +66,7 @@ import eu.kanade.domain.base.BasePreferences
 import eu.kanade.domain.connections.service.ConnectionsPreferences
 import eu.kanade.domain.manga.model.readingMode
 import eu.kanade.domain.ui.UiPreferences
+import eu.kanade.presentation.components.BookmarkNoteEditDialog
 import eu.kanade.presentation.reader.ChapterListDialog
 import eu.kanade.presentation.reader.DisplayRefreshHost
 import eu.kanade.presentation.reader.OrientationSelectDialog
@@ -498,6 +499,16 @@ class ReaderActivity : BaseActivity() {
                     title = { Text(text = stringResource(SYMR.strings.eh_retry_all_help)) },
                     text = { Text(text = stringResource(SYMR.strings.eh_retry_all_help_message)) },
                 )
+                is ReaderViewModel.Dialog.BookmarkNote -> {
+                    val dialogState = state.dialog as ReaderViewModel.Dialog.BookmarkNote
+                    BookmarkNoteEditDialog(
+                        initialNote = dialogState.initialNote,
+                        onDismissRequest = onDismissRequest,
+                        onSave = { newNote ->
+                            viewModel.saveBookmarkNote(dialogState.bookmarkId, newNote)
+                        },
+                    )
+                }
                 null -> {}
             }
         }
