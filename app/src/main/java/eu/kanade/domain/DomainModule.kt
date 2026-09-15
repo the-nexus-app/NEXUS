@@ -6,6 +6,7 @@ import eu.kanade.domain.chapter.interactor.SyncChaptersWithSource
 import eu.kanade.domain.download.interactor.DeleteDownload
 import tachiyomi.data.bookmark.BookmarkRepositoryImpl
 import tachiyomi.domain.bookmark.interactor.DeleteBookmark
+import tachiyomi.domain.bookmark.interactor.GetAllBookmarks
 import tachiyomi.domain.bookmark.interactor.GetBookmark
 import tachiyomi.domain.bookmark.interactor.GetBookmarksByMangaId
 import tachiyomi.domain.bookmark.interactor.ToggleBookmark
@@ -65,6 +66,7 @@ import tachiyomi.domain.category.interactor.SetMangaCategories
 import tachiyomi.domain.category.interactor.SetSortModeForCategory
 import tachiyomi.domain.category.interactor.UpdateCategory
 import tachiyomi.domain.category.repository.CategoryRepository
+import tachiyomi.domain.chapter.interactor.GetAllBookmarkedChapters
 import tachiyomi.domain.chapter.interactor.GetBookmarkedChaptersByMangaId
 import tachiyomi.domain.chapter.interactor.GetChapter
 import tachiyomi.domain.chapter.interactor.GetChapterByUrlAndMangaId
@@ -168,6 +170,7 @@ class DomainModule : InjektModule {
         addFactory { GetChapter(get()) }
         addFactory { GetChaptersByMangaId(get()) }
         addFactory { GetBookmarkedChaptersByMangaId(get(), get(), get()) }
+        addFactory { GetAllBookmarkedChapters(get()) }
         addFactory { GetChapterByUrlAndMangaId(get()) }
         addFactory { UpdateChapter(get()) }
         addFactory { SetReadStatus(get(), get(), get(), get(), get()) }
@@ -184,6 +187,7 @@ class DomainModule : InjektModule {
 
         addSingletonFactory<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
         addFactory { GetBookmarksByMangaId(get()) }
+        addFactory { GetAllBookmarks(get()) }
         addFactory { GetBookmark(get()) }
         addFactory { ToggleBookmark(get()) }
         addFactory { DeleteBookmark(get()) }

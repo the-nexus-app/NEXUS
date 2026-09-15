@@ -88,6 +88,51 @@ FROM chapters
 WHERE bookmark
 AND manga_id = :mangaId;
 
+getBookmarkedChapters:
+SELECT
+    M._id AS mangaId,
+    M.title AS mangaTitle,
+    M.source AS source,
+    M.favorite AS favorite,
+    M.thumbnail_url AS thumbnailUrl,
+    M.cover_last_modified AS coverLastModified,
+    C._id AS chapterId,
+    C.name AS chapterName,
+    C.chapter_number AS chapterNumber,
+    C.scanlator AS scanlator,
+    C.read AS read,
+    C.last_page_read AS lastPageRead,
+    C.date_upload AS dateUpload,
+    C.last_modified_at AS bookmarkedAt
+FROM chapters C
+JOIN mangas M
+ON M._id = C.manga_id
+WHERE C.bookmark
+AND M.source <> 6969
+UNION
+SELECT
+    ME.merge_id AS mangaId,
+    MP.title AS mangaTitle,
+    MP.source AS source,
+    MP.favorite AS favorite,
+    MP.thumbnail_url AS thumbnailUrl,
+    MP.cover_last_modified AS coverLastModified,
+    C._id AS chapterId,
+    C.name AS chapterName,
+    C.chapter_number AS chapterNumber,
+    C.scanlator AS scanlator,
+    C.read AS read,
+    C.last_page_read AS lastPageRead,
+    C.date_upload AS dateUpload,
+    C.last_modified_at AS bookmarkedAt
+FROM chapters C
+JOIN merged ME
+ON ME.manga_id = C.manga_id
+JOIN mangas MP
+ON MP._id = ME.merge_id
+WHERE C.bookmark
+ORDER BY bookmarkedAt DESC;
+
 getChapterByUrl:
 SELECT *
 FROM chapters

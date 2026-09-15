@@ -28,6 +28,8 @@
     <string name="label_recent_updates">Updates</string>
     <string name="label_upcoming">Upcoming</string>
     <string name="label_recent_manga">History</string>
+    <string name="label_bookmarked_chapters">Bookmarked chapters</string>
+    <string name="label_bookmarked_pages">Bookmarked pages</string>
     <string name="label_sources">Sources</string>
     <string name="label_backup">Backup and restore</string>
     <string name="label_data_storage">Data and storage</string>
@@ -83,6 +85,8 @@
     <string name="action_download">Download</string>
     <string name="action_bookmark">Bookmark chapter</string>
     <string name="action_remove_bookmark">Unbookmark chapter</string>
+    <string name="info_empty_bookmarked_chapters">Chapters you bookmark will appear here</string>
+    <string name="info_empty_bookmarked_pages">Pages you bookmark will appear here</string>
     <string name="action_delete">Delete</string>
     <string name="action_update_library">Update library</string>
     <string name="action_enable_all">Enable all</string>

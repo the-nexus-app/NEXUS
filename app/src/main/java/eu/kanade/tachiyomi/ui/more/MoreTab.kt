@@ -26,6 +26,8 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.connections.discord.DiscordRPCService
 import eu.kanade.tachiyomi.data.connections.discord.DiscordScreen
 import eu.kanade.tachiyomi.data.download.DownloadManager
+import eu.kanade.tachiyomi.ui.bookmarkedchapters.BookmarkedChaptersScreen
+import eu.kanade.tachiyomi.ui.bookmarkedpages.BookmarkedPagesScreen
 import eu.kanade.tachiyomi.ui.category.CategoryScreen
 import eu.kanade.tachiyomi.ui.download.DownloadQueueScreen
 import eu.kanade.tachiyomi.ui.history.HistoryTab
@@ -87,6 +89,8 @@ data object MoreTab : Tab {
             onClickBatchAdd = { navigator.push(BatchAddScreen()) },
             onClickUpdates = { navigator.push(UpdatesTab) },
             onClickHistory = { navigator.push(HistoryTab) },
+            onClickBookmarkedChapters = { navigator.push(BookmarkedChaptersScreen()) },
+            onClickBookmarkedPages = { navigator.push(BookmarkedPagesScreen()) },
             onClickLibraryUpdateErrors = { navigator.push(LibraryUpdateErrorScreen()) },
         )
 

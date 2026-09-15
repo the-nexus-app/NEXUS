@@ -2,6 +2,8 @@ package tachiyomi.data.bookmark
 
 import tachiyomi.domain.bookmark.model.Bookmark
 import tachiyomi.domain.bookmark.model.BookmarkWithChapter
+import tachiyomi.domain.bookmark.model.BookmarkWithManga
+import tachiyomi.domain.manga.model.MangaCover
 
 object BookmarkMapper {
 
@@ -43,6 +45,43 @@ object BookmarkMapper {
             createdAt = createdAt,
             chapterName = chapterName,
             chapterNumber = chapterNumber,
+                        note = note,
+        )
+    }
+
+    fun mapBookmarkWithManga(
+        id: Long,
+        chapterId: Long,
+        pageIndex: Long,
+        scrollPosition: Double?,
+        createdAt: Long,
+        note: String?,
+        mangaId: Long,
+        chapterName: String,
+        chapterNumber: Double,
+        mangaTitle: String,
+        sourceId: Long,
+        favorite: Boolean,
+        thumbnailUrl: String?,
+        coverLastModified: Long,
+    ): BookmarkWithManga {
+        return BookmarkWithManga(
+            id = id,
+            chapterId = chapterId,
+            mangaId = mangaId,
+            pageIndex = pageIndex.toInt(),
+            scrollPosition = scrollPosition?.toFloat(),
+            createdAt = createdAt,
+            chapterName = chapterName,
+            chapterNumber = chapterNumber,
+            mangaTitle = mangaTitle,
+            coverData = MangaCover(
+                mangaId = mangaId,
+                sourceId = sourceId,
+                isMangaFavorite = favorite,
+                ogUrl = thumbnailUrl,
+                lastModified = coverLastModified,
+            ),
             note = note,
         )
     }
