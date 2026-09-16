@@ -285,7 +285,6 @@ private fun onViewCreated(
 
     // Set Spinner's dropdown caret color
     binding.status.backgroundTintList = ColorStateList.valueOf(colorScheme.iconColor)
-    
 
     if (manga.isLocal()) {
         if (manga.title != manga.url) {

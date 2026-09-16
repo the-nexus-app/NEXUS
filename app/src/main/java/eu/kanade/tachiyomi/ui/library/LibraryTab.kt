@@ -428,7 +428,7 @@ data object LibraryTab : Tab {
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.LIBRARY) }
                 }
-                //AM (DISCORD)
+                // AM (DISCORD)
             }
         }
 

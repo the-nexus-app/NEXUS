@@ -64,4 +64,4 @@ class ConnectionsPreferences(
         private fun connectionsToken(syncId: Long) = "connection_token_$syncId"
     }
 }
-//AM (CONNECTIONS)
+// AM (CONNECTIONS)

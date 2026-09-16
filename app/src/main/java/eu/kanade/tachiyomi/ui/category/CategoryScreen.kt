@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.util.fastMap
+import androidx.fragment.app.FragmentActivity
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -14,15 +16,13 @@ import eu.kanade.presentation.category.components.CategoryCreateDialog
 import eu.kanade.presentation.category.components.CategoryDeleteDialog
 import eu.kanade.presentation.category.components.CategoryRenameDialog
 import eu.kanade.presentation.util.Screen
+import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.authenticate
+import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 import eu.kanade.tachiyomi.util.system.toast
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.collectLatest
-import tachiyomi.presentation.core.screens.LoadingScreen
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.fragment.app.FragmentActivity
-import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.authenticate
-import eu.kanade.tachiyomi.util.system.AuthenticatorUtil.isAuthenticationSupported
 import kotlinx.coroutines.launch
+import tachiyomi.presentation.core.screens.LoadingScreen
 
 class CategoryScreen : Screen() {
 
@@ -62,7 +62,6 @@ class CategoryScreen : Screen() {
                 }
             },
             onChangeOrder = screenModel::changeOrder,
-
 
             onClickHide = { category ->
                 if (category.hidden) {

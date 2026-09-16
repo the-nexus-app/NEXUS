@@ -79,7 +79,7 @@ object Notifications {
      */
     const val CHANNEL_DISCORD_RPC = "${RICH_PRESENCE_TAG}_channel"
     const val ID_DISCORD_RPC = -1701
-    //AM (DISCORD)
+    // AM (DISCORD)
 
     /**
      * Notification channel and ids used for app and extension updates.
@@ -197,7 +197,7 @@ object Notifications {
                 buildNotificationChannel(CHANNEL_DISCORD_RPC, IMPORTANCE_LOW) {
                     setName(context.getString(R.string.pref_discord_rpc))
                 },
-                //AM (DISCORD)
+                // AM (DISCORD)
                 buildNotificationChannel(CHANNEL_LIBRARY_EHENTAI, IMPORTANCE_LOW) {
                     setName("EHentai")
                     setGroup(GROUP_LIBRARY)

@@ -68,45 +68,45 @@ fun WhatsNewScreen(
 private fun WhatsNewScreenPreview() {
     TachiyomiPreviewTheme {
         WhatsNewScreen(
-            currentVersion = "v0.99.9",
-            versionName = "v1.00.0",
+            currentVersion = "v1.2.1",
+            versionName = "v1.2.2",
             changelogInfo = """
-                ## v1.13.1
+                ## v1.2.2
 
 
                 #### What's Changed
                 ##### Fix
 
-                - Fix mark existing duplicate read chapters as read option not working in some cases ([@AntsyLich](https://github.com/AntsyLich))
-                - Fix: NaN when dragging `Start/Resume` reading button in MangaScreen ([@cuong-tran](https://github.com/cuong-tran))
+                - Fix mark existing duplicate read chapters as read option not working in some cases ([@octocat](https://github.com/octocat))
+                - Fix: NaN when dragging `Start/Resume` reading button in MangaScreen ([@octocat](https://github.com/octocat))
 
 
-                **Full Changelog**: [the-nexus-app/NEXUS@v1.13.0...v1.13.1](https://github.com/the-nexus-app/NEXUS/compare/v1.13.0...v1.13.1)
+                **Full Changelog**: [the-nexus-app/NEXUS@v1.2.1...v1.2.2](https://github.com/the-nexus-app/NEXUS/compare/v1.2.1...v1.2.2)
 
 
                 -----
-                ## v1.12.6
+                ## v1.2.1
 
 
                 #### What's Changed
                 ##### Fix
-                - bump version ([@cuong-tran](https://github.com/the-nexus-app))
-                - rename repo ([@cuong-tran](https://github.com/the-nexus-app))
+                - bump version ([@octocat](https://github.com/octocat))
+                - rename repo ([@octocat](https://github.com/octocat))
 
-                **Full Changelog**: [the-nexus-app/NEXUS@v1.12.5...v1.12.6](https://github.com/the-nexus-app/NEXUS/compare/v1.12.5...v1.12.6)
+                **Full Changelog**: [the-nexus-app/NEXUS@v1.2.0...v1.2.1](https://github.com/the-nexus-app/NEXUS/compare/v1.2.0...v1.2.1)
 
 
                 -----
-                ## v1.12.5
+                ## v1.2.0
 
 
 
                 #### What's Changed
                 ##### Fix
 
-                - Fix (MangasPage): crash when extensions trying to destructuring MangasPage ([@cuong-tran](https://github.com/cuong-tran))
+                - Fix (MangasPage): crash when extensions trying to destructuring MangasPage ([@octocat](https://github.com/octocat))
 
-                **Full Changelog**: [the-nexus-app/NEXUS@v1.12.4...v1.12.5](https://github.com/the-nexus-app/NEXUS/compare/v1.12.4...v1.12.5)
+                **Full Changelog**: [the-nexus-app/NEXUS@v1.1.9...v1.2.0](https://github.com/the-nexus-app/NEXUS/compare/v1.1.9...v1.2.0)
             """,
             onOpenInBrowser = {},
             onDownloadUpdate = {},

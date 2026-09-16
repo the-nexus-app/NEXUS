@@ -279,4 +279,4 @@ object SettingsDiscordScreen : SearchableSettings {
         )
     }
 }
-//AM (DISCORD)
+// AM (DISCORD)

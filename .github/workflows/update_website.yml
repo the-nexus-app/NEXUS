@@ -10,6 +10,13 @@ on:
 jobs:
   update_website:
     runs-on: 'ubuntu-24.04'
+    # Inherited from Komikku upstream: this dispatches to Komikku's own website repo.
+    # NEXUS has no equivalent website repo, and this workflow triggers on
+    # `release: published` - which now fires on every NEXUS release since the release
+    # workflow no longer creates drafts. Guarded so it is a no-op in this repo instead
+    # of failing loudly on each release. Remove the guard and repoint `repo:` below if
+    # NEXUS ever gets its own website repo.
+    if: github.repository == 'komikku-app/komikku'
 
     steps:
       - name: Update website on release

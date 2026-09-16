@@ -134,8 +134,7 @@ data class TrackInfoDialogHomeScreen(
                         fontSize = 14.sp,
                     )
                 }
-            }
-            else {
+            } else {
                 TrackInfoDialogHome(
                     trackItems = state.trackItems,
                     dateFormat = dateFormat,

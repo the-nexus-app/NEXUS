@@ -162,7 +162,6 @@ fun SourcesFilterToggle(
     )
 }
 
-
 @Composable
 private fun SourcesFilterItem(
     source: Source,

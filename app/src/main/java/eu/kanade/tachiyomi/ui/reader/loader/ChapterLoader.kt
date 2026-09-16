@@ -40,7 +40,7 @@ class ChapterLoader(
      * Assigns the chapter's page loader and loads the its pages. Returns immediately if the chapter
      * is already loaded.
      */
-    suspend fun loadChapter(chapter: ReaderChapter , page: Int? = null) {
+    suspend fun loadChapter(chapter: ReaderChapter, page: Int? = null) {
         if (chapterIsReady(chapter)) {
             return
         }
@@ -65,7 +65,7 @@ class ChapterLoader(
                     readerPrefs
                         .preserveReadingPosition()
                         .get() ||
-                    page != null //EH
+                    page != null // EH
                 ) {
                     chapter.requestedPage = page ?: chapter.chapter.last_page_read
                 }

@@ -157,7 +157,7 @@ fun MangaChapterListItem(
                                 overflow = TextOverflow.Ellipsis,
                             )
                             if (readProgress != null ||
-                                scanlator != null||
+                                scanlator != null ||
                                 sourceName != null
                             ) {
                                 DotSeparatorText()
@@ -170,7 +170,7 @@ fun MangaChapterListItem(
                                 overflow = TextOverflow.Ellipsis,
                                 color = LocalContentColor.current.copy(alpha = DISABLED_ALPHA),
                             )
-                            if (scanlator != null|| sourceName != null) DotSeparatorText()
+                            if (scanlator != null || sourceName != null) DotSeparatorText()
                         }
                         if (sourceName != null) {
                             Text(

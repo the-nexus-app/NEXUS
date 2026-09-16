@@ -372,8 +372,8 @@ class MangaScreenModel(
                 .combine(downloadCache.changes) { state, _ -> state }
                 .combine(downloadManager.queueState) { state, _ -> state }
                 .flowWithLifecycle(lifecycle)
-                .collectLatest { (manga, chapters , flatMetadata, mergedData ) ->
-                    val chapterItems = chapters.toChapterListItems(manga , mergedData )
+                .collectLatest { (manga, chapters, flatMetadata, mergedData) ->
+                    val chapterItems = chapters.toChapterListItems(manga, mergedData)
                     updateSuccessState {
                         it.copy(
                             manga = manga,
@@ -913,7 +913,7 @@ class MangaScreenModel(
         try {
             if (currentManga == null || currentSource == null || currentSource is StubSource) return
 
-            val mangaDir = downloadProvider.findMangaDir(currentManga.ogTitle , currentSource) ?: return
+            val mangaDir = downloadProvider.findMangaDir(currentManga.ogTitle, currentSource) ?: return
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(mangaDir.uri, DocumentsContract.Document.MIME_TYPE_DIR)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -1543,7 +1543,7 @@ class MangaScreenModel(
             val manga = successState?.manga ?: return@launchNonCancellable
             val chaptersToDownload = filterChaptersForDownload.await(manga, chapters)
 
-            if (chaptersToDownload.isNotEmpty() && !manga.isEhBasedManga() ) {
+            if (chaptersToDownload.isNotEmpty() && !manga.isEhBasedManga()) {
                 downloadChapters(chaptersToDownload)
             }
         }

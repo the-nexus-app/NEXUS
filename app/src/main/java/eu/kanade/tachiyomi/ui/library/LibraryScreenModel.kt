@@ -646,7 +646,7 @@ class LibraryScreenModel(
             val manga = value.mapNotNull { favoritesById[it] }
 
             val comparator = sort.comparator()
-                .let { if (sort.isAscending ) it else it.reversed() }
+                .let { if (sort.isAscending) it else it.reversed() }
                 .thenComparator(sortAlphabetically)
 
             manga.sortedWith(comparator).map { it.id }

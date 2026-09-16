@@ -4,14 +4,6 @@ import eu.kanade.domain.chapter.interactor.GetAvailableScanlators
 import eu.kanade.domain.chapter.interactor.SetReadStatus
 import eu.kanade.domain.chapter.interactor.SyncChaptersWithSource
 import eu.kanade.domain.download.interactor.DeleteDownload
-import tachiyomi.data.bookmark.BookmarkRepositoryImpl
-import tachiyomi.domain.bookmark.interactor.DeleteBookmark
-import tachiyomi.domain.bookmark.interactor.GetAllBookmarks
-import tachiyomi.domain.bookmark.interactor.GetBookmark
-import tachiyomi.domain.bookmark.interactor.GetBookmarksByMangaId
-import tachiyomi.domain.bookmark.interactor.ToggleBookmark
-import tachiyomi.domain.bookmark.interactor.UpdateBookmarkNote
-import tachiyomi.domain.bookmark.repository.BookmarkRepository
 import eu.kanade.domain.extension.interactor.GetExtensionLanguages
 import eu.kanade.domain.extension.interactor.GetExtensionSources
 import eu.kanade.domain.extension.interactor.GetExtensionsByType
@@ -45,6 +37,7 @@ import mihon.domain.extension.repository.ExtensionStoreRepository
 import mihon.domain.migration.usecases.MigrateMangaUseCase
 import mihon.domain.source.interactor.UpdateMangaFromRemote
 import mihon.domain.upcoming.interactor.GetUpcomingManga
+import tachiyomi.data.bookmark.BookmarkRepositoryImpl
 import tachiyomi.data.category.CategoryRepositoryImpl
 import tachiyomi.data.chapter.ChapterRepositoryImpl
 import tachiyomi.data.history.HistoryRepositoryImpl
@@ -54,6 +47,13 @@ import tachiyomi.data.source.SourceRepositoryImpl
 import tachiyomi.data.source.StubSourceRepositoryImpl
 import tachiyomi.data.track.TrackRepositoryImpl
 import tachiyomi.data.updates.UpdatesRepositoryImpl
+import tachiyomi.domain.bookmark.interactor.DeleteBookmark
+import tachiyomi.domain.bookmark.interactor.GetAllBookmarks
+import tachiyomi.domain.bookmark.interactor.GetBookmark
+import tachiyomi.domain.bookmark.interactor.GetBookmarksByMangaId
+import tachiyomi.domain.bookmark.interactor.ToggleBookmark
+import tachiyomi.domain.bookmark.interactor.UpdateBookmarkNote
+import tachiyomi.domain.bookmark.repository.BookmarkRepository
 import tachiyomi.domain.category.interactor.CreateCategoryWithName
 import tachiyomi.domain.category.interactor.DeleteCategory
 import tachiyomi.domain.category.interactor.GetCategories

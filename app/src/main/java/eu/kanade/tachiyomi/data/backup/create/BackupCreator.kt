@@ -88,7 +88,7 @@ class BackupCreator(
             val nonFavoriteManga = if (options.readEntries) mangaRepository.getReadMangaNotInLibrary() else emptyList()
             val mergedManga = getMergedManga.await()
             val backupManga =
-                backupMangas(getFavorites.await() + nonFavoriteManga + mergedManga , options)
+                backupMangas(getFavorites.await() + nonFavoriteManga + mergedManga, options)
 
             val backup = Backup(
                 backupManga = backupManga,

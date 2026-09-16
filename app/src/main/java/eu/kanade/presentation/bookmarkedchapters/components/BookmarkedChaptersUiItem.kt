@@ -147,11 +147,11 @@ private fun BookmarkedChapterRow(
                 val scanlator = chapter.scanlator
                 if (scanlator != null) {
                     Text(
-                    text = scanlator,
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                    modifier = Modifier.secondaryItemAlpha(),
+                        text = scanlator,
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        modifier = Modifier.secondaryItemAlpha(),
                     )
                 }
             }

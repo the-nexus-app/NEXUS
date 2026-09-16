@@ -28,7 +28,7 @@ class ArchiveReader(pfd: ParcelFileDescriptor) : Closeable {
     ).use { block(generateSequence { it.getNextEntry() }) }
 
     fun getInputStream(entryName: String): InputStream? {
-        val archive = ArchiveInputStream(address, size, encrypted )
+        val archive = ArchiveInputStream(address, size, encrypted)
         try {
             while (true) {
                 val entry = archive.getNextEntry() ?: break

@@ -102,7 +102,6 @@ interface Source {
      */
     suspend fun getPageList(chapter: SChapter): List<Page>
 
-
     /**
      * Whether parsing related mangas in manga page or extension provide custom related mangas request.
      * @default false

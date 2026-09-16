@@ -76,7 +76,7 @@ private fun ComingUpdatesScreenPreview() {
 
                 ### More info
                 [the-nexus-app/NEXUS@23d862d17...48fb4a2e6](https://github.com/the-nexus-app/NEXUS/compare/23d862d17...48fb4a2e6)
-                - Hello ([@cuong-tran](@https://github.com/cuong-tran))
+                - Hello ([@octocat](https://github.com/octocat))
                 - World
             """.trimIndent(),
             onOpenInBrowser = {},

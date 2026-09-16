@@ -146,7 +146,7 @@ internal fun LazyListScope.updatesUiItems(
                                 (
                                     !updatesItem.update.read ||
                                         (preserveReadingPosition && updatesItem.isEhBasedUpdate())
-                                    )&&
+                                    ) &&
                                     it > 0L
                             }
                             ?.let {

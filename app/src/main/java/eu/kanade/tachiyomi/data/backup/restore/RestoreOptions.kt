@@ -29,7 +29,7 @@ data class RestoreOptions(
             appSettings ||
             extensionStores ||
             sourceSettings ||
-            savedSearchesFeeds 
+            savedSearchesFeeds
 
     companion object {
         val options = persistentListOf(

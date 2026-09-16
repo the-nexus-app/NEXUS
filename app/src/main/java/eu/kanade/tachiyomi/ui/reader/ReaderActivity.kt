@@ -154,15 +154,15 @@ class ReaderActivity : BaseActivity() {
 
     companion object {
 
-            fun newIntent(
-                context: Context,
-                mangaId: Long?,
-                chapterId: Long?,
-                page: Int? = null,
-                // True when this open comes from opening a manual bookmark: tells the reader to
-                // restore the given page without treating it as new Auto-Resume progress.
-                bookmarkNav: Boolean = false,
-            ): Intent {         
+        fun newIntent(
+            context: Context,
+            mangaId: Long?,
+            chapterId: Long?,
+            page: Int? = null,
+            // True when this open comes from opening a manual bookmark: tells the reader to
+            // restore the given page without treating it as new Auto-Resume progress.
+            bookmarkNav: Boolean = false,
+        ): Intent {
             return Intent(context, ReaderActivity::class.java).apply {
                 putExtra("manga", mangaId)
                 putExtra("chapter", chapterId)
@@ -180,7 +180,7 @@ class ReaderActivity : BaseActivity() {
 
     // AM (CONNECTIONS)
     private val connectionsPreferences: ConnectionsPreferences = Injekt.get()
-    //AM (CONNECTIONS)
+    // AM (CONNECTIONS)
 
     lateinit var binding: ReaderActivityBinding
 
@@ -304,7 +304,7 @@ class ReaderActivity : BaseActivity() {
                         onSaveImageResult(event.result)
                     }
                     is ReaderViewModel.Event.ShareImage -> {
-                        onShareImageResult(event.uri, event.page , event.secondPage )
+                        onShareImageResult(event.uri, event.page, event.secondPage)
                     }
                     is ReaderViewModel.Event.CopyImage -> {
                         onCopyImageResult(event.uri)
@@ -532,7 +532,7 @@ class ReaderActivity : BaseActivity() {
 
         // AM (DISCORD)
         updateDiscordRPC(exitingReader = true)
-        //AM (DISCORD)
+        // AM (DISCORD)
 
         super.onPause()
     }
@@ -547,7 +547,7 @@ class ReaderActivity : BaseActivity() {
 
         // AM (DISCORD)
         updateDiscordRPC(exitingReader = false)
-        //AM (DISCORD)
+        // AM (DISCORD)
 
         setMenuVisibility(viewModel.state.value.menuVisible)
     }
@@ -1070,7 +1070,7 @@ class ReaderActivity : BaseActivity() {
 
         // AM (DISCORD)
         updateDiscordRPC(exitingReader = false)
-        //AM (DISCORD)
+        // AM (DISCORD)
     }
 
     /**
@@ -1147,15 +1147,15 @@ class ReaderActivity : BaseActivity() {
         } else {
             "${page.number}"
         }
-        viewModel.onPageSelected(page, currentPageText, hasExtraPage )
+        viewModel.onPageSelected(page, currentPageText, hasExtraPage)
     }
 
     /**
      * Called from the viewer whenever a [page] is long clicked. A bottom sheet with a list of
      * actions to perform is shown.
      */
-    fun onPageLongTap(page: ReaderPage, extraPage: ReaderPage? = null ) {
-        viewModel.openPageDialog(page, extraPage )
+    fun onPageLongTap(page: ReaderPage, extraPage: ReaderPage? = null) {
+        viewModel.openPageDialog(page, extraPage)
     }
 
     /**
@@ -1196,7 +1196,7 @@ class ReaderActivity : BaseActivity() {
      * Called from the presenter when a page is ready to be shared. It shows Android's default
      * sharing tool.
      */
-    fun onShareImageResult(uri: Uri, page: ReaderPage , secondPage: ReaderPage? = null ) {
+    fun onShareImageResult(uri: Uri, page: ReaderPage, secondPage: ReaderPage? = null) {
         val manga = viewModel.manga ?: return
         val chapter = page.chapter.chapter
 

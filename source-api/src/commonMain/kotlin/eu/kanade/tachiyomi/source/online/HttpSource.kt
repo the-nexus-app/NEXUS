@@ -298,7 +298,6 @@ abstract class HttpSource : CatalogueSource {
     )
     protected open fun mangaDetailsParse(response: Response): SManga = throw UnsupportedOperationException()
 
-
     /**
      * Whether parsing related mangas in manga page or extension provide custom related mangas request.
      *

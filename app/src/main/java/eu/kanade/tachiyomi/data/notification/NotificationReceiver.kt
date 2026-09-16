@@ -84,7 +84,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
             // Stop Discord RPC service
             ACTION_STOP_DISCORD_RPC -> stopDiscordRPC(context)
-            //KMK
+            // KMK
 
             // Open reader activity
             ACTION_OPEN_CHAPTER -> {
@@ -259,7 +259,7 @@ class NotificationReceiver : BroadcastReceiver() {
         context.stopService(serviceIntent)
         context.cancelNotification(Notifications.ID_DISCORD_RPC)
     }
-    //KMK
+    // KMK
 
     companion object {
         private const val NAME = "NotificationReceiver"
@@ -288,7 +288,7 @@ class NotificationReceiver : BroadcastReceiver() {
         private const val ACTION_DISMISS_NOTIFICATION = "$ID.$NAME.ACTION_DISMISS_NOTIFICATION"
 
         private const val ACTION_STOP_DISCORD_RPC = "$ID.$NAME.STOP_DISCORD_RPC"
-        //KMK
+        // KMK
 
         private const val EXTRA_URI = "$ID.$NAME.URI"
         private const val EXTRA_NOTIFICATION_ID = "$ID.$NAME.NOTIFICATION_ID"

@@ -17,7 +17,6 @@ import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.core.security.SecurityPreferences
 import eu.kanade.tachiyomi.data.LibraryUpdateStatus
 import eu.kanade.tachiyomi.data.download.Downloader
-import tachiyomi.domain.category.interactor.GetCategories
 import eu.kanade.tachiyomi.data.notification.NotificationHandler
 import eu.kanade.tachiyomi.data.notification.NotificationReceiver
 import eu.kanade.tachiyomi.data.notification.Notifications
@@ -33,6 +32,7 @@ import tachiyomi.core.common.Constants
 import tachiyomi.core.common.i18n.pluralStringResource
 import tachiyomi.core.common.i18n.stringResource
 import tachiyomi.core.common.util.lang.launchUI
+import tachiyomi.domain.category.interactor.GetCategories
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.library.model.LibraryManga
 import tachiyomi.domain.manga.model.Manga
@@ -127,7 +127,6 @@ class LibraryUpdateNotifier(
         libraryUpdateStatus.updateProgress(current.toFloat() / total)
 
         if (!securityPreferences.hideNotificationContent().get()) {
-
             val visibleManga = manga.filterNot { isHiddenAndLocked(it) }
 
             val updatingText = visibleManga.joinToString("\n") { it.title.chop(40) }

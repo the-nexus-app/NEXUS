@@ -296,7 +296,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
         // AM (DISCORD)
         DiscordRPCService.start(applicationContext)
-        //AM (DISCORD)
+        // AM (DISCORD)
     }
 
     override fun onStop(owner: LifecycleOwner) {
@@ -304,7 +304,7 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
         // AM (DISCORD)
         DiscordRPCService.stop(applicationContext)
-        //AM (DISCORD)
+        // AM (DISCORD)
     }
 
     override fun getPackageName(): String {

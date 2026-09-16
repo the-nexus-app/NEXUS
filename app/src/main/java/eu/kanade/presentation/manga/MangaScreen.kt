@@ -1276,7 +1276,7 @@ private fun LazyListScope.sharedChapterItems(
                             )
                         },
                     scanlator = item.chapter.scanlator.takeIf {
-                        !it.isNullOrBlank() && item.showScanlator 
+                        !it.isNullOrBlank() && item.showScanlator
                     },
                     sourceName = item.sourceName,
                     read = item.chapter.read,

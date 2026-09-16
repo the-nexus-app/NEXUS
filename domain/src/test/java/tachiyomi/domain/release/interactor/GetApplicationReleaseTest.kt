@@ -12,6 +12,7 @@ import tachiyomi.core.common.preference.Preference
 import tachiyomi.core.common.preference.PreferenceStore
 import tachiyomi.domain.release.model.Release
 import tachiyomi.domain.release.service.ReleaseService
+import java.io.IOException
 import java.time.Instant
 
 class GetApplicationReleaseTest {
@@ -121,7 +122,7 @@ class GetApplicationReleaseTest {
     }
 
     @Test
-    fun `When now is before two days expect no new update`() = runTest {
+    fun `When within throttle window expect no new update and no network call`() = runTest {
         every { preference.get() } returns Instant.now().toEpochMilli()
         every { preference.set(any()) }.answers { }
 
@@ -148,6 +149,146 @@ class GetApplicationReleaseTest {
 
         coVerify(exactly = 0) { releaseService.latest(any()) }
         coVerify(exactly = 0) { releaseService.releaseNotes(any()) }
+        result shouldBe GetApplicationRelease.Result.NoNewUpdate
+    }
+
+    @Test
+    fun `When forceCheck is true expect throttle to be bypassed`() = runTest {
+        every { preference.get() } returns Instant.now().toEpochMilli()
+        every { preference.set(any()) }.answers { }
+
+        val releases = listOf(
+            Release(
+                "v2.0.0",
+                "info",
+                "http://example.com/release_link",
+                "http://example.com/release_link.apk",
+            ),
+        )
+
+        coEvery { releaseService.releaseNotes(any()) } returns releases
+
+        val result = getApplicationRelease.await(
+            GetApplicationRelease.Arguments(
+                isFoss = false,
+                isPreview = false,
+                commitCount = 0,
+                versionName = "v1.0.0",
+                repository = "test",
+                forceCheck = true,
+            ),
+        )
+
+        coVerify(exactly = 1) { releaseService.releaseNotes(any()) }
+        result shouldBe GetApplicationRelease.Result.NewUpdate(releases.getLatest()!!)
+    }
+
+    @Test
+    fun `Draft releases are never offered as an update`() = runTest {
+        every { preference.get() } returns 0
+        every { preference.set(any()) }.answers { }
+
+        val releases = listOf(
+            Release(
+                "v2.0.0",
+                "info",
+                "http://example.com/release_link",
+                "http://example.com/release_link.apk",
+                draft = true,
+            ),
+        )
+
+        coEvery { releaseService.releaseNotes(any()) } returns releases
+
+        val result = getApplicationRelease.await(
+            GetApplicationRelease.Arguments(
+                isFoss = false,
+                isPreview = false,
+                commitCount = 0,
+                versionName = "v1.0.0",
+                repository = "test",
+            ),
+        )
+
+        result shouldBe GetApplicationRelease.Result.NoNewUpdate
+    }
+
+    @Test
+    fun `Prerelease releases are never offered to a stable build`() = runTest {
+        every { preference.get() } returns 0
+        every { preference.set(any()) }.answers { }
+
+        val releases = listOf(
+            Release(
+                "v2.0.0",
+                "info",
+                "http://example.com/release_link",
+                "http://example.com/release_link.apk",
+                preRelease = true,
+            ),
+        )
+
+        coEvery { releaseService.releaseNotes(any()) } returns releases
+
+        val result = getApplicationRelease.await(
+            GetApplicationRelease.Arguments(
+                isFoss = false,
+                isPreview = false,
+                commitCount = 0,
+                versionName = "v1.0.0",
+                repository = "test",
+            ),
+        )
+
+        result shouldBe GetApplicationRelease.Result.NoNewUpdate
+    }
+
+    @Test
+    fun `A malformed release tag fails safely instead of crashing`() = runTest {
+        every { preference.get() } returns 0
+        every { preference.set(any()) }.answers { }
+
+        val releases = listOf(
+            Release(
+                "not-a-version",
+                "info",
+                "http://example.com/release_link",
+                "http://example.com/release_link.apk",
+            ),
+        )
+
+        coEvery { releaseService.releaseNotes(any()) } returns releases
+
+        val result = getApplicationRelease.await(
+            GetApplicationRelease.Arguments(
+                isFoss = false,
+                isPreview = false,
+                commitCount = 0,
+                versionName = "v1.0.0",
+                repository = "test",
+            ),
+        )
+
+        result shouldBe GetApplicationRelease.Result.NoNewUpdate
+    }
+
+    @Test
+    fun `A network failure fails safely instead of crashing`() = runTest {
+        every { preference.get() } returns 0
+        every { preference.set(any()) }.answers { }
+
+        coEvery { releaseService.releaseNotes(any()) } throws IOException("no network")
+
+        val result = getApplicationRelease.await(
+            GetApplicationRelease.Arguments(
+                isFoss = false,
+                isPreview = false,
+                commitCount = 0,
+                versionName = "v1.0.0",
+                repository = "test",
+            ),
+        )
+
         result shouldBe GetApplicationRelease.Result.NoNewUpdate
     }
 }

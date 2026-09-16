@@ -164,7 +164,6 @@ abstract class ParsedHttpSource : HttpSource() {
      */
     protected abstract fun mangaDetailsParse(document: Document): SManga
 
-
     /**
      * Parses the response from the site and returns a list of related mangas.
      * Normally it's not needed to override this method.

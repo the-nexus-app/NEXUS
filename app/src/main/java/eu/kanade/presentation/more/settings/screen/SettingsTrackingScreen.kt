@@ -80,12 +80,12 @@ object SettingsTrackingScreen : SearchableSettings {
     @Composable
     override fun RowScope.AppBarAction() {
         val uriHandler = LocalUriHandler.current
-     IconButton(onClick = { uriHandler.openUri("https://github.com/the-nexus-app/NEXUS") }) {
-    Icon(
-        imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
-        contentDescription = stringResource(MR.strings.tracking_guide),
-    )
-}
+        IconButton(onClick = { uriHandler.openUri("https://github.com/the-nexus-app/NEXUS") }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
+                contentDescription = stringResource(MR.strings.tracking_guide),
+            )
+        }
     }
 
     @Composable

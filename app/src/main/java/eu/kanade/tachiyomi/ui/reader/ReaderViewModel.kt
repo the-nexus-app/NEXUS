@@ -84,15 +84,15 @@ import tachiyomi.core.common.util.lang.withUIContext
 import tachiyomi.core.common.util.system.ImageUtil
 import tachiyomi.core.common.util.system.logcat
 import tachiyomi.decoder.ImageDecoder
+import tachiyomi.domain.bookmark.interactor.GetBookmark
+import tachiyomi.domain.bookmark.interactor.ToggleBookmark
+import tachiyomi.domain.bookmark.interactor.UpdateBookmarkNote
 import tachiyomi.domain.chapter.interactor.GetChaptersByMangaId
 import tachiyomi.domain.chapter.interactor.GetMergedChaptersByMangaId
 import tachiyomi.domain.chapter.interactor.UpdateChapter
 import tachiyomi.domain.chapter.model.Chapter
 import tachiyomi.domain.chapter.model.ChapterUpdate
 import tachiyomi.domain.chapter.service.getChapterSort
-import tachiyomi.domain.bookmark.interactor.GetBookmark
-import tachiyomi.domain.bookmark.interactor.ToggleBookmark
-import tachiyomi.domain.bookmark.interactor.UpdateBookmarkNote
 import tachiyomi.domain.download.service.DownloadPreferences
 import tachiyomi.domain.history.interactor.GetNextChapters
 import tachiyomi.domain.history.interactor.UpsertHistory
@@ -523,7 +523,7 @@ class ReaderViewModel @JvmOverloads constructor(
         chapter: ReaderChapter,
         page: Int? = null,
     ): ViewerChapters {
-        loader.loadChapter(chapter , page)
+        loader.loadChapter(chapter, page)
 
         val chapterPos = chapterList.indexOf(chapter)
         val newChapters = ViewerChapters(
@@ -659,7 +659,7 @@ class ReaderViewModel @JvmOverloads constructor(
      * read, update tracking services, enqueue downloaded chapter deletion, and updating the active chapter if this
      * [page]'s chapter is different from the currently active.
      */
-    fun onPageSelected(page: ReaderPage, currentPageText: String , hasExtraPage: Boolean ) {
+    fun onPageSelected(page: ReaderPage, currentPageText: String, hasExtraPage: Boolean) {
         // InsertPage doesn't change page progress
         if (page is InsertPage) {
             return
@@ -865,8 +865,8 @@ class ReaderViewModel @JvmOverloads constructor(
                     }
                 }
             }
-         }
-     }
+        }
+    }
 
     fun saveBookmarkNote(bookmarkId: Long, note: String?) {
         viewModelScope.launchNonCancellable {

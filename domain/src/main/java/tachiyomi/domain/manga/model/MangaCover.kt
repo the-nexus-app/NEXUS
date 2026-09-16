@@ -21,7 +21,6 @@ data class MangaCover(
     }
     val url: String? = customThumbnailUrl ?: ogUrl
 
-
     /**
      * [vibrantCoverColor] is used to set the color theme in manga detail page.
      * It contains color for all mangas, both in library or browsing.

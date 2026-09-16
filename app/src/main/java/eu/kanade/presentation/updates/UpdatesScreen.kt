@@ -4,11 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.FlipToBack
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.SelectAll
 import androidx.compose.material3.LocalContentColor
@@ -47,7 +47,6 @@ import tachiyomi.presentation.core.theme.active
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.seconds
 
-
 @Composable
 fun UpdateScreen(
     state: UpdatesScreenModel.State,
@@ -68,32 +67,33 @@ fun UpdateScreen(
     onUpdateSwipe: (UpdatesItem, LibraryPreferences.ChapterSwipeAction) -> Unit,
     showHiddenUpdates: Boolean,
     onToggleHiddenUpdates: () -> Unit,
-    onUpdateSelected: (UpdatesItem, /* KMK*/ 
-    UpdatesScreenModel.UpdateSelectionOptions /* KMK*/) -> Unit,
+    onUpdateSelected: (
+        UpdatesItem, /* KMK*/
+        UpdatesScreenModel.UpdateSelectionOptions, /* KMK*/
+    ) -> Unit,
     onOpenChapter: (UpdatesItem) -> Unit,
     onFilterClicked: () -> Unit,
     hasActiveFilters: Boolean,
     usePanoramaCover: Boolean,
     collapseToggle: (key: String) -> Unit,
-) 
-{
+) {
     BackHandler(enabled = state.selectionMode, onBack = { onSelectAll(false) })
 
     Scaffold(
         topBar = { scrollBehavior ->
             UpdatesAppBar(
-            onCalendarClicked = { onCalendarClicked() },
-            onUpdateLibrary = { onUpdateLibrary() },
-            onFilterClicked = { onFilterClicked() },
-            hasFilters = hasActiveFilters,
-            actionModeCounter = state.selected.size,
-            onSelectAll = { onSelectAll(true) },
-            onInvertSelection = { onInvertSelection() },
-            onCancelActionMode = { onSelectAll(false) },
-            scrollBehavior = scrollBehavior,
-            showHiddenUpdates = showHiddenUpdates,
-            onToggleHiddenUpdates = onToggleHiddenUpdates,
-        )
+                onCalendarClicked = { onCalendarClicked() },
+                onUpdateLibrary = { onUpdateLibrary() },
+                onFilterClicked = { onFilterClicked() },
+                hasFilters = hasActiveFilters,
+                actionModeCounter = state.selected.size,
+                onSelectAll = { onSelectAll(true) },
+                onInvertSelection = { onInvertSelection() },
+                onCancelActionMode = { onSelectAll(false) },
+                scrollBehavior = scrollBehavior,
+                showHiddenUpdates = showHiddenUpdates,
+                onToggleHiddenUpdates = onToggleHiddenUpdates,
+            )
         },
         bottomBar = {
             UpdatesBottomBar(

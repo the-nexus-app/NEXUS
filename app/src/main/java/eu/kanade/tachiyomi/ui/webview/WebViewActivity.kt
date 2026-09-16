@@ -86,7 +86,7 @@ class WebViewActivity : BaseActivity() {
         with(DiscordRPCService) {
             discordScope.launchIO { setScreen(this@WebViewActivity, DiscordScreen.WEBVIEW) }
         }
-        //AM (DISCORD)
+        // AM (DISCORD)
     }
 
     // AM (DISCORD)
@@ -96,7 +96,7 @@ class WebViewActivity : BaseActivity() {
         }
         super.onDestroy()
     }
-    //AM (DISCORD)
+    // AM (DISCORD)
 
     override fun onProvideAssistContent(outContent: AssistContent) {
         super.onProvideAssistContent(outContent)

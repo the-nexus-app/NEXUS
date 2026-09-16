@@ -5,8 +5,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.util.fastFilter
-import tachiyomi.domain.category.interactor.GetCategories
-import tachiyomi.domain.manga.interactor.GetLibraryManga
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import eu.kanade.core.preference.asState
@@ -47,10 +45,12 @@ import tachiyomi.core.common.preference.TriState
 import tachiyomi.core.common.util.lang.launchIO
 import tachiyomi.core.common.util.lang.launchNonCancellable
 import tachiyomi.core.common.util.system.logcat
+import tachiyomi.domain.category.interactor.GetCategories
 import tachiyomi.domain.chapter.interactor.GetChapter
 import tachiyomi.domain.chapter.interactor.UpdateChapter
 import tachiyomi.domain.chapter.model.ChapterUpdate
 import tachiyomi.domain.library.service.LibraryPreferences
+import tachiyomi.domain.manga.interactor.GetLibraryManga
 import tachiyomi.domain.manga.interactor.GetManga
 import tachiyomi.domain.manga.model.applyFilter
 import tachiyomi.domain.source.service.SourceManager
@@ -93,9 +93,9 @@ class UpdatesScreenModel(
     init {
         screenModelScope.launchIO {
             getHiddenMangaIdsFlow().distinctUntilChanged().collectLatest { ids ->
-            mutableState.update { it.copy(hiddenMangaIds = ids) }
+                mutableState.update { it.copy(hiddenMangaIds = ids) }
             }
-            }
+        }
         screenModelScope.launchIO {
             // Hidden Category Updates: the shared, process-scoped unlock state is the single
             // source of truth for both this UI and LibraryUpdateJob's update-checking scope.
@@ -628,7 +628,7 @@ class UpdatesScreenModel(
         fun getUiModel(): List<UpdatesUiModel> {
             val visibleItems = if (showHiddenUpdates) items else items.filterNot { it.update.mangaId in hiddenMangaIds }
             return visibleItems
-            .groupBy { it.update.dateFetch.toLocalDate() }
+                .groupBy { it.update.dateFetch.toLocalDate() }
                 .flatMap { (date, mangas) ->
                     val header = UpdatesUiModel.Header(date, mangas.size)
                     val mangaItems = mangas

@@ -80,7 +80,7 @@ data class LibrarySort(
                 Type.ChapterFetchDate,
                 Type.DateAdded,
                 Type.TrackerMean,
-                Type.TagList, 
+                Type.TagList,
                 Type.Random,
             )
         }
