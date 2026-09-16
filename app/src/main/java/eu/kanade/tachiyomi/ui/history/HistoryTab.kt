@@ -171,7 +171,7 @@ data object HistoryTab : Tab {
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.HISTORY) }
                 }
-                //AM (DISCORD)
+                // AM (DISCORD)
             }
         }
 

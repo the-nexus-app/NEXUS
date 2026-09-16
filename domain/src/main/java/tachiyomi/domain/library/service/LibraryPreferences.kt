@@ -245,13 +245,11 @@ class LibraryPreferences(
         Disabled,
     }
 
-
     fun sortTagsForLibrary() = preferenceStore.getStringSet("sort_tags_for_library", mutableSetOf())
 
     fun groupLibraryUpdateType() = preferenceStore.getEnum("group_library_update_type", GroupLibraryMode.GLOBAL)
 
     fun groupLibraryBy() = preferenceStore.getInt("group_library_by", LibraryGroup.BY_DEFAULT)
-
 
     companion object {
         const val DEVICE_ONLY_ON_WIFI = "wifi"

@@ -42,7 +42,6 @@ class UiPreferences(
 
     fun imagesInDescription() = preferenceStore.getBoolean("pref_render_images_description", true)
 
-
     fun expandFilters() = preferenceStore.getBoolean("eh_expand_filters", false)
 
     fun hideFeedTab() = preferenceStore.getBoolean("hide_latest_tab", false)
@@ -78,7 +77,6 @@ class UiPreferences(
     fun showNavUpdates() = preferenceStore.getBoolean("pref_show_updates_button", true)
 
     fun showNavHistory() = preferenceStore.getBoolean("pref_show_history_button", true)
-
 
     companion object {
         fun dateFormat(format: String): DateTimeFormatter = when (format) {

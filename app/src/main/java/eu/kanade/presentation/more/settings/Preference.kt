@@ -169,7 +169,7 @@ sealed class Preference {
             override val icon: ImageVector? = null
             override val onValueChanged: suspend (newValue: String) -> Unit = {}
         }
-        //AM (CONNECTIONS)
+        // AM (CONNECTIONS)
 
         data class InfoPreference(
             override val title: String,

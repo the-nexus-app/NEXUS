@@ -25,7 +25,7 @@ class GetExtensionsByType(
                 .filter { (showNsfwSources || !it.isNsfw) }
                 .sortedWith(
                     compareBy<Extension.Installed> {
-                        !it.isObsolete && !it.isRedundant 
+                        !it.isObsolete && !it.isRedundant
                     }.thenBy(String.CASE_INSENSITIVE_ORDER) { it.name },
                 )
                 .partition { it.hasUpdate }

@@ -91,7 +91,7 @@ class ReleaseServiceImpl(
          * - Cannot begin or end with a hyphen
          * - Max length of 39 characters
          *
-         * Convert '(@cuong-tran)' to '([@cuong-tran](https://github.com/cuong-tran))'
+         * Convert '(@octocat)' to '([@octocat](https://github.com/octocat))'
          *
          * Reference: https://stackoverflow.com/a/30281147
          */
@@ -102,8 +102,8 @@ class ReleaseServiceImpl(
             .toRegex(RegexOption.IGNORE_CASE)
 
         /**
-         * Convert from: https://github.com/komikku-app/komikku/compare/23d862d17...48fb4a2e6
-         * to: [komikku-app/komikku@23d862d17...48fb4a2e6](https://github.com/komikku-app/komikku/compare/23d862d17...48fb4a2e6)
+         * Convert from: https://github.com/the-nexus-app/NEXUS/compare/23d862d17...48fb4a2e6
+         * to: [the-nexus-app/NEXUS@23d862d17...48fb4a2e6](https://github.com/the-nexus-app/NEXUS/compare/23d862d17...48fb4a2e6)
          */
         private val gitHubCommitsCompareRegex = """(\[[^]]+]\()?https://github\.com/(?<owner>[^/]+)/(?<repo>[^/]+)/compare/(?<from>[0-9a-f.rv]+)\.\.\.(?<to>[0-9a-f.rv]+)\)?"""
             .toRegex(RegexOption.IGNORE_CASE)

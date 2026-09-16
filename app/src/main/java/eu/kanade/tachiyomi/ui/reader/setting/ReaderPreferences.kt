@@ -158,7 +158,6 @@ class ReaderPreferences(
 
     // endregion
 
-
     fun readerThreads() = preferenceStore.getInt("eh_reader_threads", 2)
 
     fun readerInstantRetry() = preferenceStore.getBoolean("eh_reader_instant_retry", true)

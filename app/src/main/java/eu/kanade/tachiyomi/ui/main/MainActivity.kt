@@ -161,7 +161,7 @@ class MainActivity : BaseActivity() {
 
     // AM (CONNECTIONS)
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
-    //AM (CONNECTIONS)
+    // AM (CONNECTIONS)
 
     init {
         registerSecureActivity(this)
@@ -361,7 +361,7 @@ class MainActivity : BaseActivity() {
                                 }
                             }
                         }.launchIn(this)
-                    //AM (DISCORD)
+                    // AM (DISCORD)
                 }
 
                 HandleOnNewIntent(context = context, navigator = navigator)
@@ -514,11 +514,16 @@ class MainActivity : BaseActivity() {
 
         // App updates
         LaunchedEffect(Unit) {
-            if (updaterEnabled) {
+            // Don't run the update check while onboarding is (or is about to be) shown - a new
+            // user shouldn't see the update screen fight with/appear on top of onboarding, and
+            // there's nothing useful to update yet on a fresh install.
+            if (updaterEnabled && preferences.shownOnboardingFlow().get()) {
                 try {
                     AppUpdateJob.setupTask(context)
                     val result = AppUpdateChecker().checkForUpdate(context)
-                    if (result is GetApplicationRelease.Result.NewUpdate) {
+                    if (result is GetApplicationRelease.Result.NewUpdate &&
+                        navigator.lastItem !is NewUpdateScreen
+                    ) {
                         val updateScreen = NewUpdateScreen(
                             versionName = result.release.version,
                             changelogInfo = result.release.info,

@@ -116,14 +116,14 @@ fun SourceFilterDialog(
             }
 
             items(filters) {
-                FilterItem(it, updateFilters , startExpanded )
+                FilterItem(it, updateFilters, startExpanded)
             }
         }
     }
 }
 
 @Composable
-private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit, startExpanded: Boolean ) {
+private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit, startExpanded: Boolean) {
     when (filter) {
         is Filter.AutoComplete -> {
             AutoCompleteItem(
@@ -218,7 +218,7 @@ private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit, startExpanded: B
                 Column {
                     filter.state
                         .filterIsInstance<Filter<*>>()
-                        .map { FilterItem(filter = it, onUpdate = onUpdate , startExpanded ) }
+                        .map { FilterItem(filter = it, onUpdate = onUpdate, startExpanded) }
                 }
             }
         }

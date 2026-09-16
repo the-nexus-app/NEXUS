@@ -155,7 +155,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
 
         try {
             // File where the apk will be saved.
-            val apkFile = File(context.externalCacheDir, "update.apk")
+            val apkFile = File(context.externalCacheDir, APK_FILE_NAME)
 
             network.downloadFileWithResume(url, apkFile, progressListener)
             if (isStopped) {
@@ -240,6 +240,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
 
     companion object {
         private const val TAG = "AppUpdateDownload"
+        internal const val APK_FILE_NAME = "update.apk"
 
         const val PACKAGE_INSTALLED_ACTION =
             "${BuildConfig.APPLICATION_ID}.SESSION_SELF_API_PACKAGE_INSTALLED"

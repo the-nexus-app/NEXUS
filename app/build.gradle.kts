@@ -1,9 +1,9 @@
-import java.util.Properties
-import java.io.FileInputStream
 import mihon.buildlogic.Config
 import mihon.buildlogic.getBuildTime
 import mihon.buildlogic.getCommitCount
 import mihon.buildlogic.getGitSha
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     id("mihon.android.application")
@@ -35,7 +35,7 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "eu.kanade.tachiyomi"
 
-     signingConfigs {
+    signingConfigs {
         create("release") {
             if (keystorePropertiesFile.exists()) {
                 storeFile = file(keystoreProperties["storeFile"] as String)

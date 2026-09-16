@@ -271,7 +271,7 @@ class DownloadManager(
             if (removeQueued) {
                 downloader.removeFromQueue(manga)
             }
-            provider.findMangaDir(manga.ogTitle , source)?.delete()
+            provider.findMangaDir(manga.ogTitle, source)?.delete()
             cache.removeManga(manga)
 
             if (source.isLocal()) return@launchIO
@@ -326,7 +326,7 @@ class DownloadManager(
         var cleaned = 0
 
         if (removeNonFavorite && !manga.favorite) {
-            val mangaFolder = provider.getMangaDir(manga.ogTitle , source).getOrElse { e ->
+            val mangaFolder = provider.getMangaDir(manga.ogTitle, source).getOrElse { e ->
                 logcat(LogPriority.ERROR, e) { "Manga download folder doesn't exist." }
                 return 0
             }
@@ -350,7 +350,7 @@ class DownloadManager(
         }
 
         if (cache.getDownloadCount(manga) == 0) {
-            val mangaFolder = provider.getMangaDir(manga.ogTitle , source).getOrElse { e ->
+            val mangaFolder = provider.getMangaDir(manga.ogTitle, source).getOrElse { e ->
                 logcat(LogPriority.ERROR, e) { "Manga download folder doesn't exist." }
                 return cleaned
             }
@@ -358,7 +358,7 @@ class DownloadManager(
                 mangaFolder.delete()
                 cache.removeManga(manga)
             } else {
-                xLogE("Cache and download folder doesn't match for " + manga.ogTitle )
+                xLogE("Cache and download folder doesn't match for " + manga.ogTitle)
             }
         }
         return cleaned
@@ -453,7 +453,7 @@ class DownloadManager(
      */
     suspend fun renameChapter(source: Source, manga: Manga, oldChapter: Chapter, newChapter: Chapter) {
         val oldNames = provider.getValidChapterDirNames(oldChapter.name, oldChapter.scanlator, oldChapter.url)
-        val mangaDir = provider.getMangaDir(manga.ogTitle , source).getOrElse { e ->
+        val mangaDir = provider.getMangaDir(manga.ogTitle, source).getOrElse { e ->
             logcat(LogPriority.ERROR, e) { "Manga download folder doesn't exist. Skipping renaming after source sync" }
             return
         }

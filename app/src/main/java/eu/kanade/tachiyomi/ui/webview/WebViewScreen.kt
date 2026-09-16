@@ -45,6 +45,6 @@ class WebViewScreen(
                 discordScope.launchIO { setScreen(context, DiscordScreen.WEBVIEW) }
             }
         }
-        //KMK
+        // KMK
     }
 }

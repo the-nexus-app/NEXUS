@@ -292,7 +292,7 @@ class Downloader(
         val chaptersToQueue = chapters.asSequence()
             // Filter out those already downloaded.
             .filter {
-                provider.findChapterDir(it.name, it.scanlator, it.url, manga.ogTitle , source) == null
+                provider.findChapterDir(it.name, it.scanlator, it.url, manga.ogTitle, source) == null
             }
             // Add chapters to queue from the start.
             .sortedByDescending { it.sourceOrder }
@@ -339,7 +339,7 @@ class Downloader(
     private suspend fun downloadChapter(download: Download) {
         if (download.source.id == MERGED_SOURCE_ID) return
 
-        val mangaDir = provider.getMangaDir(download.manga.ogTitle , download.source).getOrElse { e ->
+        val mangaDir = provider.getMangaDir(download.manga.ogTitle, download.source).getOrElse { e ->
             download.status = Download.State.ERROR
             notifier.onError(e.message, download.chapter.name, download.manga.title, download.manga.id)
             return
@@ -641,7 +641,7 @@ class Downloader(
 
         val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")
         if (zip?.isFile != true) throw Exception("Failed to create CBZ file for downloaded chapter")
-        ZipWriter(context, zip, encrypt ).use { writer ->
+        ZipWriter(context, zip, encrypt).use { writer ->
             tmpDir.listFiles()?.forEach { file ->
                 writer.write(file)
             }

@@ -25,4 +25,4 @@ val Source.installedExtension: Extension.Installed?
             .value
             .find { ext -> ext.sources.any { it.id == id } }
     }
-//AM (BROWSE)
+// AM (BROWSE)

@@ -218,7 +218,7 @@ object SettingsMainScreen : Screen() {
             icon = Icons.Outlined.Link,
             screen = SettingsConnectionScreen,
         ),
-        //AM (CONNECTIONS)
+        // AM (CONNECTIONS)
         Item(
             titleRes = MR.strings.browse,
             subtitleRes = MR.strings.pref_browse_summary,

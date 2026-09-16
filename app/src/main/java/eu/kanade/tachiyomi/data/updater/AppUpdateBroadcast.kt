@@ -7,7 +7,9 @@ import android.content.pm.PackageInstaller
 import androidx.core.net.toUri
 import eu.kanade.tachiyomi.util.system.getParcelableExtraCompat
 import eu.kanade.tachiyomi.util.system.toast
+import exh.log.xLogE
 import tachiyomi.i18n.kmk.KMR
+import java.io.File
 
 class AppUpdateBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -33,6 +35,15 @@ class AppUpdateBroadcast : BroadcastReceiver() {
                     } finally {
                         AppUpdateDownloadJob.stop(context)
                         appUpdateNotifier.cancelInstallNotification()
+                        // The APK has been handed off to PackageInstaller and installed - the
+                        // cached copy is no longer needed. Delete by its known fixed location
+                        // rather than parsing the content:// URI, which doesn't reliably map
+                        // back to a filesystem path.
+                        try {
+                            File(context.externalCacheDir, AppUpdateDownloadJob.APK_FILE_NAME).delete()
+                        } catch (e: Exception) {
+                            xLogE("Failed to clean up downloaded update APK", e)
+                        }
                     }
                 }
                 PackageInstaller.STATUS_FAILURE,

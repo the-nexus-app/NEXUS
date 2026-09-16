@@ -100,7 +100,7 @@ data object MoreTab : Tab {
                 discordScope.launchIO { setScreen(context, DiscordScreen.MORE) }
             }
         }
-        //AM (DISCORD)
+        // AM (DISCORD)
     }
 }
 

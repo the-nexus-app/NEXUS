@@ -185,7 +185,7 @@ internal fun PreferenceItem(
                     subtitle = item.subtitle,
                 )
             }
-            //AM (CONNECTIONS)
+            // AM (CONNECTIONS)
             is Preference.PreferenceItem.InfoPreference -> {
                 InfoWidget(text = item.title)
             }

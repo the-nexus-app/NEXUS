@@ -477,4 +477,4 @@ class DiscordRPCService : Service() {
         }
     }
 }
-//AM (DISCORD)
+// AM (DISCORD)

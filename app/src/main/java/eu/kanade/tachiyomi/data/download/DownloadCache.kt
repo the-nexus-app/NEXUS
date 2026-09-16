@@ -193,7 +193,7 @@ class DownloadCache(
         val sourceDir = rootDownloadsDir.sourceDirs[manga.source]
         if (sourceDir != null) {
             val mangaDir = sourceDir.mangaDirs[
-                provider.getMangaDirName(manga.ogTitle ),
+                provider.getMangaDirName(manga.ogTitle),
             ]
             if (mangaDir != null) {
                 return mangaDir.chapterDirs.size
@@ -221,7 +221,7 @@ class DownloadCache(
             }
 
             // Retrieve the cached manga directory or cache a new one
-            val mangaDirName = provider.getMangaDirName(manga.ogTitle )
+            val mangaDirName = provider.getMangaDirName(manga.ogTitle)
             var mangaDir = sourceDir.mangaDirs[mangaDirName]
             if (mangaDir == null) {
                 mangaDir = MangaDirectory(mangaUniFile)
@@ -271,7 +271,6 @@ class DownloadCache(
         }
     }
 
-
     /**
      * Removes a list of chapters that have been deleted from this cache.
      *
@@ -306,7 +305,7 @@ class DownloadCache(
     suspend fun removeManga(manga: Manga) {
         rootDownloadsDirMutex.withLock {
             val sourceDir = rootDownloadsDir.sourceDirs[manga.source] ?: return
-            val mangaDirName = provider.getMangaDirName(manga.ogTitle )
+            val mangaDirName = provider.getMangaDirName(manga.ogTitle)
             if (sourceDir.mangaDirs.containsKey(mangaDirName)) {
                 sourceDir.mangaDirs -= mangaDirName
             }

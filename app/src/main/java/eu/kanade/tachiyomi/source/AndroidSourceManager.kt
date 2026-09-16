@@ -321,5 +321,4 @@ class AndroidSourceManager(
             return removeResult
         }
     }
-
 }

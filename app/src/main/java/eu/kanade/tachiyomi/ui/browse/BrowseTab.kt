@@ -134,7 +134,7 @@ data object BrowseTab : Tab {
             with(DiscordRPCService) {
                 discordScope.launchIO { setScreen(context, DiscordScreen.BROWSE) }
             }
-            //AM (DISCORD)
+            // AM (DISCORD)
         }
     }
 }

@@ -127,7 +127,7 @@ class DownloadProvider(
      * @param source the source of the chapter.
      */
     fun findChapterDirs(chapters: List<Chapter>, manga: Manga, source: Source): Pair<UniFile?, List<UniFile>> {
-        val mangaDir = findMangaDir(manga.ogTitle , source) ?: return null to emptyList()
+        val mangaDir = findMangaDir(manga.ogTitle, source) ?: return null to emptyList()
         return mangaDir to chapters.mapNotNull { chapter ->
             if (source.isLocal()) {
                 val splitUrl = chapter.url.split('/', limit = 2)
@@ -158,7 +158,7 @@ class DownloadProvider(
         manga: Manga,
         source: Source,
     ): List<UniFile> {
-        val mangaDir = findMangaDir(manga.ogTitle , source) ?: return emptyList()
+        val mangaDir = findMangaDir(manga.ogTitle, source) ?: return emptyList()
         return mangaDir.listFiles().orEmpty().asList().filter {
             chapters.find { chp ->
                 getValidChapterDirNames(chp.name, chp.scanlator, chp.url).any { dir ->

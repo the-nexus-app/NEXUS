@@ -45,7 +45,7 @@ object BookmarkMapper {
             createdAt = createdAt,
             chapterName = chapterName,
             chapterNumber = chapterNumber,
-                        note = note,
+            note = note,
         )
     }
 

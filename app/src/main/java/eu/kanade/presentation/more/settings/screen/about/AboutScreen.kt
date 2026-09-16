@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -268,7 +268,7 @@ class AboutScreen : Screen() {
                             label = "Reddit",
                             icon = Icons.AutoMirrored.Outlined.HelpOutline,
                             url = "https://www.reddit.com/r/thenexusapp",
-)
+                        )
                         LinkIcon(
                             label = "GitHub",
                             icon = CustomIcons.Github,

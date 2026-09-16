@@ -80,7 +80,7 @@ class PreferenceModule(val app: Application) : InjektModule {
         }
         // AM (CONNECTIONS)
         addSingletonFactory { ConnectionsPreferences(get()) }
-        //AM (CONNECTIONS)
+        // AM (CONNECTIONS)
 
         addSingletonFactory {
             SyncPreferences(get())

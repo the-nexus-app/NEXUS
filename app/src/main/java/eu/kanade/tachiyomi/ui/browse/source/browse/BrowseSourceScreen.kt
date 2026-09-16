@@ -267,7 +267,7 @@ data class BrowseSourceScreen(
                                 },
                             )
                         }
-                        if (state.filterable ) {
+                        if (state.filterable) {
                             FilterChip(
                                 selected = state.listing is Listing.Search &&
                                     (state.listing as Listing.Search).savedSearchId == null,

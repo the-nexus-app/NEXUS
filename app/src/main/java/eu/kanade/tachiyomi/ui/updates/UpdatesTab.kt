@@ -180,7 +180,7 @@ data object UpdatesTab : Tab {
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.UPDATES) }
                 }
-                //AM (DISCORD)
+                // AM (DISCORD)
             }
         }
         DisposableEffect(Unit) {

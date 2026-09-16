@@ -69,4 +69,4 @@ abstract class ConnectionsService(val id: Long) {
      */
     protected open fun getToken(): String = ""
 }
-//AM (CONNECTIONS)
+// AM (CONNECTIONS)

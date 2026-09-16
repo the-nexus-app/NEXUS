@@ -91,7 +91,7 @@ fun BrowseSourceContent(
                 is LoadState.Error -> getErrorMessage(errorState)
                 else -> stringResource(MR.strings.no_results_found)
             },
-            actions = if (source is LocalSource && onLocalSourceHelpClick != null ) {
+            actions = if (source is LocalSource && onLocalSourceHelpClick != null) {
                 persistentListOf(
                     EmptyScreenAction(
                         stringRes = MR.strings.local_source_help_guide,
