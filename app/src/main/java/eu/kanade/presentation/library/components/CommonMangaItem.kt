@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -52,21 +53,21 @@ import tachiyomi.presentation.core.util.selectedBackground
 import tachiyomi.domain.manga.model.MangaCover as MangaCoverModel
 
 object CommonMangaItemDefaults {
-    val GridHorizontalSpacer = 4.dp
-    val GridVerticalSpacer = 4.dp
+    val GridHorizontalSpacer = 8.dp
+    val GridVerticalSpacer = 8.dp
 
     @Suppress("ConstPropertyName")
     const val BrowseFavoriteCoverAlpha = 0.34f
 }
 
-private val ContinueReadingButtonSizeSmall = 28.dp
-private val ContinueReadingButtonSizeLarge = 32.dp
+private val ContinueReadingButtonSizeSmall = 32.dp
+private val ContinueReadingButtonSizeLarge = 36.dp
 
-private val ContinueReadingButtonIconSizeSmall = 16.dp
-private val ContinueReadingButtonIconSizeLarge = 20.dp
+private val ContinueReadingButtonIconSizeSmall = 18.dp
+private val ContinueReadingButtonIconSizeLarge = 22.dp
 
-private val ContinueReadingButtonGridPadding = 6.dp
-private val ContinueReadingButtonListSpacing = 8.dp
+private val ContinueReadingButtonGridPadding = 8.dp
+private val ContinueReadingButtonListSpacing = 10.dp
 
 internal const val GRID_SELECTED_COVER_ALPHA = 0.76f
 
@@ -148,14 +149,15 @@ private fun BoxScope.CoverTextOverlay(
 ) {
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp))
+            .clip(RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
             .background(
                 Brush.verticalGradient(
                     0f to Color.Transparent,
-                    1f to Color(0xAA000000),
+                    0.6f to Color(0x33000000),
+                    1f to Color(0xBB000000),
                 ),
             )
-            .fillMaxHeight(0.33f)
+            .fillMaxHeight(0.35f)
             .fillMaxWidth()
             .align(Alignment.BottomCenter),
     )
@@ -166,13 +168,14 @@ private fun BoxScope.CoverTextOverlay(
         GridItemTitle(
             modifier = Modifier
                 .weight(1f)
-                .padding(8.dp),
+                .padding(10.dp),
             title = title,
             style = MaterialTheme.typography.titleSmall.copy(
                 color = Color.White,
+                fontWeight = FontWeight.Medium,
                 shadow = Shadow(
                     color = Color.Black,
-                    blurRadius = 4f,
+                    blurRadius = 6f,
                 ),
             ),
             minLines = 1,
@@ -287,9 +290,11 @@ fun MangaComfortableGridItem(
                 },
             )
             GridItemTitle(
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier.padding(6.dp),
                 title = title,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.Medium,
+                ),
                 minLines = 2,
                 maxLines = titleMaxLines,
             )
@@ -347,7 +352,7 @@ private fun GridItemTitle(
     Text(
         modifier = modifier,
         text = title,
-        fontSize = 12.sp,
+        fontSize = 13.sp,
         lineHeight = 18.sp,
         minLines = minLines,
         maxLines = maxLines,
@@ -369,16 +374,16 @@ private fun GridItemSelectable(
 ) {
     Box(
         modifier = modifier
-            .clip(MaterialTheme.shapes.small)
+            .clip(RoundedCornerShape(8.dp))
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
             )
-            .selectedOutline(isSelected = isSelected, color = MaterialTheme.colorScheme.secondary)
-            .padding(4.dp),
+            .selectedOutline(isSelected = isSelected, color = MaterialTheme.colorScheme.primary)
+            .padding(6.dp),
     ) {
         val contentColor = if (isSelected) {
-            MaterialTheme.colorScheme.onSecondary
+            MaterialTheme.colorScheme.onPrimary
         } else {
             LocalContentColor.current
         }
@@ -474,9 +479,9 @@ private fun ContinueReadingButton(
     Box(modifier = modifier) {
         FilledIconButton(
             onClick = onClick,
-            shape = MaterialTheme.shapes.small,
+            shape = RoundedCornerShape(10.dp),
             colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f),
+                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.95f),
                 contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer),
             ),
             modifier = Modifier.size(size),

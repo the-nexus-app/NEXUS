@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import logcat.LogPriority
 import mihon.core.common.utils.mutate
+import mihon.domain.manga.interactor.GetHiddenMangaIds
 import tachiyomi.core.common.preference.CheckboxState
 import tachiyomi.core.common.preference.TriState
 import tachiyomi.core.common.preference.mapAsCheckboxState
@@ -57,6 +59,7 @@ class HistoryScreenModel(
     private val addTracks: AddTracks = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
     private val getDuplicateLibraryManga: GetDuplicateLibraryManga = Injekt.get(),
+    private val getHiddenMangaIds: GetHiddenMangaIds = GetHiddenMangaIds(),
     private val getHistory: GetHistory = Injekt.get(),
     private val getManga: GetManga = Injekt.get(),
     private val getNextChapters: GetNextChapters = Injekt.get(),
@@ -76,14 +79,28 @@ class HistoryScreenModel(
     private val selectedPositions: Array<Int> = arrayOf(-1, -1)
 
     init {
+        // Hidden Category Privacy: collect the set of manga IDs belonging to hidden categories
+        // and filter them out of History, matching the privacy behavior in Updates, Feed, and
+        // Dashboard screens. History records are preserved but hidden manga never appear in the
+        // normal History UI.
+        screenModelScope.launchIO {
+            getHiddenMangaIds.subscribe().distinctUntilChanged().collectLatest { ids ->
+                mutableState.update { it.copy(hiddenMangaIds = ids) }
+            }
+        }
+
         screenModelScope.launch {
             combine(
                 state.map { it.searchQuery }
                     .distinctUntilChanged(),
+                state.map { it.hiddenMangaIds }
+                    .distinctUntilChanged(),
                 getHistoryItemPreferenceFlow()
                     .distinctUntilChanged(),
-            ) { query, itemPreferences -> query to itemPreferences }
-                .flatMapLatest { (query, pref) ->
+            ) { query, hiddenMangaIds, itemPreferences ->
+                Triple(query, hiddenMangaIds, itemPreferences)
+            }
+                .flatMapLatest { (query, hiddenMangaIds, pref) ->
                     getHistory.subscribe(
                         query ?: "",
                         unfinishedManga = pref.filterUnfinishedManga.toBooleanOrNull(),
@@ -91,6 +108,10 @@ class HistoryScreenModel(
                         nonLibraryEntries = pref.filterNonLibraryManga.toBooleanOrNull(),
                     )
                         .distinctUntilChanged()
+                        .map { historyList ->
+                            // Filter out hidden-category manga before emitting to UI
+                            historyList.filterNot { it.mangaId in hiddenMangaIds }
+                        }
                         .catch { error ->
                             logcat(LogPriority.ERROR, error)
                             _events.send(Event.InternalError)
@@ -411,6 +432,7 @@ class HistoryScreenModel(
         val selection: Set<Long> = emptySet(),
         val hasActiveFilters: Boolean = false,
         val selectionMode: Boolean = false,
+        val hiddenMangaIds: Set<Long> = emptySet(),
     ) {
         val selected
             get() = list.fastFilter { it.chapterId in selection }

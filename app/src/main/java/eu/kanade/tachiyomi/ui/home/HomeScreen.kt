@@ -37,11 +37,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import eu.kanade.core.preference.asState
-import eu.kanade.domain.source.service.SourcePreferences
 import eu.kanade.domain.ui.UiPreferences
 import eu.kanade.presentation.util.Screen
 import eu.kanade.presentation.util.isTabletUi
-import eu.kanade.tachiyomi.ui.browse.BrowseTab
+import eu.kanade.tachiyomi.ui.dashboard.DashboardTab
+import eu.kanade.tachiyomi.ui.discover.DiscoverScreen
 import eu.kanade.tachiyomi.ui.download.DownloadQueueScreen
 import eu.kanade.tachiyomi.ui.history.HistoryTab
 import eu.kanade.tachiyomi.ui.library.LibraryTab
@@ -73,13 +73,13 @@ object HomeScreen : Screen() {
     private val showBottomNavEvent = Channel<Boolean>()
 
     private const val TAB_FADE_DURATION = 200
-    private const val TAB_NAVIGATOR_KEY = "HomeTabs"
+    private const val TAB_NAVIGATOR_KEY = "HomeTabs2"
 
     private val TABS = listOf(
-        LibraryTab,
+        DashboardTab,
         UpdatesTab,
+        LibraryTab,
         HistoryTab,
-        BrowseTab,
         MoreTab,
     )
 
@@ -93,7 +93,7 @@ object HomeScreen : Screen() {
         }
 
         TabNavigator(
-            tab = LibraryTab,
+            tab = DashboardTab,
             key = TAB_NAVIGATOR_KEY,
         ) { tabNavigator ->
             // Provide usable navigator to content screen
@@ -158,9 +158,10 @@ object HomeScreen : Screen() {
             }
 
             val goToLibraryTab = { tabNavigator.current = LibraryTab }
+            val goToDashboardTab = { tabNavigator.current = DashboardTab }
             BackHandler(
-                enabled = tabNavigator.current != LibraryTab,
-                onBack = goToLibraryTab,
+                enabled = tabNavigator.current != DashboardTab,
+                onBack = goToDashboardTab,
             )
 
             LaunchedEffect(Unit) {
@@ -172,27 +173,28 @@ object HomeScreen : Screen() {
                 }
                 launch {
                     openTabEvent.receiveAsFlow().collectLatest {
-                        tabNavigator.current = when (it) {
-                            is Tab.Library -> LibraryTab
-                            Tab.Updates -> UpdatesTab
-                            Tab.History -> HistoryTab
-                            is Tab.Browse -> {
-                                if (it.toExtensions) {
-                                    BrowseTab.showExtension()
+                        when (it) {
+                            Tab.Dashboard -> tabNavigator.current = DashboardTab
+                            is Tab.Library -> {
+                                tabNavigator.current = LibraryTab
+                                if (it.mangaIdToOpen != null) {
+                                    navigator.push(MangaScreen(it.mangaIdToOpen))
                                 }
-                                BrowseTab
                             }
-                            is Tab.More -> MoreTab
-                        }
-
-                        if (it is Tab.Library && it.mangaIdToOpen != null) {
-                            navigator.push(MangaScreen(it.mangaIdToOpen))
-                        }
-                        if (it is Tab.More) {
-                            if (it.toDownloads) {
-                                navigator.push(DownloadQueueScreen)
-                            } else if (it.toLibraryUpdateErrors) {
-                                navigator.push(LibraryUpdateErrorScreen())
+                            Tab.Updates -> tabNavigator.current = UpdatesTab
+                            Tab.History -> tabNavigator.current = HistoryTab
+                            is Tab.Browse -> {
+                                // Browse is no longer a bottom-nav tab; its functionality
+                                // now lives in Discover, reached as a pushed screen.
+                                navigator.push(DiscoverScreen(openExtensions = it.toExtensions))
+                            }
+                            is Tab.More -> {
+                                tabNavigator.current = MoreTab
+                                if (it.toDownloads) {
+                                    navigator.push(DownloadQueueScreen)
+                                } else if (it.toLibraryUpdateErrors) {
+                                    navigator.push(LibraryUpdateErrorScreen())
+                                }
                             }
                         }
                     }
@@ -291,25 +293,6 @@ object HomeScreen : Screen() {
                             }
                         }
                     }
-                    BrowseTab::class.isInstance(tab) -> {
-                        val count by produceState(initialValue = 0) {
-                            Injekt.get<SourcePreferences>().extensionUpdatesCount().changes()
-                                .collectLatest { value = it }
-                        }
-                        if (count > 0) {
-                            Badge {
-                                val desc = pluralStringResource(
-                                    MR.plurals.update_check_notification_ext_updates,
-                                    count = count,
-                                    count,
-                                )
-                                Text(
-                                    text = count.toString(),
-                                    modifier = Modifier.semantics { contentDescription = desc },
-                                )
-                            }
-                        }
-                    }
                 }
             },
         ) {
@@ -335,6 +318,7 @@ object HomeScreen : Screen() {
     }
 
     sealed interface Tab {
+        data object Dashboard : Tab
         data class Library(val mangaIdToOpen: Long? = null) : Tab
         data object Updates : Tab
         data object History : Tab

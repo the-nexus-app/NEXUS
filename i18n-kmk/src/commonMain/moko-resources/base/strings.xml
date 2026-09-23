@@ -4,6 +4,8 @@
     <string name="action_search_for_source">Search for sources</string>
     <string name="action_source_search">Search in source</string>
     <string name="action_library_search">Library search</string>
+    <string name="search_scope_all_categories">All</string>
+    <string name="search_scope_current_category">Category</string>
     <string name="action_toggle_nsfw_only">Toggle NSFW only</string>
     <string name="action_bulk_select">Bulk selection mode</string>
     <string name="action_faq_and_guides">FAQ and Guides</string>
@@ -13,6 +15,8 @@
     <string name="action_remove_merged">Remove original entries from library?</string>
     <string name="action_hide">Hide</string>
     <string name="action_show_hidden_categories">Show hidden categories</string>
+    <string name="action_hidden_updates">Hidden Updates</string>
+    <string name="action_hidden_unlocked">Hidden Unlocked</string>
     <string name="action_panorama_cover">Panorama cover</string>
     <string name="action_open_folder">Open folder</string>
     <string name="action_clear_manga">Clear manga</string>
@@ -72,6 +76,7 @@
     <string name="theme_matrix">Matrix</string>
     <string name="theme_mocha">Mocha</string>
     <string name="theme_sapphire">Sapphire</string>
+    <string name="theme_nexus">NEXUS</string>
     <!-- Custom Color Picker -->
     <string name="pref_custom_color">Palette Personalizer</string>
     <string name="custom_color_description">Pick a seed color for the custom Theme</string>
@@ -89,6 +94,23 @@
     <string name="custom_theme_palette_springfield">Springfield</string>
     <string name="custom_theme_palette_lcd">LCD</string>
     <string name="custom_theme_palette_pico">PICO-8</string>
+    <!-- Dashboard section -->
+    <string name="label_discover">Discover</string>
+    <string name="action_see_all">See all</string>
+    <string name="dashboard_continue_reading">Continue Reading</string>
+    <string name="dashboard_recently_read">Recently Read</string>
+    <string name="dashboard_latest_updates">Latest Updates</string>
+    <string name="dashboard_feed">Feed</string>
+    <string name="dashboard_feed_manage">Manage</string>
+    <string name="dashboard_feed_none_configured">Add sources to see their latest uploads here.</string>
+    <string name="dashboard_discover_more">Discover More</string>
+    <string name="dashboard_continue_action">Continue</string>
+    <string name="dashboard_welcome_back">Welcome back</string>
+    <string name="dashboard_tagline">Your stories. All in one place.</string>
+    <string name="dashboard_insights_this_week">This week</string>
+    <string name="dashboard_insights_library_titles">Library Titles</string>
+    <string name="dashboard_insights_chapters_completed">Chapters Completed</string>
+    <string name="dashboard_data_storage">Data</string>
     <!-- Library section -->
     <string name="pref_show_updating_progress_banner">Show updating progress banner</string>
     <string name="action_display_source_badge">Source icon</string>
@@ -158,6 +180,8 @@
     <string name="open">Open</string>
     <string name="release_page">Release page</string>
     <string name="could_not_install_update">Could not install update</string>
+    <string name="update_apk_validation_failed">Downloaded update failed validation and was not installed</string>
+    <string name="update_apk_insufficient_storage">Not enough free storage to download the update</string>
     <!--UpdateCheck Notifications-->
     <string name="update_check_notification_preview_available">Coming (soon) updates!</string>
     <!-- About -->
@@ -185,6 +209,7 @@
     <string name="sort_feed_confirmation">Would you like to sort the feeds alphabetically?</string>
     <!-- Migration -->
     <string name="current_">Current: %1$s</string>
+    <string name="up_to_date">Up to date</string>
     <string name="migrationConfigScreen_smartSearchSingleEntryTitle">Use smart search</string>
     <string name="migrationConfigScreen_smartSearchSingleEntrySubtitle">If enabled, automatically picks the best match result. Otherwise, shows all search results for manual selection.</string>
     <!-- Misc -->
@@ -238,4 +263,11 @@
     <string name="pref_discord_show_download_button_summary">Displays a button to download the app</string>
     <string name="pref_discord_show_discord_button">Show Discord Button</string>
     <string name="pref_discord_show_discord_button_summary">Displays a button to join the Discord server</string>
+
+    <!-- More Screen section headers -->
+    <string name="section_reading_downloads">Reading &amp; Downloads</string>
+    <string name="section_library">Library</string>
+    <string name="section_tools_data">Tools &amp; Data</string>
+    <string name="section_recent">Recent</string>
+    <string name="section_application">Application</string>
 </resources>

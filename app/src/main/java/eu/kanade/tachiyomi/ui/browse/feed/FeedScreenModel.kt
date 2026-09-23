@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import mihon.domain.manga.interactor.GetHiddenMangaIds
 import mihon.domain.manga.model.toDomainManga
 import tachiyomi.core.common.util.QuerySanitizer.sanitize
 import tachiyomi.core.common.util.lang.launchIO
@@ -69,6 +70,7 @@ open class FeedScreenModel(
     private val insertFeedSavedSearch: InsertFeedSavedSearch = Injekt.get(),
     private val deleteFeedSavedSearchById: DeleteFeedSavedSearchById = Injekt.get(),
     private val reorderFeed: ReorderFeed = Injekt.get(),
+    private val getHiddenMangaIds: GetHiddenMangaIds = GetHiddenMangaIds(),
 ) : StateScreenModel<FeedScreenState>(FeedScreenState()) {
 
     private val _events = Channel<Event>(Int.MAX_VALUE)
@@ -256,6 +258,11 @@ open class FeedScreenModel(
      */
     private fun getFeed(feedSavedSearch: List<FeedItemUI>) {
         screenModelScope.launch {
+            // Snapshot once per fetch, same as the rest of this function's per-source page
+            // fetches - hidden-category manga must never reach the UI, so this is applied
+            // before the result is written into state below, not as a later UI-side filter.
+            val hiddenMangaIds = getHiddenMangaIds.await()
+
             feedSavedSearch.map { itemUI ->
                 async {
                     val page = try {
@@ -288,7 +295,8 @@ open class FeedScreenModel(
                                 .map { it.toDomainManga(itemUI.source!!.id) }
                                 .distinctBy { it.url }
                                 .let { networkToLocalManga(it) }
-                                .filter { !hideInLibraryFeedItems.get() || !it.favorite },
+                                .filter { !hideInLibraryFeedItems.get() || !it.favorite }
+                                .filterNot { it.id in hiddenMangaIds },
                         )
                     }
 

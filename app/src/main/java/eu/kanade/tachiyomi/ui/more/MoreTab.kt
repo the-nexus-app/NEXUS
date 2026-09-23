@@ -19,6 +19,7 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import eu.kanade.core.preference.asState
 import eu.kanade.domain.base.BasePreferences
+import eu.kanade.domain.source.service.SourcePreferences
 import eu.kanade.domain.ui.UiPreferences
 import eu.kanade.presentation.more.MoreScreen
 import eu.kanade.presentation.util.Tab
@@ -29,6 +30,7 @@ import eu.kanade.tachiyomi.data.download.DownloadManager
 import eu.kanade.tachiyomi.ui.bookmarkedchapters.BookmarkedChaptersScreen
 import eu.kanade.tachiyomi.ui.bookmarkedpages.BookmarkedPagesScreen
 import eu.kanade.tachiyomi.ui.category.CategoryScreen
+import eu.kanade.tachiyomi.ui.discover.DiscoverScreen
 import eu.kanade.tachiyomi.ui.download.DownloadQueueScreen
 import eu.kanade.tachiyomi.ui.history.HistoryTab
 import eu.kanade.tachiyomi.ui.libraryUpdateError.LibraryUpdateErrorScreen
@@ -89,6 +91,8 @@ data object MoreTab : Tab {
             onClickBatchAdd = { navigator.push(BatchAddScreen()) },
             onClickUpdates = { navigator.push(UpdatesTab) },
             onClickHistory = { navigator.push(HistoryTab) },
+            onClickDiscover = { navigator.push(DiscoverScreen()) },
+            extensionUpdatesCount = screenModel.extensionUpdatesCount,
             onClickBookmarkedChapters = { navigator.push(BookmarkedChaptersScreen()) },
             onClickBookmarkedPages = { navigator.push(BookmarkedPagesScreen()) },
             onClickLibraryUpdateErrors = { navigator.push(LibraryUpdateErrorScreen()) },
@@ -108,6 +112,7 @@ private class MoreScreenModel(
     private val downloadManager: DownloadManager = Injekt.get(),
     preferences: BasePreferences = Injekt.get(),
     uiPreferences: UiPreferences = Injekt.get(),
+    sourcePreferences: SourcePreferences = Injekt.get(),
 ) : ScreenModel {
 
     var downloadedOnly by preferences.downloadedOnly().asState(screenModelScope)
@@ -115,6 +120,8 @@ private class MoreScreenModel(
 
     val showNavUpdates by uiPreferences.showNavUpdates().asState(screenModelScope)
     val showNavHistory by uiPreferences.showNavHistory().asState(screenModelScope)
+
+    val extensionUpdatesCount by sourcePreferences.extensionUpdatesCount().asState(screenModelScope)
 
     private var _downloadQueueState: MutableStateFlow<DownloadQueueState> = MutableStateFlow(DownloadQueueState.Stopped)
     val downloadQueueState: StateFlow<DownloadQueueState> = _downloadQueueState.asStateFlow()

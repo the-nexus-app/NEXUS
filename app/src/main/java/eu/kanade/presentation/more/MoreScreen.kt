@@ -5,6 +5,7 @@ import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.CollectionsBookmark
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.GetApp
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Info
@@ -77,6 +79,8 @@ fun MoreScreen(
     onClickBatchAdd: () -> Unit,
     onClickUpdates: () -> Unit,
     onClickHistory: () -> Unit,
+    onClickDiscover: () -> Unit,
+    extensionUpdatesCount: Int,
     onClickBookmarkedChapters: () -> Unit,
     onClickBookmarkedPages: () -> Unit,
     onClickLibraryUpdateErrors: () -> Unit,
@@ -90,8 +94,14 @@ fun MoreScreen(
             // use contentPadding as preferable padding for ScrollbarLazyColumn when not using stickyHeader
             contentPadding = contentPadding,
         ) {
+            // ========== HEADER ==========
             item {
                 LogoHeader()
+            }
+
+            // ========== READING & DOWNLOADS SECTION ==========
+            item {
+                MoreSectionHeader(title = stringResource(KMR.strings.section_reading_downloads))
             }
             item {
                 SwitchPreferenceWidget(
@@ -114,43 +124,6 @@ fun MoreScreen(
                     onCheckedChanged = onIncognitoModeChange,
                 )
             }
-
-            item { HorizontalDivider() }
-
-            if (!showNavUpdates) {
-                item {
-                    TextPreferenceWidget(
-                        title = stringResource(MR.strings.label_recent_updates),
-                        icon = Icons.Outlined.NewReleases,
-                        onPreferenceClick = onClickUpdates,
-                    )
-                }
-            }
-            if (!showNavHistory) {
-                item {
-                    TextPreferenceWidget(
-                        title = stringResource(MR.strings.label_recent_manga),
-                        icon = Icons.Outlined.History,
-                        onPreferenceClick = onClickHistory,
-                    )
-                }
-            }
-
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.label_bookmarked_chapters),
-                    icon = Icons.Outlined.CollectionsBookmark,
-                    onPreferenceClick = onClickBookmarkedChapters,
-                )
-            }
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.label_bookmarked_pages),
-                    icon = Icons.Outlined.Bookmarks,
-                    onPreferenceClick = onClickBookmarkedPages,
-                )
-            }
-
             item {
                 val downloadQueueState = downloadQueueStateProvider()
                 TextPreferenceWidget(
@@ -180,6 +153,26 @@ fun MoreScreen(
                     onPreferenceClick = onClickDownloadQueue,
                 )
             }
+
+            // ========== LIBRARY SECTION ==========
+            item {
+                MoreSectionHeader(title = stringResource(KMR.strings.section_library))
+            }
+            item {
+                TextPreferenceWidget(
+                    title = stringResource(MR.strings.label_bookmarked_chapters),
+                    icon = Icons.Outlined.CollectionsBookmark,
+                    onPreferenceClick = onClickBookmarkedChapters,
+                )
+            }
+            item {
+                TextPreferenceWidget(
+                    title = stringResource(MR.strings.label_bookmarked_pages),
+                    icon = Icons.Outlined.Bookmarks,
+                    onPreferenceClick = onClickBookmarkedPages,
+                )
+            }
+
             item {
                 TextPreferenceWidget(
                     title = stringResource(MR.strings.categories),
@@ -201,6 +194,27 @@ fun MoreScreen(
                     onPreferenceClick = onClickLibraryUpdateErrors,
                 )
             }
+
+            // ========== TOOLS & DATA SECTION ==========
+            item {
+                MoreSectionHeader(title = stringResource(KMR.strings.section_tools_data))
+            }
+            item {
+                TextPreferenceWidget(
+                    title = stringResource(KMR.strings.label_discover),
+                    subtitle = if (extensionUpdatesCount > 0) {
+                        pluralStringResource(
+                            MR.plurals.update_check_notification_ext_updates,
+                            count = extensionUpdatesCount,
+                            extensionUpdatesCount,
+                        )
+                    } else {
+                        null
+                    },
+                    icon = Icons.Outlined.Explore,
+                    onPreferenceClick = onClickDiscover,
+                )
+            }
             item {
                 TextPreferenceWidget(
                     title = stringResource(MR.strings.label_data_storage),
@@ -218,8 +232,35 @@ fun MoreScreen(
                 }
             }
 
-            item { HorizontalDivider() }
+            // ========== RECENT UPDATES/HISTORY (CONDITIONAL) ==========
+            if (!showNavUpdates || !showNavHistory) {
+                item {
+                    MoreSectionHeader(title = stringResource(KMR.strings.section_recent))
+                }
+                if (!showNavUpdates) {
+                    item {
+                        TextPreferenceWidget(
+                            title = stringResource(MR.strings.label_recent_updates),
+                            icon = Icons.Outlined.NewReleases,
+                            onPreferenceClick = onClickUpdates,
+                        )
+                    }
+                }
+                if (!showNavHistory) {
+                    item {
+                        TextPreferenceWidget(
+                            title = stringResource(MR.strings.label_recent_manga),
+                            icon = Icons.Outlined.History,
+                            onPreferenceClick = onClickHistory,
+                        )
+                    }
+                }
+            }
 
+            // ========== APPLICATION SECTION ==========
+            item {
+                MoreSectionHeader(title = stringResource(KMR.strings.section_application))
+            }
             item {
                 TextPreferenceWidget(
                     title = stringResource(MR.strings.label_settings),
@@ -242,5 +283,25 @@ fun MoreScreen(
                 )
             }
         }
+    }
+}
+
+/**
+ * Section header for More Screen sections.
+ * Provides visual separation and organization between logical groupings.
+ */
+@Composable
+private fun MoreSectionHeader(title: String) {
+    Box(
+        contentAlignment = Alignment.CenterStart,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+    ) {
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.labelLarge,
+        )
     }
 }

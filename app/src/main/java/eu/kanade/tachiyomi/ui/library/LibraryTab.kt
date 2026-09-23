@@ -33,6 +33,7 @@ import eu.kanade.presentation.category.components.ChangeCategoryDialog
 import eu.kanade.presentation.library.DeleteLibraryMangaDialog
 import eu.kanade.presentation.library.LibrarySettingsDialog
 import eu.kanade.presentation.library.components.LibraryContent
+import eu.kanade.presentation.library.components.LibrarySearchBar
 import eu.kanade.presentation.library.components.LibraryToolbar
 import eu.kanade.presentation.library.components.SyncFavoritesConfirmDialog
 import eu.kanade.presentation.library.components.SyncFavoritesProgressDialog
@@ -72,6 +73,7 @@ import tachiyomi.core.common.util.lang.launchIO
 import tachiyomi.domain.category.model.Category
 import tachiyomi.domain.library.model.LibraryGroup
 import tachiyomi.domain.library.model.LibraryManga
+import tachiyomi.domain.library.service.LibraryPreferences
 import tachiyomi.domain.manga.model.Manga
 import tachiyomi.i18n.MR
 import tachiyomi.i18n.kmk.KMR
@@ -95,7 +97,7 @@ data object LibraryTab : Tab {
             val isSelected = LocalTabNavigator.current.current.key == key
             val image = AnimatedImageVector.animatedVectorResource(R.drawable.anim_library_enter)
             return TabOptions(
-                index = 0u,
+                index = 2u,
                 title = stringResource(MR.strings.label_library),
                 icon = rememberAnimatedVectorPainter(image, isSelected),
             )
@@ -117,6 +119,21 @@ data object LibraryTab : Tab {
         val state by screenModel.state.collectAsState()
 
         val snackbarHostState = remember { SnackbarHostState() }
+
+        // Used by the per-card continue-reading button.
+        val resumeReading: (LibraryManga) -> Unit = { manga ->
+            scope.launchIO {
+                val chapter = screenModel.getNextUnreadChapter(manga.manga)
+                if (chapter != null) {
+                    context.startActivity(
+                        ReaderActivity.newIntent(context, chapter.mangaId, chapter.id),
+                    )
+                } else {
+                    snackbarHostState.showSnackbar(context.stringResource(MR.strings.no_next_chapter))
+                }
+            }
+            Unit
+        }
 
         val onClickRefresh: (Category?) -> Boolean = { category ->
             val started = LibraryUpdateJob.startNow(
@@ -143,19 +160,12 @@ data object LibraryTab : Tab {
 
         Scaffold(
             topBar = { scrollBehavior ->
-                val title = state.getToolbarTitle(
-                    defaultTitle = stringResource(MR.strings.label_library),
-                    defaultCategoryTitle = stringResource(MR.strings.label_default),
-                    page = state.coercedActiveCategoryIndex,
-                )
                 LibraryToolbar(
-                    hasActiveFilters = state.hasActiveFilters,
                     selectedCount = state.selection.size,
-                    title = title,
                     onClickUnselectAll = screenModel::clearSelection,
                     onClickSelectAll = screenModel::selectAll,
                     onClickInvertSelection = screenModel::invertSelection,
-                    onClickFilter = screenModel::showSettingsDialog,
+                    onClickControls = { screenModel.showSettingsDialog() },
                     onClickRefresh = { onClickRefresh(state.activeCategory) },
                     onClickGlobalUpdate = { onClickRefresh(null) },
                     onClickOpenRandomManga = {
@@ -170,17 +180,6 @@ data object LibraryTab : Tab {
                             }
                         }
                     },
-                    onClickSyncNow = {
-                        if (!SyncDataJob.isRunning(context)) {
-                            SyncDataJob.startNow(context, manual = true)
-                        } else {
-                            context.toast(SYMR.strings.sync_in_progress)
-                        }
-                    },
-                    onClickSyncExh = screenModel::openFavoritesSyncDialog.takeIf { state.showSyncExh },
-                    isSyncEnabled = state.isSyncEnabled,
-                    searchQuery = state.searchQuery,
-                    onSearchQueryChange = screenModel::search,
                     onInvalidateDownloadCache = { context ->
                         Injekt.get<DownloadCache>().invalidateCache()
                         context.toast(MR.strings.download_cache_invalidated)
@@ -300,19 +299,7 @@ data object LibraryTab : Tab {
                         showPageTabs = state.showCategoryTabs || !state.searchQuery.isNullOrEmpty(),
                         onChangeCurrentPage = screenModel::updateActiveCategoryIndex,
                         onClickManga = { navigator.push(MangaScreen(it)) },
-                        onContinueReadingClicked = { it: LibraryManga ->
-                            scope.launchIO {
-                                val chapter = screenModel.getNextUnreadChapter(it.manga)
-                                if (chapter != null) {
-                                    context.startActivity(
-                                        ReaderActivity.newIntent(context, chapter.mangaId, chapter.id),
-                                    )
-                                } else {
-                                    snackbarHostState.showSnackbar(context.stringResource(MR.strings.no_next_chapter))
-                                }
-                            }
-                            Unit
-                        }.takeIf { state.showMangaContinueButton },
+                        onContinueReadingClicked = resumeReading.takeIf { state.showMangaContinueButton },
                         onToggleSelection = screenModel::toggleSelection,
                         onToggleRangeSelection = { category, manga ->
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -326,6 +313,12 @@ data object LibraryTab : Tab {
                         getDisplayMode = { screenModel.getDisplayMode() },
                         getColumnsForOrientation = { screenModel.getColumnsForOrientation(it) },
                         getItemsForCategory = { state.getItemsForCategory(it) },
+                        onSearchQueryChange = screenModel::search,
+                        searchScope = state.searchScope,
+                        onScopeSelected = { scope ->
+                            Injekt.get<LibraryPreferences>().librarySearchScope().set(scope)
+                        },
+                        onManageCategoriesClick = { navigator.push(CategoryScreen()) },
                     )
                 }
             }
@@ -340,6 +333,7 @@ data object LibraryTab : Tab {
                     category = state.activeCategory,
                     hasCategories = state.libraryData.categories.fastAny { !it.isSystemCategory },
                     categories = state.libraryData.categories.filterNot(Category::isSystemCategory),
+                    initialTabIndex = dialog.initialTabIndex,
                 )
             }
             is LibraryScreenModel.Dialog.ChangeCategory -> {

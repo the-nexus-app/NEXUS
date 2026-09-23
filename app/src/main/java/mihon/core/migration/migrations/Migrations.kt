@@ -53,4 +53,5 @@ val migrations: List<Migration>
         DisabledRepoMigration(),
         SyncPrefKeyMigration(),
         ChapterUrlHashMigration(),
+        NexusDefaultThemeMigration(),
     )

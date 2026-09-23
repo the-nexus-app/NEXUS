@@ -3,11 +3,14 @@ package eu.kanade.tachiyomi.data.updater
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.content.pm.PackageInstaller
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
+import android.os.StatFs
 import androidx.annotation.RequiresApi
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
@@ -44,11 +47,14 @@ import tachiyomi.core.common.util.lang.launchUI
 import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.domain.release.service.AppUpdatePolicy
 import tachiyomi.i18n.MR
+import tachiyomi.i18n.kmk.KMR
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 import java.io.File
+import java.io.IOException
 import java.lang.ref.WeakReference
+import java.security.MessageDigest
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -157,6 +163,11 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             // File where the apk will be saved.
             val apkFile = File(context.externalCacheDir, APK_FILE_NAME)
 
+            if (!hasEnoughStorageFor(apkFile)) {
+                notifier.onDownloadError(url, context.stringResource(KMR.strings.update_apk_insufficient_storage))
+                return@coroutineScope
+            }
+
             network.downloadFileWithResume(url, apkFile, progressListener)
             if (isStopped) {
                 cancel()
@@ -164,6 +175,19 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             }
 
             notifier.cancel()
+
+            // Never hand an unvalidated file to the installer: confirm it's a well-formed APK
+            // that both claims to be this app (package name) and is signed by whoever signed
+            // the copy already installed on this device (signing certificate). A checksum only
+            // proves the bytes weren't mangled in transit - it says nothing about who produced
+            // them, so it's not used here as a stand-in for authenticity.
+            if (!isValidUpdateApk(apkFile)) {
+                xLogE("Downloaded update APK failed validation, refusing to install")
+                apkFile.delete()
+                notifier.onDownloadError(url, context.stringResource(KMR.strings.update_apk_validation_failed))
+                return@coroutineScope
+            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 startInstalling(apkFile, title)
             } else {
@@ -174,15 +198,97 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             val shouldCancel = e is CancellationException ||
                 isStopped ||
                 (e is StreamResetException && e.errorCode == ErrorCode.CANCEL)
-            if (shouldCancel) {
-                notifier.cancel()
-            } else {
-                notifier.onDownloadError(
+            when {
+                shouldCancel -> notifier.cancel()
+                isOutOfSpace(e) -> notifier.onDownloadError(
                     url,
-                    e.message,
+                    context.stringResource(KMR.strings.update_apk_insufficient_storage),
                 )
+                else -> notifier.onDownloadError(url, e.message)
             }
         }
+    }
+
+    /**
+     * Rough pre-flight check so a download that can never finish fails fast with a clear
+     * message instead of dying partway through with a raw IOException. This can't know the
+     * exact APK size up front (that would need an extra network round-trip), so it checks
+     * against a conservative minimum instead; the in-download [isOutOfSpace] catch is the
+     * backstop for anything this misses.
+     */
+    private fun hasEnoughStorageFor(apkFile: File): Boolean {
+        return try {
+            val stat = StatFs((apkFile.parentFile ?: context.externalCacheDir)?.path ?: return true)
+            val availableBytes = stat.availableBytes
+            availableBytes >= MIN_FREE_SPACE_BYTES
+        } catch (e: Exception) {
+            // If we can't determine free space, don't block the download over it.
+            true
+        }
+    }
+
+    private fun isOutOfSpace(e: Throwable): Boolean {
+        var cause: Throwable? = e
+        while (cause != null) {
+            if (cause is IOException && cause.message?.contains("space", ignoreCase = true) == true) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
+    }
+
+    /**
+     * Confirms [file] is a parseable APK, declares this app's package name, and is signed with
+     * the same certificate(s) as the app currently installed on the device.
+     */
+    private fun isValidUpdateApk(file: File): Boolean {
+        return try {
+            val pm = context.packageManager
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                PackageManager.GET_SIGNING_CERTIFICATES
+            } else {
+                @Suppress("DEPRECATION")
+                PackageManager.GET_SIGNATURES
+            }
+
+            val archiveInfo = pm.getPackageArchiveInfo(file.absolutePath, flags) ?: return false
+
+            if (archiveInfo.packageName != BuildConfig.APPLICATION_ID) {
+                xLogE("Update APK package name '${archiveInfo.packageName}' does not match '${BuildConfig.APPLICATION_ID}'")
+                return false
+            }
+
+            val installedInfo = pm.getPackageInfo(context.packageName, flags)
+            val newCerts = archiveInfo.signingCertificateDigests()
+            val installedCerts = installedInfo.signingCertificateDigests()
+
+            if (newCerts.isEmpty() || installedCerts.isEmpty() || newCerts != installedCerts) {
+                xLogE("Update APK signing certificate does not match the installed app's")
+                return false
+            }
+
+            true
+        } catch (e: Exception) {
+            xLogE("Failed to validate update APK", e)
+            false
+        }
+    }
+
+    /** SHA-256 digests of every signing certificate reported for this package, as a set. */
+    private fun PackageInfo.signingCertificateDigests(): Set<String> {
+        val digest = MessageDigest.getInstance("SHA-256")
+        val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            signingInfo?.let { info ->
+                if (info.hasMultipleSigners()) info.apkContentsSigners else info.signingCertificateHistory
+            } ?: emptyArray()
+        } else {
+            @Suppress("DEPRECATION")
+            signatures ?: emptyArray()
+        }
+        return signatures
+            .map { signature -> digest.digest(signature.toByteArray()).joinToString("") { "%02x".format(it) } }
+            .toSet()
     }
 
     @RequiresApi(31)
@@ -241,6 +347,11 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
     companion object {
         private const val TAG = "AppUpdateDownload"
         internal const val APK_FILE_NAME = "update.apk"
+
+        // Conservative floor for the pre-flight free-space check: comfortably above a typical
+        // NEXUS APK size, so a device that's genuinely nearly full is caught before downloading
+        // rather than partway through.
+        private const val MIN_FREE_SPACE_BYTES = 100L * 1024 * 1024
 
         const val PACKAGE_INSTALLED_ACTION =
             "${BuildConfig.APPLICATION_ID}.SESSION_SELF_API_PACKAGE_INSTALLED"

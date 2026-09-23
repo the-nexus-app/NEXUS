@@ -30,6 +30,7 @@ fun WhatsNewScreen(
     currentVersion: String,
     versionName: String,
     changelogInfo: String,
+    isUpdateAvailable: Boolean = true,
     onOpenInBrowser: () -> Unit,
     onDownloadUpdate: () -> Unit,
 ) {
@@ -38,7 +39,12 @@ fun WhatsNewScreen(
         headingText = stringResource(MR.strings.whats_new),
         subtitleText = stringResource(SYMR.strings.latest_, versionName) +
             " - " + stringResource(KMR.strings.current_, currentVersion),
-        acceptText = stringResource(MR.strings.whats_new_download_update),
+        acceptText = if (isUpdateAvailable) {
+            stringResource(MR.strings.whats_new_download_update)
+        } else {
+            stringResource(KMR.strings.up_to_date)
+        },
+        canAccept = isUpdateAvailable,
         onAcceptClick = onDownloadUpdate,
     ) {
         Column(
@@ -108,6 +114,7 @@ private fun WhatsNewScreenPreview() {
 
                 **Full Changelog**: [the-nexus-app/NEXUS@v1.1.9...v1.2.0](https://github.com/the-nexus-app/NEXUS/compare/v1.1.9...v1.2.0)
             """,
+            isUpdateAvailable = true,
             onOpenInBrowser = {},
             onDownloadUpdate = {},
         )
