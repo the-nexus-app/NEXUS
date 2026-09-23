@@ -161,17 +161,21 @@ class AboutScreen : Screen() {
                                 scope.launch {
                                     isCheckingWhatsNew = true
 
-                                    getReleaseNotes(
+                                    getReleaseNotesWithComparison(
                                         context = context,
-                                        onAvailableUpdate = { result ->
+                                        onReleaseLoaded = { result ->
                                             val whatsNewScreen = WhatsNewScreen(
                                                 currentVersion = BuildConfig.VERSION_NAME,
                                                 versionName = result.release.version,
                                                 changelogInfo = result.release.info,
                                                 releaseLink = result.release.releaseLink,
                                                 downloadLink = result.release.downloadLink,
+                                                isUpdateAvailable = result.isUpdateAvailable,
                                             )
                                             navigator.push(whatsNewScreen)
+                                        },
+                                        onError = {
+                                            // Error is already toasted by the function
                                         },
                                         onFinish = {
                                             isCheckingWhatsNew = false
@@ -315,24 +319,28 @@ class AboutScreen : Screen() {
     }
 
     companion object {
-        suspend fun getReleaseNotes(
+        suspend fun getReleaseNotesWithComparison(
             context: Context,
-            onAvailableUpdate: (GetApplicationRelease.Result.NewUpdate) -> Unit,
+            onReleaseLoaded: (GetApplicationRelease.ReleaseNotesResult.Success) -> Unit,
+            onError: () -> Unit,
             onFinish: () -> Unit,
         ) {
             val updateChecker = AppUpdateChecker()
             withUIContext {
                 try {
-                    when (val result = withIOContext { updateChecker.getReleaseNotes() }) {
-                        is GetApplicationRelease.Result.NewUpdate -> {
-                            onAvailableUpdate(result)
+                    when (val result = withIOContext { updateChecker.getReleaseNotesWithComparison() }) {
+                        is GetApplicationRelease.ReleaseNotesResult.Success -> {
+                            onReleaseLoaded(result)
                         }
 
-                        else -> {}
+                        is GetApplicationRelease.ReleaseNotesResult.Error -> {
+                            onError()
+                        }
                     }
                 } catch (e: Exception) {
                     context.toast(e.message)
                     logcat(LogPriority.ERROR, e)
+                    onError()
                 } finally {
                     onFinish()
                 }

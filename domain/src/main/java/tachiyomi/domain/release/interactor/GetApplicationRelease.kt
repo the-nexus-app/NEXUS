@@ -76,6 +76,28 @@ class GetApplicationRelease(
         return Result.NewUpdate(latest)
     }
 
+    suspend fun awaitReleaseNotesWithComparison(arguments: Arguments): ReleaseNotesResult {
+        val releases = try {
+            service.releaseNotes(arguments)
+        } catch (e: Exception) {
+            logcat(LogPriority.ERROR, e) { "Failed to fetch release notes from ${arguments.repository}" }
+            return ReleaseNotesResult.Error
+        }
+        val latest = releases
+            .filterNot { it.draft }
+            .filter { !it.preRelease }
+            .getLatest() ?: return ReleaseNotesResult.Error
+
+        val isUpdateAvailable = isNewVersion(
+            arguments.isPreview,
+            arguments.commitCount,
+            arguments.versionName,
+            latest.version,
+        )
+
+        return ReleaseNotesResult.Success(latest, isUpdateAvailable)
+    }
+
     /**
      * [isPreview] is if current version is Preview (beta) build
      *
@@ -168,6 +190,11 @@ class GetApplicationRelease(
         data class NewUpdate(val release: Release) : Result
         data object NoNewUpdate : Result
         data object OsTooOld : Result
+    }
+
+    sealed interface ReleaseNotesResult {
+        data class Success(val release: Release, val isUpdateAvailable: Boolean) : ReleaseNotesResult
+        data object Error : ReleaseNotesResult
     }
 }
 

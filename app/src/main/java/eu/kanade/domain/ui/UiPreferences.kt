@@ -17,9 +17,14 @@ class UiPreferences(
 
     fun themeMode() = preferenceStore.getEnum("pref_theme_mode_key", ThemeMode.SYSTEM)
 
+    /**
+     * New installs default straight to [AppTheme.NEXUS]. Existing installs are switched
+     * over by [mihon.core.migration.migrations.NexusDefaultThemeMigration] instead, and
+     * only if the user never explicitly chose a theme.
+     */
     fun appTheme() = preferenceStore.getEnum(
         "pref_app_theme",
-        AppTheme.MONET,
+        AppTheme.NEXUS,
     )
 
     fun themeDarkAmoled() = preferenceStore.getBoolean("pref_theme_dark_amoled_key", false)

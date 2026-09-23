@@ -26,7 +26,7 @@ internal fun LibraryList(
 ) {
     FastScrollLazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding + PaddingValues(vertical = 8.dp),
+        contentPadding = contentPadding + PaddingValues(horizontal = 12.dp, vertical = 8.dp),
     ) {
         item {
             if (!searchQuery.isNullOrEmpty()) {

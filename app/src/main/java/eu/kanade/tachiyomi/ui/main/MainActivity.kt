@@ -64,7 +64,7 @@ import eu.kanade.presentation.components.RestoringBannerBackgroundColor
 import eu.kanade.presentation.components.SyncingBannerBackgroundColor
 import eu.kanade.presentation.components.UpdatingBannerBackgroundColor
 import eu.kanade.presentation.more.settings.screen.ConfigureExhDialog
-import eu.kanade.presentation.more.settings.screen.about.AboutScreen.Companion.getReleaseNotes
+import eu.kanade.presentation.more.settings.screen.about.AboutScreen.Companion.getReleaseNotesWithComparison
 import eu.kanade.presentation.more.settings.screen.about.WhatsNewDialog
 import eu.kanade.presentation.more.settings.screen.browse.ExtensionStoresScreen
 import eu.kanade.presentation.more.settings.screen.data.RestoreBackupScreen
@@ -127,6 +127,7 @@ import tachiyomi.core.common.util.system.logcat
 import tachiyomi.domain.backup.service.BackupPreferences
 import tachiyomi.domain.library.service.LibraryPreferences
 import tachiyomi.domain.release.interactor.GetApplicationRelease
+import tachiyomi.domain.release.service.AppUpdatePreferences
 import tachiyomi.i18n.MR
 import tachiyomi.i18n.kmk.KMR
 import tachiyomi.presentation.core.components.material.Scaffold
@@ -402,17 +403,21 @@ class MainActivity : BaseActivity() {
                             scope.launch {
                                 isCheckingWhatsNew = true
 
-                                getReleaseNotes(
+                                getReleaseNotesWithComparison(
                                     context = context,
-                                    onAvailableUpdate = { result ->
+                                    onReleaseLoaded = { result ->
                                         val whatsNewScreen = WhatsNewScreen(
                                             currentVersion = BuildConfig.VERSION_NAME,
                                             versionName = result.release.version,
                                             changelogInfo = result.release.info,
                                             releaseLink = result.release.releaseLink,
                                             downloadLink = result.release.downloadLink,
+                                            isUpdateAvailable = result.isUpdateAvailable,
                                         )
                                         navigator?.push(whatsNewScreen)
+                                    },
+                                    onError = {
+                                        // Error is already toasted by the function
                                     },
                                     onFinish = {
                                         isCheckingWhatsNew = false
@@ -521,8 +526,11 @@ class MainActivity : BaseActivity() {
                 try {
                     AppUpdateJob.setupTask(context)
                     val result = AppUpdateChecker().checkForUpdate(context)
+                    val alreadyPrompted = result is GetApplicationRelease.Result.NewUpdate &&
+                        Injekt.get<AppUpdatePreferences>().lastPromptedVersion().get() == result.release.version
                     if (result is GetApplicationRelease.Result.NewUpdate &&
-                        navigator.lastItem !is NewUpdateScreen
+                        navigator.lastItem !is NewUpdateScreen &&
+                        !alreadyPrompted
                     ) {
                         val updateScreen = NewUpdateScreen(
                             versionName = result.release.version,
@@ -622,8 +630,14 @@ class MainActivity : BaseActivity() {
             }
             Constants.SHORTCUT_UPDATES -> HomeScreen.Tab.Updates
             Constants.SHORTCUT_HISTORY -> HomeScreen.Tab.History
-            Constants.SHORTCUT_SOURCES -> HomeScreen.Tab.Browse(false)
-            Constants.SHORTCUT_EXTENSIONS -> HomeScreen.Tab.Browse(true)
+            Constants.SHORTCUT_SOURCES -> {
+                navigator.popUntilRoot()
+                HomeScreen.Tab.Browse(false)
+            }
+            Constants.SHORTCUT_EXTENSIONS -> {
+                navigator.popUntilRoot()
+                HomeScreen.Tab.Browse(true)
+            }
             Constants.SHORTCUT_DOWNLOADS -> {
                 navigator.popUntilRoot()
                 HomeScreen.Tab.More(toDownloads = true)

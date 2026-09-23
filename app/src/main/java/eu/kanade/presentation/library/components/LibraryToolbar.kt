@@ -1,50 +1,33 @@
 package eu.kanade.presentation.library.components
 
 import android.content.Context
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.FlipToBack
 import androidx.compose.material.icons.outlined.SelectAll
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
 import eu.kanade.presentation.components.AppBar
 import eu.kanade.presentation.components.AppBarActions
-import eu.kanade.presentation.components.SearchToolbar
 import kotlinx.collections.immutable.persistentListOf
 import tachiyomi.i18n.MR
-import tachiyomi.i18n.sy.SYMR
-import tachiyomi.presentation.core.components.Pill
 import tachiyomi.presentation.core.i18n.stringResource
-import tachiyomi.presentation.core.theme.active
 
 @Composable
 fun LibraryToolbar(
-    hasActiveFilters: Boolean,
     selectedCount: Int,
-    title: LibraryToolbarTitle,
     onClickUnselectAll: () -> Unit,
     onClickSelectAll: () -> Unit,
     onClickInvertSelection: () -> Unit,
-    onClickFilter: () -> Unit,
+    onClickControls: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickGlobalUpdate: () -> Unit,
     onClickOpenRandomManga: () -> Unit,
-    onClickSyncNow: () -> Unit,
-    onClickSyncExh: (() -> Unit)?,
-    isSyncEnabled: Boolean,
-    searchQuery: String?,
-    onSearchQueryChange: (String?) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior?,
     onInvalidateDownloadCache: (Context) -> Unit,
 ) = when {
@@ -55,17 +38,10 @@ fun LibraryToolbar(
         onClickInvertSelection = onClickInvertSelection,
     )
     else -> LibraryRegularToolbar(
-        title = title,
-        hasFilters = hasActiveFilters,
-        searchQuery = searchQuery,
-        onSearchQueryChange = onSearchQueryChange,
-        onClickFilter = onClickFilter,
+        onClickControls = onClickControls,
         onClickRefresh = onClickRefresh,
         onClickGlobalUpdate = onClickGlobalUpdate,
         onClickOpenRandomManga = onClickOpenRandomManga,
-        onClickSyncNow = onClickSyncNow,
-        onClickSyncExh = onClickSyncExh,
-        isSyncEnabled = isSyncEnabled,
         scrollBehavior = scrollBehavior,
         onInvalidateDownloadCache = onInvalidateDownloadCache,
     )
@@ -73,51 +49,31 @@ fun LibraryToolbar(
 
 @Composable
 private fun LibraryRegularToolbar(
-    title: LibraryToolbarTitle,
-    hasFilters: Boolean,
-    searchQuery: String?,
-    onSearchQueryChange: (String?) -> Unit,
-    onClickFilter: () -> Unit,
+    onClickControls: () -> Unit,
     onClickRefresh: () -> Unit,
     onClickGlobalUpdate: () -> Unit,
     onClickOpenRandomManga: () -> Unit,
-    onClickSyncNow: () -> Unit,
-    onClickSyncExh: (() -> Unit)?,
-    isSyncEnabled: Boolean,
     scrollBehavior: TopAppBarScrollBehavior?,
     onInvalidateDownloadCache: (Context) -> Unit,
 ) {
     val context = LocalContext.current
-    val pillAlpha = if (isSystemInDarkTheme()) 0.12f else 0.08f
-    SearchToolbar(
+    AppBar(
         titleContent = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = title.text,
-                    maxLines = 1,
-                    modifier = Modifier.weight(1f, false),
-                    overflow = TextOverflow.Ellipsis,
-                )
-                if (title.numberOfManga != null) {
-                    Pill(
-                        text = "${title.numberOfManga}",
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = pillAlpha),
-                        fontSize = 14.sp,
-                    )
-                }
-            }
+            Text(
+                text = stringResource(MR.strings.label_library),
+                maxLines = 1,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                ),
+            )
         },
-        searchQuery = searchQuery,
-        onChangeSearchQuery = onSearchQueryChange,
         actions = {
-            val filterTint = if (hasFilters) MaterialTheme.colorScheme.active else LocalContentColor.current
             AppBarActions(
                 persistentListOf(
                     AppBar.Action(
                         title = stringResource(MR.strings.action_filter),
                         icon = Icons.Outlined.FilterList,
-                        iconTint = filterTint,
-                        onClick = onClickFilter,
+                        onClick = onClickControls,
                     ),
                     AppBar.OverflowAction(
                         title = stringResource(MR.strings.action_update_library),
@@ -133,28 +89,9 @@ private fun LibraryRegularToolbar(
                     ),
                     AppBar.OverflowAction(
                         title = stringResource(MR.strings.pref_invalidate_download_cache),
-                        onClick = {
-                            onInvalidateDownloadCache(context)
-                        },
+                        onClick = { onInvalidateDownloadCache(context) },
                     ),
-                ).builder().apply {
-                    if (onClickSyncExh != null) {
-                        add(
-                            AppBar.OverflowAction(
-                                title = stringResource(SYMR.strings.sync_favorites),
-                                onClick = onClickSyncExh,
-                            ),
-                        )
-                    }
-                    if (isSyncEnabled) {
-                        add(
-                            AppBar.OverflowAction(
-                                title = stringResource(SYMR.strings.sync_library),
-                                onClick = onClickSyncNow,
-                            ),
-                        )
-                    }
-                }.build(),
+                ),
             )
         },
         scrollBehavior = scrollBehavior,
@@ -190,9 +127,3 @@ private fun LibrarySelectionToolbar(
         onCancelActionMode = onClickUnselectAll,
     )
 }
-
-@Immutable
-data class LibraryToolbarTitle(
-    val text: String,
-    val numberOfManga: Int? = null,
-)

@@ -64,9 +64,9 @@ class AppUpdateChecker(
         }
     }
 
-    suspend fun getReleaseNotes(): GetApplicationRelease.Result {
+    suspend fun getReleaseNotesWithComparison(): GetApplicationRelease.ReleaseNotesResult {
         return withIOContext {
-            getApplicationRelease.awaitReleaseNotes(
+            getApplicationRelease.awaitReleaseNotesWithComparison(
                 GetApplicationRelease.Arguments(
                     isFoss = isFossBuildType,
                     isPreview = isPreviewBuildType || peekIntoPreview,
