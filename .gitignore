@@ -3,7 +3,6 @@
 #.vscode
 .kotlin
 build
-.kilo
 
 # IDE files
 *.iml
