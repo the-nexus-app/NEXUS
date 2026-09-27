@@ -1,51 +1,35 @@
-package eu.kanade.presentation.more
+﻿package eu.kanade.presentation.more
 
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.HelpOutline
-import androidx.compose.material.icons.automirrored.outlined.Label
-import androidx.compose.material.icons.automirrored.outlined.PlaylistAdd
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.CloudOff
-import androidx.compose.material.icons.outlined.CollectionsBookmark
-import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.outlined.GetApp
-import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.NewReleases
-import androidx.compose.material.icons.outlined.QueryStats
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Storage
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import eu.kanade.presentation.more.settings.widget.SwitchPreferenceWidget
-import eu.kanade.presentation.more.settings.widget.TextPreferenceWidget
-import eu.kanade.presentation.theme.TachiyomiPreviewTheme
-import eu.kanade.tachiyomi.R
+import eu.kanade.presentation.more.components.NexusDownloadQueueStatus
+import eu.kanade.presentation.more.components.NexusFeatureBlock
+import eu.kanade.presentation.more.components.NexusFeatureTile
+import eu.kanade.presentation.more.components.NexusMoreHeader
+import eu.kanade.presentation.more.components.NexusNavigationRow
+import eu.kanade.presentation.more.components.NexusSectionLabel
+import eu.kanade.presentation.more.components.NexusToggleRow
 import eu.kanade.tachiyomi.ui.more.DownloadQueueState
-import eu.kanade.tachiyomi.util.system.openInBrowser
 import exh.pref.DelegateSourcePreferences
 import exh.source.ExhPreferences
 import tachiyomi.core.common.Constants
@@ -54,12 +38,20 @@ import tachiyomi.i18n.kmk.KMR
 import tachiyomi.i18n.sy.SYMR
 import tachiyomi.presentation.core.components.ScrollbarLazyColumn
 import tachiyomi.presentation.core.components.material.Scaffold
-import tachiyomi.presentation.core.components.material.TextButton
 import tachiyomi.presentation.core.components.material.padding
-import tachiyomi.presentation.core.i18n.pluralStringResource
 import tachiyomi.presentation.core.i18n.stringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+
+enum class BookmarkSelection {
+    Chapters,
+    Pages,
+    ;
+
+    companion object {
+        fun fromOrdinal(ordinal: Int): BookmarkSelection = values().getOrNull(ordinal) ?: Chapters
+    }
+}
 
 @Composable
 fun MoreScreen(
@@ -86,222 +78,250 @@ fun MoreScreen(
     onClickLibraryUpdateErrors: () -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
-    val exhPreferences = remember { Injekt.get<ExhPreferences>() }
-    val delegateSourcePreferences = remember { Injekt.get<DelegateSourcePreferences>() }
+    val exhPreferences: ExhPreferences = Injekt.get()
+    val delegateSourcePreferences: DelegateSourcePreferences = Injekt.get()
+
+    // State for the bookmark type selection dialog
+    var showBookmarkDialog by remember { mutableStateOf(false) }
+    var selectedBookmarkType by remember { mutableStateOf<BookmarkSelection?>(null) }
+
+    // Show dialog when bookmarks block is clicked; navigation happens after confirmation
+    if (showBookmarkDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showBookmarkDialog = false
+                selectedBookmarkType = null
+            },
+            title = { Text(text = stringResource(KMR.strings.bookmarks_title)) },
+            text = {
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = selectedBookmarkType == BookmarkSelection.Chapters,
+                            onClick = { selectedBookmarkType = BookmarkSelection.Chapters },
+                        )
+                        Text(
+                            text = stringResource(MR.strings.label_bookmarked_chapters),
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        RadioButton(
+                            selected = selectedBookmarkType == BookmarkSelection.Pages,
+                            onClick = { selectedBookmarkType = BookmarkSelection.Pages },
+                        )
+                        Text(
+                            text = stringResource(MR.strings.label_bookmarked_pages),
+                            modifier = Modifier.padding(start = 8.dp),
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (selectedBookmarkType != null) {
+                        showBookmarkDialog = false
+                        when (selectedBookmarkType) {
+                            BookmarkSelection.Chapters -> onClickBookmarkedChapters()
+                            BookmarkSelection.Pages -> onClickBookmarkedPages()
+                            else -> { /* null case is guarded above */ }
+                        }
+                    }
+                }, enabled = selectedBookmarkType != null) {
+                    Text(text = stringResource(KMR.strings.action_enter))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showBookmarkDialog = false }) {
+                    Text(text = stringResource(MR.strings.action_cancel))
+                }
+            },
+        )
+    }
 
     Scaffold { contentPadding ->
         ScrollbarLazyColumn(
-            // use contentPadding as preferable padding for ScrollbarLazyColumn when not using stickyHeader
-            contentPadding = contentPadding,
+            contentPadding = PaddingValues(
+                top = contentPadding.calculateTopPadding(),
+                bottom = contentPadding.calculateBottomPadding() + 16.dp,
+            ),
         ) {
-            // ========== HEADER ==========
             item {
-                LogoHeader()
+                NexusMoreHeader(
+                    title = stringResource(KMR.strings.more_screen_title),
+                    subtitle = stringResource(KMR.strings.more_screen_subtitle),
+                )
             }
 
-            // ========== READING & DOWNLOADS SECTION ==========
-            item {
-                MoreSectionHeader(title = stringResource(KMR.strings.section_reading_downloads))
-            }
-            item {
-                SwitchPreferenceWidget(
-                    title = stringResource(MR.strings.label_downloaded_only),
-                    subtitle = stringResource(MR.strings.downloaded_only_summary),
-                    icon = Icons.Outlined.CloudOff,
-                    checked = downloadedOnly,
-                    onCheckedChanged = onDownloadedOnlyChange,
-                )
-            }
-            item {
-                SwitchPreferenceWidget(
-                    title = stringResource(MR.strings.pref_incognito_mode),
-                    subtitle = stringResource(MR.strings.pref_incognito_mode_summary),
-                    icon = rememberAnimatedVectorPainter(
-                        AnimatedImageVector.animatedVectorResource(R.drawable.anim_incognito),
-                        incognitoMode,
-                    ),
-                    checked = incognitoMode,
-                    onCheckedChanged = onIncognitoModeChange,
-                )
-            }
+            item { Spacer(modifier = Modifier.height(8.dp)) }
+
             item {
                 val downloadQueueState = downloadQueueStateProvider()
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.label_download_queue),
-                    subtitle = when (downloadQueueState) {
-                        DownloadQueueState.Stopped -> null
-                        is DownloadQueueState.Paused -> {
-                            val pending = downloadQueueState.pending
-                            if (pending == 0) {
-                                stringResource(MR.strings.paused)
-                            } else {
-                                "${stringResource(MR.strings.paused)} • ${
-                                    pluralStringResource(
-                                        MR.plurals.download_queue_summary,
-                                        count = pending,
-                                        pending,
-                                    )
-                                }"
-                            }
-                        }
-                        is DownloadQueueState.Downloading -> {
-                            val pending = downloadQueueState.pending
-                            pluralStringResource(MR.plurals.download_queue_summary, count = pending, pending)
-                        }
-                    },
-                    icon = Icons.Outlined.GetApp,
-                    onPreferenceClick = onClickDownloadQueue,
+                val (count, statusText, isActive) = when (downloadQueueState) {
+                    DownloadQueueState.Stopped -> Triple(0, stringResource(KMR.strings.download_queue_title), false)
+                    is DownloadQueueState.Paused -> Triple(
+                        downloadQueueState.pending,
+                        stringResource(KMR.strings.download_queue_title),
+                        false,
+                    )
+                    is DownloadQueueState.Downloading -> Triple(
+                        downloadQueueState.pending,
+                        stringResource(KMR.strings.download_queue_title),
+                        true,
+                    )
+                }
+                NexusDownloadQueueStatus(
+                    count = count,
+                    statusText = statusText,
+                    isActive = isActive,
+                    onClick = onClickDownloadQueue,
                 )
             }
 
-            // ========== LIBRARY SECTION ==========
+            item { Spacer(modifier = Modifier.height(24.dp)) }
+
             item {
-                MoreSectionHeader(title = stringResource(KMR.strings.section_library))
+                NexusSectionLabel(title = stringResource(KMR.strings.section_library))
             }
+
+            item { Spacer(modifier = Modifier.height(8.dp)) }
+
             item {
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.label_bookmarked_chapters),
-                    icon = Icons.Outlined.CollectionsBookmark,
-                    onPreferenceClick = onClickBookmarkedChapters,
-                )
-            }
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.label_bookmarked_pages),
-                    icon = Icons.Outlined.Bookmarks,
-                    onPreferenceClick = onClickBookmarkedPages,
+                NexusFeatureBlock(
+                    title = stringResource(KMR.strings.bookmarks_title),
+                    subtitle = stringResource(KMR.strings.bookmarks_subtitle),
+                    onClick = { showBookmarkDialog = true },
                 )
             }
 
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.categories),
-                    icon = Icons.AutoMirrored.Outlined.Label,
-                    onPreferenceClick = onClickCategories,
-                )
-            }
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.label_stats),
-                    icon = Icons.Outlined.QueryStats,
-                    onPreferenceClick = onClickStats,
-                )
-            }
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(KMR.strings.option_label_library_update_errors),
-                    icon = Icons.Outlined.NewReleases,
-                    onPreferenceClick = onClickLibraryUpdateErrors,
-                )
-            }
+            item { Spacer(modifier = Modifier.height(12.dp)) }
 
-            // ========== TOOLS & DATA SECTION ==========
             item {
-                MoreSectionHeader(title = stringResource(KMR.strings.section_tools_data))
-            }
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(KMR.strings.label_discover),
-                    subtitle = if (extensionUpdatesCount > 0) {
-                        pluralStringResource(
-                            MR.plurals.update_check_notification_ext_updates,
-                            count = extensionUpdatesCount,
-                            extensionUpdatesCount,
-                        )
-                    } else {
-                        null
-                    },
-                    icon = Icons.Outlined.Explore,
-                    onPreferenceClick = onClickDiscover,
-                )
-            }
-            item {
-                TextPreferenceWidget(
-                    title = stringResource(MR.strings.label_data_storage),
-                    icon = Icons.Outlined.Storage,
-                    onPreferenceClick = onClickDataAndStorage,
-                )
-            }
-            if (exhPreferences.isHentaiEnabled().get() || delegateSourcePreferences.delegateSources().get()) {
-                item {
-                    TextPreferenceWidget(
-                        title = stringResource(SYMR.strings.eh_batch_add),
-                        icon = Icons.AutoMirrored.Outlined.PlaylistAdd,
-                        onPreferenceClick = onClickBatchAdd,
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.padding.medium),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    NexusFeatureTile(
+                        title = stringResource(KMR.strings.categories_title),
+                        subtitle = stringResource(KMR.strings.categories_subtitle),
+                        onClick = onClickCategories,
+                        modifier = Modifier.weight(1f),
+                    )
+                    NexusFeatureTile(
+                        title = stringResource(KMR.strings.statistics_title),
+                        subtitle = stringResource(KMR.strings.statistics_subtitle),
+                        onClick = onClickStats,
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
 
-            // ========== RECENT UPDATES/HISTORY (CONDITIONAL) ==========
-            if (!showNavUpdates || !showNavHistory) {
+            item { Spacer(modifier = Modifier.height(24.dp)) }
+
+            item {
+                NexusSectionLabel(title = stringResource(KMR.strings.library_tools_title))
+            }
+
+            item {
+                NexusNavigationRow(
+                    title = stringResource(KMR.strings.label_library_update_errors),
+                    onClick = onClickLibraryUpdateErrors,
+                )
+            }
+
+            if (exhPreferences.isHentaiEnabled().get() || delegateSourcePreferences.delegateSources().get()) {
                 item {
-                    MoreSectionHeader(title = stringResource(KMR.strings.section_recent))
-                }
-                if (!showNavUpdates) {
-                    item {
-                        TextPreferenceWidget(
-                            title = stringResource(MR.strings.label_recent_updates),
-                            icon = Icons.Outlined.NewReleases,
-                            onPreferenceClick = onClickUpdates,
-                        )
-                    }
-                }
-                if (!showNavHistory) {
-                    item {
-                        TextPreferenceWidget(
-                            title = stringResource(MR.strings.label_recent_manga),
-                            icon = Icons.Outlined.History,
-                            onPreferenceClick = onClickHistory,
-                        )
-                    }
+                    NexusNavigationRow(
+                        title = stringResource(SYMR.strings.eh_batch_add),
+                        onClick = onClickBatchAdd,
+                    )
                 }
             }
 
-            // ========== APPLICATION SECTION ==========
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+
             item {
-                MoreSectionHeader(title = stringResource(KMR.strings.section_application))
+                NexusSectionLabel(title = stringResource(KMR.strings.tools_title))
             }
+
             item {
-                TextPreferenceWidget(
+                NexusNavigationRow(
+                    title = stringResource(KMR.strings.discover_title),
+                    subtitle = stringResource(KMR.strings.discover_subtitle),
+                    onClick = onClickDiscover,
+                )
+            }
+
+            item {
+                NexusNavigationRow(
+                    title = stringResource(KMR.strings.data_storage_title),
+                    subtitle = stringResource(KMR.strings.data_storage_subtitle),
+                    onClick = onClickDataAndStorage,
+                )
+            }
+
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+
+            item {
+                NexusSectionLabel(title = stringResource(KMR.strings.reading_mode_title))
+            }
+
+            item {
+                NexusToggleRow(
+                    title = stringResource(MR.strings.label_downloaded_only),
+                    subtitle = stringResource(KMR.strings.downloaded_only_subtitle),
+                    checked = downloadedOnly,
+                    onCheckedChange = onDownloadedOnlyChange,
+                )
+            }
+
+            item {
+                NexusToggleRow(
+                    title = stringResource(MR.strings.pref_incognito_mode),
+                    subtitle = stringResource(KMR.strings.incognito_mode_subtitle),
+                    checked = incognitoMode,
+                    onCheckedChange = onIncognitoModeChange,
+                )
+            }
+
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+
+            item {
+                NexusSectionLabel(title = stringResource(KMR.strings.application_title))
+            }
+
+            item {
+                NexusNavigationRow(
                     title = stringResource(MR.strings.label_settings),
-                    icon = Icons.Outlined.Settings,
-                    onPreferenceClick = onClickSettings,
+                    onClick = onClickSettings,
                 )
             }
+
             item {
-                TextPreferenceWidget(
+                NexusNavigationRow(
                     title = stringResource(MR.strings.pref_category_about),
-                    icon = Icons.Outlined.Info,
-                    onPreferenceClick = onClickAbout,
+                    onClick = onClickAbout,
                 )
             }
+
             item {
-                TextPreferenceWidget(
+                NexusNavigationRow(
                     title = stringResource(MR.strings.label_help),
-                    icon = Icons.AutoMirrored.Outlined.HelpOutline,
-                    onPreferenceClick = { uriHandler.openUri(Constants.URL_HELP) },
+                    onClick = { uriHandler.openUri(Constants.URL_HELP) },
                 )
             }
         }
-    }
-}
-
-/**
- * Section header for More Screen sections.
- * Provides visual separation and organization between logical groupings.
- */
-@Composable
-private fun MoreSectionHeader(title: String) {
-    Box(
-        contentAlignment = Alignment.CenterStart,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-    ) {
-        Text(
-            text = title,
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.labelLarge,
-        )
     }
 }

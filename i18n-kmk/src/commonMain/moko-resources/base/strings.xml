@@ -12,6 +12,7 @@
     <string name="action_move_up">Move up</string>
     <string name="action_move_down">Move down</string>
     <string name="action_confirm_color">Confirm Color</string>
+    <string name="action_enter">Enter</string>
     <string name="action_remove_merged">Remove original entries from library?</string>
     <string name="action_hide">Hide</string>
     <string name="action_show_hidden_categories">Show hidden categories</string>
@@ -25,6 +26,7 @@
     <string name="action_filter_unfinished_manga">Unfinished manga</string>
     <string name="action_filter_unfinished_chapter">Unfinished chapter</string>
     <string name="action_filter_non_library_entries">Non-library entries</string>
+    <string name="history_your_reading_activity">Your reading activity</string>
     <!-- Reader -->
       <!-- Reader Actions -->
     <string name="action_copy_to_clipboard_first_page">Copy first page to clipboard</string>
@@ -96,11 +98,13 @@
     <string name="custom_theme_palette_pico">PICO-8</string>
     <!-- Dashboard section -->
     <string name="label_discover">Discover</string>
+    <string name="label_updates_hub">Updates Hub</string>
+    <string name="your_reading_queue">Your reading queue</string>
     <string name="action_see_all">See all</string>
     <string name="dashboard_continue_reading">Continue Reading</string>
     <string name="dashboard_recently_read">Recently Read</string>
     <string name="dashboard_latest_updates">Latest Updates</string>
-    <string name="dashboard_feed">Feed</string>
+    <string name="dashboard_feed">What\'s New</string>
     <string name="dashboard_feed_manage">Manage</string>
     <string name="dashboard_feed_none_configured">Add sources to see their latest uploads here.</string>
     <string name="dashboard_discover_more">Discover More</string>
@@ -156,7 +160,7 @@
     <string name="pref_clean_invalid_downloads_summary">Find and remove all downloads, files, folders which are not saved in your library</string>
     <string name="invalid_downloads_cleaned">Invalid downloads cleaned</string>
     <string name="pref_private_installer_warning">Avoid using Private Installer because it\'s not stable yet, will lead to really slow start/resume App.</string>
-    <string name="saved_searches_feeds">Saved Searches &amp; Feeds</string>
+    <string name="saved_searches_feeds">Saved Searches &amp; What\'s New</string>
     <string name="preload_library_cover_color">Preload library's cover color</string>
     <string name="auto_update_app">Auto-update app</string>
     <string name="auto_update_app_disable_auto_download">Don't auto download update</string>
@@ -193,7 +197,7 @@
     <string name="pref_source_related_mangas_summary">Show source-website's Suggestions while viewing entry</string>
     <string name="related_mangas_website_suggestions">Website Suggestions</string>
     <string name="related_mangas_more">More like these...</string>
-    <string name="saved_searches_add_feed">Saved Searches (Hold to add to Feed)</string>
+    <string name="saved_searches_add_feed">Saved Searches (Hold to add to What\'s New)</string>
     <string name="saved_searches_delete">Saved Searches (Hold to delete)</string>
     <!-- Error Screen -->
     <string name="option_label_library_update_errors">Library update errors</string>
@@ -203,10 +207,10 @@
     <string name="action_scroll_to_bottom">Scroll to bottom</string>
     <string name="action_scroll_to_previous">Scroll to previous</string>
     <string name="action_scroll_to_next">Scroll to next</string>
-    <!-- Feed Tab -->
-    <string name="too_many_in_feed">Too many sources in your feed, cannot add more than 20</string>
-    <string name="action_sort_feed">Sort feeds</string>
-    <string name="sort_feed_confirmation">Would you like to sort the feeds alphabetically?</string>
+    <!-- What's New Tab -->
+    <string name="too_many_in_feed">Too many sources in What\'s New, cannot add more than 20</string>
+    <string name="action_sort_feed">Sort What\'s New</string>
+    <string name="sort_feed_confirmation">Would you like to sort What\'s New alphabetically?</string>
     <!-- Migration -->
     <string name="current_">Current: %1$s</string>
     <string name="up_to_date">Up to date</string>
@@ -270,4 +274,41 @@
     <string name="section_tools_data">Tools &amp; Data</string>
     <string name="section_recent">Recent</string>
     <string name="section_application">Application</string>
+
+    <!-- NEXUS More Screen Redesign -->
+    <string name="more_screen_title">MORE</string>
+    <string name="more_screen_subtitle">Your library, tools and app controls</string>
+    <string name="download_queue_title">DOWNLOAD QUEUE</string>
+    <string name="download_queue_stopped">No active downloads</string>
+    <string name="download_queue_downloading_count">%d chapters downloading</string>
+    <string name="download_queue_paused_count">%d chapters waiting</string>
+    <string name="download_queue_open">OPEN QUEUE</string>
+    <string name="bookmarks_title">BOOKMARKS</string>
+    <string name="bookmarks_subtitle">Your saved chapters and pages</string>
+    <string name="categories_title">CATEGORIES</string>
+    <string name="categories_subtitle">Organize your library</string>
+    <string name="statistics_title">STATISTICS</string>
+    <string name="statistics_subtitle">Reading activity</string>
+    <string name="library_tools_title">LIBRARY TOOLS</string>
+    <string name="tools_title">TOOLS</string>
+    <string name="reading_mode_title">READING MODE</string>
+    <string name="application_title">APPLICATION</string>
+    <string name="discover_title">DISCOVER</string>
+    <string name="discover_subtitle">Sources, extensions and migration</string>
+    <string name="data_storage_title">DATA &amp; STORAGE</string>
+    <string name="data_storage_subtitle">Backup, restore and storage</string>
+    <string name="downloaded_only_subtitle">Only show downloaded manga</string>
+    <string name="incognito_mode_subtitle">Don\'t record reading activity</string>
+
+    <!-- Settings Main Screen Redesign -->
+    <string name="settings_title">SETTINGS</string>
+    <string name="settings_search_hint">Search settings</string>
+    <string name="settings_appearance_group">APPEARANCE</string>
+    <string name="settings_reading_group">READING</string>
+    <string name="settings_downloads_group">DOWNLOADS</string>
+    <string name="settings_connections_group">CONNECTIONS</string>
+    <string name="settings_discover_group">DISCOVER</string>
+    <string name="settings_data_security_group">DATA &amp; SECURITY</string>
+    <string name="settings_advanced_group">ADVANCED</string>
+    <string name="settings_about_group">ABOUT</string>
 </resources>
