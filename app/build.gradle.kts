@@ -49,8 +49,8 @@ android {
     defaultConfig {
         applicationId = "com.nexus.app"
 
-        versionCode = 6
-        versionName = "1.4.0"
+        versionCode = 7
+        versionName = "1.5.0"
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
         buildConfigField("String", "COMMIT_SHA", "\"${getGitSha()}\"")
@@ -71,7 +71,12 @@ android {
             isMinifyEnabled = Config.enableCodeShrink
             isShrinkResources = Config.enableCodeShrink
 
-            signingConfig = signingConfigs.getByName("release")
+            // NXS --> Only sign locally when a keystore is present; CI builds an unsigned APK
+            // and signs it in the release job (r0adkll/sign-android-release).
+            if (keystorePropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            // NXS <--
 
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
 
