@@ -271,9 +271,6 @@
     <string name="label_updates_hub">Updates Hub</string>
     <string name="your_reading_queue">Your reading queue</string>
 
-    <!-- History section -->
-    <string name="history_your_reading_activity">Your reading activity</string>
-
     <!-- More Screen section headers -->
     <string name="section_reading_downloads">Reading &amp; Downloads</string>
     <string name="section_library">Library</string>

@@ -34,7 +34,6 @@ import eu.kanade.tachiyomi.ui.history.HistoryScreenModel.HistorySelectionOptions
 import kotlinx.collections.immutable.persistentListOf
 import tachiyomi.domain.history.model.HistoryWithRelations
 import tachiyomi.i18n.MR
-import tachiyomi.i18n.kmk.KMR
 import tachiyomi.presentation.core.components.FastScrollLazyColumn
 import tachiyomi.presentation.core.components.ListGroupHeader
 import tachiyomi.presentation.core.components.material.Scaffold
@@ -81,7 +80,6 @@ fun HistoryScreen(
                                 fontWeight = FontWeight.Bold,
                             ),
                             titleColor = MaterialTheme.colorScheme.primary,
-                            subtitle = stringResource(KMR.strings.history_your_reading_activity),
                         )
                     },
                     searchQuery = state.searchQuery,
