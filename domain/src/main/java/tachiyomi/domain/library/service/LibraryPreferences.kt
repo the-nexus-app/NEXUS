@@ -7,6 +7,7 @@ import tachiyomi.core.common.preference.getEnum
 import tachiyomi.domain.library.model.GroupLibraryMode
 import tachiyomi.domain.library.model.LibraryDisplayMode
 import tachiyomi.domain.library.model.LibraryGroup
+import tachiyomi.domain.library.model.LibrarySearchScope
 import tachiyomi.domain.library.model.LibrarySort
 import tachiyomi.domain.manga.model.Manga
 
@@ -29,6 +30,15 @@ class LibraryPreferences(
     )
 
     fun randomSortSeed() = preferenceStore.getInt("library_random_sort_seed", 0)
+
+    /**
+     * Scope used when matching a Library search query against categories.
+     * Defaults to searching (and merging) all visible categories.
+     */
+    fun librarySearchScope() = preferenceStore.getEnum(
+        "library_search_scope",
+        LibrarySearchScope.ALL_CATEGORIES,
+    )
 
     fun portraitColumns() = preferenceStore.getInt("pref_library_columns_portrait_key", 0)
 

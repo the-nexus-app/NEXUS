@@ -1,6 +1,6 @@
-# Komikku – AI Agent Guide
+# NEXUS – AI Agent Guide
 
-Komikku is an Android manga reader (min SDK 26, target SDK 36, JVM 17 / Kotlin) forked from **Mihon** + **TachiyomiSY**. Stack: Jetpack Compose + Material3, Voyager navigation, SQLDelight, Injekt DI. `applicationId`: `app.komikku`.
+NEXUS is an Android manga reader (min SDK 26, target SDK 36, JVM 17 / Kotlin), a personal fork of **Komikku**, itself forked from **Mihon** + **TachiyomiSY**. Stack: Jetpack Compose + Material3, Voyager navigation, SQLDelight, Injekt DI. `applicationId`: `com.nexus.app`.
 
 ---
 
@@ -22,16 +22,16 @@ Before `git push`, confirm the current branch is not `master` or `main` (`git br
 
 | String kind | Module | Resource class | Base folder only |
 |-------------|--------|----------------|------------------|
-| Komikku-only (new features, KMK UI, library-update errors, WebDAV, Discord, etc.) | `i18n-kmk/` | **`KMR`** | `i18n-kmk/src/commonMain/moko-resources/base/` |
+| NEXUS-only (new features, KMK UI, library-update errors, WebDAV, Discord, etc.) | `i18n-kmk/` | **`KMR`** | `i18n-kmk/src/commonMain/moko-resources/base/` |
 | Shared Mihon / upstream behavior | `i18n/` | **`MR`** | `i18n/src/commonMain/moko-resources/base/` |
 | TachiyomiSY-only | `i18n-sy/` | **`SYMR`** | `i18n-sy/src/commonMain/moko-resources/base/` |
 
 **Hard rules:**
 
-- **Never** add Komikku-specific strings to `i18n/` or `i18n-sy/`.
+- **Never** add NEXUS-specific strings to `i18n/` or `i18n-sy/`.
 - **Never** edit non-`base` locale `strings.xml` or `plurals.xml` files in `i18n-kmk/`, `i18n/`, or `i18n-sy/` (Weblate owns translations).
-- Import: `import tachiyomi.i18n.kmk.KMR` for Komikku strings.
-- If a change is inside `// KMK -->` … `// KMK <--` or adds Komikku-only behavior, default to **`KMR` + `i18n-kmk`**.
+- Import: `import tachiyomi.i18n.kmk.KMR` for NEXUS strings.
+- If a change is inside `// NXS -->` … `// NXS <--` (NEXUS's own additions) or adds NEXUS-only behavior, default to **`KMR` + `i18n-kmk`**. Inherited `// KMK` blocks belong to upstream Komikku — keep them as-is.
 
 **Self-check before finishing:** `git diff` must not add new `<string name="…">` or `<plurals name="…">` entries under non-`base` locales in `i18n-kmk/src/`, `i18n/src/`, or `i18n-sy/src/`.
 
@@ -65,7 +65,7 @@ Before `git push`, confirm the current branch is not `master` or `main` (`git br
 | `presentation-core/` | Shared Compose components |
 | `presentation-widget/` | Home-screen Glance widget |
 | `i18n/` | Mihon strings → `MR` (moko-resources) |
-| `i18n-kmk/` | Komikku strings → `KMR` |
+| `i18n-kmk/` | NEXUS strings → `KMR` |
 | `i18n-sy/` | TachiyomiSY strings → `SYMR` |
 | `flagkit/` | Country-flag drawables |
 | `telemetry/` | Firebase/Crashlytics (noop unless `-Pinclude-telemetry`) |
@@ -97,14 +97,14 @@ Example: `DeepLinkScreen` + `DeepLinkScreenModel` in `app/src/main/java/eu/kanad
 
 ---
 
-## Komikku-specific work
+## NEXUS-specific work
 
-- **Strings:** see [Mandatory rules – Internationalization](#mandatory-rules-for-ai-agents). Summary: Komikku → **`KMR`** / `i18n-kmk/…/base/` only.
-- Do not edit locale `strings.xml` in `i18n/` or `i18n-sy/` except when syncing upstream; translations via [Weblate](https://hosted.weblate.org/engage/komikku-app/).
-- Komikku code/DI: search `// KMK` (e.g. `KMKDomainModule`, `HideCategory`, library-update errors).
+- **Strings:** see [Mandatory rules – Internationalization](#mandatory-rules-for-ai-agents). Summary: NEXUS → **`KMR`** / `i18n-kmk/…/base/` only.
+- Do not edit locale `strings.xml` in `i18n/` or `i18n-sy/` except when syncing upstream; translations are owned by Weblate (upstream Komikku project; never translate non-base locales manually).
+- NEXUS code/DI: search `// NXS` for this fork's own additions; `// KMK` marks inherited Komikku code (e.g. `KMKDomainModule`, `HideCategory`, library-update errors).
 - Prefs: `eu.kanade.domain.*.service.*Preferences` (e.g. `SourcePreferences.relatedMangas()`).
 
-**Examples (Komikku → `i18n-kmk`, not `i18n`):** library update error UI, sync-before-update messages, WebDAV/Discord settings, updater notifications, `mihon/feature/*` Komikku screens.
+**Examples (NEXUS → `i18n-kmk`, not `i18n`):** library update error UI, sync-before-update messages, WebDAV/Discord settings, updater notifications, `mihon/feature/*` NEXUS screens.
 
 ---
 
@@ -150,9 +150,10 @@ JDK **17**.
 Preserve inline blocks when editing:
 
 ```kotlin
-// KMK -->  … // KMK <--   Komikku
+// NXS -->  … // NXS <--   NEXUS (this fork's own additions)
+// KMK -->  … // KMK <--   Komikku (inherited upstream fork blocks)
 // SY -->   … // SY <--    TachiyomiSY
-// EXH -->  … // EXH <--   E-Hentai / exh (existing); prefer KMK for new Komikku-only code
+// EXH -->  … // EXH <--   E-Hentai / exh (existing); prefer NXS for new NEXUS-only code
 ```
 
 Package roots: `eu.kanade.tachiyomi.*` (legacy UI), `tachiyomi.*` (domain/data), `mihon.*` (Mihon upstream), `exh.*` (enhanced sources).
@@ -167,9 +168,9 @@ Package roots: `eu.kanade.tachiyomi.*` (legacy UI), `tachiyomi.*` (domain/data),
 
 ## Conventions
 
-- **Logging** – Prefer `xLogE()` / `xLog()` helpers from `exh.log` for Komikku code, Mihon uses `logcat { }` from `tachiyomi.core.common.util.system`. Avoid raw `android.util.Log`.
+- **Logging** – Prefer `xLogE()` / `xLog()` helpers from `exh.log` for NEXUS code, Mihon uses `logcat { }` from `tachiyomi.core.common.util.system`. Avoid raw `android.util.Log`.
 - **Formatting** – Spotless + ktlint (`buildSrc/.../mihon.code.lint.gradle.kts`). Agents **must** run `spotlessApply` and `spotlessCheck` (see [Mandatory rules](#mandatory-rules-for-ai-agents)).
-- **Fork edits** – New Komikku features inside `// KMK` islands; keep `// SY` / `// EXH` blocks intact when merging upstream.
+- **Fork edits** – New NEXUS features inside `// NXS` islands; keep inherited `// KMK` / `// SY` / `// EXH` blocks intact when merging upstream.
 
 ---
 

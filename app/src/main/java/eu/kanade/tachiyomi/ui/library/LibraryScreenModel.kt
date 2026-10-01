@@ -21,7 +21,6 @@ import eu.kanade.domain.manga.interactor.UpdateManga
 import eu.kanade.domain.source.service.SourcePreferences
 import eu.kanade.domain.sync.SyncPreferences
 import eu.kanade.presentation.components.SEARCH_DEBOUNCE_MILLIS
-import eu.kanade.presentation.library.components.LibraryToolbarTitle
 import eu.kanade.presentation.manga.DownloadAction
 import eu.kanade.tachiyomi.data.cache.CoverCache
 import eu.kanade.tachiyomi.data.download.DownloadCache
@@ -60,6 +59,7 @@ import exh.util.nullIfBlank
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
@@ -102,6 +102,7 @@ import tachiyomi.domain.history.interactor.GetNextChapters
 import tachiyomi.domain.library.model.LibraryDisplayMode
 import tachiyomi.domain.library.model.LibraryGroup
 import tachiyomi.domain.library.model.LibraryManga
+import tachiyomi.domain.library.model.LibrarySearchScope
 import tachiyomi.domain.library.model.LibrarySort
 import tachiyomi.domain.library.model.sort
 import tachiyomi.domain.library.service.LibraryPreferences
@@ -121,6 +122,7 @@ import tachiyomi.domain.track.interactor.GetTracks
 import tachiyomi.domain.track.interactor.GetTracksPerManga
 import tachiyomi.domain.track.model.Track
 import tachiyomi.i18n.MR
+import tachiyomi.i18n.kmk.KMR
 import tachiyomi.i18n.sy.SYMR
 import tachiyomi.source.local.LocalSource
 import tachiyomi.source.local.isLocal
@@ -244,23 +246,64 @@ class LibraryScreenModel(
                     state.map { it.includedCategories }.distinctUntilChanged(),
                     ::Pair,
                 ),
-            ) { (data, groupType, noActiveFilterOrSearch), (sort, showHiddenCategories, showEmptyCategoriesSearch), (filterCategory, includedCategories) ->
-                data.favorites
-                    .applyGrouping(
-                        data.categories,
-                        if (filterCategory && includedCategories.isNotEmpty()) {
-                            LibraryGroup.UNGROUPED
-                        } else {
-                            groupType
-                        },
-                        showHiddenCategories,
+                // NEXUS: universal library search - drives the "All Categories" vs
+                // "Current Category" search-scope toggle. Kept as its own combine
+                // source (rather than folded into the Triple above) so unrelated
+                // libraryData/groupType changes don't need to know about it.
+                combine(
+                    state.map { it.searchQuery.isNullOrBlank() }.distinctUntilChanged(),
+                    state.map { it.searchScope }.distinctUntilChanged(),
+                    ::Pair,
+                ),
+            ) { (data, groupType, noActiveFilterOrSearch), (sort, showHiddenCategories, showEmptyCategoriesSearch), (filterCategory, includedCategories), (isSearchQueryBlank, searchScope) ->
+                val categoryFilterActive = filterCategory && includedCategories.isNotEmpty()
+
+                // BY_DEFAULT grouping already excludes hidden categories (see
+                // applyGrouping below), so it's reused as-is as the source of truth
+                // for "All Categories" search merging - no separate hidden-category
+                // check is needed here.
+                val grouped = data.favorites.applyGrouping(
+                    data.categories,
+                    if (categoryFilterActive) LibraryGroup.UNGROUPED else groupType,
+                    showHiddenCategories,
+                )
+
+                // NEXUS: when searching with the "All Categories" scope (the
+                // default), merge every visible category's matches into a single
+                // deduplicated list instead of leaving results spread across
+                // per-category tabs. Only applies to the normal BY_DEFAULT grouping,
+                // and is skipped while the category filter sheet is narrowing things
+                // down already, so every other grouping/filtering path is untouched.
+                val mergeAllCategories = !isSearchQueryBlank &&
+                    searchScope == LibrarySearchScope.ALL_CATEGORIES &&
+                    groupType == LibraryGroup.BY_DEFAULT &&
+                    !categoryFilterActive
+
+                if (mergeAllCategories) {
+                    val mergedIds = grouped.values.flatten().distinct()
+                    mapOf(
+                        Category(
+                            0,
+                            preferences.context.stringResource(KMR.strings.search_scope_all_categories),
+                            0,
+                            0,
+                            false,
+                        ) to mergedIds,
                     )
-                    .applySort(
+                        // No per-category sort override makes sense for a merged
+                        // view, so the global library sort is used unconditionally -
+                        // the same fallback already used for BY_SOURCE/BY_STATUS/etc.
+                        .applySort(data.favoritesById, data.tracksMap, data.loggedInTrackerIds, sort)
+                } else {
+                    val perCategory = grouped.applySort(
                         data.favoritesById,
                         data.tracksMap,
                         data.loggedInTrackerIds,
                         sort.takeIf { groupType != LibraryGroup.BY_DEFAULT },
                     )
+
+                    perCategory
+                }
                     .filter {
                         // Hide empty categories unless the setting is enabled or there are no active filters/search
                         showEmptyCategoriesSearch || noActiveFilterOrSearch || it.value.isNotEmpty()
@@ -350,6 +393,13 @@ class LibraryScreenModel(
             .onEach {
                 mutableState.update { state ->
                     state.copy(groupType = it)
+                }
+            }
+            .launchIn(screenModelScope)
+        libraryPreferences.librarySearchScope().changes()
+            .onEach {
+                mutableState.update { state ->
+                    state.copy(searchScope = it)
                 }
             }
             .launchIn(screenModelScope)
@@ -1081,8 +1131,8 @@ class LibraryScreenModel(
         return state.getItemsForCategoryId(state.activeCategory?.id).randomOrNull()
     }
 
-    fun showSettingsDialog() {
-        mutableState.update { it.copy(dialog = Dialog.SettingsSheet) }
+    fun showSettingsDialog(initialTabIndex: Int = 0) {
+        mutableState.update { it.copy(dialog = Dialog.SettingsSheet(initialTabIndex)) }
     }
 
     fun showRecommendationSearchDialog() {
@@ -1337,6 +1387,16 @@ class LibraryScreenModel(
         mutableState.update { it.copy(searchQuery = query) }
     }
 
+    /** Toggles the Library search scope between all categories (merged) and the current category only. */
+    fun toggleSearchScope() {
+        val newScope = if (state.value.searchScope == LibrarySearchScope.ALL_CATEGORIES) {
+            LibrarySearchScope.CURRENT_CATEGORY
+        } else {
+            LibrarySearchScope.ALL_CATEGORIES
+        }
+        libraryPreferences.librarySearchScope().set(newScope)
+    }
+
     fun updateActiveCategoryIndex(index: Int) {
         val newIndex = mutableState.updateAndGet { state ->
             state.copy(
@@ -1383,7 +1443,7 @@ class LibraryScreenModel(
     }
 
     sealed interface Dialog {
-        data object SettingsSheet : Dialog
+        data class SettingsSheet(val initialTabIndex: Int = 0) : Dialog
         data class ChangeCategory(
             val manga: List<Manga>,
             val initialSelection: ImmutableList<CheckboxState<Category>>,
@@ -1576,6 +1636,7 @@ class LibraryScreenModel(
         val showSyncExh: Boolean = false,
         val isSyncEnabled: Boolean = false,
         val groupType: Int = LibraryGroup.BY_DEFAULT,
+        val searchScope: LibrarySearchScope = LibrarySearchScope.ALL_CATEGORIES,
         val filterCategory: Boolean = false,
         val includedCategories: ImmutableSet<Long> = persistentSetOf(),
         val excludedCategories: ImmutableSet<Long> = persistentSetOf(),
@@ -1636,25 +1697,6 @@ class LibraryScreenModel(
 
         fun getItemCountForCategory(category: Category): Int? {
             return if (showMangaCount || !searchQuery.isNullOrEmpty()) groupedFavorites[category]?.size else null
-        }
-
-        fun getToolbarTitle(
-            defaultTitle: String,
-            defaultCategoryTitle: String,
-            page: Int,
-        ): LibraryToolbarTitle {
-            val category = displayedCategories.getOrNull(page) ?: return LibraryToolbarTitle(defaultTitle)
-            val categoryName = category.let {
-                if (it.isSystemCategory) defaultCategoryTitle else it.name
-            }
-            val title = if (showCategoryTabs) defaultTitle else categoryName
-            val count = when {
-                !showMangaCount -> null
-                !showCategoryTabs -> getItemCountForCategory(category)
-                // Whole library count
-                else -> libraryData.favorites.size
-            }
-            return LibraryToolbarTitle(title, count)
         }
     }
 

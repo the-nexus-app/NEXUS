@@ -29,6 +29,7 @@ import eu.kanade.presentation.more.settings.LocalPreferenceMinHeight
 import eu.kanade.presentation.more.settings.widget.TextPreferenceWidget
 import tachiyomi.domain.source.model.FeedSavedSearch
 import tachiyomi.i18n.MR
+import tachiyomi.i18n.kmk.KMR
 import tachiyomi.i18n.sy.SYMR
 import tachiyomi.presentation.core.i18n.stringResource
 
@@ -77,10 +78,10 @@ fun SourceFeedDeleteDialog(
             }
         },
         title = {
-            Text(text = stringResource(SYMR.strings.feed))
+            Text(text = stringResource(KMR.strings.feed_delete_title))
         },
         text = {
-            Text(text = stringResource(SYMR.strings.feed_delete))
+            Text(text = stringResource(KMR.strings.feed_delete_message))
         },
     )
 }

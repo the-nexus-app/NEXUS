@@ -8,11 +8,14 @@ import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,6 +23,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Circle
@@ -27,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableFloatState
@@ -37,14 +42,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import eu.kanade.presentation.components.relativeDateText
 import eu.kanade.presentation.manga.components.ChapterDownloadAction
 import eu.kanade.presentation.manga.components.ChapterDownloadIndicator
 import eu.kanade.presentation.manga.components.DotSeparatorText
@@ -62,7 +71,6 @@ import eu.kanade.tachiyomi.ui.updates.UpdatesScreenModel.UpdateSelectionOptions
 import eu.kanade.tachiyomi.ui.updates.groupByDateAndManga
 import exh.debug.DebugToggles
 import me.saket.swipe.SwipeableActionsBox
-import mihon.feature.upcoming.DateHeading
 import tachiyomi.domain.library.service.LibraryPreferences
 import tachiyomi.domain.updates.model.UpdatesWithRelations
 import tachiyomi.i18n.MR
@@ -70,23 +78,7 @@ import tachiyomi.presentation.core.components.material.DISABLED_ALPHA
 import tachiyomi.presentation.core.components.material.padding
 import tachiyomi.presentation.core.i18n.stringResource
 import tachiyomi.presentation.core.util.selectedBackground
-
-internal fun LazyListScope.updatesLastUpdatedItem(
-    lastUpdated: Long,
-) {
-    item(key = "updates-lastUpdated") {
-        Box(
-            modifier = Modifier
-                .animateItemFastScroll()
-                .padding(horizontal = MaterialTheme.padding.medium, vertical = MaterialTheme.padding.small),
-        ) {
-            Text(
-                text = stringResource(MR.strings.updates_last_update_info, relativeTimeSpanString(lastUpdated)),
-                fontStyle = FontStyle.Italic,
-            )
-        }
-    }
-}
+import java.time.LocalDate
 
 internal fun LazyListScope.updatesUiItems(
     uiModels: List<UpdatesUiModel>,
@@ -120,8 +112,9 @@ internal fun LazyListScope.updatesUiItems(
     ) { item ->
         when (item) {
             is UpdatesUiModel.Header -> {
-                DateHeading(
-                    modifier = Modifier.animateItemFastScroll()
+                UpdatesDateHeading(
+                    modifier = Modifier
+                        .animateItemFastScroll()
                         .padding(top = MaterialTheme.padding.extraSmall),
                     date = item.date,
                     mangaCount = item.mangaCount,
@@ -251,154 +244,164 @@ private fun UpdatesUiItem(
         )
     }
 
-    SwipeableActionsBox(
-        modifier = modifier.clipToBounds(),
-        startActions = listOfNotNull(swipeStart),
-        endActions = listOfNotNull(swipeEnd),
-        swipeThreshold = swipeActionThreshold,
-        backgroundUntilSwipeThreshold = MaterialTheme.colorScheme.surfaceContainerLowest,
+    Surface(
+        modifier = modifier
+            .padding(horizontal = MaterialTheme.padding.medium, vertical = 4.dp)
+            .clip(RoundedCornerShape(12.dp)),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(12.dp),
     ) {
-        Row(
-            modifier = Modifier
-                .selectedBackground(selected)
-                .combinedClickable(
-                    onClick = onClick,
-                    onLongClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onLongClick()
-                    },
-                )
-                .padding(top = if (isLeader) MaterialTheme.padding.small else 0.dp)
-                .padding(
-                    vertical = if (isLeader) MaterialTheme.padding.extraSmall else 0.dp,
-                    horizontal = MaterialTheme.padding.medium,
-                ),
-            verticalAlignment = Alignment.CenterVertically,
+        SwipeableActionsBox(
+            modifier = Modifier.clipToBounds(),
+            startActions = listOfNotNull(swipeStart),
+            endActions = listOfNotNull(swipeEnd),
+            swipeThreshold = swipeActionThreshold,
+            backgroundUntilSwipeThreshold = MaterialTheme.colorScheme.surfaceContainerLowest,
         ) {
-            val mangaCover = update.coverData
-            val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
-            val bgColor = mangaCover.dominantCoverColors?.first?.let { Color(it) }
-            val onBgColor = mangaCover.dominantCoverColors?.second
-            if (isLeader) {
-                if (DebugToggles.HIDE_COVER_IMAGE_ONLY_SHOW_COLOR.enabled) {
-                    MangaCoverHide.Book(
-                        modifier = Modifier
-                            .width(UpdateItemWidth),
-                        bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { selected },
-                        tint = onBgColor,
-                        size = MangaCover.Size.Medium,
+            Row(
+                modifier = Modifier
+                    .selectedBackground(selected)
+                    .combinedClickable(
+                        onClick = onClick,
+                        onLongClick = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onLongClick()
+                        },
                     )
-                } else {
-                    if (usePanoramaCover && coverIsWide) {
-                        MangaCover.Panorama(
-                            modifier = Modifier
-                                .width(UpdateItemPanoramaWidth),
-                            data = mangaCover,
-                            onClick = onClickCover,
-                            bgColor = bgColor,
-                            tint = onBgColor,
-                            size = MangaCover.Size.Medium,
-                            onCoverLoaded = { _, result ->
-                                val image = result.result.image
-                                coverRatio.floatValue = image.height.toFloat() / image.width
-                            },
-                        )
-                    } else {
-                        MangaCover.Book(
+                    .padding(top = if (isLeader) MaterialTheme.padding.small else 0.dp)
+                    .padding(
+                        vertical = if (isLeader) MaterialTheme.padding.extraSmall else 0.dp,
+                        horizontal = MaterialTheme.padding.medium,
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val mangaCover = update.coverData
+                val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
+                val bgColor = mangaCover.dominantCoverColors?.first?.let { Color(it) }
+                val onBgColor = mangaCover.dominantCoverColors?.second
+                if (isLeader) {
+                    if (DebugToggles.HIDE_COVER_IMAGE_ONLY_SHOW_COLOR.enabled) {
+                        MangaCoverHide.Book(
                             modifier = Modifier
                                 .width(UpdateItemWidth),
-                            data = mangaCover,
-                            onClick = onClickCover,
-                            bgColor = bgColor,
+                            bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { selected },
                             tint = onBgColor,
                             size = MangaCover.Size.Medium,
-                            onCoverLoaded = { _, result ->
-                                val image = result.result.image
-                                coverRatio.floatValue = image.height.toFloat() / image.width
-                            },
                         )
+                    } else {
+                        if (usePanoramaCover && coverIsWide) {
+                            MangaCover.Panorama(
+                                modifier = Modifier
+                                    .width(UpdateItemPanoramaWidth),
+                                data = mangaCover,
+                                onClick = onClickCover,
+                                bgColor = bgColor,
+                                tint = onBgColor,
+                                size = MangaCover.Size.Medium,
+                                onCoverLoaded = { _, result ->
+                                    val image = result.result.image
+                                    coverRatio.floatValue = image.height.toFloat() / image.width
+                                },
+                            )
+                        } else {
+                            MangaCover.Book(
+                                modifier = Modifier
+                                    .width(UpdateItemWidth),
+                                data = mangaCover,
+                                onClick = onClickCover,
+                                bgColor = bgColor,
+                                tint = onBgColor,
+                                size = MangaCover.Size.Medium,
+                                onCoverLoaded = { _, result ->
+                                    val image = result.result.image
+                                    coverRatio.floatValue = image.height.toFloat() / image.width
+                                },
+                            )
+                        }
                     }
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .width(if (usePanoramaCover && coverIsWide) UpdateItemPanoramaWidth else UpdateItemWidth),
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.padding.medium)
-                    .weight(1f),
-            ) {
-                if (isLeader) {
-                    Text(
-                        text = update.mangaTitle,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = LocalContentColor.current.copy(alpha = textAlpha),
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    var textHeight by remember { mutableIntStateOf(0) }
-                    if (!update.read) {
-                        Icon(
-                            imageVector = Icons.Filled.Circle,
-                            contentDescription = stringResource(MR.strings.unread),
-                            modifier = Modifier
-                                .height(8.dp)
-                                .padding(end = 4.dp),
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    }
-                    if (update.bookmark) {
-                        Icon(
-                            imageVector = Icons.Filled.Bookmark,
-                            contentDescription = stringResource(MR.strings.action_filter_bookmarked),
-                            modifier = Modifier
-                                .sizeIn(maxHeight = with(LocalDensity.current) { textHeight.toDp() - 2.dp }),
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                    }
-                    Text(
-                        text = update.chapterName,
-                        maxLines = 1,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = LocalContentColor.current.copy(alpha = textAlpha),
-                        overflow = TextOverflow.Ellipsis,
-                        onTextLayout = { textHeight = it.size.height },
+                } else {
+                    Box(
                         modifier = Modifier
-                            .weight(weight = 1f, fill = false),
+                            .width(if (usePanoramaCover && coverIsWide) UpdateItemPanoramaWidth else UpdateItemWidth),
                     )
-                    if (readProgress != null) {
-                        DotSeparatorText()
+                }
+
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = MaterialTheme.padding.medium)
+                        .weight(1f),
+                ) {
+                    if (isLeader) {
                         Text(
-                            text = readProgress,
+                            text = update.mangaTitle,
                             maxLines = 1,
-                            color = LocalContentColor.current.copy(alpha = DISABLED_ALPHA),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+                            color = LocalContentColor.current.copy(alpha = textAlpha),
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                }
-            }
 
-            if (isLeader && isExpandable) {
-                CollapseButton(
-                    expanded = expanded,
-                    collapseToggle = { collapseToggle(update.groupByDateAndManga()) },
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        var textHeight by remember { mutableIntStateOf(0) }
+                        if (!update.read) {
+                            Icon(
+                                imageVector = Icons.Filled.Circle,
+                                contentDescription = stringResource(MR.strings.unread),
+                                modifier = Modifier
+                                    .height(8.dp)
+                                    .padding(end = 4.dp),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                        if (update.bookmark) {
+                            Icon(
+                                imageVector = Icons.Filled.Bookmark,
+                                contentDescription = stringResource(MR.strings.action_filter_bookmarked),
+                                modifier = Modifier
+                                    .sizeIn(maxHeight = with(LocalDensity.current) { textHeight.toDp() - 2.dp }),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                            Spacer(modifier = Modifier.width(2.dp))
+                        }
+                        Text(
+                            text = update.chapterName,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = LocalContentColor.current.copy(alpha = textAlpha),
+                            overflow = TextOverflow.Ellipsis,
+                            onTextLayout = { textHeight = it.size.height },
+                            modifier = Modifier
+                                .weight(weight = 1f, fill = false),
+                        )
+                        if (readProgress != null) {
+                            DotSeparatorText()
+                            Text(
+                                text = readProgress,
+                                maxLines = 1,
+                                color = LocalContentColor.current.copy(alpha = DISABLED_ALPHA),
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    }
+                }
+
+                if (isLeader && isExpandable) {
+                    CollapseButton(
+                        expanded = expanded,
+                        collapseToggle = { collapseToggle(update.groupByDateAndManga()) },
+                    )
+                }
+
+                ChapterDownloadIndicator(
+                    enabled = onDownloadChapter != null,
+                    modifier = Modifier.padding(start = 4.dp),
+                    downloadStateProvider = downloadStateProvider,
+                    downloadProgressProvider = downloadProgressProvider,
+                    onClick = { onDownloadChapter?.invoke(it) },
                 )
             }
-
-            ChapterDownloadIndicator(
-                enabled = onDownloadChapter != null,
-                modifier = Modifier.padding(start = 4.dp),
-                downloadStateProvider = downloadStateProvider,
-                downloadProgressProvider = downloadProgressProvider,
-                onClick = { onDownloadChapter?.invoke(it) },
-            )
         }
     }
 }
@@ -436,3 +439,43 @@ private val IndicatorSize = MaterialTheme.padding.large
 
 private val UpdateItemPanoramaWidth = 108.dp // Book cover
 private val UpdateItemWidth = 48.dp
+
+@Composable
+private fun UpdatesDateHeading(
+    date: LocalDate,
+    mangaCount: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = relativeDateText(date).uppercase(),
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.labelMedium.copy(
+                letterSpacing = 1.sp,
+                fontSize = 12.sp,
+            ),
+        )
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f))
+                .padding(horizontal = 6.dp, vertical = 1.dp),
+        ) {
+            Text(
+                text = "$mangaCount",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp,
+                ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}

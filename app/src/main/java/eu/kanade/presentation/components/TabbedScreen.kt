@@ -22,6 +22,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.zIndex
 import dev.icerock.moko.resources.StringResource
 import eu.kanade.tachiyomi.ui.browse.BulkFavoriteScreenModel
@@ -42,6 +43,7 @@ fun TabbedScreen(
     onChangeSearchQuery: (String?) -> Unit = {},
     feedScreenModel: FeedScreenModel,
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
+    navigateUp: (() -> Unit)? = null,
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -76,7 +78,16 @@ fun TabbedScreen(
                 )
             } else {
                 SearchToolbar(
-                    titleContent = { AppBarTitle(stringResource(titleRes)) },
+                    titleContent = {
+                        AppBarTitle(
+                            title = stringResource(titleRes),
+                            titleStyle = MaterialTheme.typography.headlineSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                            ),
+                            titleColor = MaterialTheme.colorScheme.primary,
+                        )
+                    },
+                    navigateUp = navigateUp,
                     searchEnabled = searchEnabled,
                     searchQuery = if (searchEnabled) searchQuery else null,
                     onChangeSearchQuery = onChangeSearchQuery,

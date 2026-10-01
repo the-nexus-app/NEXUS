@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -72,6 +73,7 @@ fun LibrarySettingsDialog(
     category: Category?,
     hasCategories: Boolean,
     categories: List<Category>,
+    initialTabIndex: Int = 0,
 ) {
     TabbedDialog(
         onDismissRequest = onDismissRequest,
@@ -81,6 +83,7 @@ fun LibrarySettingsDialog(
             stringResource(MR.strings.action_display),
             stringResource(SYMR.strings.group),
         ),
+        pagerState = rememberPagerState(initialTabIndex) { 4 },
     ) { page ->
         Column(
             modifier = Modifier

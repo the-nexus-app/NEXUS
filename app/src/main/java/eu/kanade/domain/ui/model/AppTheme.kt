@@ -6,6 +6,7 @@ import tachiyomi.i18n.kmk.KMR
 
 enum class AppTheme(val titleRes: StringResource?) {
     DEFAULT(MR.strings.label_default),
+    NEXUS(KMR.strings.theme_nexus),
     MONET(MR.strings.theme_monet),
 
     // Kuukiyomi themes

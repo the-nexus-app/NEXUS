@@ -74,7 +74,7 @@ fun Screen.feedTab(
     }
 
     return TabContent(
-        titleRes = SYMR.strings.feed,
+        titleRes = KMR.strings.feed_add_source,
         actions =
         if (showingFeedOrderScreen.value) {
             persistentListOf(
