@@ -49,8 +49,8 @@ android {
     defaultConfig {
         applicationId = "com.nexus.app"
 
-        versionCode = 7
-        versionName = "1.5.0"
+        versionCode = 8
+        versionName = "1.5.1"
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
         buildConfigField("String", "COMMIT_SHA", "\"${getGitSha()}\"")
