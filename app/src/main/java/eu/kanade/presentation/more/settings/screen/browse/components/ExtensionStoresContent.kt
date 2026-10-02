@@ -177,7 +177,7 @@ private fun ExtensionStoresListItem(
 }
 
 fun repoResId(signKey: String) = when (signKey) {
-    KOMIKKU_SIGNATURE -> R.mipmap.komikku
+    KOMIKKU_SIGNATURE -> R.mipmap.nexus
     REPO_SIGNATURE -> R.mipmap.repo
     else -> R.mipmap.extension
 }
