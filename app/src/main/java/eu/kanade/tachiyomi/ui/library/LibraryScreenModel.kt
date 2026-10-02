@@ -255,7 +255,10 @@ class LibraryScreenModel(
                     state.map { it.searchScope }.distinctUntilChanged(),
                     ::Pair,
                 ),
-            ) { (data, groupType, noActiveFilterOrSearch), (sort, showHiddenCategories, showEmptyCategoriesSearch), (filterCategory, includedCategories), (isSearchQueryBlank, searchScope) ->
+                // NEXUS: the category the user is currently on, so it can be kept in the
+                // pager even when a search or filter narrows it down to zero results.
+                state.map { it.activeCategoryId }.distinctUntilChanged(),
+            ) { (data, groupType, noActiveFilterOrSearch), (sort, showHiddenCategories, showEmptyCategoriesSearch), (filterCategory, includedCategories), (isSearchQueryBlank, searchScope), activeCategoryId ->
                 val categoryFilterActive = filterCategory && includedCategories.isNotEmpty()
 
                 // BY_DEFAULT grouping already excludes hidden categories (see
@@ -279,7 +282,10 @@ class LibraryScreenModel(
                     groupType == LibraryGroup.BY_DEFAULT &&
                     !categoryFilterActive
 
-                if (mergeAllCategories) {
+                // NEXUS: the merged result is a synthetic single tab that has no backing
+                // row in the categories table, so it is flagged alongside the data to keep
+                // category-scoped actions (refresh, sort) from targeting a real category.
+                val groupedAndSorted = if (mergeAllCategories) {
                     val mergedIds = grouped.values.flatten().distinct()
                     mapOf(
                         Category(
@@ -304,9 +310,17 @@ class LibraryScreenModel(
 
                     perCategory
                 }
+
+                val filteredGrouped = groupedAndSorted
                     .filter {
-                        // Hide empty categories unless the setting is enabled or there are no active filters/search
-                        showEmptyCategoriesSearch || noActiveFilterOrSearch || it.value.isNotEmpty()
+                        // Hide empty categories unless the setting is enabled or there are no active filters/search.
+                        // NEXUS: the category the user is on is never dropped - removing it while
+                        // searching made the pager silently fall back to another category's results
+                        // instead of staying put and reporting "No results found".
+                        it.key.id == activeCategoryId ||
+                            showEmptyCategoriesSearch ||
+                            noActiveFilterOrSearch ||
+                            it.value.isNotEmpty()
                     }
                     .let {
                         // Fall back to default category if no categories are present
@@ -322,12 +336,15 @@ class LibraryScreenModel(
                             )
                         }
                     }
+
+                mergeAllCategories to filteredGrouped
             }
-                .collectLatest {
+                .collectLatest { (isMergedCategoryView, groupedFavorites) ->
                     mutableState.update { state ->
                         state.copy(
                             isLoading = false,
-                            groupedFavorites = it,
+                            groupedFavorites = groupedFavorites,
+                            isMergedCategoryView = isMergedCategoryView,
                         )
                     }
                 }
@@ -1387,16 +1404,6 @@ class LibraryScreenModel(
         mutableState.update { it.copy(searchQuery = query) }
     }
 
-    /** Toggles the Library search scope between all categories (merged) and the current category only. */
-    fun toggleSearchScope() {
-        val newScope = if (state.value.searchScope == LibrarySearchScope.ALL_CATEGORIES) {
-            LibrarySearchScope.CURRENT_CATEGORY
-        } else {
-            LibrarySearchScope.ALL_CATEGORIES
-        }
-        libraryPreferences.librarySearchScope().set(newScope)
-    }
-
     fun updateActiveCategoryIndex(index: Int) {
         val newIndex = mutableState.updateAndGet { state ->
             state.copy(
@@ -1631,7 +1638,9 @@ class LibraryScreenModel(
         val dialog: Dialog? = null,
         val libraryData: LibraryData = LibraryData(),
         private val activeCategoryIndex: Int = 0,
-        private val activeCategoryId: Long? = null,
+        // NEXUS: read by the grouping flow so the category the user is on stays in the
+        // pager while a search or filter empties it out.
+        val activeCategoryId: Long? = null,
         private val groupedFavorites: Map<Category, List</* LibraryItem */ Long>> = emptyMap(),
         val showSyncExh: Boolean = false,
         val isSyncEnabled: Boolean = false,
@@ -1640,6 +1649,12 @@ class LibraryScreenModel(
         val filterCategory: Boolean = false,
         val includedCategories: ImmutableSet<Long> = persistentSetOf(),
         val excludedCategories: ImmutableSet<Long> = persistentSetOf(),
+        /**
+         * NEXUS: true while the only visible tab is the synthetic "All Categories" search
+         * list. That pseudo-category has no row in the categories table, so anything that
+         * needs a real category id (refresh, per-category sort) must not be handed it.
+         */
+        val isMergedCategoryView: Boolean = false,
     ) {
         /**
          * The grouped tabs which is displayed above the library screen.

@@ -24,7 +24,8 @@ class SetSortModeForCategory(
         if (type == LibrarySort.Type.Random) {
             preferences.randomSortSeed().set(Random.nextInt())
         }
-        if (category != null && preferences.categorizedDisplaySettings().get()) {
+        val categorizedSettings = preferences.categorizedDisplaySettings().get()
+        if (category != null && categorizedSettings) {
             categoryRepository.updatePartial(
                 CategoryUpdate(
                     id = category.id,
@@ -33,7 +34,13 @@ class SetSortModeForCategory(
             )
         } else {
             preferences.sortingMode().set(LibrarySort(type, direction))
-            categoryRepository.updateAllFlags(flags)
+            // NEXUS: with per-category sort settings enabled, a null category means there is
+            // no row to write to (the merged "All Categories" search view has no category).
+            // Blasting every category's flags here would silently reorder the whole library,
+            // so only the global sort preference is updated.
+            if (!categorizedSettings) {
+                categoryRepository.updateAllFlags(flags)
+            }
         }
     }
 

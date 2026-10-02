@@ -212,15 +212,18 @@ private fun ColumnScope.SortPage(
 ) {
     val trackers by screenModel.trackersFlow.collectAsState()
     val globalSortMode by screenModel.libraryPreferences.sortingMode().collectAsState()
-    val sortingMode = if (screenModel.grouping == LibraryGroup.BY_DEFAULT) {
-        category.sort.type
-    } else {
+    // NEXUS: a null category means the view has no backing category row - the merged
+    // "All Categories" search list - which is always ordered by the global library sort.
+    val useGlobalSort = screenModel.grouping != LibraryGroup.BY_DEFAULT || category == null
+    val sortingMode = if (useGlobalSort) {
         globalSortMode.type
-    }
-    val sortDescending = if (screenModel.grouping == LibraryGroup.BY_DEFAULT) {
-        !category.sort.isAscending
     } else {
+        category.sort.type
+    }
+    val sortDescending = if (useGlobalSort) {
         !globalSortMode.isAscending
+    } else {
+        !category.sort.isAscending
     }
     val hasSortTags by remember {
         screenModel.libraryPreferences.sortTagsForLibrary().changes()

@@ -135,6 +135,12 @@ data object LibraryTab : Tab {
             Unit
         }
 
+        // NEXUS: while an "All Categories" search is active the visible list is a synthetic
+        // pseudo-category that has no row in the categories table. Passing it to a
+        // category-scoped action resolves to the system (uncategorized) category, so it is
+        // reported as null here and callers fall back to library-wide behaviour.
+        val backingCategory: Category? = state.activeCategory.takeUnless { state.isMergedCategoryView }
+
         val onClickRefresh: (Category?) -> Boolean = { category ->
             val started = LibraryUpdateJob.startNow(
                 context = context,
@@ -166,7 +172,7 @@ data object LibraryTab : Tab {
                     onClickSelectAll = screenModel::selectAll,
                     onClickInvertSelection = screenModel::invertSelection,
                     onClickControls = { screenModel.showSettingsDialog() },
-                    onClickRefresh = { onClickRefresh(state.activeCategory) },
+                    onClickRefresh = { onClickRefresh(backingCategory) },
                     onClickGlobalUpdate = { onClickRefresh(null) },
                     onClickOpenRandomManga = {
                         scope.launch {
@@ -305,7 +311,7 @@ data object LibraryTab : Tab {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             screenModel.toggleRangeSelection(category, manga)
                         },
-                        onRefresh = { onClickRefresh(state.activeCategory) },
+                        onRefresh = { onClickRefresh(backingCategory) },
                         onGlobalSearchClicked = {
                             navigator.push(GlobalSearchScreen(screenModel.state.value.searchQuery ?: ""))
                         },
@@ -330,7 +336,7 @@ data object LibraryTab : Tab {
                 LibrarySettingsDialog(
                     onDismissRequest = onDismissRequest,
                     screenModel = settingsScreenModel,
-                    category = state.activeCategory,
+                    category = backingCategory,
                     hasCategories = state.libraryData.categories.fastAny { !it.isSystemCategory },
                     categories = state.libraryData.categories.filterNot(Category::isSystemCategory),
                     initialTabIndex = dialog.initialTabIndex,

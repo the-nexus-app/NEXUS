@@ -48,8 +48,16 @@ internal fun LibraryTabs(
     val currentPageIndex = pagerState.currentPage.coerceAtMost(categories.lastIndex)
     val scrollState = rememberScrollState()
 
-    // Filter to only visible user-created categories (non-system, non-hidden)
-    val visibleCategories = categories.filterNot { it.isSystemCategory }.filterNot { it.hidden }
+    // NEXUS: only user-created, non-hidden categories get a chip, but the pager still has a
+    // page for every grouped category - including the system (uncategorized) one, which is
+    // in `categories` whenever any library entry has no category. Each chip therefore has to
+    // resolve back to its own page index; using its position in this filtered list would make
+    // a tap land on the wrong page (and highlight the wrong chip) as soon as either kind is
+    // filtered out here.
+    val visibleChips = categories
+        .filterNot { it.isSystemCategory }
+        .filterNot { it.hidden }
+        .map { category -> category to categories.indexOfFirst { it.id == category.id } }
 
     Column(
         modifier = Modifier
@@ -91,19 +99,19 @@ internal fun LibraryTabs(
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f),
         )
 
-        if (visibleCategories.isNotEmpty()) {
+        if (visibleChips.isNotEmpty()) {
             Row(
                 modifier = Modifier
                     .horizontalScroll(scrollState)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                visibleCategories.forEachIndexed { index, category ->
+                visibleChips.forEach { (category, pageIndex) ->
                     LibraryCategoryChip(
                         label = category.visualName,
                         count = getItemCountForCategory(category),
-                        isSelected = currentPageIndex == index,
-                        onClick = { onTabItemClick(index) },
+                        isSelected = currentPageIndex == pageIndex,
+                        onClick = { onTabItemClick(pageIndex) },
                     )
                 }
             }
@@ -118,8 +126,10 @@ internal fun LibraryTabs(
 
     // Auto-scroll to selected chip
     LaunchedEffect(currentPageIndex) {
-        val targetScroll = (currentPageIndex * 110).coerceAtLeast(0)
-        scrollState.animateScrollTo(targetScroll)
+        val chipIndex = visibleChips.indexOfFirst { (_, pageIndex) -> pageIndex == currentPageIndex }
+        if (chipIndex >= 0) {
+            scrollState.animateScrollTo(chipIndex * 110)
+        }
     }
 }
 
