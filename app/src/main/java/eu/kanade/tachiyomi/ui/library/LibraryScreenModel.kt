@@ -261,13 +261,20 @@ class LibraryScreenModel(
             ) { (data, groupType, noActiveFilterOrSearch), (sort, showHiddenCategories, showEmptyCategoriesSearch), (filterCategory, includedCategories), (isSearchQueryBlank, searchScope), activeCategoryId ->
                 val categoryFilterActive = filterCategory && includedCategories.isNotEmpty()
 
+                // The category filter collapses the library into one synthetic "Ungrouped"
+                // tab (see applyGrouping below), overriding whatever the grouping
+                // preference says. This - not groupType - is what is actually on screen,
+                // so it drives grouping, sorting, and whether the visible tab has a real
+                // row behind it in the categories table.
+                val effectiveGroupType = if (categoryFilterActive) LibraryGroup.UNGROUPED else groupType
+
                 // BY_DEFAULT grouping already excludes hidden categories (see
                 // applyGrouping below), so it's reused as-is as the source of truth
                 // for "All Categories" search merging - no separate hidden-category
                 // check is needed here.
                 val grouped = data.favorites.applyGrouping(
                     data.categories,
-                    if (categoryFilterActive) LibraryGroup.UNGROUPED else groupType,
+                    effectiveGroupType,
                     showHiddenCategories,
                 )
 
@@ -275,16 +282,18 @@ class LibraryScreenModel(
                 // default), merge every visible category's matches into a single
                 // deduplicated list instead of leaving results spread across
                 // per-category tabs. Only applies to the normal BY_DEFAULT grouping,
-                // and is skipped while the category filter sheet is narrowing things
-                // down already, so every other grouping/filtering path is untouched.
+                // so every other grouping/filtering path is untouched.
                 val mergeAllCategories = !isSearchQueryBlank &&
                     searchScope == LibrarySearchScope.ALL_CATEGORIES &&
-                    groupType == LibraryGroup.BY_DEFAULT &&
-                    !categoryFilterActive
+                    effectiveGroupType == LibraryGroup.BY_DEFAULT
 
-                // NEXUS: the merged result is a synthetic single tab that has no backing
-                // row in the categories table, so it is flagged alongside the data to keep
-                // category-scoped actions (refresh, sort) from targeting a real category.
+                // NEXUS: the visible tab is synthetic in two cases - the merged "All
+                // Categories" search list, and the single "Ungrouped" tab the category
+                // filter sheet produces. Neither is backed by a meaningful row in the
+                // categories table, so category-scoped actions (refresh, sort) must not be
+                // handed one: they would resolve to the system (uncategorized) category.
+                val isVirtualCategoryView = mergeAllCategories || categoryFilterActive
+
                 val groupedAndSorted = if (mergeAllCategories) {
                     val mergedIds = grouped.values.flatten().distinct()
                     mapOf(
@@ -305,7 +314,10 @@ class LibraryScreenModel(
                         data.favoritesById,
                         data.tracksMap,
                         data.loggedInTrackerIds,
-                        sort.takeIf { groupType != LibraryGroup.BY_DEFAULT },
+                        // NEXUS: a virtual tab has no flags of its own, so the global sort
+                        // is used - reading the synthetic key's flags=0 pinned these views
+                        // to Alphabetical and made the sort sheet appear to do nothing.
+                        sort.takeIf { effectiveGroupType != LibraryGroup.BY_DEFAULT },
                     )
 
                     perCategory
@@ -337,14 +349,14 @@ class LibraryScreenModel(
                         }
                     }
 
-                mergeAllCategories to filteredGrouped
+                isVirtualCategoryView to filteredGrouped
             }
-                .collectLatest { (isMergedCategoryView, groupedFavorites) ->
+                .collectLatest { (isVirtualCategoryView, groupedFavorites) ->
                     mutableState.update { state ->
                         state.copy(
                             isLoading = false,
                             groupedFavorites = groupedFavorites,
-                            isMergedCategoryView = isMergedCategoryView,
+                            isVirtualCategoryView = isVirtualCategoryView,
                         )
                     }
                 }
@@ -1650,11 +1662,12 @@ class LibraryScreenModel(
         val includedCategories: ImmutableSet<Long> = persistentSetOf(),
         val excludedCategories: ImmutableSet<Long> = persistentSetOf(),
         /**
-         * NEXUS: true while the only visible tab is the synthetic "All Categories" search
-         * list. That pseudo-category has no row in the categories table, so anything that
-         * needs a real category id (refresh, per-category sort) must not be handed it.
+         * NEXUS: true while the only visible tab is synthetic - either the "All Categories"
+         * search list or the single "Ungrouped" tab the category filter sheet produces.
+         * Such a tab has no row in the categories table, so anything that needs a real
+         * category id (refresh, per-category sort) must not be handed it.
          */
-        val isMergedCategoryView: Boolean = false,
+        val isVirtualCategoryView: Boolean = false,
     ) {
         /**
          * The grouped tabs which is displayed above the library screen.

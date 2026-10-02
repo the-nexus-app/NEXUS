@@ -135,18 +135,27 @@ data object LibraryTab : Tab {
             Unit
         }
 
-        // NEXUS: while an "All Categories" search is active the visible list is a synthetic
-        // pseudo-category that has no row in the categories table. Passing it to a
-        // category-scoped action resolves to the system (uncategorized) category, so it is
-        // reported as null here and callers fall back to library-wide behaviour.
-        val backingCategory: Category? = state.activeCategory.takeUnless { state.isMergedCategoryView }
+        // NEXUS: while the visible list is synthetic (an "All Categories" search, or the
+        // category filter's single "Ungrouped" tab) there is no row in the categories
+        // table behind it. Passing it to a category-scoped action resolves to the system
+        // (uncategorized) category, so it is reported as null here and callers fall back
+        // to library-wide behaviour.
+        val backingCategory: Category? = state.activeCategory.takeUnless { state.isVirtualCategoryView }
 
         val onClickRefresh: (Category?) -> Boolean = { category ->
+            // NEXUS: a virtual tab has no real group behind it either, so refresh runs as a
+            // plain library-wide update rather than following the grouping preference -
+            // which would otherwise scope it by a source/status the tab is not grouped by.
+            val refreshGroup = if (state.isVirtualCategoryView) {
+                LibraryGroup.BY_DEFAULT
+            } else {
+                state.groupType
+            }
             val started = LibraryUpdateJob.startNow(
                 context = context,
-                category = if (state.groupType == LibraryGroup.BY_DEFAULT) category else null,
-                group = state.groupType,
-                groupExtra = when (state.groupType) {
+                category = if (refreshGroup == LibraryGroup.BY_DEFAULT) category else null,
+                group = refreshGroup,
+                groupExtra = when (refreshGroup) {
                     LibraryGroup.BY_DEFAULT -> null
                     LibraryGroup.BY_SOURCE, LibraryGroup.BY_TRACK_STATUS -> category?.id?.toString()
                     LibraryGroup.BY_STATUS -> category?.id?.minus(1)?.toString()

@@ -212,8 +212,9 @@ private fun ColumnScope.SortPage(
 ) {
     val trackers by screenModel.trackersFlow.collectAsState()
     val globalSortMode by screenModel.libraryPreferences.sortingMode().collectAsState()
-    // NEXUS: a null category means the view has no backing category row - the merged
-    // "All Categories" search list - which is always ordered by the global library sort.
+    // NEXUS: a null category means the view has no backing category row - either the
+    // merged "All Categories" search list or the category filter's "Ungrouped" tab -
+    // and such views are always ordered by the global library sort.
     val useGlobalSort = screenModel.grouping != LibraryGroup.BY_DEFAULT || category == null
     val sortingMode = if (useGlobalSort) {
         globalSortMode.type
