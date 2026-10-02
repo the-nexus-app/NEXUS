@@ -81,5 +81,34 @@ UPDATE bookmarks
 SET note = :note
 WHERE _id = :id;
 
+-- Page bookmarks for a manga keyed by chapter *url* instead of chapter id.
+-- Backup and sync both need a stable identity: local chapter ids are reassigned
+-- on restore, so they cannot round-trip through a backup file.
+getPageBookmarksByMangaIdWithChapterUrl:
+SELECT
+    C.url AS chapter_url,
+    B.page_index,
+    B.scroll_position,
+    B.created_at,
+    B.note
+FROM bookmarks B
+JOIN chapters C
+ON B.chapter_id = C._id
+WHERE C.manga_id = :mangaId;
+
+-- Restores a page bookmark from a backup without ever destroying local data.
+-- The unique(chapter_id, page_index) index means an existing row wins: its
+-- note and scroll position are only filled in when they are NULL, so a restore
+-- merges bookmarks union-style (same as chapter.bookmark || dbChapter.bookmark)
+-- instead of clobbering notes written on this device.
+upsertFromBackup:
+INSERT INTO bookmarks(chapter_id, page_index, scroll_position, created_at, note)
+VALUES (:chapterId, :pageIndex, :scrollPosition, :createdAt, :note)
+ON CONFLICT(chapter_id, page_index)
+DO UPDATE
+SET
+    note = coalesce(note, :note),
+    scroll_position = coalesce(scroll_position, :scrollPosition);
+
 selectLastInsertedRowId:
 SELECT last_insert_rowid();

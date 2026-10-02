@@ -194,6 +194,38 @@ class MangaRestorer(
         updateExistingChapters(existingChapters)
     }
 
+    /**
+     * Restores manual page bookmarks (NEXUS Bookmarks feature).
+     *
+     * Backup stores them per chapter *url* because local chapter ids are reassigned
+     * on restore; [restoreChapters] has already run, so a url -> id lookup against
+     * the DB resolves to the correct local chapter. Rows already present are left
+     * intact -- `upsertFromBackup` only fills in NULL note/scroll values, so a
+     * restore merges instead of clobbering notes written on this device.
+     */
+    private suspend fun restorePageBookmarks(manga: Manga, backupChapters: List<BackupChapter>) {
+        val chaptersWithBookmarks = backupChapters.filter { it.pageBookmarks.isNotEmpty() }
+        if (chaptersWithBookmarks.isEmpty()) return
+
+        val chapterIdByUrl = getChaptersByMangaId.await(manga.id, applyFilter = false)
+            .associate { it.url to it.id }
+
+        handler.await(true) {
+            chaptersWithBookmarks.forEach { backupChapter ->
+                val chapterId = chapterIdByUrl[backupChapter.url] ?: return@forEach
+                backupChapter.pageBookmarks.forEach { bookmark ->
+                    bookmarksQueries.upsertFromBackup(
+                        chapterId = chapterId,
+                        pageIndex = bookmark.pageIndex.toLong(),
+                        scrollPosition = bookmark.scrollPosition?.toDouble(),
+                        createdAt = bookmark.createdAt,
+                        note = bookmark.note,
+                    )
+                }
+            }
+        }
+    }
+
     private fun updateChapterBasedOnSyncState(chapter: Chapter, dbChapter: Chapter): Chapter {
         return if (isSync) {
             chapter.copy(
@@ -330,6 +362,9 @@ class MangaRestorer(
     ): Manga {
         restoreCategories(manga, categories, backupCategories)
         restoreChapters(manga, chapters)
+        // NXS --> Restore manual page bookmarks after chapters exist locally
+        restorePageBookmarks(manga, chapters)
+        // NXS <--
         restoreTracking(manga, tracks)
         restoreHistory(manga, history)
         restoreExcludedScanlators(manga, excludedScanlators)

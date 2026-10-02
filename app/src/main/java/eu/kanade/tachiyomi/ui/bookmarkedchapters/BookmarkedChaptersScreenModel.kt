@@ -5,7 +5,9 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import eu.kanade.presentation.bookmarkedchapters.components.BookmarkedChaptersUiModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import mihon.domain.manga.interactor.GetHiddenMangaIds
 import tachiyomi.core.common.util.lang.launchIO
 import tachiyomi.domain.chapter.interactor.GetAllBookmarkedChapters
 import tachiyomi.domain.chapter.interactor.UpdateChapter
@@ -17,18 +19,32 @@ import uy.kohesive.injekt.api.get
 class BookmarkedChaptersScreenModel(
     private val getAllBookmarkedChapters: GetAllBookmarkedChapters = Injekt.get(),
     private val updateChapter: UpdateChapter = Injekt.get(),
+    private val getHiddenMangaIds: GetHiddenMangaIds = GetHiddenMangaIds(),
 ) : StateScreenModel<BookmarkedChaptersScreenModel.State>(State()) {
 
     init {
         screenModelScope.launchIO {
-            getAllBookmarkedChapters.subscribe().collectLatest { bookmarkedChapters ->
-                mutableState.update {
-                    it.copy(
-                        isLoading = false,
-                        items = bookmarkedChapters,
-                    )
+            // NXS --> Hidden-category manga must not leak through the global
+            // Bookmarked chapters list; same rule the Feed and History screens follow.
+            combine(
+                getAllBookmarkedChapters.subscribe(),
+                getHiddenMangaIds.subscribe(),
+            ) { bookmarkedChapters, hiddenMangaIds ->
+                if (hiddenMangaIds.isEmpty()) {
+                    bookmarkedChapters
+                } else {
+                    bookmarkedChapters.filterNot { it.mangaId in hiddenMangaIds }
                 }
             }
+                // NXS <--
+                .collectLatest { bookmarkedChapters ->
+                    mutableState.update {
+                        it.copy(
+                            isLoading = false,
+                            items = bookmarkedChapters,
+                        )
+                    }
+                }
         }
     }
 

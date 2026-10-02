@@ -260,6 +260,14 @@ class SyncManager(
             return true
         }
 
+        // NXS --> Page bookmarks live outside the chapters table and don't bump
+        // chapter version, so compare them explicitly or a bookmark-only change
+        // on one device would never be noticed by the other.
+        if (arePageBookmarksDifferent(localManga, remoteManga)) {
+            return true
+        }
+        // NXS <--
+
         if (localManga.version != remoteManga.version) {
             return true
         }
@@ -290,6 +298,28 @@ class SyncManager(
 
         return false
     }
+
+    // NXS --> Compares NEXUS page bookmarks by (chapter url, page index, note).
+    // Deliberately excludes scrollPosition: it is a Double locally but a Float on
+    // the wire, so round-tripping it would make every sync report a difference.
+    private suspend fun arePageBookmarksDifferent(localManga: Manga, remoteManga: BackupManga): Boolean {
+        val localBookmarks = handler.awaitList {
+            bookmarksQueries.getPageBookmarksByMangaIdWithChapterUrl(localManga.id)
+        }
+            .map { Triple(it.chapter_url, it.page_index, it.note) }
+            .toSet()
+
+        val remoteBookmarks = remoteManga.chapters
+            .flatMap { chapter ->
+                chapter.pageBookmarks.map { bookmark ->
+                    Triple(chapter.url, bookmark.pageIndex.toLong(), bookmark.note)
+                }
+            }
+            .toSet()
+
+        return localBookmarks != remoteBookmarks
+    }
+    // NXS <--
 
     /**
      * Filters the favorite and non-favorite manga from the backup and checks

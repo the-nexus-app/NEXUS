@@ -5,6 +5,7 @@ import eu.kanade.tachiyomi.data.backup.models.BackupChapter
 import eu.kanade.tachiyomi.data.backup.models.BackupFlatMetadata
 import eu.kanade.tachiyomi.data.backup.models.BackupHistory
 import eu.kanade.tachiyomi.data.backup.models.BackupManga
+import eu.kanade.tachiyomi.data.backup.models.BackupPageBookmark
 import eu.kanade.tachiyomi.data.backup.models.backupChapterMapper
 import eu.kanade.tachiyomi.data.backup.models.backupMergedMangaReferenceMapper
 import eu.kanade.tachiyomi.data.backup.models.backupTrackMapper
@@ -68,7 +69,7 @@ class MangaBackupCreator(
 
         if (options.chapters) {
             // Backup all the chapters
-            handler.awaitList {
+            val chapters = handler.awaitList {
                 chaptersQueries.getChaptersByMangaId(
                     mangaId = manga.id,
                     applyFilter = 0, // false
@@ -78,7 +79,27 @@ class MangaBackupCreator(
                 )
             }
                 .takeUnless(List<BackupChapter>::isEmpty)
-                ?.let { mangaObject.chapters = it }
+
+            if (chapters != null) {
+                // NXS --> Attach manual page bookmarks, keyed by chapter url because
+                // chapter ids are local-only and reassigned on restore.
+                val pageBookmarksByChapterUrl = handler.awaitList {
+                    bookmarksQueries.getPageBookmarksByMangaIdWithChapterUrl(manga.id)
+                }
+                    .groupBy({ it.chapter_url }, { bookmark ->
+                        BackupPageBookmark(
+                            pageIndex = bookmark.page_index.toInt(),
+                            scrollPosition = bookmark.scroll_position?.toFloat(),
+                            createdAt = bookmark.created_at,
+                            note = bookmark.note,
+                        )
+                    })
+                chapters.forEach { chapter ->
+                    chapter.pageBookmarks = pageBookmarksByChapterUrl[chapter.url].orEmpty()
+                }
+                // NXS <--
+                mangaObject.chapters = chapters
+            }
         }
 
         if (options.categories) {

@@ -26,6 +26,9 @@ class BackupChapter(
     @ProtoNumber(11) var lastModifiedAt: Long = 0,
     @ProtoNumber(12) var version: Long = 0,
     @ProtoNumber(13) var memo: ByteArray = JsonObjectEmptyBytes,
+    // NXS --> Manual page bookmarks (NEXUS Bookmarks feature)
+    @ProtoNumber(14) var pageBookmarks: List<BackupPageBookmark> = emptyList(),
+    // NXS <--
 ) {
     fun toChapterImpl(): Chapter {
         return Chapter.create().copy(
