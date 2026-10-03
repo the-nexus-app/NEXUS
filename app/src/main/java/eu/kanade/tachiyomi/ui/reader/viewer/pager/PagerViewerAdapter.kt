@@ -172,7 +172,9 @@ class PagerViewerAdapter(
                 seedColor = seedColor,
                 // KMK <--
             )
-            // SY --> else -> throw NotImplementedError("Holder for ${item.javaClass} not implemented") SY <--
+            // SY -->
+            else -> throw NotImplementedError("Holder for ${item.javaClass} not implemented")
+            // SY <--
         }
     }
 
