@@ -34,7 +34,9 @@ class EHentaiUpdateNotifier(private val context: Context) {
      * Bitmap of the app for notifications.
      */
     private val notificationBitmap by lazy {
+        // NXS -->
         BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo)
+        // NXS <--
     }
 
     /**
@@ -97,7 +99,9 @@ class EHentaiUpdateNotifier(private val context: Context) {
         ) {
             setContentTitle(context.pluralStringResource(MR.plurals.notification_update_error, failed, failed))
             setContentText(context.stringResource(MR.strings.action_show_errors))
+            // NXS -->
             setSmallIcon(R.drawable.ic_nexus)
+            // NXS <--
             setColor(ContextCompat.getColor(context, R.color.ic_launcher))
             setLargeIcon(notificationBitmap)
 

@@ -15,17 +15,21 @@ class SetSortModeForCategory(
 ) {
 
     suspend fun await(categoryId: Long?, type: LibrarySort.Type, direction: LibrarySort.Direction) {
+        // SY -->
         if (preferences.groupLibraryBy().get() != LibraryGroup.BY_DEFAULT) {
             preferences.sortingMode().set(LibrarySort(type, direction))
             return
         }
+        // SY <--
         val category = categoryId?.let { categoryRepository.get(it) }
         val flags = (category?.flags ?: 0) + type + direction
         if (type == LibrarySort.Type.Random) {
             preferences.randomSortSeed().set(Random.nextInt())
         }
+        // NXS -->
         val categorizedSettings = preferences.categorizedDisplaySettings().get()
         if (category != null && categorizedSettings) {
+            // NXS <--
             categoryRepository.updatePartial(
                 CategoryUpdate(
                     id = category.id,
@@ -34,6 +38,7 @@ class SetSortModeForCategory(
             )
         } else {
             preferences.sortingMode().set(LibrarySort(type, direction))
+            // NXS -->
             // NEXUS: with per-category sort settings enabled, a null category means there is
             // no row to write to (the merged "All Categories" search view has no category).
             // Blasting every category's flags here would silently reorder the whole library,
@@ -41,6 +46,7 @@ class SetSortModeForCategory(
             if (!categorizedSettings) {
                 categoryRepository.updateAllFlags(flags)
             }
+            // NXS <--
         }
     }
 

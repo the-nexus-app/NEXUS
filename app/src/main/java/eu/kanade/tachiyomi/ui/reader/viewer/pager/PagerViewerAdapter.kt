@@ -21,7 +21,9 @@ import tachiyomi.core.common.util.system.logcat
  */
 class PagerViewerAdapter(
     private val viewer: PagerViewer,
+    // KMK -->
     @ColorInt private val seedColor: Int? = null,
+    // KMK <--
 ) : ViewPagerAdapter() {
 
     /**
@@ -45,12 +47,14 @@ class PagerViewerAdapter(
 
     var currentChapter: ReaderChapter? = null
 
+    // SY -->
     /** Page used to start the shifted pages */
     var pageToShift: ReaderPage? = null
 
     /** Varibles used to check if config of the pages have changed */
     private var shifted = viewer.config.shiftDoublePage
     private var doubledUp = viewer.config.doublePages
+    // SY <--
 
     /**
      * Context that has been wrapped to use the correct theme values based on the
@@ -156,15 +160,19 @@ class PagerViewerAdapter(
                 viewer,
                 item,
                 item2 as? ReaderPage,
+                // KMK -->
                 seedColor = seedColor,
+                // KMK <--
             )
             is ChapterTransition -> PagerTransitionHolder(
                 readerThemedContext,
                 viewer,
                 item,
+                // KMK -->
                 seedColor = seedColor,
+                // KMK <--
             )
-            else -> throw NotImplementedError("Holder for ${item.javaClass} not implemented")
+            // SY --> else -> throw NotImplementedError("Holder for ${item.javaClass} not implemented") SY <--
         }
     }
 
@@ -226,6 +234,7 @@ class PagerViewerAdapter(
         readerThemedContext = viewer.activity.createReaderThemeContext()
     }
 
+    // SY -->
     private fun setJoinedItems(useSecondPage: Boolean = false) {
         val oldCurrent = joinedItems.getOrNull(viewer.pager.currentItem)
         if (!viewer.config.doublePages) {
@@ -385,4 +394,5 @@ class PagerViewerAdapter(
             viewer.onPageChange(viewer.pager.currentItem)
         }
     }
+    // SY <--
 }

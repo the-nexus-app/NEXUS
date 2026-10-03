@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.data.backup.models
 
 import kotlinx.serialization.Serializable
@@ -18,3 +19,4 @@ class BackupPageBookmark(
     @ProtoNumber(3) var createdAt: Long = 0,
     @ProtoNumber(4) var note: String? = null,
 )
+// NXS <--

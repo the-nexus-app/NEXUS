@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.dashboard
 
 import androidx.compose.runtime.Immutable
@@ -117,3 +118,4 @@ class DashboardScreenModel(
         val visibleLibraryTitleCount: Int,
     )
 }
+// NXS <--

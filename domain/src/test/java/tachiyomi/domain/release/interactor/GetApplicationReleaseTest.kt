@@ -57,7 +57,9 @@ class GetApplicationReleaseTest {
             ),
         )
 
+        // NXS -->
         // Don't cast, will throw exception if the result is different from expected
+        // NXS <--
         result shouldBe GetApplicationRelease.Result.NewUpdate(releases.getLatest()!!)
     }
 
@@ -88,7 +90,9 @@ class GetApplicationReleaseTest {
             ),
         )
 
+        // NXS -->
         // Don't cast, will throw exception if the result is different from expected
+        // NXS <--
         result shouldBe GetApplicationRelease.Result.NewUpdate(releases.getLatest()!!)
     }
 
@@ -121,8 +125,10 @@ class GetApplicationReleaseTest {
         result shouldBe GetApplicationRelease.Result.NoNewUpdate
     }
 
+    // NXS -->
     @Test
     fun `When within throttle window expect no new update and no network call`() = runTest {
+        // NXS <--
         every { preference.get() } returns Instant.now().toEpochMilli()
         every { preference.set(any()) }.answers { }
 
@@ -151,6 +157,7 @@ class GetApplicationReleaseTest {
         coVerify(exactly = 0) { releaseService.releaseNotes(any()) }
         result shouldBe GetApplicationRelease.Result.NoNewUpdate
     }
+    // NXS -->
 
     @Test
     fun `When forceCheck is true expect throttle to be bypassed`() = runTest {
@@ -291,4 +298,5 @@ class GetApplicationReleaseTest {
 
         result shouldBe GetApplicationRelease.Result.NoNewUpdate
     }
+    // NXS <--
 }

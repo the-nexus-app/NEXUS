@@ -75,8 +75,10 @@ class ExtensionManager(
 
     private val availableExtensionMapFlow = MutableStateFlow(emptyMap<String, Extension.Available>())
 
+    // SY -->
     val availableExtensionsFlow = availableExtensionMapFlow.map { it.filterNotBlacklisted().values.toList() }
         .stateIn(scope, SharingStarted.Lazily, availableExtensionMapFlow.value.values.toList())
+    // SY <--
 
     private val untrustedExtensionMapFlow = MutableStateFlow(emptyMap<String, Extension.Untrusted>())
     val untrustedExtensionsFlow = untrustedExtensionMapFlow.mapExtensions(scope)
@@ -113,12 +115,16 @@ class ExtensionManager(
             }
         }
 
+        // SY -->
         return when (sourceId) {
+            // KMK -->
             in EHENTAI_EXT_SOURCES -> ContextCompat.getDrawable(context, R.mipmap.ic_ehentai_source)
             in EXHENTAI_EXT_SOURCES -> ContextCompat.getDrawable(context, R.mipmap.ic_exhentai_source)
+            // KMK <--
             MERGED_SOURCE_ID -> ContextCompat.getDrawable(context, R.mipmap.ic_merged_source)
             else -> null
         }
+        // SY <--
     }
 
     private var availableExtensionsSourcesData: Map<Long, StubSource> = emptyMap()
@@ -145,12 +151,14 @@ class ExtensionManager(
         untrustedExtensionMapFlow.value = extensions
             .filterIsInstance<LoadResult.Untrusted>()
             .associate { it.extension.pkgName to it.extension }
+            // SY -->
             .filterNotBlacklisted()
+        // SY <--
 
         _isInitialized.value = true
     }
 
-    // EXH
+    // EXH -->
     private fun <T : Extension> Map<String, T>.filterNotBlacklisted(): Map<String, T> {
         val blacklistEnabled = preferences.enableSourceBlacklist().get()
         return filterNot { (_, extension) ->
@@ -163,13 +171,17 @@ class ExtensionManager(
 
     private fun Extension.isBlacklisted(
         blacklistEnabled: Boolean = preferences.enableSourceBlacklist().get(),
+        // KMK -->
         isHentaiEnabled: Boolean = Injekt.get<ExhPreferences>().isHentaiEnabled().get(),
+        // KMK <--
     ): Boolean {
         return pkgName in BlacklistedSources.BLACKLISTED_EXTENSIONS &&
             blacklistEnabled &&
+            // KMK -->
             isHentaiEnabled
+        // KMK <--
     }
-    // EXH
+    // EXH <--
 
     /**
      * Finds the available extensions in the [api] and updates [availableExtensionMapFlow].
@@ -187,7 +199,9 @@ class ExtensionManager(
 
         availableExtensionMapFlow.value = extensions.associateBy {
             it.pkgName +
+                // KMK -->
                 "_${it.signatureHash}"
+            // KMK <--
         }
         updatedInstalledExtensionsStatuses(extensions)
         setupAvailableExtensionsSourcesDataMap(extensions)
@@ -233,32 +247,40 @@ class ExtensionManager(
         var changed = false
         for ((pkgName, extension) in installedExtensionsMap) {
             val availableExt = availableExtensions.find {
+                // KMK -->
                 it.signatureHash == extension.signatureHash &&
+                    // KMK <--
                     it.pkgName == pkgName
             }
 
             if (availableExt == null &&
-                (!extension.isObsolete || /* KMK*/ extension.hasUpdate /* KMK*/)
+                (!extension.isObsolete || /* KMK --> */ extension.hasUpdate /* KMK <-- */)
             ) {
                 // Ext not found: Set isObsolete & clear hasUpdate
                 installedExtensionsMap[pkgName] = extension.copy(
                     isObsolete = true,
+                    // KMK -->
                     hasUpdate = false,
+                    // KMK <--
                 )
                 changed = true
+                // SY -->
             } else if (extension.isBlacklisted() && !extension.isRedundant) {
                 installedExtensionsMap[pkgName] = extension.copy(isRedundant = true)
                 changed = true
+                // SY <--
             } else if (availableExt != null) {
                 // Ext found: Update installed extensions with new information from repo
                 // Also clear isObsolete and set new repo Name if needed
                 val hasUpdate = extension.updateExists(availableExt)
+                // KMK -->
                 installedExtensionsMap[pkgName] = extension.copy(
                     hasUpdate = hasUpdate,
                     store = availableExt.store,
                     isObsolete = false,
                     storeName = extension.storeName ?: availableExt.storeName,
                 )
+                // KMK <--
                 changed = true
             }
         }
@@ -289,7 +311,9 @@ class ExtensionManager(
     fun updateExtension(extension: Extension.Installed): Flow<InstallStep> {
         val availableExt = availableExtensionMapFlow.value[
             extension.pkgName +
+                // KMK -->
                 "_${extension.signatureHash}",
+            // KMK <--
         ] ?: return emptyFlow()
         return installExtension(availableExt)
     }
@@ -297,7 +321,9 @@ class ExtensionManager(
     fun cancelInstallUpdateExtension(extension: Extension) {
         installer.cancelInstall(
             extension.pkgName +
+                // KMK -->
                 "_${extension.signatureHash}",
+            // KMK <--
         )
     }
 
@@ -347,10 +373,12 @@ class ExtensionManager(
      * @param extension The extension to be registered.
      */
     private fun registerNewExtension(extension: Extension.Installed) {
+        // SY -->
         if (extension.isBlacklisted()) {
             xLogD("Removing blacklisted extension: (name: String, pkgName: %s)!", extension.name, extension.pkgName)
             return
         }
+        // SY <--
 
         installedExtensionMapFlow.value += extension
     }
@@ -362,10 +390,12 @@ class ExtensionManager(
      * @param extension The extension to be registered.
      */
     private fun registerUpdatedExtension(extension: Extension.Installed) {
+        // SY -->
         if (extension.isBlacklisted()) {
             xLogD("Removing blacklisted extension: (name: %s, pkgName: %s)!", extension.name, extension.pkgName)
             return
         }
+        // SY <--
 
         installedExtensionMapFlow.value += extension
     }

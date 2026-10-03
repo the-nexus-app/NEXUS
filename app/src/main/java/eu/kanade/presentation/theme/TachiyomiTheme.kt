@@ -53,6 +53,7 @@ fun TachiyomiTheme(
     )
 }
 
+// KMK -->
 /** Theme based on Cover */
 @Composable
 fun TachiyomiTheme(
@@ -77,6 +78,7 @@ fun TachiyomiTheme(
         )
     }
 }
+// KMK <--
 
 @Composable
 fun TachiyomiPreviewTheme(
@@ -116,6 +118,7 @@ private fun getThemeColorScheme(
         AppTheme.MONET -> {
             MonetColorScheme(context)
         }
+        // KMK -->
         AppTheme.CUSTOM -> {
             val uiPreferences = Injekt.get<UiPreferences>()
             CustomColorScheme(
@@ -123,6 +126,7 @@ private fun getThemeColorScheme(
                 style = uiPreferences.customThemeStyle().get(),
             )
         }
+        // KMK <--
         else -> {
             colorSchemes.getOrDefault(appTheme, TachiyomiColorScheme)
         }
@@ -136,7 +140,9 @@ private fun getThemeColorScheme(
 
 private val colorSchemes: Map<AppTheme, BaseColorScheme> = mapOf(
     AppTheme.DEFAULT to TachiyomiColorScheme,
+    // NXS -->
     AppTheme.NEXUS to NexusColorScheme,
+    // NXS <--
     AppTheme.CATPPUCCIN to CatppuccinColorScheme,
     AppTheme.GREEN_APPLE to GreenAppleColorScheme,
     AppTheme.LAVENDER to LavenderColorScheme,

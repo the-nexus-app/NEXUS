@@ -1,4 +1,6 @@
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--
 package eu.kanade.domain.connections.service
 
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
@@ -64,4 +66,6 @@ class ConnectionsPreferences(
         private fun connectionsToken(syncId: Long) = "connection_token_$syncId"
     }
 }
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--

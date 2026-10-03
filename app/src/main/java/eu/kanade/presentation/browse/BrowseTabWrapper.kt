@@ -19,6 +19,7 @@ fun BrowseTabWrapper(tab: TabContent, onBackPressed: (() -> Unit)? = null) {
     Scaffold(
         topBar = { scrollBehavior ->
             AppBar(
+                // NXS -->
                 titleContent = {
                     AppBarTitle(
                         title = stringResource(tab.titleRes),
@@ -28,6 +29,7 @@ fun BrowseTabWrapper(tab: TabContent, onBackPressed: (() -> Unit)? = null) {
                         titleColor = MaterialTheme.colorScheme.primary,
                     )
                 },
+                // NXS <--
                 actions = {
                     AppBarActions(tab.actions)
                 },

@@ -1,4 +1,6 @@
+// NXS -->
 // AM (DISCORD)
+// NXS <--
 
 // Taken from Animiru. Thank you Quickdev for permission!
 // Original library from https://github.com/dead8309/KizzyRPC (Thank you)
@@ -17,12 +19,18 @@ import kotlinx.serialization.json.JsonElement
 const val RICH_PRESENCE_TAG = "discord_rpc"
 
 // Constant for application id
+// NXS -->
 internal const val RICH_PRESENCE_APPLICATION_ID = "1536710551747563580"
+// NXS <--
 
 val DOWNLOAD_BUTTON_LABEL_RES = R.string.discord_download_button
+// NXS -->
 const val DOWNLOAD_BUTTON_URL = "https://github.com/the-nexus-app/NEXUS/releases"
+// NXS <--
 const val DISCORD_BUTTON_LABEL = "Discord"
+// NXS -->
 const val DISCORD_BUTTON_URL = "https://discord.gg/hvxekwMP4Q"
+// NXS <--
 
 @Serializable
 data class Activity(
@@ -186,7 +194,9 @@ enum class DiscordScreen(
     @StringRes val details: Int,
     val imageUrl: String,
 ) {
+    // NXS -->
     APP(R.string.app_name, R.string.discord_status_using, NEXUS_IMAGE),
+    // NXS <--
     LIBRARY(R.string.label_library, R.string.discord_status_browsing, LIBRARY_IMAGE_URL),
     UPDATES(R.string.label_recent_updates, R.string.discord_status_scrolling, UPDATES_IMAGE_URL),
     HISTORY(R.string.label_recent_manga, R.string.discord_status_scrolling, HISTORY_IMAGE_URL),
@@ -197,10 +207,14 @@ enum class DiscordScreen(
 }
 
 // Constants for standard Rich Presence image urls
+// NXS -->
 private const val NEXUS_IMAGE_URL = "nexus_main"
 private const val NEXUS_PREVIEW_IMAGE_URL = "nexus_main"
+// NXS <--
 
+// NXS -->
 private val NEXUS_IMAGE = if (isPreviewBuildType) NEXUS_PREVIEW_IMAGE_URL else NEXUS_IMAGE_URL
+// NXS <--
 private const val LIBRARY_IMAGE_URL = "emojis/1365262809050644591.webp?quality=lossless"
 private const val UPDATES_IMAGE_URL = "emojis/1365261957883625492.webp?quality=lossless"
 private const val HISTORY_IMAGE_URL = "emojis/1365262076787949598.webp?quality=lossless"
@@ -208,4 +222,6 @@ private const val BROWSE_IMAGE_URL = "emojis/1365263374992146576.webp?quality=lo
 private const val MORE_IMAGE_URL = "emojis/1365261438276599849.webp?quality=lossless"
 private const val WEBVIEW_IMAGE_URL = "emojis/1365262268811579443.webp?quality=lossless"
 private const val MANGA_IMAGE_URL = "emojis/1365263962622529576.webp?quality=lossless"
+// NXS -->
 // AM (DISCORD)
+// NXS <--

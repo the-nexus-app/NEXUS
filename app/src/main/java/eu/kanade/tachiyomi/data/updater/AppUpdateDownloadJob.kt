@@ -64,9 +64,12 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
     private val notifier = AppUpdateNotifier(context)
     private val network: NetworkHelper by injectLazy()
 
+    // KMK -->
     private val exhPreferences = Injekt.get<ExhPreferences>()
+    // KMK <--
 
     override suspend fun doWork(): Result {
+        // KMK -->
         val idleRun = inputData.getBoolean(SCHEDULED_RUN, false)
         if (idleRun) {
             if (!context.packageManager.canRequestPackageInstalls()) {
@@ -87,6 +90,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                 }
             }
         }
+        // KMK <--
 
         val url = inputData.getString(EXTRA_DOWNLOAD_URL)
         val title = inputData.getString(EXTRA_DOWNLOAD_TITLE) ?: context.stringResource(MR.strings.app_name)
@@ -96,13 +100,17 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
         }
 
         setForegroundSafely()
+        // KMK -->
         instance = WeakReference(this)
+        // KMK <--
 
         withIOContext {
             downloadApk(title, url)
         }
 
+        // KMK -->
         instance = null
+        // KMK <--
 
         return Result.success()
     }
@@ -128,12 +136,16 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
         // Show notification download starting.
         with(notifier) {
             onDownloadStarted(title)
+                // KMK -->
                 .show()
+            // KMK <--
         }
 
         val progressListener = object : ProgressListener {
+            // KMK -->
             // Total size of the downloading file, should be set when starting and kept over retries
             var totalSize = 0L
+            // KMK <--
 
             // Progress of the download
             var savedProgress = 0
@@ -142,6 +154,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             var lastTick = 0L
 
             override fun update(bytesRead: Long, contentLength: Long, done: Boolean) {
+                // KMK -->
                 val downloadedSize: Long
                 if (totalSize == 0L) {
                     totalSize = contentLength
@@ -149,6 +162,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                 } else {
                     downloadedSize = totalSize - contentLength + bytesRead
                 }
+                // KMK <--
                 val progress = (100 * (downloadedSize.toFloat() / totalSize)).toInt()
                 val currentTime = System.currentTimeMillis()
                 if (progress > savedProgress && currentTime - 200 > lastTick) {
@@ -161,20 +175,25 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
 
         try {
             // File where the apk will be saved.
+            // NXS -->
             val apkFile = File(context.externalCacheDir, APK_FILE_NAME)
 
             if (!hasEnoughStorageFor(apkFile)) {
                 notifier.onDownloadError(url, context.stringResource(KMR.strings.update_apk_insufficient_storage))
                 return@coroutineScope
             }
+            // NXS <--
 
+            // KMK -->
             network.downloadFileWithResume(url, apkFile, progressListener)
             if (isStopped) {
                 cancel()
                 return@coroutineScope
             }
+            // KMK <--
 
             notifier.cancel()
+            // NXS -->
 
             // Never hand an unvalidated file to the installer: confirm it's a well-formed APK
             // that both claims to be this app (package name) and is signed by whoever signed
@@ -188,9 +207,12 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                 return@coroutineScope
             }
 
+            // NXS <--
+            // KMK -->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 startInstalling(apkFile, title)
             } else {
+                // KMK <--
                 notifier.promptInstall(apkFile.getUriCompat(context))
             }
         } catch (e: Exception) {
@@ -198,12 +220,17 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             val shouldCancel = e is CancellationException ||
                 isStopped ||
                 (e is StreamResetException && e.errorCode == ErrorCode.CANCEL)
+            // NXS -->
             when {
                 shouldCancel -> notifier.cancel()
                 isOutOfSpace(e) -> notifier.onDownloadError(
+                    // NXS <--
                     url,
+                    // NXS -->
                     context.stringResource(KMR.strings.update_apk_insufficient_storage),
+                    // NXS <--
                 )
+                // NXS -->
                 else -> notifier.onDownloadError(url, e.message)
             }
         }
@@ -232,9 +259,13 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
         while (cause != null) {
             if (cause is IOException && cause.message?.contains("space", ignoreCase = true) == true) {
                 return true
+                // NXS <--
             }
+            // NXS -->
             cause = cause.cause
+            // NXS <--
         }
+        // NXS -->
         return false
     }
 
@@ -289,8 +320,10 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
         return signatures
             .map { signature -> digest.digest(signature.toByteArray()).joinToString("") { "%02x".format(it) } }
             .toSet()
+        // NXS <--
     }
 
+    // KMK -->
     @RequiresApi(31)
     private suspend fun startInstalling(file: File, title: String) {
         try {
@@ -343,31 +376,40 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             notifier.promptInstall(file.getUriCompat(context))
         }
     }
+    // KMK <--
 
     companion object {
         private const val TAG = "AppUpdateDownload"
+        // NXS -->
         internal const val APK_FILE_NAME = "update.apk"
 
         // Conservative floor for the pre-flight free-space check: comfortably above a typical
         // NEXUS APK size, so a device that's genuinely nearly full is caught before downloading
         // rather than partway through.
         private const val MIN_FREE_SPACE_BYTES = 100L * 1024 * 1024
+        // NXS <--
 
+        // KMK -->
         const val PACKAGE_INSTALLED_ACTION =
             "${BuildConfig.APPLICATION_ID}.SESSION_SELF_API_PACKAGE_INSTALLED"
         internal const val EXTRA_FILE_URI = "${BuildConfig.APPLICATION_ID}.AppInstaller.FILE_URI"
         private const val SCHEDULED_RUN = "scheduled_run"
+        // KMK <--
 
         const val EXTRA_DOWNLOAD_URL = "DOWNLOAD_URL"
         const val EXTRA_DOWNLOAD_TITLE = "DOWNLOAD_TITLE"
 
+        // KMK -->
         private var instance: WeakReference<AppUpdateDownloadJob>? = null
+        // KMK <--
 
         fun start(
             context: Context,
             url: String,
             title: String? = null,
+            // KMK -->
             scheduled: Boolean = false,
+            // KMK <--
         ) {
             val data = Data.Builder()
             data.putString(EXTRA_DOWNLOAD_URL, url)
@@ -375,6 +417,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
             val request = OneTimeWorkRequestBuilder<AppUpdateDownloadJob>()
                 .addTag(TAG)
                 .apply {
+                    // KMK -->
                     if (scheduled) {
                         data.putBoolean(SCHEDULED_RUN, true)
                         val restrictions = Injekt.get<ExhPreferences>().appShouldAutoUpdate().get()
@@ -402,6 +445,7 @@ class AppUpdateDownloadJob(private val context: Context, workerParams: WorkerPar
                         setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.MINUTES)
                     } else {
                         setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                        // KMK <--
                         setConstraints(
                             Constraints(
                                 requiredNetworkType = NetworkType.CONNECTED,

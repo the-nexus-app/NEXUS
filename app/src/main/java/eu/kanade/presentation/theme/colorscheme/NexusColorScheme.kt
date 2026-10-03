@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.theme.colorscheme
 
 import androidx.compose.material3.darkColorScheme
@@ -81,3 +82,4 @@ internal object NexusColorScheme : BaseColorScheme() {
         onErrorContainer = Color(0xFF410002),
     )
 }
+// NXS <--

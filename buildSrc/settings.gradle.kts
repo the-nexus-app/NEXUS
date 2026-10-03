@@ -15,4 +15,6 @@ dependencyResolutionManagement {
     }
 }
 
+// NXS -->
 rootProject.name = "nexus-buildSrc"
+// NXS <--

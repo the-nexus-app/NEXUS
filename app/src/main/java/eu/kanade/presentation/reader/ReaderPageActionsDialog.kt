@@ -31,15 +31,19 @@ import tachiyomi.presentation.core.i18n.stringResource
 @Composable
 fun ReaderPageActionsDialog(
     onDismissRequest: () -> Unit,
-    onSetAsCover: (useExtraPage: Boolean) -> Unit,
-    onShare: (copyToClipboard: Boolean, useExtraPage: Boolean) -> Unit,
-    onSave: (useExtraPage: Boolean) -> Unit,
+    onSetAsCover: (/* SY --> */useExtraPage: Boolean/* SY <-- */) -> Unit,
+    onShare: (copyToClipboard: Boolean, /* SY --> */useExtraPage: Boolean/* SY <-- */) -> Unit,
+    onSave: (/* SY --> */useExtraPage: Boolean/* SY <-- */) -> Unit,
+    // SY -->
     onShareCombined: (copyToClipboard: Boolean) -> Unit,
     onSaveCombined: () -> Unit,
     hasExtraPage: Boolean,
+    // SY <--
 ) {
     var showSetCoverDialog by remember { mutableStateOf(false) }
+    // SY -->
     var useExtraPage by remember { mutableStateOf(false) }
+    // SY <--
 
     AdaptiveSheet(onDismissRequest = onDismissRequest) {
         Column(modifier = Modifier.padding(vertical = 16.dp)) {
@@ -49,11 +53,13 @@ fun ReaderPageActionsDialog(
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
+                        // SY -->
                         if (hasExtraPage) {
                             SYMR.strings.action_set_first_page_cover
                         } else {
                             MR.strings.set_as_cover
                         },
+                        // SY <--
                     ),
                     icon = Icons.Outlined.Photo,
                     onClick = { showSetCoverDialog = true },
@@ -61,45 +67,57 @@ fun ReaderPageActionsDialog(
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
+                        // SY -->
                         if (hasExtraPage) {
                             KMR.strings.action_copy_to_clipboard_first_page
                         } else {
                             MR.strings.action_copy_to_clipboard
                         },
+                        // SY <--
                     ),
                     icon = Icons.Outlined.ContentCopy,
                     onClick = {
+                        // SY -->
                         onShare(true, false)
+                        // SY <--
                         onDismissRequest()
                     },
                 )
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
+                        // SY -->
                         if (hasExtraPage) {
                             SYMR.strings.action_share_first_page
                         } else {
                             MR.strings.action_share
                         },
+                        // SY <--
                     ),
                     icon = Icons.Outlined.Share,
                     onClick = {
+                        // SY -->
                         onShare(false, false)
+                        // SY <--
                         onDismissRequest()
                     },
                 )
                 ActionButton(
                     modifier = Modifier.weight(1f),
                     title = stringResource(
+                        // SY -->
                         if (hasExtraPage) {
                             SYMR.strings.action_save_first_page
                         } else {
                             MR.strings.action_save
                         },
+                        // SY <--
                     ),
                     icon = Icons.Outlined.Save,
                     onClick = {
+                        // SY -->
                         onSave(false)
+                        // SY <--
                         onDismissRequest()
                     },
                 )
@@ -182,9 +200,11 @@ fun ReaderPageActionsDialog(
     if (showSetCoverDialog) {
         SetCoverDialog(
             onConfirm = {
+                // SY -->
                 onSetAsCover(useExtraPage)
                 showSetCoverDialog = false
                 useExtraPage = false
+                // SY <--
             },
             onDismiss = { showSetCoverDialog = false },
         )

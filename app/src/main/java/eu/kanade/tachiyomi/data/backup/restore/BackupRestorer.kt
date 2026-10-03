@@ -40,8 +40,12 @@ class BackupRestorer(
     private val preferenceRestorer: PreferenceRestorer = PreferenceRestorer(context),
     private val extensionStoreRestorer: ExtensionStoreRestorer = ExtensionStoreRestorer(),
     private val mangaRestorer: MangaRestorer = MangaRestorer(isSync),
+    // SY -->
     private val savedSearchRestorer: SavedSearchRestorer = SavedSearchRestorer(),
+    // SY <--
+    // KMK -->
     private val feedRestorer: FeedRestorer = FeedRestorer(),
+    // KMK <--
 ) {
 
     private var restoreAmount = 0
@@ -84,9 +88,11 @@ class BackupRestorer(
         if (options.categories) {
             restoreAmount += 1
         }
+        // SY -->
         if (options.savedSearchesFeeds) {
             restoreAmount += 1
         }
+        // SY <--
         if (options.appSettings) {
             restoreAmount += 1
         }
@@ -101,12 +107,16 @@ class BackupRestorer(
             if (options.categories) {
                 restoreCategories(backup.backupCategories)
             }
+            // SY -->
             if (options.savedSearchesFeeds) {
                 restoreSavedSearches(
                     backup.backupSavedSearches,
+                    // KMK -->
                     backup.backupFeeds,
+                    // KMK <--
                 )
             }
+            // SY <--
             if (options.appSettings) {
                 restoreAppPreferences(backup.backupPreferences, backup.backupCategories.takeIf { options.categories })
             }
@@ -125,7 +135,7 @@ class BackupRestorer(
     }
 
     context(scope: CoroutineScope)
-    private /* KMK*/suspend /* KMK*/ fun restoreCategories(backupCategories: List<BackupCategory>) {
+    private /* KMK --> */suspend /* KMK <-- */ fun restoreCategories(backupCategories: List<BackupCategory>) {
         scope.ensureActive()
         categoriesRestorer(backupCategories)
 
@@ -137,17 +147,24 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
+                // KMK -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
+            // KMK <--
         }
     }
 
+    // SY -->
     private fun CoroutineScope.restoreSavedSearches(
         backupSavedSearches: List<BackupSavedSearch>,
+        // KMK -->
         backupFeeds: List<BackupFeed>,
+        // KMK <--
     ) = launch {
         ensureActive()
         savedSearchRestorer.restoreSavedSearches(backupSavedSearches)
+        // KMK -->
         feedRestorer.restoreFeeds(backupFeeds)
+        // KMK <--
 
         restoreProgress += 1
         with(notifier) {
@@ -157,9 +174,12 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
+                // KMK -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
+            // KMK <--
         }
     }
+    // SY <--
 
     private fun CoroutineScope.restoreManga(
         backupMangas: List<BackupManga>,
@@ -179,7 +199,9 @@ class BackupRestorer(
                 restoreProgress += 1
                 with(notifier) {
                     showRestoreProgress(it.title, restoreProgress, restoreAmount, isSync)
+                        // KMK -->
                         .show(Notifications.ID_RESTORE_PROGRESS)
+                    // KMK <--
                 }
             }
     }
@@ -202,7 +224,9 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
+                // KMK -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
+            // KMK <--
         }
     }
 
@@ -218,7 +242,9 @@ class BackupRestorer(
                 restoreAmount,
                 isSync,
             )
+                // KMK -->
                 .show(Notifications.ID_RESTORE_PROGRESS)
+            // KMK <--
         }
     }
 
@@ -236,14 +262,18 @@ class BackupRestorer(
                 }
 
                 restoreProgress += 1
+                // KMK -->
                 with(notifier) {
+                    // KMK <--
                     showRestoreProgress(
                         context.stringResource(MR.strings.extensionStores),
                         restoreProgress,
                         restoreAmount,
                         isSync,
                     )
+                        // KMK -->
                         .show(Notifications.ID_RESTORE_PROGRESS)
+                    // KMK <--
                 }
             }
     }
@@ -251,7 +281,9 @@ class BackupRestorer(
     private fun writeErrorLog(): File {
         try {
             if (errors.isNotEmpty()) {
+                // NXS -->
                 val file = context.createFileInCacheDir("nexus_restore_error.txt")
+                // NXS <--
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
 
                 file.bufferedWriter().use { out ->

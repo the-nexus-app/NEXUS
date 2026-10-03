@@ -90,8 +90,10 @@ class ChapterRepositoryImpl(
             chaptersQueries.getChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
+                // KMK -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
+                // KMK <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -118,12 +120,14 @@ class ChapterRepositoryImpl(
         }
     }
 
+    // NXS -->
     override fun subscribeAllBookmarkedChapters(): Flow<List<BookmarkedChapterWithManga>> {
         return handler.subscribeToList {
             chaptersQueries.getBookmarkedChapters(ChapterMapper::mapBookmarkedChapterWithManga)
         }
     }
 
+    // NXS <--
     override suspend fun getChapterById(id: Long): Chapter? {
         return handler.awaitOneOrNull { chaptersQueries.getChapterById(id, ChapterMapper::mapChapter) }
     }
@@ -133,8 +137,10 @@ class ChapterRepositoryImpl(
             chaptersQueries.getChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
+                // KMK -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
+                // KMK <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -150,6 +156,7 @@ class ChapterRepositoryImpl(
         }
     }
 
+    // SY -->
     override suspend fun getChapterByUrl(url: String): List<Chapter> {
         return handler.awaitList { chaptersQueries.getChapterByUrl(url, ChapterMapper::mapChapter) }
     }
@@ -159,8 +166,10 @@ class ChapterRepositoryImpl(
             chaptersQueries.getMergedChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
+                // KMK -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
+                // KMK <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -174,8 +183,10 @@ class ChapterRepositoryImpl(
             chaptersQueries.getMergedChaptersByMangaId(
                 mangaId,
                 applyFilter.toLong(),
+                // KMK -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
+                // KMK <--
                 ChapterMapper::mapChapter,
             )
         }
@@ -192,4 +203,5 @@ class ChapterRepositoryImpl(
             chaptersQueries.getScanlatorsByMergeId(mangaId) { it.orEmpty() }
         }
     }
+    // SY <--
 }

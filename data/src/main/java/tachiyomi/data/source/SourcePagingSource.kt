@@ -49,7 +49,7 @@ abstract class BaseSourcePagingSource(
 
     override suspend fun load(
         params: LoadParams<Long>,
-    ): LoadResult<Long, Pair<Manga, RaisedSearchMetadata?>> {
+    ): LoadResult<Long, /*SY --> */ Pair<Manga, RaisedSearchMetadata?>/*SY <-- */> {
         val page = params.key ?: 1
 
         return try {
@@ -59,29 +59,38 @@ abstract class BaseSourcePagingSource(
                     ?: throw NoResultsException()
             }
 
+            // SY -->
             getPageLoadResult(params, mangasPage)
+            // SY <--
         } catch (e: Exception) {
             xLogE("${this::class.simpleName}: Failed to load paging source", e)
             LoadResult.Error(e)
         }
     }
 
+    // SY -->
     open suspend fun getPageLoadResult(
         params: LoadParams<Long>,
         mangasPage: MangasPage,
-    ): LoadResult.Page<Long, Pair<Manga, RaisedSearchMetadata?>> {
+    ): LoadResult.Page<Long, /*SY --> */ Pair<Manga, RaisedSearchMetadata?>/*SY <-- */> {
         val page = params.key ?: 1
 
+        // SY -->
         val metadata = if (mangasPage is MetadataMangasPage) {
             mangasPage.mangasMetadata
         } else {
             emptyList()
         }
+        // SY <--
 
         val manga = mangasPage.mangas
+            // SY -->
             .mapIndexed { index, sManga -> sManga.toDomainManga(source.id) to metadata.getOrNull(index) }
             .filter { seenManga.add(it.first.url) }
+            // KMK -->
             .let { pairs -> networkToLocalManga(pairs.map { it.first }).zip(pairs.map { it.second }) }
+        // KMK <--
+        // SY <--
 
         return LoadResult.Page(
             data = manga,
@@ -89,9 +98,10 @@ abstract class BaseSourcePagingSource(
             nextKey = if (mangasPage.hasNextPage) page + 1 else null,
         )
     }
+    // SY <--
 
     override fun getRefreshKey(
-        state: PagingState<Long, Pair<Manga, RaisedSearchMetadata?>>,
+        state: PagingState<Long, /*SY --> */ Pair<Manga, RaisedSearchMetadata?>/*SY <-- */>,
     ): Long? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)

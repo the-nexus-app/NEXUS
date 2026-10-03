@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.manga.components
 
 import androidx.compose.foundation.clickable
@@ -134,3 +135,4 @@ fun MangaBookmarksSheet(
         )
     }
 }
+// NXS <--

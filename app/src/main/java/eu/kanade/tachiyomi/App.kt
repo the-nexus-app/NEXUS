@@ -119,7 +119,9 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
             BuildConfig.COMMIT_COUNT,
         )
 
+        // KMK -->
         if (isDebugBuildType) Timber.plant(Timber.DebugTree())
+        // KMK <--
 
         GlobalExceptionHandler.initialize(applicationContext, CrashActivity::class.java)
 
@@ -137,19 +139,27 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
         Injekt.importModule(PreferenceModule(this))
         Injekt.importModule(AppModule(this))
         Injekt.importModule(DomainModule())
+        // KMK -->
         Injekt.importModule(KMKDomainModule())
+        // KMK <--
+        // SY -->
         Injekt.importModule(SYPreferenceModule(this))
         Injekt.importModule(SYDomainModule())
+        // SY <--
 
         setupExhLogging() // EXH logging
         if (!LogcatLogger.isInstalled) {
             val minLogPriority = when {
+                // KMK -->
                 EHLogLevel.isExtraLogging() -> LogPriority.VERBOSE
+                // KMK <--
                 BuildConfig.DEBUG -> LogPriority.DEBUG
                 else -> LogPriority.INFO
             }
             LogcatLogger.install()
+            // NXS -->
             LogcatLogger.loggers += XLogLogcatLogger() // Redirect Logcat to XLog
+            // NXS <--
             LogcatLogger.loggers += AndroidLogcatLogger(minLogPriority)
         }
 
@@ -172,7 +182,9 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
                         setContentText(stringResource(MR.strings.notification_incognito_text))
                         setSmallIcon(R.drawable.ic_glasses_with_hat_24dp)
                         setColor(ContextCompat.getColor(applicationContext, R.color.ic_launcher))
+                        // NXS -->
                         setLargeIcon(BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nexus_logo))
+                        // NXS <--
                         setOngoing(true)
 
                         val pendingIntent = PendingIntent.getBroadcast(
@@ -210,7 +222,9 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
         setAppCompatDelegateThemeMode(Injekt.get<UiPreferences>().themeMode().get())
 
+        // KMK -->
         MangaCoverMetadata.load()
+        // KMK <--
 
         // Updates widget update
         WidgetManager(Injekt.get(), Injekt.get()).apply { init(scope) }
@@ -229,7 +243,9 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
     private fun initializeMigrator() {
         val preferenceStore = Injekt.get<PreferenceStore>()
+        // SY -->
         val preference = preferenceStore.getInt(Preference.appStateKey("eh_last_version_code"), 0)
+        // SY <--
         logcat { "Migration from ${preference.get()} to ${BuildConfig.VERSION_CODE}" }
         Migrator.initialize(
             old = preference.get(),
@@ -257,8 +273,10 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
                 // Keyer
                 add(MangaCoverKeyer())
                 add(MangaKeyer())
+                // SY -->
                 add(PagePreviewKeyer())
                 add(PagePreviewFetcher.Factory(callFactoryLazy))
+                // SY <--
             }
 
             diskCache(
@@ -276,7 +294,9 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
 
             crossfade((300 * this@App.animatorDurationScale).toInt())
             allowRgb565(DeviceUtil.isLowRamDevice(this@App))
+            // KMK -->
             if (EHLogLevel.isExtraLogging()) logger(DebugLogger())
+            // KMK <--
 
             // Coil spawns a new thread for every image load by default
             fetcherCoroutineContext(Dispatchers.IO.limitedParallelism(8))
@@ -294,25 +314,35 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
             SyncDataJob.startNow(this@App)
         }
 
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
         DiscordRPCService.start(applicationContext)
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
     }
 
     override fun onStop(owner: LifecycleOwner) {
         SecureActivityDelegate.onApplicationStopped()
 
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
         DiscordRPCService.stop(applicationContext)
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
     }
 
     override fun getPackageName(): String {
         try {
             // Override the value passed as X-Requested-With in WebView requests
             val stackTrace = Looper.getMainLooper().thread.stackTrace
+            // KMK -->
             val chromiumClasses = setOf("org.chromium.base.buildinfo", "org.chromium.base.apkinfo")
             val chromiumMethods = setOf("getall", "getpackagename", "<init>")
+            // KMK <--
             val isChromiumCall = stackTrace.any { trace ->
                 trace.className.lowercase() in chromiumClasses &&
                     trace.methodName.lowercase() in chromiumMethods
@@ -337,12 +367,16 @@ class App : Application(), DefaultLifecycleObserver, SingletonImageLoader.Factor
     private fun setupExhLogging() {
         EHLogLevel.init(
             this,
+            // KMK -->
             isDebugBuildType = isDebugBuildType,
+            // KMK <--
         )
 
         val logLevel = when {
+            // KMK -->
             EHLogLevel.isExtremeLogging() -> LogLevel.ALL
             EHLogLevel.isExtraLogging() -> LogLevel.DEBUG
+            // KMK <--
             else -> LogLevel.WARN
         }
 

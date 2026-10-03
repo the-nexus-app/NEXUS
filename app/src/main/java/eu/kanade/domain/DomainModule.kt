@@ -126,7 +126,9 @@ class DomainModule : InjektModule {
         addFactory { ReorderCategory(get()) }
         addFactory { UpdateCategory(get()) }
         addFactory { DeleteCategory(get(), get(), get()) }
+        // KMK -->
         addFactory { HideCategory(get()) }
+        // KMK <--
 
         addSingletonFactory<MangaRepository> { MangaRepositoryImpl(get()) }
         addFactory { GetDuplicateLibraryManga(get()) }
@@ -156,7 +158,9 @@ class DomainModule : InjektModule {
 
         addSingletonFactory<ReleaseService> { ReleaseServiceImpl(get(), get()) }
         addFactory { GetApplicationRelease(get(), get()) }
+        // NXS -->
         addSingletonFactory { AppUpdatePreferences(get()) }
+        // NXS <--
 
         addSingletonFactory<TrackRepository> { TrackRepositoryImpl(get()) }
         addFactory { TrackChapter(get(), get(), get(), get()) }
@@ -172,7 +176,9 @@ class DomainModule : InjektModule {
         addFactory { GetChapter(get()) }
         addFactory { GetChaptersByMangaId(get()) }
         addFactory { GetBookmarkedChaptersByMangaId(get(), get(), get()) }
+        // NXS -->
         addFactory { GetAllBookmarkedChapters(get()) }
+        // NXS <--
         addFactory { GetChapterByUrlAndMangaId(get()) }
         addFactory { UpdateChapter(get()) }
         addFactory { SetReadStatus(get(), get(), get(), get(), get()) }
@@ -187,6 +193,7 @@ class DomainModule : InjektModule {
         addFactory { RemoveHistory(get()) }
         addFactory { GetTotalReadDuration(get()) }
 
+        // NXS -->
         addSingletonFactory<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
         addFactory { GetBookmarksByMangaId(get()) }
         addFactory { GetAllBookmarks(get()) }
@@ -195,6 +202,7 @@ class DomainModule : InjektModule {
         addFactory { DeleteBookmark(get()) }
         addFactory { UpdateBookmarkNote(get()) }
 
+        // NXS <--
         addFactory { DeleteDownload(get(), get()) }
 
         addFactory { GetExtensionsByType(get(), get()) }

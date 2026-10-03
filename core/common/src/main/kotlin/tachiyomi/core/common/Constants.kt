@@ -2,8 +2,10 @@ package tachiyomi.core.common
 
 object Constants {
 
+    // NXS -->
     const val URL_HELP = "https://github.com/the-nexus-app/NEXUS"
     const val URL_HELP_UPCOMING = "https://github.com/the-nexus-app/NEXUS/releases"
+    // NXS <--
 
     const val MANGA_EXTRA = "manga"
 
@@ -18,5 +20,7 @@ object Constants {
     const val SHORTCUT_EXTENSIONS = "eu.kanade.tachiyomi.EXTENSIONS"
     const val SHORTCUT_DOWNLOADS = "eu.kanade.tachiyomi.SHOW_DOWNLOADS"
 
+    // KMK -->
     const val SHORTCUT_LIBRARY_UPDATE_ERRORS = "eu.kanade.tachiyomi.SHOW_LIBRARY_UPDATE_ERRORS"
+    // KMK <--
 }

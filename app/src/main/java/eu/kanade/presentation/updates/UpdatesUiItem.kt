@@ -82,18 +82,24 @@ import java.time.LocalDate
 
 internal fun LazyListScope.updatesUiItems(
     uiModels: List<UpdatesUiModel>,
+    // KMK -->
     expandedState: Set<String>,
     collapseToggle: (key: String) -> Unit,
     usePanoramaCover: Boolean,
+    // KMK <--
     selectionMode: Boolean,
+    // SY -->
     preserveReadingPosition: Boolean,
-    onUpdateSelected: (UpdatesItem, /* KMK*/ UpdateSelectionOptions /* KMK*/) -> Unit,
+    // SY <--
+    onUpdateSelected: (UpdatesItem, /* KMK --> */ UpdateSelectionOptions /* KMK <-- */) -> Unit,
     onClickCover: (UpdatesItem) -> Unit,
     onClickUpdate: (UpdatesItem) -> Unit,
     onDownloadChapter: (List<UpdatesItem>, ChapterDownloadAction) -> Unit,
+    // KMK -->
     updateSwipeStartAction: LibraryPreferences.ChapterSwipeAction,
     updateSwipeEndAction: LibraryPreferences.ChapterSwipeAction,
     onUpdateSwipe: (UpdatesItem, LibraryPreferences.ChapterSwipeAction) -> Unit,
+    // KMK <--
 ) {
     items(
         items = uiModels,
@@ -112,16 +118,21 @@ internal fun LazyListScope.updatesUiItems(
     ) { item ->
         when (item) {
             is UpdatesUiModel.Header -> {
+                // KMK -->
+                // NXS -->
                 UpdatesDateHeading(
                     modifier = Modifier
                         .animateItemFastScroll()
+                        // NXS <--
                         .padding(top = MaterialTheme.padding.extraSmall),
                     date = item.date,
                     mangaCount = item.mangaCount,
                 )
+                // KMK <--
             }
             is UpdatesUiModel.Item -> {
                 val updatesItem = item.item
+                // KMK -->
                 val isLeader = item is UpdatesUiModel.Leader
                 val isExpanded = expandedState.contains(updatesItem.update.groupByDateAndManga())
 
@@ -130,16 +141,17 @@ internal fun LazyListScope.updatesUiItems(
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically(),
                 ) {
+                    // KMK <--
                     UpdatesUiItem(
                         modifier = Modifier.animateItemFastScroll(),
                         update = updatesItem.update,
                         selected = updatesItem.selected,
                         readProgress = updatesItem.update.lastPageRead
                             .takeIf {
-                                (
+                                /* SY --> */(
                                     !updatesItem.update.read ||
                                         (preserveReadingPosition && updatesItem.isEhBasedUpdate())
-                                    ) &&
+                                    )/* SY <-- */ &&
                                     it > 0L
                             }
                             ?.let {
@@ -151,24 +163,28 @@ internal fun LazyListScope.updatesUiItems(
                         onLongClick = {
                             onUpdateSelected(
                                 updatesItem,
+                                // KMK -->
                                 UpdateSelectionOptions(
                                     selected = !updatesItem.selected,
                                     fromLongPress = true,
                                     isGroup = isLeader && item.isExpandable,
                                     isExpanded = isExpanded,
                                 ),
+                                // KMK <--
                             )
                         },
                         onClick = {
                             when {
                                 selectionMode -> onUpdateSelected(
                                     updatesItem,
+                                    // KMK -->
                                     UpdateSelectionOptions(
                                         selected = !updatesItem.selected,
                                         fromLongPress = false,
                                         isGroup = isLeader && item.isExpandable,
                                         isExpanded = isExpanded,
                                     ),
+                                    // KMK <--
                                 )
                                 else -> onClickUpdate(updatesItem)
                             }
@@ -179,6 +195,7 @@ internal fun LazyListScope.updatesUiItems(
                         }.takeIf { !selectionMode },
                         downloadStateProvider = updatesItem.downloadStateProvider,
                         downloadProgressProvider = updatesItem.downloadProgressProvider,
+                        // KMK -->
                         updateSwipeStartAction = updateSwipeStartAction,
                         updateSwipeEndAction = updateSwipeEndAction,
                         onUpdateSwipe = {
@@ -189,6 +206,7 @@ internal fun LazyListScope.updatesUiItems(
                         expanded = isExpanded,
                         collapseToggle = collapseToggle,
                         usePanoramaCover = usePanoramaCover,
+                        // KMK <--
                     )
                 }
             }
@@ -208,6 +226,7 @@ private fun UpdatesUiItem(
     // Download Indicator
     downloadStateProvider: () -> Download.State,
     downloadProgressProvider: () -> Int,
+    // KMK -->
     updateSwipeStartAction: LibraryPreferences.ChapterSwipeAction,
     updateSwipeEndAction: LibraryPreferences.ChapterSwipeAction,
     onUpdateSwipe: (LibraryPreferences.ChapterSwipeAction) -> Unit,
@@ -216,12 +235,16 @@ private fun UpdatesUiItem(
     expanded: Boolean,
     collapseToggle: (key: String) -> Unit,
     usePanoramaCover: Boolean,
+    // KMK <--
     modifier: Modifier = Modifier,
+    // KMK -->
     coverRatio: MutableFloatState = remember { mutableFloatStateOf(1f) },
+    // KMK <--
 ) {
     val haptic = LocalHapticFeedback.current
     val textAlpha = if (update.read) DISABLED_ALPHA else 1f
 
+    // KMK -->
     val swipeBackground = MaterialTheme.colorScheme.primaryContainer
     val swipeStart = remember(updateSwipeStartAction, update.read, update.bookmark, downloadStateProvider()) {
         getSwipeAction(
@@ -244,20 +267,26 @@ private fun UpdatesUiItem(
         )
     }
 
+    // NXS -->
     Surface(
         modifier = modifier
             .padding(horizontal = MaterialTheme.padding.medium, vertical = 4.dp)
             .clip(RoundedCornerShape(12.dp)),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = RoundedCornerShape(12.dp),
+        // NXS <--
     ) {
+        // KMK <--
+        // NXS -->
         SwipeableActionsBox(
             modifier = Modifier.clipToBounds(),
             startActions = listOfNotNull(swipeStart),
             endActions = listOfNotNull(swipeEnd),
             swipeThreshold = swipeActionThreshold,
             backgroundUntilSwipeThreshold = MaterialTheme.colorScheme.surfaceContainerLowest,
+            // NXS <--
         ) {
+            // NXS -->
             Row(
                 modifier = Modifier
                     .selectedBackground(selected)
@@ -267,14 +296,18 @@ private fun UpdatesUiItem(
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             onLongClick()
                         },
+                        // NXS <--
                     )
                     .padding(top = if (isLeader) MaterialTheme.padding.small else 0.dp)
                     .padding(
+                        // KMK -->
                         vertical = if (isLeader) MaterialTheme.padding.extraSmall else 0.dp,
+                        // KMK <--
                         horizontal = MaterialTheme.padding.medium,
                     ),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                // KMK -->
                 val mangaCover = update.coverData
                 val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
                 val bgColor = mangaCover.dominantCoverColors?.first?.let { Color(it) }
@@ -283,8 +316,12 @@ private fun UpdatesUiItem(
                     if (DebugToggles.HIDE_COVER_IMAGE_ONLY_SHOW_COLOR.enabled) {
                         MangaCoverHide.Book(
                             modifier = Modifier
+                                // KMK -->
                                 .width(UpdateItemWidth),
+                            // KMK <--
+                            // NXS -->
                             bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { selected },
+                            // NXS <--
                             tint = onBgColor,
                             size = MangaCover.Size.Medium,
                         )
@@ -304,11 +341,13 @@ private fun UpdatesUiItem(
                                 },
                             )
                         } else {
+                            // KMK <--
                             MangaCover.Book(
                                 modifier = Modifier
                                     .width(UpdateItemWidth),
                                 data = mangaCover,
                                 onClick = onClickCover,
+                                // KMK -->
                                 bgColor = bgColor,
                                 tint = onBgColor,
                                 size = MangaCover.Size.Medium,
@@ -319,13 +358,17 @@ private fun UpdatesUiItem(
                             )
                         }
                     }
+                    // NXS -->
                 } else {
                     Box(
                         modifier = Modifier
                             .width(if (usePanoramaCover && coverIsWide) UpdateItemPanoramaWidth else UpdateItemWidth),
+                        // NXS <--
                     )
+                    // KMK <--
                 }
 
+                // NXS -->
                 Column(
                     modifier = Modifier
                         .padding(horizontal = MaterialTheme.padding.medium)
@@ -340,8 +383,10 @@ private fun UpdatesUiItem(
                             ),
                             color = LocalContentColor.current.copy(alpha = textAlpha),
                             overflow = TextOverflow.Ellipsis,
+                            // NXS <--
                         )
                     }
+                    // NXS -->
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         var textHeight by remember { mutableIntStateOf(0) }
@@ -365,16 +410,24 @@ private fun UpdatesUiItem(
                             )
                             Spacer(modifier = Modifier.width(2.dp))
                         }
+                        // NXS <--
                         Text(
+                            // NXS -->
                             text = update.chapterName,
+                            // NXS <--
                             maxLines = 1,
+                            // NXS -->
                             style = MaterialTheme.typography.bodySmall,
                             color = LocalContentColor.current.copy(alpha = textAlpha),
+                            // NXS <--
                             overflow = TextOverflow.Ellipsis,
+                            // NXS -->
                             onTextLayout = { textHeight = it.size.height },
                             modifier = Modifier
                                 .weight(weight = 1f, fill = false),
+                            // NXS <--
                         )
+                        // NXS -->
                         if (readProgress != null) {
                             DotSeparatorText()
                             Text(
@@ -384,15 +437,19 @@ private fun UpdatesUiItem(
                                 overflow = TextOverflow.Ellipsis,
                             )
                         }
+                        // NXS <--
                     }
                 }
 
+                // NXS -->
+                // KMK -->
                 if (isLeader && isExpandable) {
                     CollapseButton(
                         expanded = expanded,
                         collapseToggle = { collapseToggle(update.groupByDateAndManga()) },
                     )
                 }
+                // KMK <--
 
                 ChapterDownloadIndicator(
                     enabled = onDownloadChapter != null,
@@ -400,12 +457,14 @@ private fun UpdatesUiItem(
                     downloadStateProvider = downloadStateProvider,
                     downloadProgressProvider = downloadProgressProvider,
                     onClick = { onDownloadChapter?.invoke(it) },
+                    // NXS <--
                 )
             }
         }
     }
 }
 
+// KMK -->
 @Composable
 fun CollapseButton(
     expanded: Boolean,
@@ -439,6 +498,8 @@ private val IndicatorSize = MaterialTheme.padding.large
 
 private val UpdateItemPanoramaWidth = 108.dp // Book cover
 private val UpdateItemWidth = 48.dp
+// KMK <--
+// NXS -->
 
 @Composable
 private fun UpdatesDateHeading(
@@ -479,3 +540,4 @@ private fun UpdatesDateHeading(
         }
     }
 }
+// NXS <--

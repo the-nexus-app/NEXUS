@@ -47,10 +47,12 @@ internal class StorageStep : OnboardingStep {
 
         val pickStorageLocation = SettingsDataScreen.storageLocationPicker(storagePref)
 
+        // KMK -->
         val storageDir by storagePref.collectAsState()
         var locationValid by remember(storageDir) {
             mutableStateOf(directoryAccessible(context, storageDir))
         }
+        // KMK <--
 
         Column(
             modifier = Modifier.padding(16.dp),
@@ -91,11 +93,13 @@ internal class StorageStep : OnboardingStep {
             }
         }
 
-        LaunchedEffect(/* KMK*/storageDir/* KMK*/) {
+        LaunchedEffect(/* KMK --> */storageDir/* KMK <-- */) {
             storagePref.changes()
                 .collectLatest {
+                    // KMK -->
                     locationValid = directoryAccessible(context, storageDir)
                     _isComplete = locationValid
+                    // KMK <--
                 }
         }
     }

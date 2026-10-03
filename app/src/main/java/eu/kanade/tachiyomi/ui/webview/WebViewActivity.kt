@@ -82,21 +82,29 @@ class WebViewActivity : BaseActivity() {
                 onClearCookies = this::clearCookies,
             )
         }
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
         with(DiscordRPCService) {
             discordScope.launchIO { setScreen(this@WebViewActivity, DiscordScreen.WEBVIEW) }
         }
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
     }
 
+    // NXS -->
     // AM (DISCORD)
+    // NXS <--
     override fun onDestroy() {
         with(DiscordRPCService) {
             discordScope.launchIO { setScreen(this@WebViewActivity) }
         }
         super.onDestroy()
     }
+    // NXS -->
     // AM (DISCORD)
+    // NXS <--
 
     override fun onProvideAssistContent(outContent: AssistContent) {
         super.onProvideAssistContent(outContent)

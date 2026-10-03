@@ -34,10 +34,14 @@ import java.io.IOException
 class ChapterCache(
     private val context: Context,
     private val json: Json,
+    // SY -->
     readerPreferences: ReaderPreferences,
+    // SY <--
 ) {
 
+    // NXS -->
     // EH
+    // NXS <--
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
 
     /** Cache class used for cache management.  */
@@ -54,7 +58,9 @@ class ChapterCache(
             }
             .launchIn(scope)
     }
+    // NXS -->
     // EH
+    // NXS <--
 
     /**
      * Returns directory of cache.
@@ -73,7 +79,9 @@ class ChapterCache(
     val readableSize: String
         get() = Formatter.formatFileSize(context, realSize)
 
+    // NXS -->
     // EH
+    // NXS <--
     // Cache size is in MB
     private fun setupDiskCache(cacheSize: Long): DiskLruCache {
         return DiskLruCache.open(
@@ -83,7 +91,9 @@ class ChapterCache(
             cacheSize * 1024 * 1024,
         )
     }
+    // NXS -->
     // EH
+    // NXS <--
 
     /**
      * Get page list from cache.

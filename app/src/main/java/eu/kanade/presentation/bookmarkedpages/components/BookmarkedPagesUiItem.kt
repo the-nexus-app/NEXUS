@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.bookmarkedpages.components
 
 import androidx.compose.foundation.clickable
@@ -209,3 +210,4 @@ sealed class BookmarkedPagesUiModel {
 
     data class Item(val bookmark: BookmarkWithManga) : BookmarkedPagesUiModel()
 }
+// NXS <--

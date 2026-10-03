@@ -1,6 +1,10 @@
+<!-- NXS -->
 # NEXUS – AI Agent Guide
+<!-- /NXS -->
 
+<!-- NXS -->
 NEXUS is an Android manga reader (min SDK 26, target SDK 36, JVM 17 / Kotlin), a personal fork of **Komikku**, itself forked from **Mihon** + **TachiyomiSY**. Stack: Jetpack Compose + Material3, Voyager navigation, SQLDelight, Injekt DI. `applicationId`: `com.nexus.app`.
+<!-- /NXS -->
 
 ---
 
@@ -28,10 +32,14 @@ Before `git push`, confirm the current branch is not `master` or `main` (`git br
 
 **Hard rules:**
 
+<!-- NXS -->
 - **Never** add NEXUS-specific strings to `i18n/` or `i18n-sy/`.
+<!-- /NXS -->
 - **Never** edit non-`base` locale `strings.xml` or `plurals.xml` files in `i18n-kmk/`, `i18n/`, or `i18n-sy/` (Weblate owns translations).
+<!-- NXS -->
 - Import: `import tachiyomi.i18n.kmk.KMR` for NEXUS strings.
 - If a change is inside `// NXS -->` … `// NXS <--` (NEXUS's own additions) or adds NEXUS-only behavior, default to **`KMR` + `i18n-kmk`**. Inherited `// KMK` blocks belong to upstream Komikku — keep them as-is.
+<!-- /NXS -->
 
 **Self-check before finishing:** `git diff` must not add new `<string name="…">` or `<plurals name="…">` entries under non-`base` locales in `i18n-kmk/src/`, `i18n/src/`, or `i18n-sy/src/`.
 
@@ -97,14 +105,20 @@ Example: `DeepLinkScreen` + `DeepLinkScreenModel` in `app/src/main/java/eu/kanad
 
 ---
 
+<!-- NXS -->
 ## NEXUS-specific work
+<!-- /NXS -->
 
+<!-- NXS -->
 - **Strings:** see [Mandatory rules – Internationalization](#mandatory-rules-for-ai-agents). Summary: NEXUS → **`KMR`** / `i18n-kmk/…/base/` only.
 - Do not edit locale `strings.xml` in `i18n/` or `i18n-sy/` except when syncing upstream; translations are owned by Weblate (upstream Komikku project; never translate non-base locales manually).
 - NEXUS code/DI: search `// NXS` for this fork's own additions; `// KMK` marks inherited Komikku code (e.g. `KMKDomainModule`, `HideCategory`, library-update errors).
+<!-- /NXS -->
 - Prefs: `eu.kanade.domain.*.service.*Preferences` (e.g. `SourcePreferences.relatedMangas()`).
 
+<!-- NXS -->
 **Examples (NEXUS → `i18n-kmk`, not `i18n`):** library update error UI, sync-before-update messages, WebDAV/Discord settings, updater notifications, `mihon/feature/*` NEXUS screens.
+<!-- /NXS -->
 
 ---
 
@@ -168,9 +182,13 @@ Package roots: `eu.kanade.tachiyomi.*` (legacy UI), `tachiyomi.*` (domain/data),
 
 ## Conventions
 
+<!-- NXS -->
 - **Logging** – Prefer `xLogE()` / `xLog()` helpers from `exh.log` for NEXUS code, Mihon uses `logcat { }` from `tachiyomi.core.common.util.system`. Avoid raw `android.util.Log`.
+<!-- /NXS -->
 - **Formatting** – Spotless + ktlint (`buildSrc/.../mihon.code.lint.gradle.kts`). Agents **must** run `spotlessApply` and `spotlessCheck` (see [Mandatory rules](#mandatory-rules-for-ai-agents)).
+<!-- NXS -->
 - **Fork edits** – New NEXUS features inside `// NXS` islands; keep inherited `// KMK` / `// SY` / `// EXH` blocks intact when merging upstream.
+<!-- /NXS -->
 
 ---
 

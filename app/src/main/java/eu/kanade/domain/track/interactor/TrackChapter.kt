@@ -38,8 +38,8 @@ class TrackChapter(
                 if (
                     service == null ||
                     !service.isLoggedIn ||
-                    chapterNumber <= track.lastChapterRead ||
-                    (service is MdList && track.status == FollowStatus.UNFOLLOWED.long)
+                    chapterNumber <= track.lastChapterRead /* SY --> */ ||
+                    (service is MdList && track.status == FollowStatus.UNFOLLOWED.long)/* SY <-- */
                 ) {
                     return@mapNotNull null
                 }

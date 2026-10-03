@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.dashboard.components
 
 import androidx.compose.foundation.background
@@ -49,3 +50,4 @@ fun DashboardSearchBar(
         )
     }
 }
+// NXS <--

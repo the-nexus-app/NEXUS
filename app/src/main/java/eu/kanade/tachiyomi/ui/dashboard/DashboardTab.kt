@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.dashboard
 
 import androidx.compose.material.icons.Icons
@@ -104,3 +105,4 @@ data object DashboardTab : Tab {
         // AM (DISCORD)
     }
 }
+// NXS <--

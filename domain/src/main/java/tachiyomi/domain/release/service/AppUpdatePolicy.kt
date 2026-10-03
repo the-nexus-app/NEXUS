@@ -6,6 +6,7 @@ class AppUpdatePolicy {
         const val DEVICE_NETWORK_NOT_METERED = "network_not_metered"
         const val DEVICE_CHARGING = "ac"
         const val DISABLE_AUTO_DOWNLOAD = "disable"
+        // NXS -->
 
         /**
          * How often an update check against GitHub is allowed to actually hit the network,
@@ -25,5 +26,6 @@ class AppUpdatePolicy {
          * in-app "Check for updates" action.
          */
         const val CHECK_INTERVAL_HOURS = 24L
+        // NXS <--
     }
 }

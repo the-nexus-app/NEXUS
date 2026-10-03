@@ -74,7 +74,7 @@ interface Tracker {
 
     suspend fun setRemoteStatus(track: Track, status: Long)
 
-    suspend fun setRemoteLastChapterRead(track: Track, chapterNumber: Int): /* KMK*/ Track /* KMK*/
+    suspend fun setRemoteLastChapterRead(track: Track, chapterNumber: Int): /* KMK --> */ Track /* KMK <-- */
 
     suspend fun setRemoteScore(track: Track, scoreString: String)
 
@@ -84,9 +84,13 @@ interface Tracker {
 
     suspend fun setRemotePrivate(track: Track, private: Boolean)
 
+    // SY -->
     suspend fun getMangaMetadata(track: DomainTrack): TrackMangaMetadata
 
     suspend fun searchById(id: String): TrackSearch?
+    // SY <--
 
+    // KMK -->
     fun hasNotStartedReading(status: Long): Boolean
+    // KMK <--
 }

@@ -66,6 +66,7 @@ data object UpdatesTab : Tab {
         navigator.push(DownloadQueueScreen)
     }
 
+    // SY -->
     @Composable
     override fun isEnabled(): Boolean {
         val scope = rememberCoroutineScope()
@@ -73,6 +74,7 @@ data object UpdatesTab : Tab {
             Injekt.get<UiPreferences>().showNavUpdates().asState(scope)
         }.value
     }
+    // SY <--
 
     @Composable
     override fun Content() {
@@ -81,15 +83,21 @@ data object UpdatesTab : Tab {
         val screenModel = rememberScreenModel { UpdatesScreenModel() }
         val settingsScreenModel = rememberScreenModel { UpdatesSettingsScreenModel() }
         val state by screenModel.state.collectAsState()
+        // NXS -->
         val scope = rememberCoroutineScope()
+        // NXS <--
 
+        // KMK -->
         val usePanoramaCover by settingsScreenModel.updatesPreferences.usePanoramaCover().collectAsState()
+        // KMK <--
 
         UpdateScreen(
             state = state,
             snackbarHostState = screenModel.snackbarHostState,
             lastUpdated = screenModel.lastUpdated,
+            // SY -->
             preserveReadingPosition = screenModel.preserveReadingPosition,
+            // SY <--
             onClickCover = { item -> navigator.push(MangaScreen(item.update.mangaId)) },
             onSelectAll = screenModel::toggleAllSelection,
             onInvertSelection = screenModel::invertSelection,
@@ -98,9 +106,12 @@ data object UpdatesTab : Tab {
             onMultiBookmarkClicked = screenModel::bookmarkUpdates,
             onMultiMarkAsReadClicked = screenModel::markUpdatesRead,
             onMultiDeleteClicked = screenModel::showConfirmDeleteChapters,
+            // KMK -->
             updateSwipeStartAction = screenModel.chapterSwipeStartAction,
             updateSwipeEndAction = screenModel.chapterSwipeEndAction,
             onUpdateSwipe = screenModel::updateSwipe,
+            // KMK <--
+            // NXS -->
             showHiddenUpdates = state.showHiddenUpdates,
             onToggleHiddenUpdates = {
                 if (state.showHiddenUpdates) {
@@ -121,6 +132,7 @@ data object UpdatesTab : Tab {
                     }
                 }
             },
+            // NXS <--
             onUpdateSelected = screenModel::toggleSelection,
             onOpenChapter = {
                 val intent = ReaderActivity.newIntent(context, it.update.mangaId, it.update.chapterId)
@@ -129,8 +141,10 @@ data object UpdatesTab : Tab {
             onCalendarClicked = { navigator.push(UpcomingScreen()) },
             onFilterClicked = screenModel::showFilterDialog,
             hasActiveFilters = state.hasActiveFilters,
+            // KMK -->
             usePanoramaCover = usePanoramaCover,
             collapseToggle = screenModel::toggleExpandedState,
+            // KMK <--
         )
 
         val onDismissDialog = { screenModel.setDialog(null) }
@@ -176,11 +190,15 @@ data object UpdatesTab : Tab {
             if (!state.isLoading) {
                 (context as? MainActivity)?.ready = true
 
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.UPDATES) }
                 }
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
             }
         }
         DisposableEffect(Unit) {

@@ -13,9 +13,12 @@ import tachiyomi.domain.manga.model.Manga
 fun List<Chapter>.getNextUnread(
     manga: Manga,
     downloadManager: DownloadManager,
+    // SY -->
     mergedManga: Map<Long, Manga>,
+    // SY <--
 ): Chapter? {
-    return applyFilters(manga, downloadManager, mergedManga).let { chapters ->
+    return applyFilters(manga, downloadManager/* SY --> */, mergedManga/* SY <-- */).let { chapters ->
+        // SY -->
         if (manga.isEhBasedManga()) {
             return@let if (manga.sortDescending()) {
                 chapters.firstOrNull()?.takeUnless { it.read }
@@ -23,6 +26,7 @@ fun List<Chapter>.getNextUnread(
                 chapters.lastOrNull()?.takeUnless { it.read }
             }
         }
+        // SY <--
         if (manga.sortDescending()) {
             chapters.findLast { !it.read }
         } else {
@@ -36,6 +40,7 @@ fun List<Chapter>.getNextUnread(
  */
 fun List<ChapterList.Item>.getNextUnread(manga: Manga): Chapter? {
     return applyFilters(manga).let { chapters ->
+        // SY -->
         if (manga.isEhBasedManga()) {
             return@let if (manga.sortDescending()) {
                 chapters.firstOrNull()?.takeUnless { it.chapter.read }
@@ -43,6 +48,7 @@ fun List<ChapterList.Item>.getNextUnread(manga: Manga): Chapter? {
                 chapters.lastOrNull()?.takeUnless { it.chapter.read }
             }
         }
+        // SY <--
         if (manga.sortDescending()) {
             chapters.findLast { !it.chapter.read }
         } else {

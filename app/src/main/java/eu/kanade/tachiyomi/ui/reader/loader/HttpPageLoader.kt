@@ -39,8 +39,10 @@ internal class HttpPageLoader(
     private val chapter: ReaderChapter,
     private val source: HttpSource,
     private val chapterCache: ChapterCache = Injekt.get(),
+    // SY -->
     private val readerPreferences: ReaderPreferences = Injekt.get(),
     private val sourcePreferences: SourcePreferences = Injekt.get(),
+    // SY <--
 ) : PageLoader() {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -50,14 +52,16 @@ internal class HttpPageLoader(
      */
     private val queue = PriorityBlockingQueue<PriorityPage>()
 
-    private val preloadSize = readerPreferences.preloadSize().get()
+    private val preloadSize = /* SY --> */ readerPreferences.preloadSize().get() // SY <--
 
+    // SY -->
     private val dataSaver = DataSaver(source, sourcePreferences)
+    // SY <--
 
     init {
-        // EXH
+        // EXH -->
         repeat(readerPreferences.readerThreads().get()) {
-            // EXH
+            // EXH <--
             scope.launchIO {
                 flow {
                     while (true) {
@@ -67,9 +71,9 @@ internal class HttpPageLoader(
                     .filter { it.status == Page.State.Queue }
                     .collect(::internalLoadPage)
             }
-            // EXH
+            // EXH -->
         }
-        // EXH
+        // EXH <--
     }
 
     override var isLocal: Boolean = false
@@ -87,6 +91,7 @@ internal class HttpPageLoader(
             }
             source.getPageList(chapter.chapter)
         }
+        // SY -->
         val rp = pages.mapIndexed { index, page ->
             // Don't trust sources and use our own indexing
             ReaderPage(index, page.url, page.imageUrl)
@@ -99,6 +104,7 @@ internal class HttpPageLoader(
             }
         }
         return rp
+        // SY <--
     }
 
     /**
@@ -141,16 +147,16 @@ internal class HttpPageLoader(
         if (page.status is Page.State.Error) {
             page.status = Page.State.Queue
         }
-        // EXH
+        // EXH -->
         // Grab a new image URL on EXH sources
         if (source.isEhBasedSource()) {
             page.imageUrl = null
         }
 
-        if (readerPreferences.readerInstantRetry().get()) { // EXH
+        if (readerPreferences.readerInstantRetry().get()) { // EXH <--
             boostPage(page)
         } else {
-            // EXH
+            // EXH <--
             queue.offer(PriorityPage(page, 2))
         }
     }
@@ -227,7 +233,7 @@ internal class HttpPageLoader(
         }
     }
 
-    // EXH
+    // EXH -->
     fun boostPage(page: ReaderPage) {
         if (page.status == Page.State.Queue) {
             scope.launchIO {
@@ -235,7 +241,7 @@ internal class HttpPageLoader(
             }
         }
     }
-    // EXH
+    // EXH <--
 }
 
 /**

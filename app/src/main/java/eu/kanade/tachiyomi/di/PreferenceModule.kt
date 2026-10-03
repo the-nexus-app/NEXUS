@@ -51,9 +51,11 @@ class PreferenceModule(val app: Application) : InjektModule {
         addSingletonFactory {
             UpdatesPreferences(get())
         }
+        // KMK -->
         addSingletonFactory {
             HistoryPreferences(get())
         }
+        // KMK <--
         addSingletonFactory {
             ReaderPreferences(get())
         }
@@ -78,9 +80,13 @@ class PreferenceModule(val app: Application) : InjektModule {
         addSingletonFactory {
             BasePreferences(app, get())
         }
+        // NXS -->
         // AM (CONNECTIONS)
+        // NXS <--
         addSingletonFactory { ConnectionsPreferences(get()) }
+        // NXS -->
         // AM (CONNECTIONS)
+        // NXS <--
 
         addSingletonFactory {
             SyncPreferences(get())

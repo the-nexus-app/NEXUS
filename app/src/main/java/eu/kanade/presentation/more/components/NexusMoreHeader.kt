@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.more.components
 
 import androidx.compose.foundation.layout.Column
@@ -50,3 +51,4 @@ fun NexusMoreHeader(
         )
     }
 }
+// NXS <--

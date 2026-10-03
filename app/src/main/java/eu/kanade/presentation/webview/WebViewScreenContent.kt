@@ -259,7 +259,9 @@ fun WebViewScreenContent(
                                     .clip(MaterialTheme.shapes.small)
                                     .clickable {
                                         uriHandler.openUri(
+                                            // NXS -->
                                             "https://github.com/the-nexus-app/NEXUS",
+                                            // NXS <--
                                         )
                                     },
                             )

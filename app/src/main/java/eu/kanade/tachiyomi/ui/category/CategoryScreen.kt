@@ -29,7 +29,9 @@ class CategoryScreen : Screen() {
     @Composable
     override fun Content() {
         val context = LocalContext.current
+        // NXS -->
         val scope = rememberCoroutineScope()
+        // NXS <--
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = rememberScreenModel { CategoryScreenModel() }
 
@@ -46,6 +48,7 @@ class CategoryScreen : Screen() {
             state = successState,
             onClickCreate = { screenModel.showDialog(CategoryDialog.Create) },
             onClickRename = { screenModel.showDialog(CategoryDialog.Rename(it)) },
+            // NXS -->
             onClickDelete = { category ->
                 scope.launch {
                     val authSupported = context.isAuthenticationSupported()
@@ -61,7 +64,9 @@ class CategoryScreen : Screen() {
                     }
                 }
             },
+            // NXS <--
             onChangeOrder = screenModel::changeOrder,
+            // NXS -->
 
             onClickHide = { category ->
                 if (category.hidden) {
@@ -84,6 +89,7 @@ class CategoryScreen : Screen() {
                     screenModel.hideCategory(category)
                 }
             },
+            // NXS <--
             navigateUp = navigator::pop,
         )
 

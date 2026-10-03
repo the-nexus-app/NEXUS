@@ -31,21 +31,26 @@ import tachiyomi.domain.category.model.Category
 import tachiyomi.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
 
+// NXS -->
 /**
  * NEXUS CATEGORY section for Library.
  *
  * Displays the CATEGORY heading, Manage > action, and user-created
  * category chips for navigation between visible categories.
  */
+// NXS <--
 @Composable
 internal fun LibraryTabs(
     categories: List<Category>,
     pagerState: PagerState,
     getItemCountForCategory: (Category) -> Int?,
     onTabItemClick: (Int) -> Unit,
+    // NXS -->
     onManageClick: () -> Unit,
+    // NXS <--
 ) {
     val currentPageIndex = pagerState.currentPage.coerceAtMost(categories.lastIndex)
+    // NXS -->
     val scrollState = rememberScrollState()
 
     // NEXUS: only user-created, non-hidden categories get a chip, but the pager still has a
@@ -72,7 +77,9 @@ internal fun LibraryTabs(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
+            // NXS <--
         ) {
+            // NXS -->
             Text(
                 text = stringResource(MR.strings.categories).uppercase(),
                 style = MaterialTheme.typography.titleSmall.copy(
@@ -114,9 +121,11 @@ internal fun LibraryTabs(
                         onClick = { onTabItemClick(pageIndex) },
                     )
                 }
+                // NXS <--
             }
         }
 
+        // NXS -->
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 0.5.dp,
@@ -198,5 +207,6 @@ private fun LibraryCategoryChip(
                 }
             }
         }
+        // NXS <--
     }
 }

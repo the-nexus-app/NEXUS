@@ -61,7 +61,9 @@ data object HistoryTab : Tab {
             val isSelected = LocalTabNavigator.current.current.key == key
             val image = AnimatedImageVector.animatedVectorResource(R.drawable.anim_history_enter)
             return TabOptions(
+                // NXS -->
                 index = 3u,
+                // NXS <--
                 title = stringResource(MR.strings.label_recent_manga),
                 icon = rememberAnimatedVectorPainter(image, isSelected),
             )
@@ -71,6 +73,7 @@ data object HistoryTab : Tab {
         resumeLastChapterReadEvent.send(Unit)
     }
 
+    // SY -->
     @Composable
     override fun isEnabled(): Boolean {
         val scope = rememberCoroutineScope()
@@ -78,6 +81,7 @@ data object HistoryTab : Tab {
             Injekt.get<UiPreferences>().showNavHistory().asState(scope)
         }.value
     }
+    // SY <--
 
     @Composable
     override fun Content() {
@@ -85,8 +89,10 @@ data object HistoryTab : Tab {
         val context = LocalContext.current
         val screenModel = rememberScreenModel { HistoryScreenModel() }
         val state by screenModel.state.collectAsState()
+        // KMK -->
         val settingsScreenModel = rememberScreenModel { HistorySettingsScreenModel() }
         val usePanoramaCover by settingsScreenModel.historyPreferences.usePanoramaCover().collectAsState()
+        // KMK <--
 
         HistoryScreen(
             state = state,
@@ -96,6 +102,7 @@ data object HistoryTab : Tab {
             onClickResume = screenModel::getNextChapterForManga,
             onDialogChange = screenModel::setDialog,
             onClickFavorite = screenModel::addFavorite,
+            // KMK -->
             toggleSelectionMode = screenModel::toggleSelectionMode,
             onSelectAll = screenModel::toggleAllSelection,
             onInvertSelection = screenModel::invertSelection,
@@ -103,6 +110,7 @@ data object HistoryTab : Tab {
             onFilterClicked = screenModel::showFilterDialog,
             hasActiveFilters = state.hasActiveFilters,
             usePanoramaCover = usePanoramaCover,
+            // KMK <--
         )
 
         val onDismissRequest = { screenModel.setDialog(null) }
@@ -111,11 +119,13 @@ data object HistoryTab : Tab {
                 HistoryDeleteDialog(
                     onDismissRequest = onDismissRequest,
                     onDelete = { all ->
+                        // KMK -->
                         if (all) {
                             screenModel.removeAllFromHistory(dialog.histories)
                         } else {
                             screenModel.removeFromHistory(dialog.histories)
                         }
+                        // KMK <--
                     },
                 )
             }
@@ -132,7 +142,9 @@ data object HistoryTab : Tab {
                     onConfirm = { screenModel.addFavorite(dialog.manga) },
                     onOpenManga = { navigator.push(MangaScreen(it.id)) },
                     onMigrate = { screenModel.showMigrateDialog(dialog.manga, it) },
+                    // KMK -->
                     targetManga = dialog.manga,
+                    // KMK <--
                 )
             }
             is HistoryScreenModel.Dialog.ChangeCategory -> {
@@ -154,24 +166,32 @@ data object HistoryTab : Tab {
                     onDismissRequest = onDismissRequest,
                 )
             }
+            // KMK -->
             is HistoryScreenModel.Dialog.FilterSheet -> {
                 HistoryFilterDialog(
                     onDismissRequest = onDismissRequest,
                     screenModel = settingsScreenModel,
                 )
             }
+            // KMK <--
             null -> {}
         }
 
+        // KMK -->
         LaunchedEffect(state.isLoading) {
             if (!state.isLoading) {
+                // KMK <--
                 (context as? MainActivity)?.ready = true
 
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.HISTORY) }
                 }
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
             }
         }
 

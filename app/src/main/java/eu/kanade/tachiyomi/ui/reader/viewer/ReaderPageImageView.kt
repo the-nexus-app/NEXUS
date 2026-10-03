@@ -139,8 +139,9 @@ open class ReaderPageImageView @JvmOverloads constructor(
                     ZoomStartPosition.CENTER -> center
                 }
 
-                val targetScale = /* KMK*/ when (config.landscapeZoomScaleType) {
+                val targetScale = /* KMK --> */ when (config.landscapeZoomScaleType) {
                     LandscapeZoomScaleType.DOUBLE -> scale * 2
+                    // KMK <--
                     else -> height.toFloat() / sHeight.toFloat()
                 }
                 (animateScaleAndCenter(targetScale, point) ?: return@postDelayed)
@@ -192,6 +193,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
      */
     fun canPanRight(): Boolean = canPan { it.right }
 
+    // KMK -->
     /**
      * Check if the image can be panned up
      */
@@ -201,6 +203,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
      * Check if the image can be panned down
      */
     fun canPanDown(): Boolean = canPan { it.bottom }
+    // KMK <--
 
     /**
      * Check whether the image can be panned.
@@ -230,6 +233,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
         pan { center, view -> center.also { it.x += view.width / view.scale } }
     }
 
+    // KMK -->
     /**
      * Pans the image down by a screen's height worth.
      */
@@ -243,6 +247,7 @@ open class ReaderPageImageView @JvmOverloads constructor(
     fun panUp() {
         pan { center, view -> center.also { it.y -= view.height / view.scale } }
     }
+    // KMK <--
 
     /**
      * Pans the image.
@@ -292,12 +297,14 @@ open class ReaderPageImageView @JvmOverloads constructor(
     private fun SubsamplingScaleImageView.setupZoom(config: Config?) {
         // 5x zoom
         maxScale = scale * MAX_ZOOM_SCALE
+        // KMK -->
         if (config?.disableZoomIn == true) {
             isZoomEnabled = false
         } else {
             if (config?.doubleTapZoom == false) {
                 setDoubleTapZoomScale(scale)
             } else {
+                // KMK <--
                 setDoubleTapZoomScale(scale * 2)
             }
         }
@@ -441,7 +448,9 @@ open class ReaderPageImageView @JvmOverloads constructor(
                 },
             )
             .crossfade(false)
+            // KMK -->
             .allowHardware(false) // Disable hardware bitmaps for GIFs
+            // KMK <--
             .build()
         context.imageLoader.enqueue(request)
     }
@@ -459,9 +468,11 @@ open class ReaderPageImageView @JvmOverloads constructor(
         val cropBorders: Boolean = false,
         val zoomStartPosition: ZoomStartPosition = ZoomStartPosition.CENTER,
         val landscapeZoom: Boolean = false,
+        // KMK -->
         val disableZoomIn: Boolean = false,
         val doubleTapZoom: Boolean = true,
         val landscapeZoomScaleType: LandscapeZoomScaleType = LandscapeZoomScaleType.FIT,
+        // KMK <--
     )
 
     enum class ZoomStartPosition {

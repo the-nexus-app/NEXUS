@@ -21,8 +21,10 @@ fun ReaderTopBar(
     navigateUp: () -> Unit,
     bookmarked: Boolean,
     onToggleBookmarked: () -> Unit,
+    // NXS -->
     pageBookmarked: Boolean,
     onTogglePageBookmarked: () -> Unit,
+    // NXS <--
     onOpenInWebView: (() -> Unit)?,
     onOpenInBrowser: (() -> Unit)?,
     onShare: (() -> Unit)?,
@@ -55,6 +57,7 @@ fun ReaderTopBar(
                                 onClick = onToggleBookmarked,
                             ),
                         )
+                        // NXS -->
                         add(
                             AppBar.Action(
                                 title = if (pageBookmarked) "Remove page bookmark" else "Bookmark page",
@@ -66,6 +69,7 @@ fun ReaderTopBar(
                                 onClick = onTogglePageBookmarked,
                             ),
                         )
+                        // NXS <--
                         onOpenInWebView?.let {
                             add(
                                 AppBar.OverflowAction(

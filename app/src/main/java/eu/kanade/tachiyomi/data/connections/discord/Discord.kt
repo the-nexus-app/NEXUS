@@ -1,4 +1,6 @@
+// NXS -->
 // AM (DISCORD)
+// NXS <--
 
 // Taken from Animiru. Thank you Quickdev for permission!
 
@@ -103,4 +105,6 @@ class Discord(id: Long) : ConnectionsService(id) {
         }
     }
 }
+// NXS -->
 // AM (DISCORD)
+// NXS <--

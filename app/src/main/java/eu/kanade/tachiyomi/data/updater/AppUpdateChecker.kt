@@ -14,17 +14,23 @@ import uy.kohesive.injekt.api.get
 import uy.kohesive.injekt.injectLazy
 
 class AppUpdateChecker(
+    // KMK -->
     private val peekIntoPreview: Boolean = false,
+    // KMK <--
 ) {
 
     private val getApplicationRelease: GetApplicationRelease by injectLazy()
 
+    // KMK -->
     private val exhPreferences by lazy { Injekt.get<ExhPreferences>() }
+    // KMK <--
 
     suspend fun checkForUpdate(
         context: Context,
         forceCheck: Boolean = false,
+        // KMK -->
         autoUpdate: Boolean = AppUpdatePolicy.DISABLE_AUTO_DOWNLOAD !in exhPreferences.appShouldAutoUpdate().get(),
+        // KMK <--
     ): GetApplicationRelease.Result {
         return withIOContext {
             val result = getApplicationRelease.await(
@@ -38,16 +44,21 @@ class AppUpdateChecker(
                 ),
             )
 
+            // KMK -->
             if (!peekIntoPreview) {
+                // KMK <--
                 when (result) {
                     is GetApplicationRelease.Result.NewUpdate -> {
+                        // KMK -->
                         AppUpdateNotifier.releasePageUrl = result.release.releaseLink
+                        // KMK <--
                         AppUpdateNotifier(context).promptUpdate(result.release)
                     }
 
                     else -> {}
                 }
 
+                // KMK -->
                 if (autoUpdate && result is GetApplicationRelease.Result.NewUpdate) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         AppUpdateDownloadJob.start(
@@ -58,15 +69,21 @@ class AppUpdateChecker(
                         )
                     }
                 }
+                // KMK <--
             }
 
             result
         }
     }
 
+    // KMK -->
+    // NXS -->
     suspend fun getReleaseNotesWithComparison(): GetApplicationRelease.ReleaseNotesResult {
+        // NXS <--
         return withIOContext {
+            // NXS -->
             getApplicationRelease.awaitReleaseNotesWithComparison(
+                // NXS <--
                 GetApplicationRelease.Arguments(
                     isFoss = isFossBuildType,
                     isPreview = isPreviewBuildType || peekIntoPreview,
@@ -77,15 +94,20 @@ class AppUpdateChecker(
             )
         }
     }
+    // KMK <--
 }
 
 val GITHUB_REPO: String by lazy { getGithubRepo() }
 
 fun getGithubRepo(peekIntoPreview: Boolean = false): String =
     if (isPreviewBuildType || peekIntoPreview) {
+        // NXS -->
         "the-nexus-app/NEXUS-preview"
+        // NXS <--
     } else {
+        // NXS -->
         "the-nexus-app/NEXUS"
+        // NXS <--
     }
 
 val RELEASE_TAG: String by lazy { getReleaseTag() }

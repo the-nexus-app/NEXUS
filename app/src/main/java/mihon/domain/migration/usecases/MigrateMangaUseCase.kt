@@ -39,8 +39,10 @@ class MigrateMangaUseCase(
     private val insertTrack: InsertTrack,
     private val coverCache: CoverCache,
     private val updateMangaFromRemote: UpdateMangaFromRemote,
+    // KMK -->
     private val getHistory: GetHistory,
     private val upsertHistory: UpsertHistory,
+    // KMK <--
 ) {
     private val enhancedServices by lazy { trackerManager.trackers.filterIsInstance<EnhancedTracker>() }
 
@@ -48,18 +50,24 @@ class MigrateMangaUseCase(
         current: Manga,
         target: Manga,
         replace: Boolean,
+        // KMK -->
         presetFlags: Set<MigrationFlag>? = null,
+        // KMK <--
+        // SY -->
         throttleFunc: suspend () -> Unit = {},
+        // SY <--
     ) {
         val targetSource = sourceManager.get(target.source) ?: return
         val currentSource = sourceManager.get(current.source)
-        val flags = /* KMK*/ presetFlags ?: /* KMK*/ sourcePreferences.migrationFlags().get()
+        val flags = /* KMK --> */ presetFlags ?: /* KMK <-- */ sourcePreferences.migrationFlags().get()
 
         try {
             updateMangaFromRemote(
                 manga = target,
                 fetchChapters = true,
+                // SY -->
                 throttleFunc = throttleFunc,
+                // SY <--
             ).getOrThrow()
 
             // Update chapters read, bookmark and dateFetch
@@ -71,9 +79,13 @@ class MigrateMangaUseCase(
                     .filter { it.read }
                     .maxOfOrNull { it.chapterNumber }
 
+                // SY -->
                 val historyUpdates = mutableListOf<HistoryUpdate>()
                 val prevHistoryList = getHistory.await(current.id)
+                    // SY <--
+                    // KMK -->
                     .associateBy { it.chapterId }
+                // KMK <--
 
                 val updatedMangaChapters = mangaChapters.map { mangaChapter ->
                     var updatedChapter = mangaChapter
@@ -83,22 +95,29 @@ class MigrateMangaUseCase(
 
                         if (prevChapter != null) {
                             updatedChapter = updatedChapter.copy(
+                                // SY -->
                                 // If chapters match then mark new manga's chapters read/unread as old one
                                 read = prevChapter.read,
+                                // SY <--
                                 dateFetch = prevChapter.dateFetch,
                                 bookmark = prevChapter.bookmark,
                                 lastPageRead = prevChapter.lastPageRead,
                             )
+                            // SY -->
+                            // KMK -->
                             prevHistoryList[prevChapter.id]?.let { prevHistory ->
+                                // KMK <--
                                 historyUpdates += HistoryUpdate(
                                     mangaChapter.id,
                                     prevHistory.readAt ?: return@let,
                                     prevHistory.readDuration,
                                 )
                             }
+                            // SY <--
                         }
+                        // KMK -->
                         // If chapters which only present on new manga then mark read up to latest read chapter number
-                        else /* KMK*/ if (maxChapterRead != null && updatedChapter.chapterNumber <= maxChapterRead) {
+                        else /* KMK <-- */ if (maxChapterRead != null && updatedChapter.chapterNumber <= maxChapterRead) {
                             updatedChapter = updatedChapter.copy(read = true)
                         }
                     }
@@ -108,7 +127,9 @@ class MigrateMangaUseCase(
 
                 val chapterUpdates = updatedMangaChapters.map { it.toChapterUpdate() }
                 updateChapter.awaitAll(chapterUpdates)
+                // SY -->
                 upsertHistory.awaitAll(historyUpdates)
+                // SY <--
             }
 
             // Update categories
@@ -118,7 +139,9 @@ class MigrateMangaUseCase(
             }
 
             // Update track
+            // SY -->
             if (MigrationFlag.TRACK in flags) {
+                // SY <--
                 getTracks.await(current.id).mapNotNull { track ->
                     val updatedTrack = track.copy(mangaId = target.id)
 
@@ -155,9 +178,13 @@ class MigrateMangaUseCase(
                 id = target.id,
                 favorite = true,
                 chapterFlags = current.chapterFlags
+                    // KMK -->
                     .takeIf { MigrationFlag.EXTRA in flags },
+                // KMK <--
                 viewerFlags = current.viewerFlags
+                    // KMK -->
                     .takeIf { MigrationFlag.EXTRA in flags },
+                // KMK <--
                 dateAdded = if (replace) current.dateAdded else Instant.now().toEpochMilli(),
                 notes = if (MigrationFlag.NOTES in flags) current.notes else null,
             )

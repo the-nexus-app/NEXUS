@@ -45,15 +45,19 @@ fun SourceFilterDialog(
     onReset: () -> Unit,
     onFilter: () -> Unit,
     onUpdate: (FilterList) -> Unit,
+    // SY -->
     startExpanded: Boolean,
     savedSearches: ImmutableList<EXHSavedSearch>,
     onSave: () -> Unit,
     onSavedSearch: (EXHSavedSearch) -> Unit,
     onSavedSearchPress: (EXHSavedSearch) -> Unit,
+    // KMK -->
     onSavedSearchPressDesc: String,
     shouldShowSavingButton: Boolean = true,
+    // KMK <--
     openMangaDexRandom: (() -> Unit)?,
     openMangaDexFollows: (() -> Unit)?,
+    // SY <--
 ) {
     val updateFilters = { onUpdate(filters) }
 
@@ -78,7 +82,10 @@ fun SourceFilterDialog(
 
                     Spacer(modifier = Modifier.weight(1f))
 
+                    // KMK -->
                     if (shouldShowSavingButton) {
+                        // KMK <--
+                        // SY -->
                         IconButton(onClick = onSave) {
                             Icon(
                                 Icons.Default.Save,
@@ -86,6 +93,7 @@ fun SourceFilterDialog(
                                 tint = MaterialTheme.colorScheme.onBackground,
                             )
                         }
+                        // SY <--
                     }
                     Button(onClick = {
                         onFilter()
@@ -111,20 +119,23 @@ fun SourceFilterDialog(
                     savedSearches = savedSearches,
                     onSavedSearch = onSavedSearch,
                     onSavedSearchPress = onSavedSearchPress,
+                    // KMK -->
                     onSavedSearchPressDesc = onSavedSearchPressDesc,
+                    // KMK <--
                 )
             }
 
             items(filters) {
-                FilterItem(it, updateFilters, startExpanded)
+                FilterItem(it, updateFilters /* SY --> */, startExpanded /* SY <-- */)
             }
         }
     }
 }
 
 @Composable
-private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit, startExpanded: Boolean) {
+private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit/* SY --> */, startExpanded: Boolean /* SY <-- */) {
     when (filter) {
+        // SY -->
         is Filter.AutoComplete -> {
             AutoCompleteItem(
                 name = filter.name,
@@ -138,6 +149,7 @@ private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit, startExpanded: B
                 onUpdate()
             }
         }
+        // SY <--
         is Filter.Header -> {
             HeadingItem(filter.name)
         }
@@ -184,7 +196,9 @@ private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit, startExpanded: B
         is Filter.Sort -> {
             CollapsibleBox(
                 heading = filter.name,
+                // SY -->
                 startExpanded = startExpanded,
+                // SY <--
             ) {
                 Column {
                     filter.values.mapIndexed { index, item ->
@@ -213,12 +227,14 @@ private fun FilterItem(filter: Filter<*>, onUpdate: () -> Unit, startExpanded: B
         is Filter.Group<*> -> {
             CollapsibleBox(
                 heading = filter.name,
+                // SY -->
                 startExpanded = startExpanded,
+                // SY <--
             ) {
                 Column {
                     filter.state
                         .filterIsInstance<Filter<*>>()
-                        .map { FilterItem(filter = it, onUpdate = onUpdate, startExpanded) }
+                        .map { FilterItem(filter = it, onUpdate = onUpdate /* SY --> */, startExpanded /* SY <-- */) }
                 }
             }
         }

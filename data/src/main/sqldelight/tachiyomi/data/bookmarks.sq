@@ -1,3 +1,4 @@
+-- NXS -->
 CREATE TABLE bookmarks(
     _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     chapter_id INTEGER NOT NULL,
@@ -112,3 +113,4 @@ SET
 
 selectLastInsertedRowId:
 SELECT last_insert_rowid();
+-- NXS <--

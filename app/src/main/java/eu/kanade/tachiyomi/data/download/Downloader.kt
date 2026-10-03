@@ -85,7 +85,9 @@ class Downloader(
     private val xml: XML = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
     private val getTracks: GetTracks = Injekt.get(),
+    // SY -->
     private val sourcePreferences: SourcePreferences = Injekt.get(),
+    // SY <--
 ) {
 
     /**
@@ -137,7 +139,9 @@ class Downloader(
             return false
         }
 
+        // KMK -->
         notifier.dismissPaused()
+        // KMK <--
 
         val pending = queueState.value.filter { it.status != Download.State.DOWNLOADED }
         pending.forEach { if (it.status != Download.State.QUEUE) it.status = Download.State.QUEUE }
@@ -286,13 +290,15 @@ class Downloader(
 
         val source = sourceManager.get(manga.source) as? HttpSource ?: return
 
+        // KMK -->
         if (source.id == MERGED_SOURCE_ID) return
+        // KMK <--
 
         val wasEmpty = queueState.value.isEmpty()
         val chaptersToQueue = chapters.asSequence()
             // Filter out those already downloaded.
             .filter {
-                provider.findChapterDir(it.name, it.scanlator, it.url, manga.ogTitle, source) == null
+                provider.findChapterDir(it.name, it.scanlator, it.url, /* SY --> */ manga.ogTitle /* SY <-- */, source) == null
             }
             // Add chapters to queue from the start.
             .sortedByDescending { it.sourceOrder }
@@ -337,9 +343,11 @@ class Downloader(
      * @param download the chapter to be downloaded.
      */
     private suspend fun downloadChapter(download: Download) {
+        // KMK -->
         if (download.source.id == MERGED_SOURCE_ID) return
+        // KMK <--
 
-        val mangaDir = provider.getMangaDir(download.manga.ogTitle, download.source).getOrElse { e ->
+        val mangaDir = provider.getMangaDir(/* SY --> */ download.manga.ogTitle /* SY <-- */, download.source).getOrElse { e ->
             download.status = Download.State.ERROR
             notifier.onError(e.message, download.chapter.name, download.manga.title, download.manga.id)
             return
@@ -637,11 +645,13 @@ class Downloader(
         dirname: String,
         tmpDir: UniFile,
     ) {
+        // SY -->
         val encrypt = CbzCrypto.getPasswordProtectDlPref() && CbzCrypto.isPasswordSet()
+        // SY <--
 
         val zip = mangaDir.createFile("$dirname.cbz$TMP_DIR_SUFFIX")
         if (zip?.isFile != true) throw Exception("Failed to create CBZ file for downloaded chapter")
-        ZipWriter(context, zip, encrypt).use { writer ->
+        ZipWriter(context, zip, /* SY --> */ encrypt /* SY <-- */).use { writer ->
             tmpDir.listFiles()?.forEach { file ->
                 writer.write(file)
             }

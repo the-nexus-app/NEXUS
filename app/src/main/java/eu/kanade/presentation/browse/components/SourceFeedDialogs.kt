@@ -78,14 +78,19 @@ fun SourceFeedDeleteDialog(
             }
         },
         title = {
+            // NXS -->
             Text(text = stringResource(KMR.strings.feed_delete_title))
+            // NXS <--
         },
         text = {
+            // NXS -->
             Text(text = stringResource(KMR.strings.feed_delete_message))
+            // NXS <--
         },
     )
 }
 
+// KMK -->
 private val PaddingSize = 16.dp
 
 private val ButtonPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
@@ -170,3 +175,4 @@ private fun FeedActionsDialogPreview() {
         onClickDelete = { },
     )
 }
+// KMK <--

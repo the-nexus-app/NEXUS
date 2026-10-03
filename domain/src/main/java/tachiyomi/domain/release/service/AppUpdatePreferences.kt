@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.release.service
 
 import tachiyomi.core.common.preference.Preference
@@ -25,3 +26,4 @@ class AppUpdatePreferences(
         "",
     )
 }
+// NXS <--

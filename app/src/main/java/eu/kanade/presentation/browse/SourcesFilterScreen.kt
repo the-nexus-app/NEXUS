@@ -33,7 +33,9 @@ fun SourcesFilterScreen(
     state: SourcesFilterScreenModel.State.Success,
     onClickLanguage: (String) -> Unit,
     onClickSource: (Source) -> Unit,
+    // SY -->
     onClickSources: (Boolean, List<Source>) -> Unit,
+    // SY <--
 ) {
     Scaffold(
         topBar = { scrollBehavior ->
@@ -56,7 +58,9 @@ fun SourcesFilterScreen(
             state = state,
             onClickLanguage = onClickLanguage,
             onClickSource = onClickSource,
+            // SY -->
             onClickSources = onClickSources,
+            // SY <--
         )
     }
 }
@@ -67,21 +71,29 @@ private fun SourcesFilterContent(
     state: SourcesFilterScreenModel.State.Success,
     onClickLanguage: (String) -> Unit,
     onClickSource: (Source) -> Unit,
+    // SY -->
     onClickSources: (Boolean, List<Source>) -> Unit,
+    // SY <--
 ) {
     FastScrollLazyColumn(
+        // KMK -->
         // Using modifier instead of contentPadding so we can use stickyHeader
         modifier = Modifier.padding(contentPadding),
+        // KMK <--
     ) {
         state.items.forEach { (language, sources) ->
             val enabled = language in state.enabledLanguages
+            // KMK -->
             stickyHeader(
+                // KMK <--
                 key = "$STICKY_HEADER_KEY_PREFIX-$language",
                 contentType = "source-filter-header",
             ) {
                 SourcesFilterHeader(
                     modifier = Modifier
+                        // KMK -->
                         .padding(end = MaterialTheme.padding.small)
+                        // KMK <--
                         .animateItemFastScroll(),
                     language = language,
                     enabled = enabled,
@@ -89,7 +101,10 @@ private fun SourcesFilterContent(
                 )
             }
             if (enabled) {
+                // SY -->
+                // KMK -->
                 stickyHeader(
+                    // KMK <--
                     key = "$STICKY_HEADER_KEY_PREFIX-toggle-$language",
                     contentType = "source-filter-toggle",
                 ) {
@@ -98,16 +113,21 @@ private fun SourcesFilterContent(
                     }
                     SourcesFilterToggle(
                         modifier = Modifier
+                            // KMK -->
                             .background(MaterialTheme.colorScheme.background)
                             .padding(end = MaterialTheme.padding.small)
+                            // KMK <--
                             .animateItemFastScroll(),
                         isEnabled = toggleEnabled,
+                        // KMK -->
                         language = language,
+                        // KMK <--
                         onClickItem = {
                             onClickSources(!toggleEnabled, sources)
                         },
                     )
                 }
+                // SY <--
                 items(
                     items = sources,
                     key = { "source-filter-${it.key()}" },
@@ -115,7 +135,9 @@ private fun SourcesFilterContent(
                 ) { source ->
                     SourcesFilterItem(
                         modifier = Modifier
+                            // KMK -->
                             .padding(end = MaterialTheme.padding.small)
+                            // KMK <--
                             .animateItemFastScroll(),
                         source = source,
                         enabled = "${source.id}" !in state.disabledSources,
@@ -137,31 +159,39 @@ private fun SourcesFilterHeader(
     SwitchPreferenceWidget(
         modifier = modifier,
         title = LocaleHelper.getSourceDisplayName(language, LocalContext.current) +
+            // KMK -->
             (
                 " (${LocaleHelper.getDisplayName(language)} ${FlagEmoji.getEmojiLangFlag(language)})"
                     .takeIf { language !in listOf("all", "other") } ?: " (${FlagEmoji.getEmojiLangFlag(language)})"
                 ),
+        // KMK <--
         checked = enabled,
         onCheckedChanged = { onClickItem(language) },
     )
 }
 
+// SY -->
 @Composable
 fun SourcesFilterToggle(
     modifier: Modifier,
     isEnabled: Boolean,
+    // KMK -->
     language: String,
+    // KMK <--
     onClickItem: () -> Unit,
 ) {
     SwitchPreferenceWidget(
         modifier = modifier,
         title = stringResource(SYMR.strings.pref_category_all_sources) +
+            // KMK -->
             " (${FlagEmoji.getEmojiLangFlag(language)})",
+        // KMK <--
         checked = isEnabled,
         onCheckedChanged = { onClickItem() },
     )
 }
 
+// SY <--
 @Composable
 private fun SourcesFilterItem(
     source: Source,
@@ -172,7 +202,9 @@ private fun SourcesFilterItem(
     BaseSourceItem(
         modifier = modifier,
         source = source,
+        // KMK -->
         // showLanguageInContent = false,
+        // KMK <--
         onClickItem = { onClickItem(source) },
         action = {
             Checkbox(checked = enabled, onCheckedChange = null)

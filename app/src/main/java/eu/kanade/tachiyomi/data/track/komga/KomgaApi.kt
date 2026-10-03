@@ -27,7 +27,9 @@ class KomgaApi(
 
     private val headers: Headers by lazy {
         Headers.Builder()
+            // NXS -->
             .add("User-Agent", "NEXUS v${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
+            // NXS <--
             .build()
     }
 

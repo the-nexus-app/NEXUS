@@ -69,8 +69,12 @@ open class FeedScreenModel(
     private val getSavedSearchBySourceId: GetSavedSearchBySourceId = Injekt.get(),
     private val insertFeedSavedSearch: InsertFeedSavedSearch = Injekt.get(),
     private val deleteFeedSavedSearchById: DeleteFeedSavedSearchById = Injekt.get(),
+    // KMK -->
     private val reorderFeed: ReorderFeed = Injekt.get(),
+    // KMK <--
+    // NXS -->
     private val getHiddenMangaIds: GetHiddenMangaIds = GetHiddenMangaIds(),
+    // NXS <--
 ) : StateScreenModel<FeedScreenState>(FeedScreenState()) {
 
     private val _events = Channel<Event>(Int.MAX_VALUE)
@@ -95,7 +99,9 @@ open class FeedScreenModel(
                 mutableState.update { state ->
                     state.copy(
                         items = items
+                            // KMK -->
                             .toImmutableList(),
+                        // KMK <--
                     )
                 }
                 getFeed(items)
@@ -111,7 +117,9 @@ open class FeedScreenModel(
             mutableState.update { state ->
                 state.copy(
                     items = newItems
+                        // KMK -->
                         .toImmutableList(),
+                    // KMK <--
                 )
             }
             getFeed(newItems)
@@ -139,8 +147,10 @@ open class FeedScreenModel(
                     dialog = Dialog.AddFeedSearch(
                         source,
                         (
+                            // KMK -->
                             // (if (source.supportsLatest) persistentListOf(null) else persistentListOf()) +
                             persistentListOf(null) +
+                                // KMK <-->
                                 getSourceSavedSearches(source.id)
                             ).toImmutableList(),
                     ),
@@ -159,6 +169,7 @@ open class FeedScreenModel(
         }
     }
 
+    // KMK -->
     fun openActionsDialog(
         feed: FeedItemUI,
     ) {
@@ -172,6 +183,7 @@ open class FeedScreenModel(
             }
         }
     }
+    // KMK <--
 
     private suspend fun hasTooManyFeeds(): Boolean {
         return countFeedSavedSearchGlobal.await() > MaxFeedItems
@@ -215,11 +227,13 @@ open class FeedScreenModel(
         }
     }
 
+    // KMK -->
     fun changeOrder(feed: FeedSavedSearch, newIndex: Int) {
         screenModelScope.launch {
             reorderFeed.changeOrder(feed, newIndex)
         }
     }
+    // KMK <--
 
     private suspend fun getSourcesToGetFeed(feedSavedSearch: List<FeedSavedSearch>): List<Pair<FeedSavedSearch, SavedSearch?>> {
         val savedSearches = getSavedSearchGlobalFeed.await()
@@ -251,29 +265,37 @@ open class FeedScreenModel(
         )
     }
 
+    // KMK -->
     private val hideInLibraryFeedItems = sourcePreferences.hideInLibraryFeedItems()
+    // KMK <--
 
     /**
      * Initiates get manga per feed.
      */
     private fun getFeed(feedSavedSearch: List<FeedItemUI>) {
         screenModelScope.launch {
+            // NXS -->
             // Snapshot once per fetch, same as the rest of this function's per-source page
             // fetches - hidden-category manga must never reach the UI, so this is applied
             // before the result is written into state below, not as a later UI-side filter.
             val hiddenMangaIds = getHiddenMangaIds.await()
 
+            // NXS <--
             feedSavedSearch.map { itemUI ->
                 async {
                     val page = try {
                         if (itemUI.source != null) {
                             withContext(coroutineDispatcher) {
                                 if (itemUI.savedSearch == null) {
+                                    // KMK -->
                                     if (itemUI.source.supportsLatest) {
+                                        // KMK <--
                                         itemUI.source.getLatestUpdates(1)
+                                        // KMK -->
                                     } else {
                                         itemUI.source.getPopularManga(1)
                                     }
+                                    // KMK <--
                                 } else {
                                     itemUI.source.getSearchManga(
                                         1,
@@ -295,15 +317,19 @@ open class FeedScreenModel(
                                 .map { it.toDomainManga(itemUI.source!!.id) }
                                 .distinctBy { it.url }
                                 .let { networkToLocalManga(it) }
+                                // NXS -->
                                 .filter { !hideInLibraryFeedItems.get() || !it.favorite }
                                 .filterNot { it.id in hiddenMangaIds },
+                            // NXS <--
                         )
                     }
 
                     mutableState.update { state ->
                         state.copy(
                             items = state.items?.map { if (it.feed.id == result.feed.id) result else it }
+                                // KMK -->
                                 ?.toImmutableList(),
+                            // KMK <--
                         )
                     }
                 }
@@ -340,6 +366,7 @@ open class FeedScreenModel(
         coroutineDispatcher.close()
     }
 
+    // KMK -->
     fun showDialog(dialog: Dialog) {
         if (!state.value.isLoading) {
             mutableState.update {
@@ -347,6 +374,7 @@ open class FeedScreenModel(
             }
         }
     }
+    // KMK <--
 
     fun dismissDialog() {
         mutableState.update { it.copy(dialog = null) }
@@ -357,9 +385,11 @@ open class FeedScreenModel(
         data class AddFeedSearch(val source: Source, val options: ImmutableList<SavedSearch?>) : Dialog()
         data class DeleteFeed(val feed: FeedSavedSearch) : Dialog()
 
+        // KMK -->
         data class FeedActions(
             val feedItem: FeedItemUI,
         ) : Dialog()
+        // KMK <--
     }
 
     sealed class Event {

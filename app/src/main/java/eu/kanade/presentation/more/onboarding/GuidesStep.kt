@@ -56,7 +56,9 @@ internal class GuidesStep(
     }
 }
 
+// NXS -->
 const val GETTING_STARTED_URL = "https://github.com/the-nexus-app/NEXUS"
+// NXS <--
 
 @PreviewLightDark
 @Composable

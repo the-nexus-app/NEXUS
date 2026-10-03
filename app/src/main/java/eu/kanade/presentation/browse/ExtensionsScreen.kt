@@ -157,7 +157,9 @@ private fun ExtensionContent(
     val context = LocalContext.current
     var trustState by remember { mutableStateOf<Extension.Untrusted?>(null) }
     val installGranted = rememberRequestPackageInstallsPermissionState(initialValue = true)
+    // KMK -->
     val navigator = LocalNavigator.current
+    // KMK <--
 
     FastScrollLazyColumn(
         contentPadding = contentPadding + topSmallPaddingValues,
@@ -194,6 +196,7 @@ private fun ExtensionContent(
                                         }
                                     }
                                 }
+                                // KMK -->
                                 KMR.strings.extensions_page_more -> {
                                     {
                                         Button(onClick = { navigator?.push(ExtensionStoresScreen()) }) {
@@ -206,6 +209,7 @@ private fun ExtensionContent(
                                         }
                                     }
                                 }
+                                // KMK <--
                                 else -> {
                                     {}
                                 }
@@ -213,7 +217,9 @@ private fun ExtensionContent(
                         ExtensionHeader(
                             textRes = header.textRes,
                             modifier = Modifier
+                                // KMK -->
                                 .padding(end = MaterialTheme.padding.small)
+                                // KMK <--
                                 .animateItemFastScroll(),
                             action = action,
                         )
@@ -378,11 +384,13 @@ private fun ExtensionItemContent(
         ) {
             ProvideTextStyle(value = MaterialTheme.typography.bodySmall) {
                 var hasAlreadyShownAnElement by remember { mutableStateOf(false) }
+                // KMK -->
                 extension.lang?.let {
                     if (it.isNotEmpty()) {
+                        // KMK <--
                         hasAlreadyShownAnElement = true
                         Text(
-                            text = /* KMK*/FlagEmoji.getEmojiLangFlag(it) + " " + /* KMK*/
+                            text = /* KMK --> */FlagEmoji.getEmojiLangFlag(it) + " " + /* KMK <-- */
                                 LocaleHelper.getSourceDisplayName(it, LocalContext.current),
                         )
                     }
@@ -396,12 +404,16 @@ private fun ExtensionItemContent(
                     )
                 }
 
+                // KMK -->
                 Text(text = extension.storeName?.let { "@$it" } ?: "(?)")
+                // KMK <--
 
                 val warning = when {
                     extension is Extension.Untrusted -> MR.strings.ext_untrusted
                     extension is Extension.Installed && extension.isObsolete -> MR.strings.ext_obsolete
+                    // SY -->
                     extension is Extension.Installed && extension.isRedundant -> SYMR.strings.ext_redundant
+                    // SY <--
                     extension.isNsfw -> MR.strings.ext_nsfw_short
                     else -> null
                 }
@@ -583,6 +595,7 @@ private fun ExtensionTrustDialog(
     )
 }
 
+// KMK -->
 @PreviewLightDark
 @Composable
 private fun ExtensionItemContentPreview() {
@@ -595,11 +608,15 @@ private fun ExtensionItemContentPreview() {
         libVersion = 1.0,
         isNsfw = true,
         signatureHash = "900000",
+        // NXS -->
         storeName = "NEXUS",
+        // NXS <--
         sources = emptyList(),
         apkUrl = "Test",
         iconUrl = "",
+        // NXS -->
         store = ExtensionStore("https://nexus", "NEXUS", "", KOMIKKU_SIGNATURE, ExtensionStore.Contact("", ""), false, null),
+        // NXS <--
     )
     val extInstalled = Extension.Installed(
         name = "Tachiyomi",
@@ -610,9 +627,13 @@ private fun ExtensionItemContentPreview() {
         libVersion = 1.0,
         isNsfw = true,
         signatureHash = "900000",
+        // NXS -->
         storeName = "NEXUS",
+        // NXS <--
         sources = emptyList(),
+        // NXS -->
         store = ExtensionStore("https://nexus", "NEXUS", "", KOMIKKU_SIGNATURE, ExtensionStore.Contact("", ""), false, null),
+        // NXS <--
         pkgFactory = null,
         icon = null,
         hasUpdate = false,
@@ -660,3 +681,4 @@ private fun ExtensionItemContentPreview() {
         }
     }
 }
+// KMK <--

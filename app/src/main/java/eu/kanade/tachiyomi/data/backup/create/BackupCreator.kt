@@ -56,9 +56,13 @@ class BackupCreator(
     private val preferenceBackupCreator: PreferenceBackupCreator = PreferenceBackupCreator(),
     private val extensionStoresBackupCreator: ExtensionStoresBackupCreator = ExtensionStoresBackupCreator(),
     private val sourcesBackupCreator: SourcesBackupCreator = SourcesBackupCreator(),
+    // KMK -->
     private val feedBackupCreator: FeedBackupCreator = FeedBackupCreator(),
+    // KMK <--
+    // SY -->
     private val savedSearchBackupCreator: SavedSearchBackupCreator = SavedSearchBackupCreator(),
     private val getMergedManga: GetMergedManga = Injekt.get(),
+    // SY <--
 ) {
 
     suspend fun backup(uri: Uri, options: BackupOptions): String {
@@ -86,9 +90,11 @@ class BackupCreator(
             }
 
             val nonFavoriteManga = if (options.readEntries) mangaRepository.getReadMangaNotInLibrary() else emptyList()
+            // SY -->
             val mergedManga = getMergedManga.await()
+            // SY <--
             val backupManga =
-                backupMangas(getFavorites.await() + nonFavoriteManga + mergedManga, options)
+                backupMangas(getFavorites.await() + nonFavoriteManga /* SY --> */ + mergedManga /* SY <-- */, options)
 
             val backup = Backup(
                 backupManga = backupManga,
@@ -98,9 +104,13 @@ class BackupCreator(
                 backupExtensionStores = backupExtensionStores(options),
                 backupSourcePreferences = backupSourcePreferences(options),
 
+                // SY -->
                 backupSavedSearches = backupSavedSearches(options),
+                // SY <--
 
+                // KMK -->
                 backupFeeds = backupFeeds(options),
+                // KMK <--
             )
 
             val byteArray = parser.encodeToByteArray(Backup.serializer(), backup)
@@ -167,12 +177,15 @@ class BackupCreator(
         return preferenceBackupCreator.createSource(includePrivatePreferences = options.privateSettings)
     }
 
+    // SY -->
     suspend fun backupSavedSearches(options: BackupOptions): List<BackupSavedSearch> {
         if (!options.savedSearchesFeeds) return emptyList()
 
         return savedSearchBackupCreator()
     }
+    // SY <--
 
+    // KMK -->
     /**
      * Backup global Popular/Latest feeds
      */
@@ -181,6 +194,7 @@ class BackupCreator(
 
         return feedBackupCreator()
     }
+    // KMK <--
 
     companion object {
         private const val MAX_AUTO_BACKUPS: Int = 4

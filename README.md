@@ -1,27 +1,36 @@
 <div align="center">
 
+<!-- NXS -->
 <a href="https://github.com/the-nexus-app/NEXUS">
   <img width=200px height=200px src="./.github/readme-images/nexus_logo.png"/>
+  <!-- /NXS -->
 </a><br/>
 
+<!-- NXS -->
 <h1 align="center"> NEXUS </h1>
+<!-- /NXS -->
 
 *Requires Android 8.0 or higher.*
 
+<!-- NXS -->
 [![Website](https://img.shields.io/badge/Website-the--nexus--app.github.io-0877d2?logo=googlechrome&logoColor=FFFFFF)](https://the-nexus-app.github.io/nexus-website/)
 [![Discord](https://img.shields.io/discord/1242381704459452488.svg?label=&labelColor=6A7EC2&color=7389D8&logo=discord&logoColor=FFFFFF)](https://discord.gg/hvxekwMP4Q)
 [![License: Apache-2.0](https://img.shields.io/github/license/the-nexus-app/NEXUS?labelColor=27303D&color=0877d2)](/LICENSE)
+<!-- /NXS -->
 
 <div align="left">
 
+<!-- NXS -->
 A free and open source manga reader, personally forked from [Komikku](https://github.com/komikku-app/komikku), which is itself based on [TachiyomiSY](https://github.com/jobobby04/tachiyomisy) & [mihon](https://github.com/mihonapp/mihon).
 
 NEXUS adds a personal privacy layer on top of Komikku's existing hidden categories feature: **opening or deleting a hidden category now requires authentication**, keeping your hidden library entries protected from casual snooping.
+<!-- /NXS -->
 
 <div align="left">
 
 ## Features
 
+<!-- NXS -->
 ### NEXUS additions:
 - `Authenticated hidden categories` — opening *or deleting* a hidden category now requires you to authenticate first, adding a real layer of protection beyond Komikku's original hide-only behavior.
 - `Hidden category updates` — hidden categories can now be unlocked from the Update tab, allowing their contents to be included when checking for new chapters while keeping them excluded from normal updates by default.
@@ -35,13 +44,18 @@ NEXUS adds a personal privacy layer on top of Komikku's existing hidden categori
 - `Bulk-favorite` multiple entries at once.
 - `Feed` supporting all sources.
 - Grouped entries in Update tab.
+<!-- /NXS -->
 - Update notification with manga cover.
 - Auto `2-way sync` progress with trackers.
 - `Panorama cover` showing wide cover in full.
+<!-- NXS -->
 - `Merge multiple` library entries together.
+<!-- /NXS -->
 - `Range-selection` for Migration.
+<!-- NXS -->
 - Ability to `enable/disable repo`.
 - `Update Error` screen.
+<!-- /NXS -->
 
 <details>
   <summary>Features from Mihon / Tachiyomi</summary>
@@ -61,6 +75,7 @@ NEXUS adds a personal privacy layer on top of Komikku's existing hidden categori
 <details>
   <summary>Features from Tachiyomi SY</summary>
 
+<!-- NXS -->
 * Feed tab across multiple sources at once.
 * Automatic webtoon detection.
 * Manga recommendations via MAL, Anilist, and Neko Similar Manga.
@@ -71,20 +86,31 @@ NEXUS adds a personal privacy layer on top of Komikku's existing hidden categori
 * Advanced source settings, search, batch enable/disable.
 * Merge multiple entries of the same manga from different sources.
 * Library search engine with exclude/quote/absolute matching.
+<!-- /NXS -->
 
 </details>
 
+<!-- NXS -->
 ## Issues & Contributing
+<!-- /NXS -->
 
+<!-- NXS -->
 This is a personal fork — issues and feature requests can be opened on [this repo's issue tracker](https://github.com/the-nexus-app/NEXUS/issues).
+<!-- /NXS -->
 
+<!-- NXS -->
 ## Credits
+<!-- /NXS -->
 
+<!-- NXS -->
 NEXUS is built on the incredible work of the manga-reader open source community:
+<!-- /NXS -->
 
+<!-- NXS -->
 - [Komikku](https://github.com/komikku-app/komikku) and its contributors
 - [Mihon/Tachiyomi](https://github.com/mihonapp/mihon) and its contributors
 - [TachiyomiSY](https://github.com/jobobby04/TachiyomiSY) and its contributors
+<!-- /NXS -->
 
 ### Disclaimer
 

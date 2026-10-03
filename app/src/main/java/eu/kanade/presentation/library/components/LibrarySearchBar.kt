@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.library.components
 
 import androidx.compose.foundation.layout.Box
@@ -163,3 +164,4 @@ fun LibrarySearchBar(
         }
     }
 }
+// NXS <--

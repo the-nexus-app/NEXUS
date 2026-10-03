@@ -44,7 +44,9 @@ class SyncPrefKeyMigration : Migration {
             "extensionRepoSettings" to "sync_extensionStores",
             "sourceSettings" to "sync_sourceSettings",
             "privateSettings" to "sync_privateSettings",
+            // NXS -->
             // Legacy sync toggles
+            // NXS <--
             "customInfo" to "sync_customInfo",
             "readEntries" to "sync_readEntries",
             "savedSearchesFeeds" to "sync_savedSearchesFeeds",

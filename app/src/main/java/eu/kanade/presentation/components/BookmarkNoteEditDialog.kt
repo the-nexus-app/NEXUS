@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.components
 
 import androidx.compose.material3.AlertDialog
@@ -64,3 +65,4 @@ fun BookmarkNoteEditDialog(
         },
     )
 }
+// NXS <--

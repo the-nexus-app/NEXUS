@@ -80,49 +80,69 @@ data object MoreTab : Tab {
             onDownloadedOnlyChange = { screenModel.downloadedOnly = it },
             incognitoMode = screenModel.incognitoMode,
             onIncognitoModeChange = { screenModel.incognitoMode = it },
+            // SY -->
             showNavUpdates = screenModel.showNavUpdates,
             showNavHistory = screenModel.showNavHistory,
+            // SY <--
             onClickDownloadQueue = { navigator.push(DownloadQueueScreen) },
             onClickCategories = { navigator.push(CategoryScreen()) },
             onClickStats = { navigator.push(StatsScreen()) },
             onClickDataAndStorage = { navigator.push(SettingsScreen(SettingsScreen.Destination.DataAndStorage)) },
             onClickSettings = { navigator.push(SettingsScreen()) },
             onClickAbout = { navigator.push(SettingsScreen(SettingsScreen.Destination.About)) },
+            // SY -->
             onClickBatchAdd = { navigator.push(BatchAddScreen()) },
             onClickUpdates = { navigator.push(UpdatesTab) },
             onClickHistory = { navigator.push(HistoryTab) },
+            // SY <--
+            // NXS -->
             onClickDiscover = { navigator.push(DiscoverScreen()) },
             extensionUpdatesCount = screenModel.extensionUpdatesCount,
             onClickBookmarkedChapters = { navigator.push(BookmarkedChaptersScreen()) },
             onClickBookmarkedPages = { navigator.push(BookmarkedPagesScreen()) },
+            // NXS <--
+            // KMK -->
             onClickLibraryUpdateErrors = { navigator.push(LibraryUpdateErrorScreen()) },
+            // KMK <--
         )
 
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
         LaunchedEffect(Unit) {
             with(DiscordRPCService) {
                 discordScope.launchIO { setScreen(context, DiscordScreen.MORE) }
             }
         }
+        // NXS -->
         // AM (DISCORD)
+        // NXS <--
     }
 }
 
 private class MoreScreenModel(
     private val downloadManager: DownloadManager = Injekt.get(),
     preferences: BasePreferences = Injekt.get(),
+    // SY -->
     uiPreferences: UiPreferences = Injekt.get(),
+    // SY <--
+    // NXS -->
     sourcePreferences: SourcePreferences = Injekt.get(),
+    // NXS <--
 ) : ScreenModel {
 
     var downloadedOnly by preferences.downloadedOnly().asState(screenModelScope)
     var incognitoMode by preferences.incognitoMode().asState(screenModelScope)
 
+    // SY -->
     val showNavUpdates by uiPreferences.showNavUpdates().asState(screenModelScope)
     val showNavHistory by uiPreferences.showNavHistory().asState(screenModelScope)
+    // SY <--
 
+    // NXS -->
     val extensionUpdatesCount by sourcePreferences.extensionUpdatesCount().asState(screenModelScope)
 
+    // NXS <--
     private var _downloadQueueState: MutableStateFlow<DownloadQueueState> = MutableStateFlow(DownloadQueueState.Stopped)
     val downloadQueueState: StateFlow<DownloadQueueState> = _downloadQueueState.asStateFlow()
 

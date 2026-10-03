@@ -1,3 +1,4 @@
+// NXS -->
 package mihon.domain.manga.interactor
 
 import kotlinx.coroutines.flow.Flow
@@ -37,3 +38,4 @@ class GetHiddenMangaIds(
 
     suspend fun await(): Set<Long> = subscribe().first()
 }
+// NXS <--

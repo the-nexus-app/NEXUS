@@ -48,15 +48,21 @@ fun MangaToolbar(
     onClickRefresh: () -> Unit,
     onClickMigrate: (() -> Unit)?,
     onClickEditNotes: () -> Unit,
+    // NXS -->
     onClickBookmarks: (() -> Unit)?,
+    // NXS <--
+    // SY -->
     onClickEditInfo: (() -> Unit)?,
+    // KMK -->
     onClickRelatedMangas: (() -> Unit)?,
     onClickSourceSettings: (() -> Unit)?,
     onClearManga: () -> Unit,
     onOpenMangaFolder: (() -> Unit)?,
+    // KMK <--
     onClickRecommend: (() -> Unit)?,
     onClickMerge: (() -> Unit)?,
     onClickMergedSettings: (() -> Unit)?,
+    // SY <--
 
     // For action mode
     actionModeCounter: Int,
@@ -66,14 +72,18 @@ fun MangaToolbar(
 
     titleAlphaProvider: () -> Float,
     backgroundAlphaProvider: () -> Float,
+    // KMK -->
     onPaletteScreenClick: () -> Unit,
+    // KMK <--
     modifier: Modifier = Modifier,
 ) {
+    // KMK -->
     val navigator = LocalNavigator.current
     fun onHomeClicked() = navigator?.popUntil { screen ->
         screen is SourceFeedScreen || screen is BrowseSourceScreen
     }
     val isHomeEnabled = Injekt.get<UiPreferences>().showHomeOnRelatedMangas().get()
+    // KMK <--
 
     val isActionMode = actionModeCounter > 0
     AppBar(
@@ -88,6 +98,7 @@ fun MangaToolbar(
         backgroundColor = MaterialTheme.colorScheme
             .surfaceColorAtElevation(3.dp)
             .copy(alpha = if (isActionMode) 1f else backgroundAlphaProvider()),
+        // KMK -->
         goHome = { onHomeClicked() }.takeIf {
             isHomeEnabled &&
                 navigator != null &&
@@ -96,6 +107,7 @@ fun MangaToolbar(
                         (navigator.size >= 2 && navigator.items[navigator.size - 2] is MangaScreen)
                     )
         },
+        // KMK <--
         navigateUp = navigateUp,
         actions = {
             var downloadExpanded by remember { mutableStateOf(false) }
@@ -181,6 +193,7 @@ fun MangaToolbar(
                             onClick = onClickEditNotes,
                         ),
                     )
+                    // NXS -->
                     if (onClickBookmarks != null) {
                         add(
                             AppBar.OverflowAction(
@@ -189,6 +202,8 @@ fun MangaToolbar(
                             ),
                         )
                     }
+                    // NXS <--
+                    // SY -->
                     if (onClickMerge != null) {
                         add(
                             AppBar.OverflowAction(
@@ -205,6 +220,7 @@ fun MangaToolbar(
                             ),
                         )
                     }
+                    // KMK -->
                     if (onClickRelatedMangas != null) {
                         add(
                             AppBar.OverflowAction(
@@ -213,6 +229,7 @@ fun MangaToolbar(
                             ),
                         )
                     }
+                    // KMK <--
                     if (onClickRecommend != null) {
                         add(
                             AppBar.OverflowAction(
@@ -229,6 +246,8 @@ fun MangaToolbar(
                             ),
                         )
                     }
+                    // SY <--
+                    // KMK -->
                     if (onOpenMangaFolder != null) {
                         add(
                             AppBar.OverflowAction(
@@ -259,6 +278,7 @@ fun MangaToolbar(
                             ),
                         )
                     }
+                    // KMK <--
                 }
                     .build(),
             )

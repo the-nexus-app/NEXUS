@@ -102,7 +102,9 @@ private fun NotDownloadedIndicator(
             painter = painterResource(R.drawable.ic_download_chapter_24dp),
             contentDescription = stringResource(MR.strings.manga_download),
             modifier = Modifier.size(IndicatorSize),
+            // NXS -->
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            // NXS <--
         )
     }
 }
@@ -128,7 +130,9 @@ private fun DownloadingIndicator(
         contentAlignment = Alignment.Center,
     ) {
         val arrowColor: Color
+        // NXS -->
         val strokeColor = MaterialTheme.colorScheme.onSurfaceVariant
+        // NXS <--
         val downloadProgress = downloadProgressProvider()
         val indeterminate = downloadState == Download.State.QUEUE ||
             (downloadState == Download.State.DOWNLOADING && downloadProgress == 0)
@@ -208,7 +212,9 @@ private fun DownloadedIndicator(
             imageVector = Icons.Filled.CheckCircle,
             contentDescription = null,
             modifier = Modifier.size(IndicatorSize),
+            // NXS -->
             tint = MaterialTheme.colorScheme.primary,
+            // NXS <--
         )
         DropdownMenu(expanded = isMenuExpanded, onDismissRequest = { isMenuExpanded = false }) {
             DropdownMenuItem(

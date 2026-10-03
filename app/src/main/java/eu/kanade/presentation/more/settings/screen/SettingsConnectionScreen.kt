@@ -1,4 +1,6 @@
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--
 package eu.kanade.presentation.more.settings.screen
 
 import android.content.Context
@@ -233,8 +235,10 @@ object SettingsConnectionScreen : SearchableSettings {
 
 @Composable
 internal fun ConnectionsLogoutDialog(
+    // KMK -->
     serviceName: String,
     onConfirmation: () -> Unit,
+    // KMK <--
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -258,7 +262,9 @@ internal fun ConnectionsLogoutDialog(
                 Button(
                     modifier = Modifier.weight(1f),
                     onClick = {
+                        // KMK -->
                         onConfirmation()
+                        // KMK <--
                         onDismissRequest()
                         context.toast(MR.strings.logout_success)
                     },
@@ -282,4 +288,6 @@ private data class LoginConnectionDialog(
 internal data class LogoutConnectionDialog(
     val service: ConnectionsService,
 )
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--

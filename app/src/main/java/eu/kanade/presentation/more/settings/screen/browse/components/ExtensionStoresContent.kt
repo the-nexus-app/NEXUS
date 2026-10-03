@@ -52,9 +52,11 @@ fun ExtensionStoresContent(
     onOpenWebsite: (ExtensionStore) -> Unit,
     onOpenDiscord: (ExtensionStore) -> Unit,
     onClickDelete: (ExtensionStore) -> Unit,
+    // KMK -->
     onClickEnable: (ExtensionStore) -> Unit,
     onClickDisable: (ExtensionStore) -> Unit,
     disabledRepos: Set<String>,
+    // KMK <--
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -72,9 +74,11 @@ fun ExtensionStoresContent(
                     onOpenDiscord = { onOpenDiscord(it) },
                     onCopy = { onCopy(it) },
                     onDelete = { onClickDelete(it) },
+                    // KMK -->
                     onEnable = { onClickEnable(it) },
                     onDisable = { onClickDisable(it) },
                     isDisabled = it.indexUrl in disabledRepos,
+                    // KMK <--
                 )
             }
         }
@@ -89,13 +93,16 @@ private fun ExtensionStoresListItem(
     onCopy: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
+    // KMK -->
     isDisabled: Boolean,
     onEnable: () -> Unit,
     onDisable: () -> Unit,
+    // KMK <--
 ) {
     ElevatedCard(
         modifier = modifier,
     ) {
+        // KMK -->
         Row(
             modifier = Modifier
                 .padding(start = MaterialTheme.padding.medium),
@@ -111,6 +118,7 @@ private fun ExtensionStoresListItem(
                     .align(Alignment.CenterVertically),
             )
             Column {
+                // KMK <--
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -123,10 +131,14 @@ private fun ExtensionStoresListItem(
                 ) {
                     Text(
                         text = store.name,
+                        // NXS -->
                         modifier = Modifier.padding(start = MaterialTheme.padding.medium),
+                        // NXS <--
                         style = MaterialTheme.typography.titleMedium,
+                        // KMK -->
                         color = LocalContentColor.current.let { if (isDisabled) it.copy(alpha = 0.6f) else it },
                         textDecoration = TextDecoration.LineThrough.takeIf { isDisabled },
+                        // KMK <--
                     )
                 }
 
@@ -157,12 +169,14 @@ private fun ExtensionStoresListItem(
                         )
                     }
 
+                    // KMK -->
                     IconButton(onClick = if (isDisabled) onEnable else onDisable) {
                         Icon(
                             imageVector = if (isDisabled) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
                             contentDescription = stringResource(MR.strings.action_disable),
                         )
                     }
+                    // KMK <--
 
                     IconButton(onClick = onDelete) {
                         Icon(
@@ -176,8 +190,11 @@ private fun ExtensionStoresListItem(
     }
 }
 
+// KMK -->
 fun repoResId(signKey: String) = when (signKey) {
+    // NXS -->
     KOMIKKU_SIGNATURE -> R.mipmap.nexus
+    // NXS <--
     REPO_SIGNATURE -> R.mipmap.repo
     else -> R.mipmap.extension
 }
@@ -207,3 +224,4 @@ fun ExtensionReposContentPreview() {
         }
     }
 }
+// KMK <--

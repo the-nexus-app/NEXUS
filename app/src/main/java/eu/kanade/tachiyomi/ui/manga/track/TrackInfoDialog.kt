@@ -118,6 +118,7 @@ data class TrackInfoDialogHomeScreen(
         val dateFormat = remember { UiPreferences.dateFormat(Injekt.get<UiPreferences>().dateFormat().get()) }
         val state by screenModel.state.collectAsState()
 
+        // SY -->
         Column(modifier = Modifier.animateContentSize()) {
             if (state.isLoading) {
                 Column(
@@ -134,6 +135,7 @@ data class TrackInfoDialogHomeScreen(
                         fontSize = 14.sp,
                     )
                 }
+                // SY <--
             } else {
                 TrackInfoDialogHome(
                     trackItems = state.trackItems,
@@ -184,7 +186,9 @@ data class TrackInfoDialogHomeScreen(
                         if (it.tracker is EnhancedTracker) {
                             screenModel.registerEnhancedTracking(it)
                         } else {
+                            // SY -->
                             screenModel.newSearch(navigator, it, mangaTitle)
+                            // SY <--
                         }
                     },
                     onOpenInBrowser = { openTrackerInBrowser(context, it) },
@@ -225,13 +229,19 @@ data class TrackInfoDialogHomeScreen(
         private val mangaId: Long,
         private val sourceId: Long,
         private val getTracks: GetTracks = Injekt.get(),
+        // SY -->
         private val trackerManager: TrackerManager = Injekt.get(),
         private val trackPreferences: TrackPreferences = Injekt.get(),
+        // SY <--
+        // KMK -->
         private val sourceManager: SourceManager = Injekt.get(),
+        // KMK <--
     ) : StateScreenModel<Model.State>(State()) {
+        // KMK -->
         private val getFlatMetadataById: GetFlatMetadataById by injectLazy()
         private val getMangaById: GetManga by injectLazy()
         private val getMergedReferencesById: GetMergedReferencesById by injectLazy()
+        // KMK <--
 
         init {
             screenModelScope.launch {
@@ -247,6 +257,7 @@ data class TrackInfoDialogHomeScreen(
             }
         }
 
+        // KMK -->
         private suspend fun getMangaForTracking(item: TrackItem): Manga? {
             if (sourceId != MERGED_SOURCE_ID) {
                 return getMangaById.await(mangaId)
@@ -259,6 +270,7 @@ data class TrackInfoDialogHomeScreen(
                     ?.let { ref.mangaId?.let { mangaId -> getMangaById.await(mangaId) } }
             }
         }
+        // KMK <--
 
         fun registerEnhancedTracking(item: TrackItem) {
             item.tracker as EnhancedTracker
@@ -273,6 +285,7 @@ data class TrackInfoDialogHomeScreen(
             }
         }
 
+        // SY -->
         fun newSearch(navigator: Navigator, item: TrackItem, mangaTitle: String) {
             screenModelScope.launchNonCancellable {
                 if (trackPreferences.resolveUsingSourceMetadata().get()) {
@@ -341,6 +354,7 @@ data class TrackInfoDialogHomeScreen(
             }
             return false
         }
+        // SY <--
 
         private suspend fun refreshTrackers() {
             val refreshTracks = Injekt.get<RefreshTracks>()
@@ -377,6 +391,7 @@ data class TrackInfoDialogHomeScreen(
                 // Map to TrackItem
                 .map { service -> TrackItem(find { it.trackerId == service.id }, service) }
                 // Show only if the service supports this manga's source
+                // KMK -->
                 .let { trackers ->
                     val sources = if (source is MergedSource) {
                         sourceManager.getMergedSources(mangaId)
@@ -385,12 +400,15 @@ data class TrackInfoDialogHomeScreen(
                     }
                     trackers.filter { (it.tracker as? EnhancedTracker)?.accept(sources) ?: true }
                 }
+            // KMK <--
         }
 
         @Immutable
         data class State(
             val trackItems: List<TrackItem> = emptyList(),
+            // SY -->
             val isLoading: Boolean = false,
+            // SY <--
         )
     }
 }

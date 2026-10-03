@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.more.components
 
 import androidx.compose.foundation.clickable
@@ -131,3 +132,4 @@ fun NexusSectionLabel(
             .padding(top = MaterialTheme.padding.small),
     )
 }
+// NXS <--

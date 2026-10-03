@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.interactor
 
 import logcat.LogPriority
@@ -15,3 +16,4 @@ class DeleteBookmark(
         }
     }
 }
+// NXS <--

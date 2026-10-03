@@ -32,7 +32,9 @@ internal class DownloadNotifier(private val context: Context) {
     private val progressNotificationBuilder by lazy {
         context.notificationBuilder(Notifications.CHANNEL_DOWNLOADER_PROGRESS) {
             setColor(ContextCompat.getColor(context, R.color.ic_launcher))
+            // NXS -->
             setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo))
+            // NXS <--
             setAutoCancel(false)
             setOnlyAlertOnce(true)
         }
@@ -41,7 +43,9 @@ internal class DownloadNotifier(private val context: Context) {
     private val errorNotificationBuilder by lazy {
         context.notificationBuilder(Notifications.CHANNEL_DOWNLOADER_ERROR) {
             setColor(ContextCompat.getColor(context, R.color.ic_launcher))
+            // NXS -->
             setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo))
+            // NXS <--
             setAutoCancel(false)
         }
     }
@@ -66,6 +70,7 @@ internal class DownloadNotifier(private val context: Context) {
      */
     fun dismissProgress() {
         context.cancelNotification(Notifications.ID_DOWNLOAD_CHAPTER_PROGRESS)
+        // KMK -->
         context.cancelNotification(Notifications.ID_DOWNLOAD_CHAPTER_PAUSED)
     }
 
@@ -74,6 +79,7 @@ internal class DownloadNotifier(private val context: Context) {
      */
     fun dismissPaused() {
         context.cancelNotification(Notifications.ID_DOWNLOAD_CHAPTER_PAUSED)
+        // KMK <--
     }
 
     /**
@@ -155,7 +161,9 @@ internal class DownloadNotifier(private val context: Context) {
                 NotificationReceiver.clearDownloadsPendingBroadcast(context),
             )
 
+            // KMK -->
             show(Notifications.ID_DOWNLOAD_CHAPTER_PAUSED)
+            // KMK <--
         }
 
         // Reset initial values

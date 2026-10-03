@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.dashboard.components
 
 import androidx.compose.foundation.Image
@@ -47,3 +48,4 @@ fun DashboardHeader(modifier: Modifier = Modifier) {
         )
     }
 }
+// NXS <--

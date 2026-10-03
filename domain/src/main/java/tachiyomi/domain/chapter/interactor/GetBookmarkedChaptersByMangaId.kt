@@ -9,17 +9,21 @@ import tachiyomi.domain.manga.interactor.GetManga
 
 class GetBookmarkedChaptersByMangaId(
     private val chapterRepository: ChapterRepository,
+    // SY -->
     private val getManga: GetManga,
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId,
+    // SY <--
 ) {
 
     suspend fun await(mangaId: Long): List<Chapter> {
         return try {
+            // SY -->
             val manga = getManga.await(mangaId) ?: return emptyList()
             if (manga.source == MERGED_SOURCE_ID) {
-                return getMergedChaptersByMangaId.await(mangaId, applyFilter = /* KMK*/false /* KMK*/)
+                return getMergedChaptersByMangaId.await(mangaId, applyFilter = /* KMK --> */false /* KMK <-- */)
                     .filter { it.bookmark }
             }
+            // SY <--
             chapterRepository.getBookmarkedChaptersByMangaId(mangaId)
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, e)

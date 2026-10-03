@@ -198,7 +198,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <!-- NXS -->
                 <data android:scheme="nexus" />
+                <!-- /NXS -->
                 <data android:scheme="komikku" />
                 <data android:scheme="mihon" />
 

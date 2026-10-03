@@ -32,7 +32,9 @@ fun Screen.migrateSourceTab(): TabContent {
                 title = stringResource(MR.strings.migration_help_guide),
                 icon = Icons.AutoMirrored.Outlined.HelpOutline,
                 onClick = {
+                    // NXS -->
                     uriHandler.openUri("https://github.com/the-nexus-app/NEXUS")
+                    // NXS <--
                 },
             ),
         ),
@@ -45,7 +47,9 @@ fun Screen.migrateSourceTab(): TabContent {
                 },
                 onToggleSortingDirection = screenModel::toggleSortingDirection,
                 onToggleSortingMode = screenModel::toggleSortingMode,
+                // KMK -->
                 onChangeSearchQuery = screenModel::search,
+                // KMK <--
             )
         },
     )

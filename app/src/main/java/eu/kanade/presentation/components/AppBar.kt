@@ -134,7 +134,9 @@ fun AppBar(
     isActionMode: Boolean = false,
     onCancelActionMode: () -> Unit = {},
 
+    // KMK -->
     goHome: (() -> Boolean?)? = null,
+    // KMK <--
 
     scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
@@ -151,17 +153,21 @@ fun AppBar(
                         )
                     }
                 } else {
+                    // KMK -->
                     Row {
+                        // KMK <--
                         navigateUp?.let {
                             IconButton(onClick = it) {
                                 UpIcon(navigationIcon = navigationIcon)
                             }
                         }
+                        // KMK -->
                         goHome?.let {
                             IconButton(onClick = { it.invoke() }) {
                                 UpIcon(navigationIcon = Icons.Filled.Home)
                             }
                         }
+                        // KMK <--
                     }
                 }
             },
@@ -182,15 +188,19 @@ fun AppBarTitle(
     title: String?,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
+    // NXS -->
     titleStyle: TextStyle? = null,
     titleColor: Color = Color.Unspecified,
+    // NXS <--
 ) {
     Column(modifier = modifier) {
         title?.let {
             Text(
                 text = it,
+                // NXS -->
                 style = titleStyle ?: LocalTextStyle.current,
                 color = titleColor,
+                // NXS <--
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -239,6 +249,7 @@ fun AppBarActions(
         }
     }
 
+    // KMK -->
     actions.filterIsInstance<AppBar.ActionCompose>().map {
         TooltipBox(
             positionProvider = rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
@@ -259,6 +270,7 @@ fun AppBarActions(
             }
         }
     }
+    // KMK <--
 
     val overflowActions = actions.filterIsInstance<AppBar.OverflowAction>()
     if (overflowActions.isNotEmpty()) {
@@ -468,10 +480,12 @@ sealed interface AppBar {
         val enabled: Boolean = true,
     ) : AppBarAction
 
+    // KMK -->
     data class ActionCompose(
         val title: String,
         val content: @Composable () -> Unit,
     ) : AppBarAction
+    // KMK <--
 
     data class OverflowAction(
         val title: String,

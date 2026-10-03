@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.data.bookmark
 
 import kotlinx.coroutines.flow.Flow
@@ -85,3 +86,4 @@ class BookmarkRepositoryImpl(
         }
     }
 }
+// NXS <--

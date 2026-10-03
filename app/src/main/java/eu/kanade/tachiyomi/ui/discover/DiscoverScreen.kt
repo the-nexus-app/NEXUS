@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.discover
 
 import androidx.compose.foundation.pager.rememberPagerState
@@ -96,3 +97,4 @@ class DiscoverScreen(private val openExtensions: Boolean = false) : Screen() {
         }
     }
 }
+// NXS <--

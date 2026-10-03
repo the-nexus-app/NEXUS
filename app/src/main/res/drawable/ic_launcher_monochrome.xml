@@ -4,7 +4,9 @@
     android:height="108dp"
     android:viewportWidth="432"
     android:viewportHeight="432">
+    <!-- NXS -->
     <path
         android:pathData="M0,0h432v432h-432z"
         android:fillColor="#FFFFFF" />
+        <!-- /NXS -->
 </vector>

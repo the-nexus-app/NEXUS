@@ -76,8 +76,10 @@ class AboutScreen : Screen() {
         val navigator = LocalNavigator.currentOrThrow
         var isCheckingUpdates by remember { mutableStateOf(false) }
 
+        // KMK -->
         var isCheckingWhatsNew by remember { mutableStateOf(false) }
         var isCheckingWhatsComing by remember { mutableStateOf(false) }
+        // KMK <--
 
         Scaffold(
             topBar = { scrollBehavior ->
@@ -145,6 +147,7 @@ class AboutScreen : Screen() {
                     }
                 }
 
+                // KMK -->
                 item {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.whats_new),
@@ -161,22 +164,30 @@ class AboutScreen : Screen() {
                                 scope.launch {
                                     isCheckingWhatsNew = true
 
+                                    // NXS -->
                                     getReleaseNotesWithComparison(
+                                        // NXS <--
                                         context = context,
+                                        // NXS -->
                                         onReleaseLoaded = { result ->
+                                            // NXS <--
                                             val whatsNewScreen = WhatsNewScreen(
                                                 currentVersion = BuildConfig.VERSION_NAME,
                                                 versionName = result.release.version,
                                                 changelogInfo = result.release.info,
                                                 releaseLink = result.release.releaseLink,
+                                                // NXS -->
                                                 downloadLink = result.release.downloadLink,
                                                 isUpdateAvailable = result.isUpdateAvailable,
+                                                // NXS <--
                                             )
                                             navigator.push(whatsNewScreen)
                                         },
+                                        // NXS -->
                                         onError = {
                                             // Error is already toasted by the function
                                         },
+                                        // NXS <--
                                         onFinish = {
                                             isCheckingWhatsNew = false
                                         },
@@ -226,6 +237,7 @@ class AboutScreen : Screen() {
                         )
                     }
                 }
+                // KMK <--
 
                 item {
                     TextPreferenceWidget(
@@ -237,7 +249,9 @@ class AboutScreen : Screen() {
                 item {
                     TextPreferenceWidget(
                         title = stringResource(MR.strings.privacy_policy),
+                        // NXS -->
                         onPreferenceClick = { uriHandler.openUri("https://github.com/the-nexus-app/NEXUS") },
+                        // NXS <--
                     )
                 }
 
@@ -251,12 +265,16 @@ class AboutScreen : Screen() {
                         LinkIcon(
                             label = stringResource(MR.strings.website),
                             icon = Icons.Outlined.Public,
+                            // NXS -->
                             url = "https://the-nexus-app.github.io/nexus-website/",
+                            // NXS <--
                         )
                         LinkIcon(
                             label = "Discord",
                             icon = CustomIcons.Discord,
+                            // NXS -->
                             url = "https://discord.gg/hvxekwMP4Q",
+                            // NXS <--
                         )
                         // LinkIcon(
                         //     label = "X",
@@ -268,15 +286,19 @@ class AboutScreen : Screen() {
                         //     icon = CustomIcons.Facebook,
                         //     url = "https://facebook.com/mihonapp",
                         // )
+                        // NXS -->
                         LinkIcon(
                             label = "Reddit",
                             icon = Icons.AutoMirrored.Outlined.HelpOutline,
                             url = "https://www.reddit.com/r/thenexusapp",
                         )
+                        // NXS <--
                         LinkIcon(
                             label = "GitHub",
                             icon = CustomIcons.Github,
+                            // NXS -->
                             url = "https://github.com/the-nexus-app/NEXUS",
+                            // NXS <--
                         )
                     }
                 }
@@ -291,10 +313,14 @@ class AboutScreen : Screen() {
         context: Context,
         onAvailableUpdate: (GetApplicationRelease.Result.NewUpdate) -> Unit,
         onFinish: () -> Unit,
+        // KMK -->
         peekIntoPreview: Boolean = false,
+        // KMK <--
     ) {
         val updateChecker = AppUpdateChecker(
+            // KMK -->
             peekIntoPreview = peekIntoPreview,
+            // KMK <--
         )
         withUIContext {
             try {
@@ -319,33 +345,45 @@ class AboutScreen : Screen() {
     }
 
     companion object {
+        // KMK -->
+        // NXS -->
         suspend fun getReleaseNotesWithComparison(
+            // NXS <--
             context: Context,
+            // NXS -->
             onReleaseLoaded: (GetApplicationRelease.ReleaseNotesResult.Success) -> Unit,
             onError: () -> Unit,
+            // NXS <--
             onFinish: () -> Unit,
         ) {
             val updateChecker = AppUpdateChecker()
             withUIContext {
                 try {
+                    // NXS -->
                     when (val result = withIOContext { updateChecker.getReleaseNotesWithComparison() }) {
                         is GetApplicationRelease.ReleaseNotesResult.Success -> {
                             onReleaseLoaded(result)
+                            // NXS <--
                         }
 
+                        // NXS -->
                         is GetApplicationRelease.ReleaseNotesResult.Error -> {
                             onError()
                         }
+                        // NXS <--
                     }
                 } catch (e: Exception) {
                     context.toast(e.message)
                     logcat(LogPriority.ERROR, e)
+                    // NXS -->
                     onError()
+                    // NXS <--
                 } finally {
                     onFinish()
                 }
             }
         }
+        // KMK <--
 
         fun getVersionName(withBuildDate: Boolean): String {
             return when {

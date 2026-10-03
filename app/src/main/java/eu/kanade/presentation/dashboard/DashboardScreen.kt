@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.dashboard
 
 import androidx.compose.foundation.layout.Box
@@ -174,3 +175,4 @@ fun DashboardScreen(
         }
     }
 }
+// NXS <--

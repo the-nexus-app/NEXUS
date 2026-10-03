@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.repository
 
 import kotlinx.coroutines.flow.Flow
@@ -23,3 +24,4 @@ interface BookmarkRepository {
 
     suspend fun updateBookmarkNote(id: Long, note: String?)
 }
+// NXS <--

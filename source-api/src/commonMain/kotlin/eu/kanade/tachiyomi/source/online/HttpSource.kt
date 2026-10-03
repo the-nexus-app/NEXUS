@@ -36,6 +36,7 @@ abstract class HttpSource : CatalogueSource {
     /**
      * Network service.
      */
+    // SY -->
     protected val network: NetworkHelper by lazy {
         val network = Injekt.get<NetworkHelper>()
         object : NetworkHelper(Injekt.get<Application>(), Injekt.get(), network.delegateSourcePreferences) {
@@ -53,6 +54,7 @@ abstract class HttpSource : CatalogueSource {
                 get() = network.cookieJar
         }
     }
+    // SY <--
 
     /**
      * Base url of the website without the trailing slash, like: http://mysite.com
@@ -93,13 +95,15 @@ abstract class HttpSource : CatalogueSource {
     /**
      * Headers used for requests.
      */
-    open val headers: Headers by lazy { headersBuilder().build() }
+    /* SY --> */ open /* SY <-- */ val headers: Headers by lazy { headersBuilder().build() }
 
     /**
      * Default network client for doing requests.
      */
     open val client: OkHttpClient
+        // SY -->
         get() = delegate?.baseHttpClient ?: network.client
+    // SY <--
 
     /**
      * Generates a unique ID for the source based on the provided [name], [lang] and
@@ -298,6 +302,7 @@ abstract class HttpSource : CatalogueSource {
     )
     protected open fun mangaDetailsParse(response: Response): SManga = throw UnsupportedOperationException()
 
+    // KMK -->
     /**
      * Whether parsing related mangas in manga page or extension provide custom related mangas request.
      *
@@ -357,6 +362,7 @@ abstract class HttpSource : CatalogueSource {
      * @param response the response from the site.
      */
     protected open fun relatedMangaListParse(response: Response): List<SManga> = popularMangaParse(response).mangas
+    // KMK <--
 
     /**
      * Returns an observable with the updated chapter list for a manga. Normally it's not needed to
@@ -579,7 +585,7 @@ abstract class HttpSource : CatalogueSource {
     @Deprecated("All modifications should be done when constructing the chapter")
     open fun prepareNewChapter(chapter: SChapter, manga: SManga) {}
 
-    // EXH
+    // EXH -->
     private var delegate: DelegatedHttpSource? = null
         get() = if (Injekt.get<DelegateSourcePreferences>().delegateSources().get()) {
             field
@@ -590,5 +596,5 @@ abstract class HttpSource : CatalogueSource {
     fun bindDelegate(delegate: DelegatedHttpSource) {
         this.delegate = delegate
     }
-    // EXH
+    // EXH <--
 }

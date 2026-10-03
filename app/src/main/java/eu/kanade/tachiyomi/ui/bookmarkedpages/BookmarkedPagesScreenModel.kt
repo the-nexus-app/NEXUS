@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.bookmarkedpages
 
 import androidx.compose.runtime.Immutable
@@ -86,3 +87,4 @@ class BookmarkedPagesScreenModel(
         }
     }
 }
+// NXS <--

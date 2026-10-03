@@ -44,6 +44,7 @@ import tachiyomi.presentation.core.i18n.stringResource
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+// NXS -->
 enum class BookmarkSelection {
     Chapters,
     Pages,
@@ -54,6 +55,7 @@ enum class BookmarkSelection {
     }
 }
 
+// NXS <--
 @Composable
 fun MoreScreen(
     downloadQueueStateProvider: () -> DownloadQueueState,
@@ -61,8 +63,10 @@ fun MoreScreen(
     onDownloadedOnlyChange: (Boolean) -> Unit,
     incognitoMode: Boolean,
     onIncognitoModeChange: (Boolean) -> Unit,
+    // SY -->
     showNavUpdates: Boolean,
     showNavHistory: Boolean,
+    // SY <--
     onClickDownloadQueue: () -> Unit,
     onClickCategories: () -> Unit,
     onClickStats: () -> Unit,
@@ -72,16 +76,23 @@ fun MoreScreen(
     onClickBatchAdd: () -> Unit,
     onClickUpdates: () -> Unit,
     onClickHistory: () -> Unit,
+    // NXS -->
     onClickDiscover: () -> Unit,
     extensionUpdatesCount: Int,
     onClickBookmarkedChapters: () -> Unit,
     onClickBookmarkedPages: () -> Unit,
+    // NXS <--
+    // KMK -->
     onClickLibraryUpdateErrors: () -> Unit,
+    // KMK <--
 ) {
     val uriHandler = LocalUriHandler.current
+    // SY -->
     val exhPreferences = remember { Injekt.get<ExhPreferences>() }
     val delegateSourcePreferences = remember { Injekt.get<DelegateSourcePreferences>() }
+    // SY <--
 
+    // NXS -->
     // State for the bookmark type selection dialog
     var showBookmarkDialog by remember { mutableStateOf(false) }
     var selectedBookmarkType by remember { mutableStateOf<BookmarkSelection?>(null) }
@@ -152,8 +163,10 @@ fun MoreScreen(
             },
         )
     }
+    // NXS <--
     Scaffold { contentPadding ->
         ScrollbarLazyColumn(
+            // NXS -->
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(
                 top = contentPadding.calculateTopPadding(),
@@ -161,17 +174,23 @@ fun MoreScreen(
                 end = contentPadding.calculateEndPadding(LocalLayoutDirection.current),
                 bottom = contentPadding.calculateBottomPadding() + 16.dp,
             ),
+            // NXS <--
         ) {
             item {
+                // NXS -->
                 NexusMoreHeader(
                     title = stringResource(KMR.strings.more_screen_title),
                     subtitle = stringResource(KMR.strings.more_screen_subtitle),
                 )
+                // NXS <--
             }
+            // NXS -->
 
             item { Spacer(modifier = Modifier.height(8.dp)) }
 
+            // NXS <--
             item {
+                // NXS -->
                 val (count, statusText, isActive) = when (val state = downloadQueueStateProvider()) {
                     DownloadQueueState.Stopped -> Triple(
                         0,
@@ -194,12 +213,16 @@ fun MoreScreen(
                     statusText = statusText,
                     isActive = isActive,
                     onClick = onClickDownloadQueue,
+                    // NXS <--
                 )
             }
+            // NXS -->
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
 
+            // NXS <--
             item {
+                // NXS -->
                 NexusSectionLabel(title = stringResource(KMR.strings.library_tools_title))
             }
 
@@ -208,11 +231,16 @@ fun MoreScreen(
                     title = stringResource(KMR.strings.bookmarks_title),
                     subtitle = stringResource(KMR.strings.bookmarks_subtitle),
                     onClick = { showBookmarkDialog = true },
+                    // NXS <--
                 )
             }
 
+            // NXS -->
             item { Spacer(modifier = Modifier.height(8.dp)) }
+            // NXS <--
 
+            // SY -->
+            // NXS -->
             item {
                 Row(
                     modifier = Modifier
@@ -225,37 +253,50 @@ fun MoreScreen(
                         subtitle = stringResource(KMR.strings.categories_subtitle),
                         onClick = onClickCategories,
                         modifier = Modifier.weight(1f),
+                        // NXS <--
                     )
+                    // NXS -->
                     NexusFeatureTile(
                         title = stringResource(KMR.strings.statistics_title),
                         subtitle = stringResource(KMR.strings.statistics_subtitle),
                         onClick = onClickStats,
                         modifier = Modifier.weight(1f),
+                        // NXS <--
                     )
                 }
             }
+            // SY <--
 
+            // NXS -->
             item { Spacer(modifier = Modifier.height(16.dp)) }
 
+            // NXS <--
             item {
+                // NXS -->
                 NexusSectionLabel(title = stringResource(KMR.strings.tools_title))
+                // NXS <--
             }
 
             item {
+                // NXS -->
                 NexusNavigationRow(
                     title = stringResource(KMR.strings.discover_title),
                     subtitle = stringResource(KMR.strings.discover_subtitle),
                     onClick = onClickDiscover,
+                    // NXS <--
                 )
             }
 
             item {
+                // NXS -->
                 NexusNavigationRow(
                     title = stringResource(KMR.strings.data_storage_title),
                     subtitle = stringResource(KMR.strings.data_storage_subtitle),
                     onClick = onClickDataAndStorage,
+                    // NXS <--
                 )
             }
+            // NXS -->
 
             if (exhPreferences.isHentaiEnabled().get() ||
                 delegateSourcePreferences.delegateSources().get()
@@ -266,20 +307,27 @@ fun MoreScreen(
                         onClick = onClickBatchAdd,
                     )
                 }
+                // NXS <--
             }
 
             item {
+                // NXS -->
                 NexusNavigationRow(
                     title = stringResource(KMR.strings.option_label_library_update_errors),
                     onClick = onClickLibraryUpdateErrors,
+                    // NXS <--
                 )
             }
+            // SY -->
+            // NXS -->
 
             // ========== RECENT UPDATES/HISTORY (CONDITIONAL) ==========
             if (!showNavUpdates || !showNavHistory) {
                 item { Spacer(modifier = Modifier.height(16.dp)) }
 
+                // NXS <--
                 item {
+                    // NXS -->
                     NexusSectionLabel(title = stringResource(KMR.strings.section_recent))
                 }
                 if (!showNavUpdates) {
@@ -297,32 +345,43 @@ fun MoreScreen(
                             onClick = onClickHistory,
                         )
                     }
+                    // NXS <--
                 }
             }
+            // SY <--
 
+            // NXS -->
             item { Spacer(modifier = Modifier.height(16.dp)) }
+            // NXS <--
 
             item {
+                // NXS -->
                 NexusSectionLabel(title = stringResource(KMR.strings.reading_mode_title))
+                // NXS <--
             }
 
             item {
+                // NXS -->
                 NexusToggleRow(
                     title = stringResource(MR.strings.label_downloaded_only),
                     subtitle = stringResource(KMR.strings.downloaded_only_subtitle),
                     checked = downloadedOnly,
                     onCheckedChange = onDownloadedOnlyChange,
+                    // NXS <--
                 )
             }
 
             item {
+                // NXS -->
                 NexusToggleRow(
                     title = stringResource(MR.strings.pref_incognito_mode),
                     subtitle = stringResource(KMR.strings.incognito_mode_subtitle),
                     checked = incognitoMode,
                     onCheckedChange = onIncognitoModeChange,
+                    // NXS <--
                 )
             }
+            // NXS -->
 
             item { Spacer(modifier = Modifier.height(16.dp)) }
 
@@ -330,24 +389,33 @@ fun MoreScreen(
                 NexusSectionLabel(title = stringResource(KMR.strings.application_title))
             }
 
+            // NXS <--
+            // KMK -->
             item {
+                // NXS -->
                 NexusNavigationRow(
                     title = stringResource(MR.strings.label_settings),
                     onClick = onClickSettings,
                 )
+                // NXS <--
             }
+            // KMK <--
 
+            // NXS -->
             item {
                 NexusNavigationRow(
                     title = stringResource(MR.strings.pref_category_about),
                     onClick = onClickAbout,
+                    // NXS <--
                 )
+                // NXS -->
             }
 
             item {
                 NexusNavigationRow(
                     title = stringResource(MR.strings.label_help),
                     onClick = { uriHandler.openUri(Constants.URL_HELP) },
+                    // NXS <--
                 )
             }
         }

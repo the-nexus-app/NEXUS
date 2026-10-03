@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.bookmarkedchapters
 
 import androidx.compose.runtime.Composable
@@ -33,3 +34,4 @@ class BookmarkedChaptersScreen : Screen() {
         )
     }
 }
+// NXS <--

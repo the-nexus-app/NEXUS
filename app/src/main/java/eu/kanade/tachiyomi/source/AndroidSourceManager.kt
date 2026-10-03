@@ -66,30 +66,41 @@ class AndroidSourceManager(
 
     override val sources: Flow<List<Source>> = sourcesMapFlow.map { it.values.toList() }
 
+    // SY -->
     private val exhPreferences: ExhPreferences by injectLazy()
     private val sourcePreferences: SourcePreferences by injectLazy()
+    // SY <--
+    // KMK -->
     private val getMergedReferencesById: GetMergedReferencesById by injectLazy()
+    // KMK <--
 
     init {
         scope.launch {
             extensionManager.installedExtensionsFlow
+                // SY -->
                 .combine(exhPreferences.enableExhentai().changes()) { extensions, enableExhentai ->
                     extensions to enableExhentai
                 }
+                // KMK -->
                 .combine(
                     exhPreferences.isHentaiEnabled().changes(),
                 ) { (a, b), c -> Triple(a, b, c) }
-                .collectLatest { (extensions, enableExhentai/* KMK*/, isHentaiEnabled/* KMK*/) ->
+                // KMK <--
+                // SY <--
+                .collectLatest { (extensions, enableExhentai/* KMK --> */, isHentaiEnabled/* KMK <-- */) ->
                     val mutableMap = ConcurrentHashMap<Long, Source>(
                         mapOf(
                             LocalSource.ID to LocalSource(
                                 context,
                                 Injekt.get(),
                                 Injekt.get(),
+                                // SY -->
                                 sourcePreferences.allowLocalSourceHiddenFolders()::get,
+                                // SY <--
                             ),
                         ),
                     ).apply {
+                        // KMK -->
                         if (isHentaiEnabled) {
                             EHENTAI_EXT_SOURCES.forEach { (id, lang) ->
                                 put(id, EHentai(id, false, context, lang))
@@ -100,10 +111,13 @@ class AndroidSourceManager(
                                 }
                             }
                         }
+                        // KMK <--
+                        // SY -->
                         put(MERGED_SOURCE_ID, MergedSource())
+                        // SY <--
                     }
                     extensions.forEach { extension ->
-                        extension.sources.mapNotNull { it.toInternalSource(/* KMK*/isHentaiEnabled/* KMK*/) }.forEach {
+                        extension.sources.mapNotNull { it.toInternalSource(/* KMK --> */isHentaiEnabled/* KMK <-- */) }.forEach {
                             mutableMap[it.id] = it
                             registerStubSource(StubSource.from(it))
                         }
@@ -125,15 +139,19 @@ class AndroidSourceManager(
     }
 
     private fun Source.toInternalSource(
+        // KMK -->
         isHentaiEnabled: Boolean,
+        // KMK <--
     ): Source? {
-        // EXH
+        // EXH -->
         val sourceQName = this::class.qualifiedName
         val delegate = if (sourceQName != null) {
+            // KMK -->
             DELEGATED_SOURCES.firstOrNull { delegated ->
                 sourceQName == delegated.originalSourceQualifiedClassName ||
                     (delegated.factory && sourceQName.startsWith(delegated.originalSourceQualifiedClassName))
             }
+            // KMK <--
         } else {
             null
         }
@@ -157,7 +175,9 @@ class AndroidSourceManager(
         }
 
         return if (
+            // KMK -->
             isHentaiEnabled &&
+            // KMK <--
             id in BlacklistedSources.BLACKLISTED_EXT_SOURCES
         ) {
             xLogD(
@@ -170,7 +190,7 @@ class AndroidSourceManager(
         } else {
             newSource
         }
-        // EXH
+        // EXH <--
     }
 
     override fun get(sourceKey: Long): Source? {
@@ -192,6 +212,7 @@ class AndroidSourceManager(
         return stubSourcesMap.values.filterNot { it.id in onlineSourceIds }
     }
 
+    // SY -->
     override fun getVisibleOnlineSources() = sourcesMapFlow.value.values
         .filterIsInstance<HttpSource>()
         .filter {
@@ -208,12 +229,15 @@ class AndroidSourceManager(
         .mapNotNull { enhancedHttpSource ->
             enhancedHttpSource.enhancedSource as? DelegatedHttpSource
         }
+    // SY <--
 
+    // KMK -->
     override suspend fun getMergedSources(mangaId: Long): List<Source> {
         val sources = getMergedReferencesById.await(mangaId)
         return sources.distinctBy { it.mangaSourceId }
             .map { getOrStub(it.mangaSourceId) }
     }
+    // KMK <--
 
     private fun registerStubSource(source: StubSource) {
         scope.launch {
@@ -237,6 +261,7 @@ class AndroidSourceManager(
         return StubSource(id = id, lang = "", name = "")
     }
 
+    // SY -->
     companion object {
         private const val fillInSourceId = Long.MAX_VALUE
 
@@ -321,4 +346,5 @@ class AndroidSourceManager(
             return removeResult
         }
     }
+    // SY <--
 }

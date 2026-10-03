@@ -56,7 +56,9 @@ class SyncManager(
         NONE(0),
         SYNCYOMI(1),
         GOOGLE_DRIVE(2),
+        // KMK -->
         WEB_DAV(3),
+        // KMK <--
         ;
 
         companion object {
@@ -91,9 +93,11 @@ class SyncManager(
             sourceSettings = syncOptions.sourceSettings,
             privateSettings = syncOptions.privateSettings,
 
+            // SY -->
             customInfo = syncOptions.customInfo,
             readEntries = syncOptions.readEntries,
             savedSearchesFeeds = syncOptions.savedSearchesFeeds,
+            // SY <--
         )
 
         logcat(LogPriority.DEBUG) { "Begin create backup" }
@@ -106,9 +110,13 @@ class SyncManager(
             backupSourcePreferences = backupCreator.backupSourcePreferences(backupOptions),
             backupExtensionStores = backupCreator.backupExtensionStores(backupOptions),
 
+            // SY -->
             backupSavedSearches = backupCreator.backupSavedSearches(backupOptions),
+            // SY <--
 
+            // KMK -->
             backupFeeds = backupCreator.backupFeeds(backupOptions),
+            // KMK <--
         )
         logcat(LogPriority.DEBUG) { "End create backup" }
 
@@ -133,9 +141,11 @@ class SyncManager(
                 GoogleDriveSyncService(context, json, syncPreferences)
             }
 
+            // KMK -->
             SyncService.WEB_DAV -> {
                 WebDavSyncService(context, json, syncPreferences, notifier)
             }
+            // KMK <--
 
             else -> {
                 logcat(LogPriority.ERROR) { "Invalid sync service type: $syncService" }
@@ -184,9 +194,13 @@ class SyncManager(
             backupSourcePreferences = remoteBackup.backupSourcePreferences,
             backupExtensionStores = remoteBackup.backupExtensionStores,
 
+            // SY -->
             backupSavedSearches = remoteBackup.backupSavedSearches,
+            // SY <--
 
+            // KMK -->
             backupFeeds = remoteBackup.backupFeeds,
+            // KMK <--
         )
 
         // It's local sync no need to restore data. (just update remote data)
@@ -250,8 +264,10 @@ class SyncManager(
             chaptersQueries.getChaptersByMangaId(
                 localManga.id,
                 0,
+                // KMK -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
+                // KMK <--
             ).executeAsList()
         }
         val localCategories = getCategories.await(localManga.id).map { it.order }

@@ -24,6 +24,7 @@ if (Config.includeTelemetry) {
 
 shortcutHelper.setFilePath("./shortcuts.xml")
 
+// NXS -->
 shortcutHelper.setFilePath("./shortcuts.xml")
 
 val keystoreProperties = Properties()
@@ -32,9 +33,11 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+// NXS <--
 android {
     namespace = "eu.kanade.tachiyomi"
 
+    // NXS -->
     signingConfigs {
         create("release") {
             if (keystorePropertiesFile.exists()) {
@@ -46,11 +49,16 @@ android {
         }
     }
 
+    // NXS <--
     defaultConfig {
+        // NXS -->
         applicationId = "com.nexus.app"
+        // NXS <--
 
+        // NXS -->
         versionCode = 8
         versionName = "1.5.1"
+        // NXS <--
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
         buildConfigField("String", "COMMIT_SHA", "\"${getGitSha()}\"")
@@ -213,8 +221,12 @@ kotlin {
 
 dependencies {
     implementation(projects.i18n)
+    // KMK -->
     implementation(projects.i18nKmk)
+    // KMK <--
+    // SY -->
     implementation(projects.i18nSy)
+    // SY <--
     implementation(projects.core.archive)
     implementation(projects.core.common)
     implementation(projects.coreMetadata)
@@ -243,7 +255,9 @@ dependencies {
     implementation(androidx.paging.compose)
 
     implementation(libs.bundles.sqlite)
+    // SY -->
     implementation(sylibs.sqlcipher)
+    // SY <--
 
     implementation(kotlinx.reflect)
     implementation(kotlinx.immutables)
@@ -317,10 +331,12 @@ dependencies {
     implementation(libs.bundles.markdown)
     implementation(libs.materialKolor)
 
+    // KMK -->
     implementation(libs.palette.ktx)
     implementation(libs.haze)
     implementation(compose.colorpicker)
     implementation(projects.flagkit)
+    // KMK <--
 
     // Logging
     implementation(libs.timber)
@@ -342,6 +358,7 @@ dependencies {
 
     testImplementation(kotlinx.coroutines.test)
 
+    // SY -->
     // Better logging (EH)
     implementation(sylibs.xlog)
 

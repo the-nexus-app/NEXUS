@@ -15,8 +15,10 @@ class WhatsNewScreen(
     private val versionName: String,
     private val changelogInfo: String,
     private val releaseLink: String,
+    // NXS -->
     private val downloadLink: String,
     private val isUpdateAvailable: Boolean = true,
+    // NXS <--
 ) : Screen() {
 
     @Composable
@@ -31,8 +33,11 @@ class WhatsNewScreen(
             currentVersion = currentVersion,
             versionName = versionName,
             changelogInfo = changelogInfoNoChecksum,
+            // NXS -->
             isUpdateAvailable = isUpdateAvailable,
+            // NXS <--
             onOpenInBrowser = { context.openInBrowser(releaseLink) },
+            // NXS -->
             onDownloadUpdate = {
                 AppUpdateDownloadJob.start(
                     context = context,
@@ -41,6 +46,7 @@ class WhatsNewScreen(
                 )
                 navigator.pop()
             },
+            // NXS <--
         )
     }
 }

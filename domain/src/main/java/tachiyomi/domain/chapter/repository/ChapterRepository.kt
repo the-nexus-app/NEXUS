@@ -23,6 +23,7 @@ interface ChapterRepository {
 
     suspend fun getBookmarkedChaptersByMangaId(mangaId: Long): List<Chapter>
 
+    // NXS -->
     /**
      * All bookmarked chapters (chapters.bookmark = 1) across the entire library, joined with
      * enough manga info to render a grouped, cross-library list. Merged-manga chapters are
@@ -31,12 +32,14 @@ interface ChapterRepository {
      */
     fun subscribeAllBookmarkedChapters(): Flow<List<BookmarkedChapterWithManga>>
 
+    // NXS <--
     suspend fun getChapterById(id: Long): Chapter?
 
     suspend fun getChapterByMangaIdAsFlow(mangaId: Long, applyFilter: Boolean = false): Flow<List<Chapter>>
 
     suspend fun getChapterByUrlAndMangaId(url: String, mangaId: Long): Chapter?
 
+    // SY -->
     suspend fun getChapterByUrl(url: String): List<Chapter>
 
     suspend fun getMergedChapterByMangaId(mangaId: Long, applyFilter: Boolean = false): List<Chapter>
@@ -49,4 +52,5 @@ interface ChapterRepository {
     suspend fun getScanlatorsByMergeId(mangaId: Long): List<String>
 
     fun getScanlatorsByMergeIdAsFlow(mangaId: Long): Flow<List<String>>
+    // SY <--
 }

@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.interactor
 
 import tachiyomi.domain.bookmark.model.Bookmark
@@ -10,3 +11,4 @@ class GetBookmark(
         return bookmarkRepository.getBookmark(chapterId, pageIndex)
     }
 }
+// NXS <--

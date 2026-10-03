@@ -37,7 +37,9 @@ class KitsuInterceptor(private val kitsu: Kitsu) : Interceptor {
         // Add the authorization header to the original request.
         val authRequest = originalRequest.newBuilder()
             .addHeader("Authorization", "Bearer ${oauth!!.accessToken}")
+            // NXS -->
             .header("User-Agent", "NEXUS v${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
+            // NXS <--
             .header("Accept", "application/vnd.api+json")
             .header("Content-Type", "application/vnd.api+json")
             .build()

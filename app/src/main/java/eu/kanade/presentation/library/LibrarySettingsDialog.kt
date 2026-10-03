@@ -71,9 +71,15 @@ fun LibrarySettingsDialog(
     onDismissRequest: () -> Unit,
     screenModel: LibrarySettingsScreenModel,
     category: Category?,
+    // SY -->
     hasCategories: Boolean,
+    // SY <--
+    // KMK -->
     categories: List<Category>,
+    // KMK <--
+    // NXS -->
     initialTabIndex: Int = 0,
+    // NXS <--
 ) {
     TabbedDialog(
         onDismissRequest = onDismissRequest,
@@ -81,9 +87,13 @@ fun LibrarySettingsDialog(
             stringResource(MR.strings.action_filter),
             stringResource(MR.strings.action_sort),
             stringResource(MR.strings.action_display),
+            // SY -->
             stringResource(SYMR.strings.group),
+            // SY <--
         ),
+        // NXS -->
         pagerState = rememberPagerState(initialTabIndex) { 4 },
+        // NXS <--
     ) { page ->
         Column(
             modifier = Modifier
@@ -93,7 +103,9 @@ fun LibrarySettingsDialog(
             when (page) {
                 0 -> FilterPage(
                     screenModel = screenModel,
+                    // KMK -->
                     categories = categories,
+                    // KMK <--
                 )
                 1 -> SortPage(
                     category = category,
@@ -102,10 +114,12 @@ fun LibrarySettingsDialog(
                 2 -> DisplayPage(
                     screenModel = screenModel,
                 )
+                // SY -->
                 3 -> GroupPage(
                     screenModel = screenModel,
                     hasCategories = hasCategories,
                 )
+                // SY <--
             }
         }
     }
@@ -164,17 +178,21 @@ private fun ColumnScope.FilterPage(
             onClick = { screenModel.toggleFilter(LibraryPreferences::filterIntervalCustom) },
         )
     }
+    // SY -->
     val filterLewd by screenModel.libraryPreferences.filterLewd().collectAsState()
     TriStateItem(
         label = stringResource(SYMR.strings.lewd),
         state = filterLewd,
         onClick = { screenModel.toggleFilter(LibraryPreferences::filterLewd) },
     )
+    // SY <--
 
+    // KMK -->
     CategoriesFilter(
         libraryPreferences = screenModel.libraryPreferences,
         categories = categories,
     )
+    // KMK <--
 
     val trackers by screenModel.trackersFlow.collectAsState()
     when (trackers.size) {
@@ -211,37 +229,47 @@ private fun ColumnScope.SortPage(
     screenModel: LibrarySettingsScreenModel,
 ) {
     val trackers by screenModel.trackersFlow.collectAsState()
+    // SY -->
     val globalSortMode by screenModel.libraryPreferences.sortingMode().collectAsState()
+    // NXS -->
     // NEXUS: a null category means the view has no backing category row - either the
     // merged "All Categories" search list or the category filter's "Ungrouped" tab -
     // and such views are always ordered by the global library sort.
     val useGlobalSort = screenModel.grouping != LibraryGroup.BY_DEFAULT || category == null
     val sortingMode = if (useGlobalSort) {
+        // NXS <--
         globalSortMode.type
     } else {
+        // NXS -->
         category.sort.type
     }
     val sortDescending = if (useGlobalSort) {
+        // NXS <--
         !globalSortMode.isAscending
+        // NXS -->
     } else {
         !category.sort.isAscending
+        // NXS <--
     }
     val hasSortTags by remember {
         screenModel.libraryPreferences.sortTagsForLibrary().changes()
             .map { it.isNotEmpty() }
     }.collectAsState(initial = screenModel.libraryPreferences.sortTagsForLibrary().get().isNotEmpty())
+    // SY <--
 
-    val options = remember(trackers.isEmpty(), hasSortTags) {
+    val options = remember(trackers.isEmpty()/* SY --> */, hasSortTags/* SY <-- */) {
         val trackerMeanPair = if (trackers.isNotEmpty()) {
             MR.strings.action_sort_tracker_score to LibrarySort.Type.TrackerMean
         } else {
             null
         }
+        // SY -->
         val tagSortPair = if (hasSortTags) {
             SYMR.strings.tag_sorting to LibrarySort.Type.TagList
         } else {
             null
         }
+        // SY <--
         listOfNotNull(
             MR.strings.action_sort_alpha to LibrarySort.Type.Alphabetical,
             MR.strings.action_sort_total to LibrarySort.Type.TotalChapters,
@@ -252,7 +280,9 @@ private fun ColumnScope.SortPage(
             MR.strings.action_sort_chapter_fetch_date to LibrarySort.Type.ChapterFetchDate,
             MR.strings.action_sort_date_added to LibrarySort.Type.DateAdded,
             trackerMeanPair,
+            // SY -->
             tagSortPair,
+            // SY <--
             MR.strings.action_sort_random to LibrarySort.Type.Random,
         )
     }
@@ -297,7 +327,9 @@ private val displayModes = listOf(
     MR.strings.action_display_comfortable_grid to LibraryDisplayMode.ComfortableGrid,
     MR.strings.action_display_list to LibraryDisplayMode.List,
     MR.strings.action_display_cover_only_grid to LibraryDisplayMode.CoverOnlyGrid,
+    // KMK -->
     KMR.strings.action_display_comfortable_grid_panorama to LibraryDisplayMode.ComfortableGridPanorama,
+    // KMK <--
 )
 
 @Suppress("UnusedReceiverParameter")
@@ -358,6 +390,7 @@ private fun ColumnScope.DisplayPage(
         label = stringResource(MR.strings.action_display_language_badge),
         pref = screenModel.libraryPreferences.languageBadge(),
     )
+    // KMK -->
     val showLang by screenModel.libraryPreferences.languageBadge().collectAsState()
     if (showLang) {
         CheckboxItem(
@@ -369,6 +402,7 @@ private fun ColumnScope.DisplayPage(
         label = stringResource(KMR.strings.action_display_source_badge),
         pref = screenModel.libraryPreferences.sourceBadge(),
     )
+    // KMK <--
     CheckboxItem(
         label = stringResource(MR.strings.action_display_show_continue_reading_button),
         pref = screenModel.libraryPreferences.showContinueReadingButton(),
@@ -379,16 +413,19 @@ private fun ColumnScope.DisplayPage(
         label = stringResource(MR.strings.action_display_show_tabs),
         pref = screenModel.libraryPreferences.categoryTabs(),
     )
+    // KMK -->
     CheckboxItem(
         label = stringResource(KMR.strings.action_show_hidden_categories),
         pref = screenModel.libraryPreferences.showHiddenCategories(),
     )
+    // KMK <--
     CheckboxItem(
         label = stringResource(MR.strings.action_display_show_number_of_items),
         pref = screenModel.libraryPreferences.categoryNumberOfItems(),
     )
 }
 
+// SY -->
 data class GroupMode(
     val int: Int,
     val nameRes: StringResource,
@@ -443,7 +480,9 @@ private fun ColumnScope.GroupPage(
         )
     }
 }
+// SY <--
 
+// KMK -->
 @Composable
 private fun CategoriesFilter(
     libraryPreferences: LibraryPreferences,
@@ -496,3 +535,4 @@ private fun CategoriesFilter(
         }
     }
 }
+// KMK <--

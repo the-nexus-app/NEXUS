@@ -41,6 +41,7 @@ object ChapterMapper {
         version = version,
         memo = memo,
     )
+    // NXS -->
 
     fun mapBookmarkedChapterWithManga(
         mangaId: Long,
@@ -77,4 +78,5 @@ object ChapterMapper {
             lastModified = coverLastModified,
         ),
     )
+    // NXS <--
 }

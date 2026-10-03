@@ -1,4 +1,6 @@
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--
 package eu.kanade.presentation.connection.components
 
 import androidx.compose.foundation.Image
@@ -42,4 +44,6 @@ fun ConnectionLogoIcon(
         )
     }
 }
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--

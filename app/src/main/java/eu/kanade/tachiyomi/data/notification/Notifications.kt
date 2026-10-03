@@ -42,7 +42,9 @@ object Notifications {
     private const val GROUP_DOWNLOADER = "group_downloader"
     const val CHANNEL_DOWNLOADER_PROGRESS = "downloader_progress_channel"
     const val ID_DOWNLOAD_CHAPTER_PROGRESS = -201
+    // KMK -->
     const val ID_DOWNLOAD_CHAPTER_PAUSED = -203
+    // KMK <--
     const val CHANNEL_DOWNLOADER_ERROR = "downloader_error_channel"
     const val ID_DOWNLOAD_CHAPTER_ERROR = -202
 
@@ -73,13 +75,17 @@ object Notifications {
     const val CHANNEL_INCOGNITO_MODE = "incognito_mode_channel"
     const val ID_INCOGNITO_MODE = -701
 
+    // NXS -->
     // AM (DISCORD)
+    // NXS <--
     /**
      * Notification channel used for Discord RPC
      */
     const val CHANNEL_DISCORD_RPC = "${RICH_PRESENCE_TAG}_channel"
     const val ID_DISCORD_RPC = -1701
+    // NXS -->
     // AM (DISCORD)
+    // NXS <--
 
     /**
      * Notification channel and ids used for app and extension updates.
@@ -90,8 +96,10 @@ object Notifications {
     const val ID_APP_UPDATE_PROMPT = 2
     const val ID_APP_UPDATE_ERROR = 3
 
+    // KMK -->
     const val ID_APP_INSTALL = 4
     const val ID_APP_INSTALLED = 5
+    // KMK <--
 
     const val CHANNEL_EXTENSIONS_UPDATE = "ext_apk_update_channel"
     const val ID_UPDATES_TO_EXTS = -401
@@ -193,16 +201,22 @@ object Notifications {
                     setGroup(GROUP_APK_UPDATES)
                     setName(context.stringResource(MR.strings.channel_ext_updates))
                 },
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
                 buildNotificationChannel(CHANNEL_DISCORD_RPC, IMPORTANCE_LOW) {
                     setName(context.getString(R.string.pref_discord_rpc))
                 },
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
+                // SY -->
                 buildNotificationChannel(CHANNEL_LIBRARY_EHENTAI, IMPORTANCE_LOW) {
                     setName("EHentai")
                     setGroup(GROUP_LIBRARY)
                     setShowBadge(false)
                 },
+                // SY <--
             ),
         )
     }

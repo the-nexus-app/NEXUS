@@ -38,11 +38,13 @@ import tachiyomi.presentation.core.components.material.padding
 private val readerBarsSlideAnimationSpec = tween<IntOffset>(200)
 private val readerBarsFadeAnimationSpec = tween<Float>(150)
 
+// SY -->
 enum class NavBarType {
     VerticalRight,
     VerticalLeft,
     Bottom,
 }
+// SY <--
 
 @Composable
 fun ReaderAppBars(
@@ -54,8 +56,10 @@ fun ReaderAppBars(
     onClickTopAppBar: () -> Unit,
     bookmarked: Boolean,
     onToggleBookmarked: () -> Unit,
+    // NXS -->
     pageBookmarked: Boolean,
     onTogglePageBookmarked: () -> Unit,
+    // NXS <--
     onOpenInWebView: (() -> Unit)?,
     onOpenInBrowser: (() -> Unit)?,
     onShare: (() -> Unit)?,
@@ -76,6 +80,7 @@ fun ReaderAppBars(
     cropEnabled: Boolean,
     onClickCropBorder: () -> Unit,
     onClickSettings: () -> Unit,
+    // SY -->
     isExhToolsVisible: Boolean,
     onSetExhUtilsVisibility: (Boolean) -> Unit,
     isAutoScroll: Boolean,
@@ -97,6 +102,7 @@ fun ReaderAppBars(
     onClickChapterList: () -> Unit,
     onClickPageLayout: () -> Unit,
     onClickShiftPage: () -> Unit,
+    // SY <--
 ) {
     val isRtl = viewer is R2LPagerViewer
     val backgroundColor = MaterialTheme.colorScheme
@@ -111,7 +117,9 @@ fun ReaderAppBars(
             exit = slideOutVertically(targetOffsetY = { -it }, animationSpec = readerBarsSlideAnimationSpec) +
                 fadeOut(animationSpec = readerBarsFadeAnimationSpec),
         ) {
+            // SY -->
             Column {
+                // SY <--
                 ReaderTopBar(
                     modifier = Modifier
                         .background(backgroundColor)
@@ -121,12 +129,17 @@ fun ReaderAppBars(
                     navigateUp = navigateUp,
                     bookmarked = bookmarked,
                     onToggleBookmarked = onToggleBookmarked,
+                    // NXS -->
                     pageBookmarked = pageBookmarked,
                     onTogglePageBookmarked = onTogglePageBookmarked,
+                    // NXS <--
+                    // SY -->
                     onOpenInWebView = null, // onOpenInWebView,
                     onOpenInBrowser = null, // onOpenInBrowser,
                     onShare = null, // onShare,
+                    // SY <--
                 )
+                // SY -->
                 ExhUtils(
                     isVisible = isExhToolsVisible,
                     onSetExhUtilsVisibility = onSetExhUtilsVisibility,
@@ -143,8 +156,10 @@ fun ReaderAppBars(
                     onClickBoostPageHelp = onClickBoostPageHelp,
                 )
             }
+            // SY <--
         }
 
+        // KMK -->
         when (navBarType) {
             NavBarType.VerticalLeft -> {
                 AnimatedVisibility(
@@ -172,8 +187,10 @@ fun ReaderAppBars(
                         currentPage = currentPage,
                         totalPages = totalPages,
                         onPageIndexChange = onPageIndexChange,
+                        // SY -->
                         isVerticalSlider = true,
                         currentPageText = currentPageText,
+                        // SY <--
                     )
                 }
             }
@@ -204,11 +221,14 @@ fun ReaderAppBars(
                         currentPage = currentPage,
                         totalPages = totalPages,
                         onPageIndexChange = onPageIndexChange,
+                        // SY -->
                         isVerticalSlider = true,
                         currentPageText = currentPageText,
+                        // SY <--
                     )
                 }
             }
+            // KMK <--
             else -> Spacer(modifier = Modifier.weight(1f))
         }
 
@@ -220,7 +240,9 @@ fun ReaderAppBars(
                 fadeOut(animationSpec = readerBarsFadeAnimationSpec),
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.padding.small)) {
+                // SY -->
                 if (navBarType == NavBarType.Bottom) {
+                    // SY <--
                     ChapterNavigator(
                         isRtl = isRtl,
                         onNextChapter = onNextChapter,
@@ -230,8 +252,10 @@ fun ReaderAppBars(
                         currentPage = currentPage,
                         totalPages = totalPages,
                         onPageIndexChange = onPageIndexChange,
+                        // SY -->
                         isVerticalSlider = false,
                         currentPageText = currentPageText,
+                        // SY <--
                     )
                 }
                 ReaderBottomBar(
@@ -247,6 +271,7 @@ fun ReaderAppBars(
                     cropEnabled = cropEnabled,
                     onClickCropBorder = onClickCropBorder,
                     onClickSettings = onClickSettings,
+                    // SY -->
                     enabledButtons = enabledButtons,
                     currentReadingMode = currentReadingMode,
                     dualPageSplitEnabled = dualPageSplitEnabled,
@@ -257,6 +282,7 @@ fun ReaderAppBars(
                     onClickShare = onShare,
                     onClickPageLayout = onClickPageLayout,
                     onClickShiftPage = onClickShiftPage,
+                    // SY <--
                 )
             }
         }

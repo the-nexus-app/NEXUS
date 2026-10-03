@@ -44,8 +44,10 @@ fun ExtensionStoresScreen(
     onOpenWebsite: (ExtensionStore) -> Unit,
     onOpenDiscord: (ExtensionStore) -> Unit,
     onClickDelete: (ExtensionStore) -> Unit,
+    // KMK -->
     onClickEnable: (ExtensionStore) -> Unit,
     onClickDisable: (ExtensionStore) -> Unit,
+    // KMK <--
     onClickRefresh: () -> Unit,
     navigateUp: () -> Unit,
 ) {
@@ -78,6 +80,7 @@ fun ExtensionStoresScreen(
             EmptyScreen(
                 MR.strings.extensionStoresScreen_emptyLabel,
                 modifier = Modifier.padding(paddingValues),
+                // KMK -->
                 help = {
                     TextButton(
                         onClick = { context.openInBrowser(REPO_HELP) },
@@ -88,6 +91,7 @@ fun ExtensionStoresScreen(
                         Text(text = stringResource(MR.strings.label_help))
                     }
                 },
+                // KMK <--
             )
             return@Scaffold
         }
@@ -101,19 +105,24 @@ fun ExtensionStoresScreen(
             onOpenWebsite = onOpenWebsite,
             onOpenDiscord = onOpenDiscord,
             onClickDelete = onClickDelete,
+            // KMK -->
             onClickEnable = onClickEnable,
             onClickDisable = onClickDisable,
             disabledRepos = state.disabledRepos,
+            // KMK <--
         )
     }
 }
 
+// KMK -->
 @PreviewLightDark
 @Composable
 private fun ExtensionStoresScreenPreview() {
     val state = ExtensionStoreScreenState.Success(
         stores = persistentListOf(
+            // NXS -->
             ExtensionStore("https://nexus", "NEXUS", "", KOMIKKU_SIGNATURE, ExtensionStore.Contact("", ""), false, null),
+            // NXS <--
             ExtensionStore("https://repo", "Repo", "", REPO_SIGNATURE, ExtensionStore.Contact("", ""), false, null),
             ExtensionStore("https://other", "Other", "", "key2", ExtensionStore.Contact("", ""), true, null),
         ),
@@ -158,3 +167,4 @@ private fun ExtensionStoresScreenEmptyPreview() {
         }
     }
 }
+// KMK <--

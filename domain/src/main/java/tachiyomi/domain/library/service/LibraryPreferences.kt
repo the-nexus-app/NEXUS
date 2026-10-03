@@ -31,6 +31,7 @@ class LibraryPreferences(
 
     fun randomSortSeed() = preferenceStore.getInt("library_random_sort_seed", 0)
 
+    // NXS -->
     /**
      * Scope used when matching a Library search query against categories.
      * Defaults to searching (and merging) all visible categories.
@@ -40,6 +41,7 @@ class LibraryPreferences(
         LibrarySearchScope.ALL_CATEGORIES,
     )
 
+    // NXS <--
     fun portraitColumns() = preferenceStore.getInt("pref_library_columns_portrait_key", 0)
 
     fun landscapeColumns() = preferenceStore.getInt("pref_library_columns_landscape_key", 0)
@@ -47,10 +49,12 @@ class LibraryPreferences(
     fun lastUpdatedTimestamp() = preferenceStore.getLong(Preference.appStateKey("library_update_last_timestamp"), 0L)
     fun autoUpdateInterval() = preferenceStore.getInt("pref_library_update_interval_key", 0)
 
+    // KMK -->
     fun showUpdatingProgressBanner() = preferenceStore.getBoolean(
         Preference.appStateKey("pref_show_updating_progress_banner_key"),
         true,
     )
+    // KMK <--
 
     fun coverRatios() = preferenceStore.getStringSet(
         Preference.appStateKey("pref_library_cover_ratios_key"),
@@ -61,6 +65,7 @@ class LibraryPreferences(
         Preference.appStateKey("pref_library_cover_colors_key"),
         emptySet(),
     )
+    // KMK <--
 
     fun autoUpdateDeviceRestrictions() = preferenceStore.getStringSet(
         "library_update_restriction",
@@ -80,8 +85,10 @@ class LibraryPreferences(
 
     fun autoUpdateMetadata() = preferenceStore.getBoolean("auto_update_metadata", false)
 
+    // KMK -->
     fun fetchMetadataOnAdd() = preferenceStore.getBoolean("fetch_metadata_on_add", false)
     fun fetchChaptersOnAdd() = preferenceStore.getBoolean("fetch_chapters_on_add", false)
+    // KMK <--
 
     fun showContinueReadingButton() = preferenceStore.getBoolean(
         "display_continue_reading_button",
@@ -119,11 +126,14 @@ class LibraryPreferences(
         TriState.DISABLED,
     )
 
+    // SY -->
     fun filterLewd() = preferenceStore.getEnum(
         "pref_filter_library_lewd_v2",
         TriState.DISABLED,
     )
+    // SY <--
 
+    // KMK -->
     fun filterCategories() = preferenceStore.getBoolean(
         "pref_filter_library_categories",
         false,
@@ -132,6 +142,7 @@ class LibraryPreferences(
     fun filterCategoriesInclude() = preferenceStore.getStringSet(FILTER_LIBRARY_CATEGORIES_INCLUDE_PREF_KEY, emptySet())
 
     fun filterCategoriesExclude() = preferenceStore.getStringSet(FILTER_LIBRARY_CATEGORIES_EXCLUDE_PREF_KEY, emptySet())
+    // KMK <--
 
     fun filterTracking(id: Int) = preferenceStore.getEnum(
         "pref_filter_library_tracked_${id}_v2",
@@ -150,9 +161,11 @@ class LibraryPreferences(
 
     fun languageBadge() = preferenceStore.getBoolean("display_language_badge", true)
 
+    // KMK -->
     fun sourceBadge() = preferenceStore.getBoolean("display_source_badge", true)
 
     fun useLangIcon() = preferenceStore.getBoolean("display_language_text", true)
+    // KMK <--
 
     fun newShowUpdatesCount() = preferenceStore.getBoolean("library_show_updates_count", true)
     fun newUpdatesCount() = preferenceStore.getInt(Preference.appStateKey("library_unseen_updates_count"), 0)
@@ -171,7 +184,9 @@ class LibraryPreferences(
 
     fun categorizedDisplaySettings() = preferenceStore.getBoolean("categorized_display", false)
 
+    // KMK -->
     fun showHiddenCategories() = preferenceStore.getBoolean("hide_hidden_categories", false)
+    // KMK <--
 
     fun updateCategories() = preferenceStore.getStringSet(LIBRARY_UPDATE_CATEGORIES_PREF_KEY, emptySet())
 
@@ -227,7 +242,9 @@ class LibraryPreferences(
 
     fun hideMissingChapters() = preferenceStore.getBoolean("pref_hide_missing_chapter_indicators", false)
 
+    // KMK -->
     fun showEmptyCategoriesSearch() = preferenceStore.getBoolean("show_empty_categories_search", false)
+    // KMK <--
     // endregion
 
     // region Swipe Actions
@@ -255,12 +272,14 @@ class LibraryPreferences(
         Disabled,
     }
 
+    // SY -->
     fun sortTagsForLibrary() = preferenceStore.getStringSet("sort_tags_for_library", mutableSetOf())
 
     fun groupLibraryUpdateType() = preferenceStore.getEnum("group_library_update_type", GroupLibraryMode.GLOBAL)
 
     fun groupLibraryBy() = preferenceStore.getInt("group_library_by", LibraryGroup.BY_DEFAULT)
 
+    // SY <--
     companion object {
         const val DEVICE_ONLY_ON_WIFI = "wifi"
         const val DEVICE_NETWORK_NOT_METERED = "network_not_metered"
@@ -278,15 +297,19 @@ class LibraryPreferences(
         private const val LIBRARY_UPDATE_CATEGORIES_PREF_KEY = "library_update_categories"
         private const val LIBRARY_UPDATE_CATEGORIES_EXCLUDE_PREF_KEY = "library_update_categories_exclude"
 
+        // KMK -->
         private const val FILTER_LIBRARY_CATEGORIES_INCLUDE_PREF_KEY = "pref_filter_library_categories_include"
         private const val FILTER_LIBRARY_CATEGORIES_EXCLUDE_PREF_KEY = "pref_filter_library_categories_exclude"
+        // KMK <--
 
         val categoryPreferenceKeys = setOf(
             DEFAULT_CATEGORY_PREF_KEY,
             LIBRARY_UPDATE_CATEGORIES_PREF_KEY,
             LIBRARY_UPDATE_CATEGORIES_EXCLUDE_PREF_KEY,
+            // KMK -->
             FILTER_LIBRARY_CATEGORIES_INCLUDE_PREF_KEY,
             FILTER_LIBRARY_CATEGORIES_EXCLUDE_PREF_KEY,
+            // KMK <--
         )
     }
 }

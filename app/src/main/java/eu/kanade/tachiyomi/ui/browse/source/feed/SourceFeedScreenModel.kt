@@ -80,11 +80,13 @@ open class SourceFeedScreenModel(
     private val insertFeedSavedSearch: InsertFeedSavedSearch = Injekt.get(),
     private val deleteFeedSavedSearchById: DeleteFeedSavedSearchById = Injekt.get(),
     private val getExhSavedSearch: GetExhSavedSearch = Injekt.get(),
+    // KMK -->
     private val reorderFeed: ReorderFeed = Injekt.get(),
     getIncognitoState: GetIncognitoState = Injekt.get(),
     private val toggleIncognito: ToggleIncognito = Injekt.get(),
     private val extensionManager: ExtensionManager = Injekt.get(),
     sourcePreferences: SourcePreferences = Injekt.get(),
+    // KMK <--
 ) : StateScreenModel<SourceFeedState>(SourceFeedState()) {
 
     var source = sourceManager.getOrStub(sourceId)
@@ -95,11 +97,14 @@ open class SourceFeedScreenModel(
 
     val startExpanded by uiPreferences.expandFilters().asState(screenModelScope)
 
+    // KMK -->
     var incognitoMode = mutableStateOf(getIncognitoState.await(source.id))
+    // KMK <--
 
     init {
         setFilters(source.getFilterList())
 
+        // KMK -->
         reloadSavedSearches()
 
         getIncognitoState.subscribe(sourceId)
@@ -108,6 +113,7 @@ open class SourceFeedScreenModel(
                 incognitoMode.value = it
             }
             .launchIn(screenModelScope)
+        // KMK <--
 
         getFeedSavedSearchBySourceId.subscribe(source.id)
             .onEach {
@@ -122,6 +128,7 @@ open class SourceFeedScreenModel(
             .launchIn(screenModelScope)
     }
 
+    // KMK-->
     fun toggleIncognitoMode() {
         val packageName = when {
             source is StubSource -> null
@@ -138,6 +145,7 @@ open class SourceFeedScreenModel(
         setFilters(source.getFilterList())
         reloadSavedSearches()
     }
+    // KMK <--
 
     fun setFilters(filters: FilterList) {
         mutableState.update { it.copy(filters = filters) }
@@ -167,11 +175,13 @@ open class SourceFeedScreenModel(
         }
     }
 
+    // KMK -->
     fun changeOrder(feed: FeedSavedSearch, newIndex: Int) {
         screenModelScope.launch {
             reorderFeed.changeOrder(feed, newIndex, false)
         }
     }
+    // KMK <--
 
     private suspend fun getSourcesToGetFeed(feedSavedSearch: List<FeedSavedSearch>): ImmutableList<SourceFeedUI> {
         val savedSearches = getSavedSearchBySourceIdFeed.await(source.id)
@@ -191,7 +201,9 @@ open class SourceFeedScreenModel(
             .toImmutableList()
     }
 
+    // KMK -->
     private val hideInLibraryFeedItems = sourcePreferences.hideInLibraryFeedItems().get()
+    // KMK <--
 
     /**
      * Initiates get manga per feed.
@@ -220,7 +232,9 @@ open class SourceFeedScreenModel(
                         page.map { it.toDomainManga(source.id) }
                             .distinctBy { it.url }
                             .let { networkToLocalManga(it) }
+                            // KMK -->
                             .filter { !hideInLibraryFeedItems || !it.favorite }
+                        // KMK <--
                     }
 
                     mutableState.update { state ->
@@ -260,12 +274,14 @@ open class SourceFeedScreenModel(
         }
     }
 
+    // KMK -->
     private fun reloadSavedSearches() {
         screenModelScope.launchIO {
             val searches = loadSearches()
             mutableState.update { it.copy(savedSearches = searches) }
         }
     }
+    // KMK <--
 
     private suspend fun loadSearches() =
         getExhSavedSearch.await(source.id, source::getFilterList)
@@ -292,12 +308,16 @@ open class SourceFeedScreenModel(
 
     /** Open a saved search */
     fun onSavedSearch(
+        // KMK -->
         loadedSearch: EXHSavedSearch,
+        // KMK <--
         onBrowseClick: (query: String?, searchId: Long) -> Unit,
         onToast: (StringResource) -> Unit,
     ) {
         screenModelScope.launchIO {
+            // KMK -->
             val search = getExhSavedSearch.awaitOne(loadedSearch.id, source::getFilterList) ?: loadedSearch
+            // KMK <--
 
             if (search.filterList == null && state.value.filters.isNotEmpty()) {
                 withUIContext {
@@ -353,6 +373,7 @@ open class SourceFeedScreenModel(
         mutableState.update { it.copy(dialog = Dialog.DeleteFeed(feed)) }
     }
 
+    // KMK -->
     fun openActionsDialog(
         feed: SourceFeedUI.SourceSavedSearch,
     ) {
@@ -374,6 +395,7 @@ open class SourceFeedScreenModel(
             }
         }
     }
+    // KMK <--
 
     private fun openAddFeed(feedId: Long, name: String) {
         mutableState.update { it.copy(dialog = Dialog.AddFeed(feedId, name)) }
@@ -388,9 +410,11 @@ open class SourceFeedScreenModel(
         data class DeleteFeed(val feed: FeedSavedSearch) : Dialog()
         data class AddFeed(val feedId: Long, val name: String) : Dialog()
 
+        // KMK -->
         data class FeedActions(
             val feedItem: SourceFeedUI.SourceSavedSearch,
         ) : Dialog()
+        // KMK <--
     }
 
     override fun onDispose() {

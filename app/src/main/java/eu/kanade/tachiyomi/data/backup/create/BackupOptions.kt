@@ -17,8 +17,10 @@ data class BackupOptions(
     val extensionStores: Boolean = true,
     val sourceSettings: Boolean = true,
     val privateSettings: Boolean = false,
+    // SY -->
     val customInfo: Boolean = true,
     val savedSearchesFeeds: Boolean = true,
+    // SY <--
 ) {
 
     fun asBooleanArray() = booleanArrayOf(
@@ -32,8 +34,10 @@ data class BackupOptions(
         extensionStores,
         sourceSettings,
         privateSettings,
+        // SY -->
         customInfo,
         savedSearchesFeeds,
+        // SY <--
     )
 
     fun canCreate() =
@@ -75,6 +79,7 @@ data class BackupOptions(
                 setter = { options, enabled -> options.copy(readEntries = enabled) },
                 enabled = { it.libraryEntries },
             ),
+            // SY -->
             Entry(
                 label = SYMR.strings.custom_entry_info,
                 getter = BackupOptions::customInfo,
@@ -82,10 +87,13 @@ data class BackupOptions(
                 enabled = { it.libraryEntries },
             ),
             Entry(
+                // KMK-->
                 label = KMR.strings.saved_searches_feeds,
+                // KMK <--
                 getter = BackupOptions::savedSearchesFeeds,
                 setter = { options, enabled -> options.copy(savedSearchesFeeds = enabled) },
             ),
+            // SY <--
         )
 
         val settingsOptions = persistentListOf(
@@ -123,8 +131,10 @@ data class BackupOptions(
             extensionStores = array[7],
             sourceSettings = array[8],
             privateSettings = array[9],
+            // SY -->
             customInfo = array[10],
             savedSearchesFeeds = array[11],
+            // SY <--
         )
     }
 

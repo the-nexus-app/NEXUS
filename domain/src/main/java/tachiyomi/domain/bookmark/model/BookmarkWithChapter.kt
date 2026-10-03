@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.model
 
 /**
@@ -15,3 +16,4 @@ data class BookmarkWithChapter(
     val chapterNumber: Double,
     val note: String? = null,
 )
+// NXS <--
