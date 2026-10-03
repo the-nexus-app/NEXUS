@@ -76,14 +76,18 @@ class ExtensionStoreRepositoryImpl(
     }
 
     override suspend fun fetchExtensions(
+        // KMK -->
         disabledRepos: Set<String>,
+        // KMK <--
     ): List<Extension.Available> {
         return try {
             supervisorScope {
                 handler.awaitList {
                     extension_storeQueries.getAll(::extensionStoreMapper)
                 }
+                    // KMK -->
                     .filterNot { it.indexUrl in disabledRepos }
+                    // KMK <--
                     .map { store ->
                         async {
                             service.getExtensions(store).onFailure {

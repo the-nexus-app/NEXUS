@@ -22,7 +22,9 @@ class FeedRestorer(
             }
 
             backupFeeds.map {
+                // KMK -->
                 EXHMigrations.migrateBackupFeed(it)
+                // KMK <--
             }.filter { backupFeed ->
                 // Filter out source's global Popular/Latest feed already existed
                 (

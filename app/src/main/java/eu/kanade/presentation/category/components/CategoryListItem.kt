@@ -32,7 +32,9 @@ fun ReorderableCollectionItemScope.CategoryListItem(
     category: Category,
     onRename: () -> Unit,
     onDelete: () -> Unit,
+    // KMK -->
     onHide: () -> Unit,
+    // KMK <--
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(modifier = modifier) {
@@ -56,8 +58,10 @@ fun ReorderableCollectionItemScope.CategoryListItem(
             )
             Text(
                 text = category.name,
+                // KMK -->
                 color = LocalContentColor.current.let { if (category.hidden) it.copy(alpha = 0.6f) else it },
                 textDecoration = TextDecoration.LineThrough.takeIf { category.hidden },
+                // KMK <--
                 modifier = Modifier.weight(1f),
             )
             IconButton(onClick = onRename) {
@@ -66,6 +70,7 @@ fun ReorderableCollectionItemScope.CategoryListItem(
                     contentDescription = stringResource(MR.strings.action_rename_category),
                 )
             }
+            // KMK -->
             IconButton(
                 onClick = onHide,
                 content = {
@@ -79,6 +84,7 @@ fun ReorderableCollectionItemScope.CategoryListItem(
                     )
                 },
             )
+            // KMK <--
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,

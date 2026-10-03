@@ -25,12 +25,14 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
         val screenModel = rememberScreenModel { MigrateSearchScreenModel(mangaId = mangaId) }
         val state by screenModel.state.collectAsState()
 
+        // KMK -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
+        // KMK <--
 
         MigrateSearchScreen(
             state = state,
@@ -43,9 +45,11 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
             onToggleResults = screenModel::toggleFilterResults,
             onClickSource = { navigator.push(MigrateSourceSearchScreen(state.from!!, it.id, state.searchQuery)) },
             onClickItem = {
+                // KMK -->
                 if (bulkFavoriteState.selectionMode) {
                     bulkFavoriteScreenModel.toggleSelection(it)
                 } else {
+                    // KMK <--
                     val migrateListScreen = navigator.items
                         .filterIsInstance<MigrationListScreen>()
                         .lastOrNull()
@@ -59,8 +63,10 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
                 }
             },
             onLongClickItem = { navigator.push(MangaScreen(it.id, true)) },
+            // KMK -->
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             hasPinnedSources = screenModel.hasPinnedSources(),
+            // KMK <--
         )
 
         when (val dialog = state.dialog) {
@@ -85,10 +91,12 @@ class MigrateSearchScreen(private val mangaId: Long) : Screen() {
             else -> {}
         }
 
+        // KMK -->
         // Bulk-favorite actions only
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
+        // KMK <--
     }
 }

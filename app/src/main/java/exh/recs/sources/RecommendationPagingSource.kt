@@ -30,7 +30,9 @@ import uy.kohesive.injekt.injectLazy
  */
 abstract class RecommendationPagingSource(
     protected val manga: Manga,
+    // KMK -->
     source: RecommendationSource = RecommendationSource(),
+    // KMK <--
 ) : BaseSourcePagingSource(source) {
     // Display name
     abstract val name: String
@@ -49,7 +51,9 @@ abstract class RecommendationPagingSource(
     companion object {
         internal fun createSources(
             manga: Manga,
+            // KMK -->
             recommendationSource: RecommendationSource,
+            // KMK <--
         ): List<RecommendationPagingSource> {
             return buildList {
                 add(AniListPagingSource(manga))
@@ -59,24 +63,32 @@ abstract class RecommendationPagingSource(
 
                 // Only include MangaDex if the delegate sources are enabled and the source is MD-based
                 if (
+                    // KMK -->
                     recommendationSource.isMangaDexSource()
+                    // KMK <--
                 ) {
                     add(
                         MangaDexSimilarPagingSource(
                             manga,
+                            // KMK -->
                             recommendationSource,
+                            // KMK <--
                         ),
                     )
                 }
 
                 // Only include Comick if the source manga is from there
                 if (
+                    // KMK -->
                     recommendationSource.isComickSource()
+                    // KMK <--
                 ) {
                     add(
                         ComickPagingSource(
                             manga,
+                            // KMK -->
                             recommendationSource,
+                            // KMK <--
                         ),
                     )
                 }
@@ -135,6 +147,7 @@ abstract class TrackerRecommendationPagingSource(
     }
 }
 
+// KMK -->
 class RecommendationSource(
     override val id: Long = RECOMMENDS_SOURCE,
     sourceManager: SourceManager = Injekt.get(),
@@ -178,3 +191,4 @@ class RecommendationSource(
 }
 
 const val RECOMMENDS_SOURCE = -1L
+// KMK <--

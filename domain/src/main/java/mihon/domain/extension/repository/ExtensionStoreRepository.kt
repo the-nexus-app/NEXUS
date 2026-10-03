@@ -12,7 +12,9 @@ interface ExtensionStoreRepository {
     suspend fun refreshAll()
 
     suspend fun fetchExtensions(
+        // KMK -->
         disabledRepos: Set<String>,
+        // KMK <--
     ): List<Extension.Available>
 
     suspend fun getAll(): List<ExtensionStore>

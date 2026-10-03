@@ -133,6 +133,7 @@ class SourcePreferencesFragment : PreferenceFragmentCompat() {
 
     private fun populateScreen(): PreferenceScreen {
         val sourceId = requireArguments().getLong(SOURCE_ID)
+        // SY -->
         val source = Injekt.get<SourceManager>()
             .getOrStub(sourceId)
             .let { source ->
@@ -146,6 +147,7 @@ class SourcePreferencesFragment : PreferenceFragmentCompat() {
                     source
                 }
             }
+        // SY <--
         val sourceScreen = preferenceManager.createPreferenceScreen(requireContext())
 
         if (source is ConfigurableSource) {

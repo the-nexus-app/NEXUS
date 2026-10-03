@@ -134,7 +134,9 @@ class InterceptActivity : BaseActivity() {
                             } else {
                                 Intent(this, MainActivity::class.java)
                                     .setAction(Constants.SHORTCUT_MANGA)
+                                    // KMK -->
                                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    // KMK <--
                                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                     .putExtra(Constants.MANGA_EXTRA, it.mangaId)
                             },
@@ -203,7 +205,9 @@ class InterceptActivity : BaseActivity() {
         val result = galleryAdder.addGallery(
             this@InterceptActivity,
             gallery,
+            // KMK -->
             fav = true,
+            // KMK <--
             forceSource = source,
         )
 

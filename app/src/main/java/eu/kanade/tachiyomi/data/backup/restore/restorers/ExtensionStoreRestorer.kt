@@ -12,12 +12,14 @@ class ExtensionStoreRestorer(
     suspend operator fun invoke(
         backupStore: BackupExtensionStore,
     ) {
+        // KMK -->
         val indexUrl = if (backupStore.isLegacy == null) {
             backupStore.indexUrl.removeSuffix("/index.min.json").removeSuffix("/index.json")
                 .removeSuffix("/repo.json") + "/repo.json"
         } else {
             backupStore.indexUrl
         }
+        // KMK <--
         database.extension_storeQueries.upsert(
             indexUrl = indexUrl,
             name = backupStore.name,

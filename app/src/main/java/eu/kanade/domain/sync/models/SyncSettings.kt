@@ -11,7 +11,9 @@ data class SyncSettings(
     val sourceSettings: Boolean = true,
     val privateSettings: Boolean = false,
 
+    // SY -->
     val customInfo: Boolean = true,
     val readEntries: Boolean = true,
     val savedSearchesFeeds: Boolean = true,
+    // SY <--
 )

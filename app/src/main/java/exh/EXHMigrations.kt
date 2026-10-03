@@ -47,6 +47,7 @@ object EXHMigrations {
             )
         }
 
+        // KMK -->
         // Allow importing of EHentai extension backups
         if (newManga.source == EH_OLD_ID) {
             newManga = newManga.copy(
@@ -58,10 +59,12 @@ object EXHMigrations {
                 source = EXH_SOURCE_ID,
             )
         }
+        // KMK <--
 
         return newManga
     }
 
+    // KMK -->
     /**
      * Migrate old source ID of delegated sources in old backup
      */
@@ -161,6 +164,7 @@ object EXHMigrations {
         }
         return newSourceIds
     }
+    // KMK -->
 
     private fun getUrlWithoutDomain(orig: String): String {
         return try {

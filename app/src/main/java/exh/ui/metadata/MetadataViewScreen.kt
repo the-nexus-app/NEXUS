@@ -39,7 +39,9 @@ import tachiyomi.presentation.core.util.plus
 class MetadataViewScreen(
     private val mangaId: Long,
     private val sourceId: Long,
+    // KMK -->
     @ColorInt private val seedColor: Int?,
+    // KMK <--
 ) : Screen() {
     @Composable
     override fun Content() {
@@ -109,9 +111,11 @@ class MetadataViewScreen(
             }
         }
 
+        // KMK -->
         TachiyomiTheme(
             seedColor = seedColor?.let { Color(seedColor) }.takeIf { screenModel.themeCoverBased },
         ) {
+            // KMK <--
             content()
         }
     }

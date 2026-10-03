@@ -84,7 +84,9 @@ data class ComicInfo(
     val publishingStatus: PublishingStatusTachiyomi?,
     val categories: CategoriesTachiyomi?,
     val source: SourceMihon?,
+    // SY -->
     val padding: PaddingTachiyomiSY?,
+    // SY <--
 ) {
     @XmlElement(false)
     @XmlSerialName("xmlns:xsd", "", "")
@@ -163,9 +165,11 @@ data class ComicInfo(
     @XmlSerialName("SourceMihon", "http://www.w3.org/2001/XMLSchema", "mh")
     data class SourceMihon(@XmlValue(true) val value: String = "")
 
+    // SY -->
     @Serializable
     @XmlSerialName("PaddingTachiyomiSY", "http://www.w3.org/2001/XMLSchema", "tysy")
     data class PaddingTachiyomiSY(@XmlValue(true) val value: String = "")
+    // SY <--
 }
 
 enum class ComicInfoPublishingStatus(

@@ -28,6 +28,7 @@ class GetManga(
         return mangaRepository.getMangaByUrlAndSourceIdAsFlow(url, sourceId)
     }
 
+    // SY -->
     suspend fun await(url: String, sourceId: Long): Manga? {
         return mangaRepository.getMangaByUrlAndSourceId(url, sourceId)
     }
@@ -35,4 +36,5 @@ class GetManga(
     override suspend fun awaitId(url: String, sourceId: Long): Long? {
         return await(url, sourceId)?.id
     }
+    // SY <--
 }

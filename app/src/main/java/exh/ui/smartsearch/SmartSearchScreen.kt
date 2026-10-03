@@ -51,9 +51,11 @@ class SmartSearchScreen(
                     navigator.replace(
                         MangaScreen(
                             results.manga.id,
+                            // KMK -->
                             // Finding the entry to be merged to, so we don't want to expand description
                             // so that user can see the `Merge to another` button
                             false,
+                            // KMK <--
                             smartSearchConfig,
                         ),
                     )

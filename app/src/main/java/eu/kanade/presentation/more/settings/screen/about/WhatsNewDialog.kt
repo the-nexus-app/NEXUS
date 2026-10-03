@@ -24,12 +24,14 @@ fun WhatsNewDialog(
                 Text(text = stringResource(MR.strings.action_ok))
             }
         },
+        // KMK -->
         dismissButton = {
             TextButton(onClick = onOpenWhatsNew) {
                 Text(text = stringResource(MR.strings.whats_new))
             }
         },
         text = { Text(text = AboutScreen.getVersionName(withBuildDate = true)) },
+        // KMK <--
     )
 }
 

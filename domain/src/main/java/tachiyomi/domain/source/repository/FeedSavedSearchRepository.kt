@@ -29,7 +29,9 @@ interface FeedSavedSearchRepository {
 
     suspend fun insertAll(feedSavedSearch: List<FeedSavedSearch>)
 
+    // KMK -->
     suspend fun updatePartial(update: FeedSavedSearchUpdate)
 
     suspend fun updatePartial(updates: List<FeedSavedSearchUpdate>)
+    // KMK <--
 }

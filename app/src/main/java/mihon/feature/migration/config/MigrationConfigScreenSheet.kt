@@ -52,8 +52,10 @@ fun MigrationConfigScreenSheet(
     preferences: SourcePreferences,
     onDismissRequest: () -> Unit,
     onStartMigration: (extraSearchQuery: String?) -> Unit,
+    // KMK -->
     fullSettings: Boolean = true,
     isSingleEntry: Boolean = false,
+    // KMK <--
 ) {
     var extraSearchQuery by rememberSaveable { mutableStateOf("") }
     val migrationFlags by preferences.migrationFlags().collectAsState()
@@ -116,7 +118,9 @@ fun MigrationConfigScreenSheet(
                     checked = removeDownloads,
                     onClick = {
                         preferences.migrationFlags().getAndSet {
+                            // KMK -->
                             if (MigrationFlag.REMOVE_DOWNLOAD in it) {
+                                // KMK <--
                                 it - MigrationFlag.REMOVE_DOWNLOAD
                             } else {
                                 it + MigrationFlag.REMOVE_DOWNLOAD
@@ -125,7 +129,9 @@ fun MigrationConfigScreenSheet(
                     },
                 )
                 MigrationSheetDividerItem()
+                // KMK -->
                 if (fullSettings) {
+                    // KMK <--
                     OutlinedTextField(
                         value = extraSearchQuery,
                         onValueChange = { extraSearchQuery = it },
@@ -152,8 +158,11 @@ fun MigrationConfigScreenSheet(
                     subtitle = stringResource(MR.strings.migrationConfigScreen_hideWithoutUpdatesSubtitle),
                     preference = preferences.migrationHideWithoutUpdates(),
                 )
+                // KMK -->
                 if (fullSettings) {
+                    // KMK <--
                     MigrationSheetDividerItem()
+                    // KMK -->
                     val migrationSmartSearchSingleEntryPref = preferences.migrationSmartSearchSingleEntry()
                     val isSmartSearchSingleEntry by migrationSmartSearchSingleEntryPref.collectAsState()
                     if (isSingleEntry) {
@@ -164,6 +173,7 @@ fun MigrationConfigScreenSheet(
                         )
                     }
                     if (!isSingleEntry || isSmartSearchSingleEntry) {
+                        // KMK <--
                         MigrationSheetWarningItem(stringResource(MR.strings.migrationConfigScreen_enhancedOptionsWarning))
                         MigrationSheetSwitchItem(
                             title = stringResource(MR.strings.migrationConfigScreen_deepSearchModeTitle),
@@ -193,9 +203,11 @@ fun MigrationConfigScreenSheet(
             ) {
                 Text(
                     text = stringResource(
+                        // KMK -->
                         if (!fullSettings) {
                             MR.strings.action_save
                         } else {
+                            // KMK <--
                             MR.strings.migrationConfigScreen_continueButtonText
                         },
                     ),

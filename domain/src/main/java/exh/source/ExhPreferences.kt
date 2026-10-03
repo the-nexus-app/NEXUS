@@ -9,16 +9,21 @@ import tachiyomi.domain.release.service.AppUpdatePolicy
 class ExhPreferences(
     private val preferenceStore: PreferenceStore,
 ) {
+    // KMK -->
     fun appShouldAutoUpdate() = preferenceStore.getStringSet(
         "should_auto_update",
         setOf(
             AppUpdatePolicy.DEVICE_ONLY_ON_WIFI,
         ),
     )
+    // KMK <--
 
+    // SY -->
     fun isHentaiEnabled() = preferenceStore.getBoolean("eh_is_hentai_enabled", false)
 
+    // KMK -->
     fun ehIncognitoMode() = preferenceStore.getBoolean("eh_incognito_mode", false)
+    // KMK <--
 
     fun enableExhentai() = preferenceStore.getBoolean(Preference.privateKey("enable_exhentai"), false)
 
@@ -53,7 +58,9 @@ class ExhPreferences(
 
     fun exhShowSettingsUploadWarning() = preferenceStore.getBoolean("eh_showSettingsUploadWarning2", true)
 
+    // KMK -->
     fun logLevel(isDebugBuildType: Boolean) = preferenceStore.getInt(EH_LOG_LEVEL_PREF, EHLogLevel.defaultLogLevel(isDebugBuildType))
+    // KMK <--
 
     fun exhAutoUpdateFrequency() = preferenceStore.getInt("eh_auto_update_frequency", 1)
 

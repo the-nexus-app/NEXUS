@@ -236,6 +236,7 @@ class Anilist(id: Long) : BaseTracker(id, "AniList"), DeletableTracker {
         return api.getMangaMetadata(track)
     }
 
+    // SY -->
     override suspend fun searchById(id: String): TrackSearch? {
         return try {
             api.searchById(id)
@@ -244,6 +245,7 @@ class Anilist(id: Long) : BaseTracker(id, "AniList"), DeletableTracker {
             null
         }
     }
+    // SY <--
 
     fun saveOAuth(alOAuth: ALOAuth?) {
         trackPreferences.trackToken(this).set(json.encodeToString(alOAuth))
@@ -257,5 +259,7 @@ class Anilist(id: Long) : BaseTracker(id, "AniList"), DeletableTracker {
         }
     }
 
+    // KMK -->
     override fun hasNotStartedReading(status: Long): Boolean = status == PLAN_TO_READ
+    // KMK <--
 }

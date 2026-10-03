@@ -191,13 +191,16 @@ internal fun RowScope.Button(
     toConfirm: Boolean,
     onLongClick: () -> Unit,
     onClick: () -> Unit,
+    // KMK -->
     enabled: Boolean = true,
+    // KMK <--
     content: (@Composable () -> Unit)? = null,
 ) {
     val animatedWeight by animateFloatAsState(
         targetValue = if (toConfirm) 2f else 1f,
         label = "weight",
     )
+    // KMK -->
     val animatedColor by animateColorAsState(
         if (enabled) {
             MaterialTheme.colorScheme.onSurface
@@ -208,6 +211,7 @@ internal fun RowScope.Button(
         },
         label = "color",
     )
+    // KMK <--
     Box(
         modifier = Modifier
             .size(48.dp)
@@ -227,7 +231,9 @@ internal fun RowScope.Button(
             Icon(
                 imageVector = icon,
                 contentDescription = title,
+                // KMK -->
                 tint = animatedColor,
+                // KMK <--
             )
             AnimatedVisibility(
                 visible = toConfirm,
@@ -239,7 +245,9 @@ internal fun RowScope.Button(
                     overflow = TextOverflow.Visible,
                     maxLines = 1,
                     style = MaterialTheme.typography.labelSmall,
+                    // KMK -->
                     color = animatedColor,
+                    // KMK <--
                 )
             }
         }
@@ -256,12 +264,16 @@ fun LibraryBottomActionMenu(
     onDownloadClicked: ((DownloadAction) -> Unit)?,
     onDeleteClicked: () -> Unit,
     onMigrateClicked: () -> Unit,
+    // KMK -->
     onMergeClicked: () -> Unit,
     onSelectionUpdateClicked: () -> Unit,
+    // KMK <--
+    // SY -->
     onClickCleanTitles: (() -> Unit)?,
     onClickCollectRecommendations: (() -> Unit)?,
     onClickAddToMangaDex: (() -> Unit)?,
     onClickResetInfo: (() -> Unit)?,
+    // SY <--
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
@@ -333,8 +345,11 @@ fun LibraryBottomActionMenu(
                         )
                     }
                 }
+                // SY -->
                 val configuration = LocalConfiguration.current
                 val isTabletUi = remember { configuration.isTabletUi() }
+                // SY <--
+                // KMK -->
                 if (onDownloadClicked == null || isTabletUi) {
                     Button(
                         title = stringResource(KMR.strings.action_update),
@@ -345,6 +360,7 @@ fun LibraryBottomActionMenu(
                     )
                 }
                 if (isTabletUi) {
+                    // KMK <--
                     Button(
                         title = stringResource(MR.strings.migrate),
                         icon = Icons.Outlined.SwapCalls,
@@ -366,6 +382,7 @@ fun LibraryBottomActionMenu(
                         onDismissRequest = { overflowMenuOpen = false },
                         offset = BottomBarMenuDpOffset,
                     ) {
+                        // KMK -->
                         if (!isTabletUi) {
                             if (onDownloadClicked != null) {
                                 DropdownMenuItem(
@@ -373,6 +390,7 @@ fun LibraryBottomActionMenu(
                                     onClick = onSelectionUpdateClicked,
                                 )
                             }
+                            // KMK <--
                             DropdownMenuItem(
                                 text = { Text(stringResource(MR.strings.migrate)) },
                                 onClick = onMigrateClicked,
@@ -382,6 +400,7 @@ fun LibraryBottomActionMenu(
                             text = { Text(stringResource(MR.strings.action_delete)) },
                             onClick = onDeleteClicked,
                         )
+                        // KMK -->
                         DropdownMenuItem(
                             text = { Text(stringResource(SYMR.strings.merge)) },
                             onClick = onMergeClicked,
@@ -410,6 +429,7 @@ fun LibraryBottomActionMenu(
                                 onClick = onClickResetInfo,
                             )
                         }
+                        // KMK <--
                     }
                 }
             }

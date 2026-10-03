@@ -22,13 +22,17 @@ import androidx.core.graphics.drawable.toBitmap
 @Composable
 fun rememberResourceBitmapPainter(
     @DrawableRes id: Int,
+    // KMK -->
     @ColorInt tint: Int? = null,
+    // KMK <--
 ): BitmapPainter {
     val context = LocalContext.current
     return remember(id) {
         val drawable = ContextCompat.getDrawable(context, id)
             ?: throw Resources.NotFoundException()
+        // KMK -->
         tint?.let { drawable.setTint(it) }
+        // KMK <--
         BitmapPainter(drawable.toBitmap().asImageBitmap())
     }
 }

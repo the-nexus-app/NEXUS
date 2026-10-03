@@ -118,6 +118,7 @@ fun LibraryPager(
                     onGlobalSearchClicked = onGlobalSearchClicked,
                 )
             }
+            // KMK -->
             LibraryDisplayMode.ComfortableGridPanorama -> {
                 LibraryComfortableGrid(
                     items = items,
@@ -132,6 +133,7 @@ fun LibraryPager(
                     usePanoramaCover = true,
                 )
             }
+            // KMK <--
         }
     }
 }

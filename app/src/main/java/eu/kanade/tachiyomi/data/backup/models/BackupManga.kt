@@ -65,6 +65,7 @@ class BackupManga(
     fun getMangaImpl(): Manga {
         return Manga.create().copy(
             url = this@BackupManga.url,
+            // SY -->
             ogTitle = this@BackupManga.title,
             ogArtist = this@BackupManga.artist,
             ogAuthor = this@BackupManga.author,
@@ -72,6 +73,7 @@ class BackupManga(
             ogDescription = this@BackupManga.description,
             ogGenre = this@BackupManga.genre,
             ogStatus = this@BackupManga.status.toLong(),
+            // SY <--
             favorite = this@BackupManga.favorite,
             source = this@BackupManga.source,
             dateAdded = this@BackupManga.dateAdded,

@@ -28,7 +28,9 @@ class CategoryScreenModel(
     private val deleteCategory: DeleteCategory = Injekt.get(),
     private val reorderCategory: ReorderCategory = Injekt.get(),
     private val renameCategory: RenameCategory = Injekt.get(),
+    // KMK -->
     private val hideCategory: HideCategory = Injekt.get(),
+    // KMK <--
 ) : StateScreenModel<CategoryScreenState>(CategoryScreenState.Loading) {
 
     private val _events: Channel<CategoryEvent> = Channel()
@@ -58,6 +60,7 @@ class CategoryScreenModel(
         }
     }
 
+    // KMK -->
     fun hideCategory(category: Category) {
         screenModelScope.launch {
             when (hideCategory.await(category)) {
@@ -66,6 +69,7 @@ class CategoryScreenModel(
             }
         }
     }
+    // KMK <--
 
     fun deleteCategory(categoryId: Long) {
         screenModelScope.launch {

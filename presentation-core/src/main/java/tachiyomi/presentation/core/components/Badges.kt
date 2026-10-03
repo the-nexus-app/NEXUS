@@ -38,7 +38,9 @@ fun BadgeGroup(
 ) {
     Row(
         modifier = modifier.clip(shape)
+            // KMK -->
             .height(18.dp),
+        // KMK <--
     ) {
         content()
     }
@@ -110,6 +112,7 @@ fun Badge(
     )
 }
 
+// KMK -->
 @Composable
 fun Badge(
     painter: Painter,
@@ -155,3 +158,4 @@ fun Badge(
         )
     }
 }
+// KMK <--

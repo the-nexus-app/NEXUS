@@ -196,6 +196,7 @@ class MangaUpdatesApi(
     suspend fun getSeries(track: DomainTrack): MURecord =
         getSeries(track.remoteId)
 
+    // SY -->
     suspend fun getSeries(remoteId: Long): MURecord {
         return with(json) {
             client.newCall(GET("$BASE_URL/v1/series/$remoteId"))
@@ -222,6 +223,7 @@ class MangaUpdatesApi(
                     }
             }
     }
+    // SY <--
 
     companion object {
         private const val BASE_URL = "https://api.mangaupdates.com"

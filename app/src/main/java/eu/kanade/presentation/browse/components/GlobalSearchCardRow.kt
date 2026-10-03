@@ -37,7 +37,9 @@ fun GlobalSearchCardRow(
     getManga: @Composable (Manga) -> State<Manga>,
     onClick: (Manga) -> Unit,
     onLongClick: (Manga) -> Unit,
+    // KMK -->
     selection: List<Manga>,
+    // KMK <--
 ) {
     if (titles.isEmpty()) {
         EmptyResultItem()
@@ -56,7 +58,9 @@ fun GlobalSearchCardRow(
                 isFavorite = title.favorite,
                 onClick = { onClick(title) },
                 onLongClick = { onLongClick(title) },
+                // KMK -->
                 isSelected = selection.fastAny { selected -> selected.id == title.id },
+                // KMK <--
             )
         }
     }
@@ -69,14 +73,20 @@ internal fun MangaItem(
     isFavorite: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    // KMK -->
     isSelected: Boolean = false,
     usePanoramaCover: Boolean? = null,
+    // KMK <--
 ) {
+    // KMK -->
     val panoramaCover = usePanoramaCover ?: Injekt.get<UiPreferences>().usePanoramaCoverFlow().collectAsState().value
     val coverRatio = remember { mutableFloatStateOf(1f) }
+    // KMK <--
     Box(
         modifier = Modifier.width(
+            // KMK -->
             if (panoramaCover && coverRatio.floatValue <= RatioSwitchToPanorama) 205.dp else 96.dp,
+            // KMK <--
         ),
     ) {
         MangaComfortableGridItem(
@@ -86,10 +96,12 @@ internal fun MangaItem(
             coverBadgeStart = {
                 InLibraryBadge(enabled = isFavorite)
             },
+            // KMK -->
             isSelected = isSelected,
             coverRatio = coverRatio,
             usePanoramaCover = panoramaCover,
             fitToPanoramaCover = true,
+            // KMK <--
             coverAlpha = if (isFavorite) CommonMangaItemDefaults.BrowseFavoriteCoverAlpha else 1f,
             onClick = onClick,
             onLongClick = onLongClick,

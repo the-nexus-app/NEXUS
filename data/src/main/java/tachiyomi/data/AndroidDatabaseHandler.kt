@@ -33,12 +33,14 @@ class AndroidDatabaseHandler(
         return dispatch(inTransaction) { block(db).executeAsList() }
     }
 
+    // SY -->
     override suspend fun <T : Any> awaitListExecutable(
         inTransaction: Boolean,
         block: suspend Database.() -> ExecutableQuery<T>,
     ): List<T> {
         return dispatch(inTransaction) { block(db).executeAsList() }
     }
+    // SY <--
 
     override suspend fun <T : Any> awaitOne(
         inTransaction: Boolean,

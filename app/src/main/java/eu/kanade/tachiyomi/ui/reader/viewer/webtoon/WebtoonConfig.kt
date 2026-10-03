@@ -42,6 +42,7 @@ class WebtoonConfig(
 
     var doubleTapZoomChangedListener: ((Boolean) -> Unit)? = null
 
+    // KMK -->
     var pinchToZoom = true
         private set
 
@@ -51,12 +52,15 @@ class WebtoonConfig(
         private set
 
     var webtoonScaleTypeChangedListener: ((ReaderPreferences.WebtoonScaleType) -> Unit)? = null
+    // KMK <--
 
+    // SY -->
     var usePageTransitions = false
 
     var continuousCropBorders = false
         private set
 
+    // SY <--
     init {
         readerPreferences.cropBordersWebtoon()
             .register({ imageCropBorders = it }, { imagePropertyChangedListener?.invoke() })
@@ -73,10 +77,12 @@ class WebtoonConfig(
             .drop(1)
             .onEach { navigationModeChangedListener?.invoke() }
             .launchIn(scope)
+        // KMK -->
         readerPreferences.smallerTapZone().changes()
             .drop(1)
             .onEach { updateNavigation(navigationMode) }
             .launchIn(scope)
+        // KMK <--
 
         readerPreferences.dualPageSplitWebtoon()
             .register({ dualPageSplit = it }, { imagePropertyChangedListener?.invoke() })
@@ -108,6 +114,7 @@ class WebtoonConfig(
                 { doubleTapZoomChangedListener?.invoke(it) },
             )
 
+        // KMK -->
         readerPreferences.webtoonPinchToZoomEnabled()
             .register(
                 { pinchToZoom = it },
@@ -119,6 +126,7 @@ class WebtoonConfig(
                 { webtoonScaleType = it },
                 { webtoonScaleTypeChangedListener?.invoke(it) },
             )
+        // KMK <--
 
         readerPreferences.readerTheme().changes()
             .drop(1)
@@ -126,11 +134,13 @@ class WebtoonConfig(
             .onEach { themeChangedListener?.invoke() }
             .launchIn(scope)
 
+        // SY -->
         readerPreferences.cropBordersContinuousVertical()
             .register({ continuousCropBorders = it }, { imagePropertyChangedListener?.invoke() })
 
         readerPreferences.pageTransitionsWebtoon()
             .register({ usePageTransitions = it }, { imagePropertyChangedListener?.invoke() })
+        // SY <--
     }
 
     override var navigator: ViewerNavigation = defaultNavigation()

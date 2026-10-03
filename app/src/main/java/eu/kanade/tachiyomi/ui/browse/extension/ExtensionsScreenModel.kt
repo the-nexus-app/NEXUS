@@ -53,7 +53,9 @@ class ExtensionsScreenModel(
                     it,
                     map[
                         it.pkgName +
+                            // KMK -->
                             "_${it.signatureHash}",
+                        // KMK <--
                     ] ?: InstallStep.Idle,
                 )
             }
@@ -65,30 +67,40 @@ class ExtensionsScreenModel(
                     .distinctUntilChanged()
                     .debounce(SEARCH_DEBOUNCE_MILLIS)
                     .map { searchQueryPredicate(it ?: "") },
+                // KMK -->
                 state.map { it.nsfwOnly }
                     .distinctUntilChanged()
                     .debounce(SEARCH_DEBOUNCE_MILLIS),
+                // KMK <--
                 currentDownloads,
                 getExtensions.subscribe(),
             ) { predicate, nsfwOnly, downloads, (_updates, _installed, _available, _untrusted) ->
                 buildMap {
                     val updates = _updates.filter(predicate).map(extensionMapper(downloads))
+                        // KMK -->
                         .filter { !nsfwOnly || it.extension.isNsfw }
+                    // KMK <--
                     if (updates.isNotEmpty()) {
                         put(ExtensionUiModel.Header.Resource(MR.strings.ext_updates_pending), updates)
                     }
 
                     val installed = _installed.filter(predicate).map(extensionMapper(downloads))
+                        // KMK -->
                         .filter { !nsfwOnly || it.extension.isNsfw }
+                    // KMK <--
                     val untrusted = _untrusted.filter(predicate).map(extensionMapper(downloads))
+                        // KMK -->
                         .filter { !nsfwOnly || it.extension.isNsfw }
+                    // KMK <--
                     if (installed.isNotEmpty() || untrusted.isNotEmpty()) {
                         put(ExtensionUiModel.Header.Resource(MR.strings.ext_installed), installed + untrusted)
                     }
 
                     val languagesWithExtensions = _available
                         .filter(predicate)
+                        // KMK -->
                         .filter { !nsfwOnly || it.isNsfw }
+                        // KMK <--
                         .groupBy { it.lang }
                         .toSortedMap(LocaleHelper.comparator)
                         .map { (lang, exts) ->
@@ -99,10 +111,12 @@ class ExtensionsScreenModel(
                         putAll(languagesWithExtensions)
                     }
 
+                    // KMK -->
                     // Show "More..." header if no available extensions
                     if (_available.isEmpty()) {
                         put(ExtensionUiModel.Header.Resource(KMR.strings.extensions_page_more), emptyList())
                     }
+                    // KMK <--
                 }
             }
                 .collectLatest { items ->
@@ -193,7 +207,9 @@ class ExtensionsScreenModel(
         currentDownloads.update {
             it + Pair(
                 extension.pkgName +
+                    // KMK -->
                     "_${extension.signatureHash}",
+                // KMK <--
                 installStep,
             )
         }
@@ -203,7 +219,9 @@ class ExtensionsScreenModel(
         currentDownloads.update {
             it - (
                 extension.pkgName +
+                    // KMK -->
                     "_${extension.signatureHash}"
+                // KMK <--
                 )
         }
     }
@@ -238,11 +256,13 @@ class ExtensionsScreenModel(
         }
     }
 
+    // KMK -->
     fun toggleNsfwOnly() {
         mutableState.update {
             it.copy(nsfwOnly = !it.nsfwOnly)
         }
     }
+    // KMK <--
 
     @Immutable
     data class State(
@@ -252,7 +272,9 @@ class ExtensionsScreenModel(
         val updates: Int = 0,
         val installer: BasePreferences.ExtensionInstaller? = null,
         val searchQuery: String? = null,
+        // KMK -->
         val nsfwOnly: Boolean = false,
+        // KMK <--
     ) {
         val isEmpty = items.isEmpty()
     }

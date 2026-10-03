@@ -19,8 +19,10 @@ import java.time.ZoneId
 class GetUpcomingManga(
     private val mangaRepository: MangaRepository,
 ) {
+    // KMK -->
     private val libraryPreferences: LibraryPreferences = Injekt.get()
     private val getLibraryManga: GetLibraryManga = Injekt.get()
+    // KMK <--
 
     private val includedStatuses = setOf(
         SManga.ONGOING.toLong(),
@@ -31,6 +33,7 @@ class GetUpcomingManga(
         return mangaRepository.getUpcomingManga(includedStatuses)
     }
 
+    // KMK -->
     suspend fun updatingMangas(): List<Manga> {
         val libraryManga = getLibraryManga.await()
 
@@ -66,4 +69,5 @@ class GetUpcomingManga(
             .map { it.manga }
             .sortedBy { it.nextUpdate }
     }
+    // KMK <--
 }

@@ -22,6 +22,7 @@ class GetAvailableScanlators(
             .map { it.cleanupAvailableScanlators() }
     }
 
+    // SY -->
     suspend fun awaitMerge(mangaId: Long): Set<String> {
         return repository.getScanlatorsByMergeId(mangaId)
             .cleanupAvailableScanlators()
@@ -31,4 +32,5 @@ class GetAvailableScanlators(
         return repository.getScanlatorsByMergeIdAsFlow(mangaId)
             .map { it.cleanupAvailableScanlators() }
     }
+    // SY <--
 }

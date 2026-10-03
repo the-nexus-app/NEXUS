@@ -74,10 +74,14 @@ fun FeedScreen(
     contentPadding: PaddingValues,
     onClickSavedSearch: (SavedSearch, Source) -> Unit,
     onClickSource: (Source) -> Unit,
+    // KMK -->
     onLongClickFeed: (FeedItemUI) -> Unit,
+    // KMK <--
     onClickManga: (Manga) -> Unit,
+    // KMK -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
+    // KMK <--
     onRefresh: () -> Unit,
     getMangaState: @Composable (Manga) -> State<Manga>,
 ) {
@@ -107,16 +111,20 @@ fun FeedScreen(
                     contentPadding = contentPadding + topSmallPaddingValues,
                     modifier = Modifier.fillMaxSize(),
                 ) {
+                    // KMK -->
                     val feeds = state.items.orEmpty()
                     items(
                         items = feeds,
                         key = { it.feed.key },
                     ) { item ->
+                        // KMK <--
                         GlobalSearchResultItem(
                             title = item.title,
                             subtitle = item.subtitle,
                             onLongClick = {
+                                // KMK -->
                                 onLongClickFeed(item)
+                                // KMK <--
                             },
                             onClick = {
                                 if (item.savedSearch != null && item.source != null) {
@@ -131,8 +139,10 @@ fun FeedScreen(
                                 item = item,
                                 getMangaState = { getMangaState(it) },
                                 onClickManga = onClickManga,
+                                // KMK -->
                                 onLongClickManga = onLongClickManga,
                                 selection = selection,
+                                // KMK <--
                             )
                         }
                     }
@@ -147,8 +157,10 @@ fun FeedItem(
     item: FeedItemUI,
     getMangaState: @Composable ((Manga) -> State<Manga>),
     onClickManga: (Manga) -> Unit,
+    // KMK -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
+    // KMK <--
 ) {
     when {
         item.results == null -> {
@@ -162,8 +174,10 @@ fun FeedItem(
                 titles = item.results,
                 getManga = getMangaState,
                 onClick = onClickManga,
+                // KMK -->
                 onLongClick = onLongClickManga,
                 selection = selection,
+                // KMK <--
             )
         }
     }
@@ -175,6 +189,7 @@ fun FeedAddDialog(
     onDismiss: () -> Unit,
     onClickAdd: (Source?) -> Unit,
 ) {
+    // KMK -->
     var query by remember { mutableStateOf("") }
     val sourceList = sources
         .filter { source ->
@@ -201,18 +216,21 @@ fun FeedAddDialog(
                 Text(text = it.getNameForMangaInfo())
             }
         }
+    // KMK <--
     var selected by remember { mutableStateOf<Int?>(null) }
     AlertDialog(
         title = {
             Text(text = stringResource(SYMR.strings.feed))
         },
         text = {
+            // KMK -->
             RadioSelectorSearchable(
                 options = composeOptions,
                 queryString = query,
                 onChangeSearchQuery = {
                     query = it ?: ""
                 },
+                // KMK <--
                 selected = selected,
             ) {
                 selected = it
@@ -244,11 +262,15 @@ fun FeedAddSearchDialog(
             val savedSearchStrings = remember {
                 savedSearches.map {
                     it?.name
+                        // KMK -->
                         ?: if (source.supportsLatest) {
+                            // KMK <--
                             context.stringResource(MR.strings.latest)
+                            // KMK -->
                         } else {
                             context.stringResource(MR.strings.popular)
                         }
+                    // KMK <--
                 }.toImmutableList()
             }
             RadioSelectorSearchable(
@@ -263,7 +285,9 @@ fun FeedAddSearchDialog(
         confirmButton = {
             TextButton(
                 onClick = { onClickAdd(source, selected?.let { savedSearches[it] }) },
+                // KMK -->
                 enabled = selected != null,
+                // KMK <--
             ) {
                 Text(text = stringResource(MR.strings.action_ok))
             }
@@ -295,6 +319,7 @@ fun <T> RadioSelectorSearchable(
     }
 }
 
+// KMK -->
 @Composable
 fun RadioSelectorSearchable(
     options: List<@Composable () -> Unit>,
@@ -330,3 +355,4 @@ fun RadioSelectorSearchable(
         }
     }
 }
+// KMK <--

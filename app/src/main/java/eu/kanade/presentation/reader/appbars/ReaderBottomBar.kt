@@ -27,7 +27,9 @@ import tachiyomi.presentation.core.i18n.stringResource
 
 @Composable
 fun ReaderBottomBar(
+    // SY -->
     enabledButtons: ImmutableSet<String>,
+    // SY <--
     readingMode: ReadingMode,
     onClickReadingMode: () -> Unit,
     orientation: ReaderOrientation,
@@ -35,6 +37,7 @@ fun ReaderBottomBar(
     cropEnabled: Boolean,
     onClickCropBorder: () -> Unit,
     onClickSettings: () -> Unit,
+    // SY -->
     currentReadingMode: ReadingMode,
     dualPageSplitEnabled: Boolean,
     doublePages: Boolean,
@@ -44,21 +47,27 @@ fun ReaderBottomBar(
     onClickShare: (() -> Unit)?,
     onClickPageLayout: () -> Unit,
     onClickShiftPage: () -> Unit,
+    // SY <--
     modifier: Modifier = Modifier,
 ) {
+    // KMK -->
     val iconColor = MaterialTheme.colorScheme.primary
+    // KMK <--
     Row(
         modifier = modifier
             .pointerInput(Unit) {},
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // SY -->
         if (ReaderBottomButton.ViewChapters.isIn(enabledButtons)) {
             IconButton(onClick = onClickChapterList) {
                 Icon(
                     imageVector = Icons.Outlined.FormatListNumbered,
                     contentDescription = stringResource(MR.strings.chapters),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -68,7 +77,9 @@ fun ReaderBottomBar(
                 Icon(
                     imageVector = Icons.Outlined.Public,
                     contentDescription = stringResource(MR.strings.action_open_in_web_view),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -78,7 +89,9 @@ fun ReaderBottomBar(
                 Icon(
                     imageVector = Icons.Outlined.Explore,
                     contentDescription = stringResource(MR.strings.action_open_in_browser),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -88,7 +101,9 @@ fun ReaderBottomBar(
                 Icon(
                     imageVector = Icons.Outlined.Share,
                     contentDescription = stringResource(MR.strings.action_share),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -98,7 +113,9 @@ fun ReaderBottomBar(
                 Icon(
                     painter = painterResource(readingMode.iconRes),
                     contentDescription = stringResource(MR.strings.viewer),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -108,7 +125,9 @@ fun ReaderBottomBar(
                 Icon(
                     imageVector = orientation.icon,
                     contentDescription = stringResource(MR.strings.pref_rotation_type),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -125,7 +144,9 @@ fun ReaderBottomBar(
                         if (cropEnabled) R.drawable.ic_crop_24dp else R.drawable.ic_crop_off_24dp,
                     ),
                     contentDescription = stringResource(MR.strings.pref_crop_borders),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -139,7 +160,9 @@ fun ReaderBottomBar(
                 Icon(
                     painter = painterResource(R.drawable.ic_book_open_variant_24dp),
                     contentDescription = stringResource(SYMR.strings.page_layout),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -149,7 +172,9 @@ fun ReaderBottomBar(
                 Icon(
                     painter = painterResource(R.drawable.ic_page_next_outline_24dp),
                     contentDescription = stringResource(SYMR.strings.shift_double_pages),
+                    // KMK -->
                     tint = iconColor,
+                    // KMK <--
                 )
             }
         }
@@ -158,8 +183,11 @@ fun ReaderBottomBar(
             Icon(
                 imageVector = Icons.Outlined.Settings,
                 contentDescription = stringResource(MR.strings.action_settings),
+                // KMK -->
                 tint = iconColor,
+                // KMK <--
             )
         }
+        // SY <--
     }
 }

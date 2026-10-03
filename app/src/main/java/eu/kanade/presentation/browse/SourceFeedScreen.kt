@@ -96,13 +96,16 @@ fun SourceFeedScreen(
     onClickBrowse: () -> Unit,
     onClickLatest: () -> Unit,
     onClickSavedSearch: (SavedSearch) -> Unit,
+    // KMK -->
     // onClickDelete: (FeedSavedSearch) -> Unit,
     onLongClickFeed: (SourceFeedUI.SourceSavedSearch) -> Unit,
+    // KMK <--
     onClickManga: (Manga) -> Unit,
     onClickSearch: (String) -> Unit,
     searchQuery: String?,
     onSearchQueryChange: (String?) -> Unit,
     getMangaState: @Composable (Manga) -> State<Manga>,
+    // KMK -->
     navigateUp: () -> Unit,
     onWebViewClick: (() -> Unit)?,
     onToggleIncognito: () -> Unit,
@@ -110,11 +113,15 @@ fun SourceFeedScreen(
     onSortFeedClick: (() -> Unit)?,
     onLongClickManga: (Manga) -> Unit,
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
+    // KMK <--
 ) {
+    // KMK -->
     val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
+    // KMK <--
 
     Scaffold(
         topBar = { scrollBehavior ->
+            // KMK -->
             if (bulkFavoriteState.selectionMode) {
                 BulkSelectionToolbar(
                     selectedCount = bulkFavoriteState.selection.size,
@@ -133,12 +140,14 @@ fun SourceFeedScreen(
                     },
                 )
             } else {
+                // KMK <--
                 SourceFeedToolbar(
                     title = name,
                     searchQuery = searchQuery,
                     onSearchQueryChange = onSearchQueryChange,
                     scrollBehavior = scrollBehavior,
                     onClickSearch = onClickSearch,
+                    // KMK -->
                     navigateUp = navigateUp,
                     onWebViewClick = onWebViewClick,
                     onToggleIncognito = onToggleIncognito,
@@ -146,10 +155,12 @@ fun SourceFeedScreen(
                     onSortFeedClick = onSortFeedClick,
                     toggleSelectionMode = bulkFavoriteScreenModel::toggleSelectionMode,
                     isRunning = bulkFavoriteState.isRunning,
+                    // KMK <--
                 )
             }
         },
         floatingActionButton = {
+            // KMK -->
             SmallExtendedFloatingActionButton(
                 text = {
                     Text(
@@ -163,6 +174,7 @@ fun SourceFeedScreen(
                 icon = { Icon(Icons.Outlined.FilterList, contentDescription = "") },
                 onClick = onFabClick,
             )
+            // KMK <--
         },
     ) { paddingValues ->
         Crossfade(targetState = isLoading, label = "source_feed") { state ->
@@ -176,11 +188,15 @@ fun SourceFeedScreen(
                         onClickBrowse = onClickBrowse,
                         onClickLatest = onClickLatest,
                         onClickSavedSearch = onClickSavedSearch,
+                        // KMK -->
                         // onClickDelete = onClickDelete,
                         onLongClickFeed = onLongClickFeed,
+                        // KMK <--
                         onClickManga = onClickManga,
+                        // KMK -->
                         onLongClickManga = onLongClickManga,
                         selection = bulkFavoriteState.selection,
+                        // KMK <--
                     )
                 }
             }
@@ -196,31 +212,41 @@ fun SourceFeedList(
     onClickBrowse: () -> Unit,
     onClickLatest: () -> Unit,
     onClickSavedSearch: (SavedSearch) -> Unit,
+    // KMK -->
     // onClickDelete: (FeedSavedSearch) -> Unit,
     onLongClickFeed: (SourceFeedUI.SourceSavedSearch) -> Unit,
+    // KMK <--
     onClickManga: (Manga) -> Unit,
+    // KMK -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
+    // KMK <--
 ) {
     ScrollbarLazyColumn(
         contentPadding = paddingValues + topSmallPaddingValues,
     ) {
+        // KMK -->
         items(
             items,
             key = { "source-feed-${it.id}" },
         ) { item ->
+            // KMK <--
             GlobalSearchResultItem(
                 modifier = Modifier.animateItem(),
                 title =
+                // KMK -->
                 if (item !is SourceFeedUI.SourceSavedSearch) {
                     stringResource(item.title as StringResource)
                 } else {
+                    // KMK <--
                     item.title
                 },
                 subtitle = null,
                 onLongClick = if (item is SourceFeedUI.SourceSavedSearch) {
                     {
+                        // KMK -->
                         onLongClickFeed(item)
+                        // KMK <--
                     }
                 } else {
                     null
@@ -237,8 +263,10 @@ fun SourceFeedList(
                     item = item,
                     getMangaState = { getMangaState(it) },
                     onClickManga = onClickManga,
+                    // KMK -->
                     onLongClickManga = onLongClickManga,
                     selection = selection,
+                    // KMK <--
                 )
             }
         }
@@ -250,8 +278,10 @@ fun SourceFeedItem(
     item: SourceFeedUI,
     getMangaState: @Composable ((Manga) -> State<Manga>),
     onClickManga: (Manga) -> Unit,
+    // KMK -->
     onLongClickManga: (Manga) -> Unit,
     selection: List<Manga>,
+    // KMK <--
 ) {
     val results = item.results
     when {
@@ -266,8 +296,10 @@ fun SourceFeedItem(
                 titles = item.results.orEmpty(),
                 getManga = getMangaState,
                 onClick = onClickManga,
+                // KMK -->
                 onLongClick = onLongClickManga,
                 selection = selection,
+                // KMK <--
             )
         }
     }
@@ -280,6 +312,7 @@ fun SourceFeedToolbar(
     onSearchQueryChange: (String?) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     onClickSearch: (String) -> Unit,
+    // KMK -->
     navigateUp: () -> Unit,
     onWebViewClick: (() -> Unit)?,
     onToggleIncognito: () -> Unit,
@@ -287,16 +320,20 @@ fun SourceFeedToolbar(
     onSortFeedClick: (() -> Unit)?,
     toggleSelectionMode: () -> Unit,
     isRunning: Boolean,
+    // KMK <--
 ) {
     SearchToolbar(
         titleContent = { AppBarTitle(title) },
         searchQuery = searchQuery,
         onChangeSearchQuery = onSearchQueryChange,
         onSearch = onClickSearch,
+        // KMK -->
         navigateUp = navigateUp,
         onClickCloseSearch = navigateUp,
+        // KMK <--
         scrollBehavior = scrollBehavior,
         placeholderText = stringResource(MR.strings.action_search_hint),
+        // KMK -->
         actions = {
             AppBarActions(
                 actions = persistentListOf<AppBar.AppBarAction>().builder().apply {
@@ -312,12 +349,14 @@ fun SourceFeedToolbar(
                         )
                     }
 
+                    // KMK -->
                     add(
                         AppBar.OverflowAction(
                             title = stringResource(MR.strings.pref_incognito_mode),
                             onClick = onToggleIncognito,
                         ),
                     )
+                    // KMK <--
 
                     onSortFeedClick?.let { func ->
                         add(
@@ -340,5 +379,6 @@ fun SourceFeedToolbar(
                     .build(),
             )
         },
+        // KMK <--
     )
 }

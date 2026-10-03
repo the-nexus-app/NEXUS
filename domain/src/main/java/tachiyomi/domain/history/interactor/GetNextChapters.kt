@@ -12,7 +12,9 @@ import kotlin.math.max
 
 class GetNextChapters(
     private val getChaptersByMangaId: GetChaptersByMangaId,
+    // SY -->
     private val getMergedChaptersByMangaId: GetMergedChaptersByMangaId,
+    // SY <--
     private val getManga: GetManga,
     private val historyRepository: HistoryRepository,
 ) {
@@ -25,6 +27,7 @@ class GetNextChapters(
     suspend fun await(mangaId: Long, onlyUnread: Boolean = true): List<Chapter> {
         val manga = getManga.await(mangaId) ?: return emptyList()
 
+        // SY -->
         if (manga.source == MERGED_SOURCE_ID) {
             val chapters = getMergedChaptersByMangaId.await(mangaId, applyFilter = true)
                 .sortedWith(getChapterSort(manga, sortDescending = false))
@@ -45,6 +48,7 @@ class GetNextChapters(
                 chapters
             }
         }
+        // SY <--
 
         val chapters = getChaptersByMangaId.await(mangaId, applyFilter = true)
             .sortedWith(getChapterSort(manga, sortDescending = false))

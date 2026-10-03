@@ -75,8 +75,10 @@ class BatchAddScreen : Screen() {
                             placeholder = {
                                 Text(
                                     text =
+                                    // KMK -->
                                     stringResource(SYMR.strings.md_batch_add_description) +
                                         if (screenModel.isHentaiEnabled) {
+                                            // KMK <--
                                             stringResource(SYMR.strings.eh_batch_add_description)
                                         } else {
                                             ""
@@ -93,10 +95,12 @@ class BatchAddScreen : Screen() {
                         ) {
                             Text(text = stringResource(SYMR.strings.eh_batch_add_button))
                         }
+                        // KMK -->
                         Spacer(Modifier.height(8.dp))
                         Text(
                             text = stringResource(KMR.strings.batch_add_description),
                         )
+                        // KMK <--
                     }
                 }
                 BatchAddScreenModel.State.PROGRESS -> {

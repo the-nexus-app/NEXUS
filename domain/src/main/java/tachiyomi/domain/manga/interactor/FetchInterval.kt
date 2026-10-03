@@ -125,6 +125,8 @@ class FetchInterval(
 
         private const val GRACE_PERIOD = 1L
 
+        // KMK -->
         const val MANUAL_DISABLE = 99999 // 274 years in future
+        // KMK <--
     }
 }

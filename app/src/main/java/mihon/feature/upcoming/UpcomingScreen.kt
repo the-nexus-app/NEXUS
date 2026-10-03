@@ -23,9 +23,11 @@ class UpcomingScreen : Screen() {
             state = state,
             setSelectedYearMonth = screenModel::setSelectedYearMonth,
             onClickUpcoming = { navigator.push(MangaScreen(it.id)) },
+            // KMK -->
             showUpdatingMangas = screenModel::showUpdatingMangas,
             hideUpdatingMangas = screenModel::hideUpdatingMangas,
             isPredictReleaseDate = MANGA_OUTSIDE_RELEASE_PERIOD in screenModel.restriction,
+            // KMK <--
         )
     }
 }

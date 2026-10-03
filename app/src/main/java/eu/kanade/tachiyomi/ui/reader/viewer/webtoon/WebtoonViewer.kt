@@ -39,8 +39,10 @@ class WebtoonViewer(
     val activity: ReaderActivity,
     val isContinuous: Boolean = true,
     private val tapByPage: Boolean = false,
+    // KMK -->
     @param:ColorInt private val seedColor: Int? = null,
     private val readerPreferences: ReaderPreferences = Injekt.get(),
+    // KMK <--
 ) : Viewer {
 
     val downloadManager: DownloadManager by injectLazy()
@@ -77,7 +79,9 @@ class WebtoonViewer(
      */
     private val adapter = WebtoonAdapter(
         this,
+        // KMK -->
         seedColor = seedColor,
+        // KMK <--
     )
 
     /**
@@ -87,7 +91,9 @@ class WebtoonViewer(
     var currentPage: Any? = null
 
     private val threshold: Int =
+        // KMK -->
         readerPreferences
+            // KMK <--
             .readerHideThreshold()
             .get()
             .threshold
@@ -167,6 +173,7 @@ class WebtoonViewer(
             frame.doubleTapZoom = it
         }
 
+        // KMK -->
         config.pinchToZoomChangedListener = {
             frame.pinchToZoom = it
         }
@@ -198,6 +205,7 @@ class WebtoonViewer(
                 }
             }
         }
+        // KMK <--
 
         config.zoomPropertyChangedListener = {
             frame.zoomOutDisabled = it
@@ -353,6 +361,7 @@ class WebtoonViewer(
      */
     /* [EXH] private */
     fun scrollDown() {
+        // SY -->
         if (!isContinuous && tapByPage) {
             val currentPage = currentPage
             if (currentPage is ReaderPage) {
@@ -372,6 +381,7 @@ class WebtoonViewer(
     }
 
     private fun scrollDownBy() {
+        // SY <--
         if (config.usePageTransitions) {
             recycler.smoothScrollBy(0, scrollDistance)
         } else {

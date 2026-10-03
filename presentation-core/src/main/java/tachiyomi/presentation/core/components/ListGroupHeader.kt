@@ -19,9 +19,12 @@ import tachiyomi.presentation.core.components.material.padding
 fun ListGroupHeader(
     text: String,
     modifier: Modifier = Modifier,
+    // KMK -->
     tonalElevation: Dp = 0.dp,
     count: Int? = null,
+    // KMK <--
 ) {
+    // KMK -->
     Surface(
         modifier = modifier
             .fillMaxWidth(),
@@ -31,6 +34,7 @@ fun ListGroupHeader(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
         ) {
+            // KMK <--
             Text(
                 text = text,
                 modifier = Modifier
@@ -42,6 +46,7 @@ fun ListGroupHeader(
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.bodyMedium,
             )
+            // KMK -->
             if (count != null) {
                 Badge(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -50,6 +55,7 @@ fun ListGroupHeader(
                     Text("$count")
                 }
             }
+            // KMK <--
         }
     }
 }

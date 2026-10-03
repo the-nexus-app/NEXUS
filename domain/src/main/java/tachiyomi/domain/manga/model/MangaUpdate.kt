@@ -27,7 +27,9 @@ data class MangaUpdate(
     val version: Long? = null,
     val notes: String? = null,
     val memo: JsonObject? = null,
+    // SY -->
     val filteredScanlators: List<String>? = null,
+    // SY <--
 )
 
 fun Manga.toMangaUpdate(): MangaUpdate {
@@ -43,6 +45,7 @@ fun Manga.toMangaUpdate(): MangaUpdate {
         chapterFlags = chapterFlags,
         coverLastModified = coverLastModified,
         url = url,
+        // SY -->
         title = ogTitle,
         artist = ogArtist,
         author = ogAuthor,
@@ -50,6 +53,7 @@ fun Manga.toMangaUpdate(): MangaUpdate {
         description = ogDescription,
         genre = ogGenre,
         status = ogStatus,
+        // SY <--
         updateStrategy = updateStrategy,
         initialized = initialized,
         version = version,

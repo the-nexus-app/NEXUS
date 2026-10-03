@@ -44,6 +44,7 @@ interface SChapter : Serializable {
             return SChapterImpl()
         }
 
+        // SY -->
         operator fun invoke(
             name: String,
             url: String,
@@ -59,5 +60,6 @@ interface SChapter : Serializable {
                 this.scanlator = scanlator
             }
         }
+        // SY <--
     }
 }

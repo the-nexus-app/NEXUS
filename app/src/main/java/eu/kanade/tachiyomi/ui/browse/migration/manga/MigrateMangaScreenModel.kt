@@ -33,8 +33,10 @@ class MigrateMangaScreenModel(
     private val _events: Channel<MigrationMangaEvent> = Channel()
     val events: Flow<MigrationMangaEvent> = _events.receiveAsFlow()
 
+    // KMK -->
     // First and last selected index in list
     private val selectedPositions: Array<Int> = arrayOf(-1, -1)
+    // KMK <--
 
     init {
         screenModelScope.launch {
@@ -49,7 +51,9 @@ class MigrateMangaScreenModel(
                     mutableState.update { state ->
                         state.copy(
                             titleList = persistentListOf(),
+                            // KMK -->
                             selection = emptySet(),
+                            // KMK <--
                         )
                     }
                 }
@@ -59,6 +63,7 @@ class MigrateMangaScreenModel(
                         .toImmutableList()
                 }
                 .collectLatest { list ->
+                    // KMK -->
                     mutableState.update { state ->
                         val titleIds = list.map { it.id }.toSet()
                         val selection = state.selection.intersect(titleIds).toMutableSet()
@@ -68,12 +73,14 @@ class MigrateMangaScreenModel(
                             selection = selection,
                         )
                     }
+                    // KMK <--
                 }
         }
     }
 
     fun toggleSelection(
         item: Manga,
+        // KMK -->
         selected: Boolean,
         fromLongPress: Boolean = false,
     ) {
@@ -129,10 +136,12 @@ class MigrateMangaScreenModel(
                     }
                 }
             }
+            // KMK <--
             state.copy(selection = selection)
         }
     }
 
+    // KMK -->
     private fun updateSelectedPositions(titles: List<Manga>, selection: Set<Long>) {
         if (selection.isEmpty()) {
             selectedPositions[0] = -1
@@ -169,9 +178,12 @@ class MigrateMangaScreenModel(
             state.copy(selection = selection)
         }
     }
+    // KMK <--
 
     fun clearSelection() {
+        // KMK -->
         toggleAllSelection(false)
+        // KMK <--
     }
 
     @Immutable

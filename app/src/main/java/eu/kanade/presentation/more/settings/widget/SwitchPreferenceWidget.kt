@@ -18,8 +18,10 @@ fun SwitchPreferenceWidget(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: CharSequence? = null,
+    // KMK -->
     /** Can be either [ImageVector] or [Painter] */
     icon: Any? = null,
+    // KMK <--
     checked: Boolean = false,
     onCheckedChanged: (Boolean) -> Unit,
 ) {

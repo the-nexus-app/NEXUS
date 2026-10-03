@@ -52,7 +52,9 @@ class DownloadHolder(private val view: View, val adapter: DownloadAdapter) :
             notifyProgress()
             notifyDownloadedPages()
         }
+        // KMK -->
         binding.downloadProgress.setColors(adapter.colorScheme)
+        // KMK <--
     }
 
     /**

@@ -56,10 +56,12 @@ abstract class SyncService(
             remoteSyncData.backup?.backupSourcePreferences,
         )
 
+        // SY -->
         val mergedSavedSearchesList = mergeSavedSearchesLists(
             localSyncData.backup?.backupSavedSearches,
             remoteSyncData.backup?.backupSavedSearches,
         )
+        // SY <--
 
         // Create the merged Backup object
         val mergedBackup = Backup(
@@ -69,7 +71,9 @@ abstract class SyncService(
             backupPreferences = mergedPreferencesList,
             backupSourcePreferences = mergedSourcePreferencesList,
 
+            // SY -->
             backupSavedSearches = mergedSavedSearchesList,
+            // SY <--
         )
 
         // Create the merged SData object
@@ -462,6 +466,7 @@ abstract class SyncService(
         return mergedPrefsMap.values.toList()
     }
 
+    // SY -->
     private fun mergeSavedSearchesLists(
         localSearches: List<BackupSavedSearch>?,
         remoteSearches: List<BackupSavedSearch>?,
@@ -517,4 +522,5 @@ abstract class SyncService(
 
         return mergedSearches
     }
+    // SY <--
 }

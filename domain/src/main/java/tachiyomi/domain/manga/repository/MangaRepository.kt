@@ -40,9 +40,12 @@ interface MangaRepository {
 
     suspend fun insertNetworkManga(
         manga: List<Manga>,
+        // KMK -->
         updateInfo: Boolean = true,
+        // KMK <--
     ): List<Manga>
 
+    // SY -->
     suspend fun getMangaBySourceId(sourceId: Long): List<Manga>
 
     suspend fun getAll(): List<Manga>
@@ -50,4 +53,5 @@ interface MangaRepository {
     suspend fun deleteManga(mangaId: Long)
 
     suspend fun getReadMangaNotInLibraryView(): List<LibraryManga>
+    // SY <--
 }

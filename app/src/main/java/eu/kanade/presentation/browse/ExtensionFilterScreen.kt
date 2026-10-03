@@ -70,10 +70,13 @@ private fun ExtensionFilterContent(
     val context = LocalContext.current
     LazyColumn(
         contentPadding = contentPadding,
+        // KMK -->
         modifier = Modifier
             .padding(start = MaterialTheme.padding.small),
+        // KMK <--
     ) {
         items(state.languages) { language ->
+            // KMK -->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -86,13 +89,16 @@ private fun ExtensionFilterContent(
                         .width(48.dp)
                         .height(32.dp),
                 )
+                // KMK <--
                 SwitchPreferenceWidget(
                     modifier = Modifier.animateItem(),
                     title = LocaleHelper.getSourceDisplayName(language, context) +
+                        // KMK -->
                         (
                             " (${LocaleHelper.getDisplayName(language)})"
                                 .takeIf { language !in listOf("all", "other") } ?: ""
                             ),
+                    // KMK <--
                     checked = language in state.enabledLanguages,
                     onCheckedChanged = { onClickLang(language) },
                 )
@@ -101,6 +107,7 @@ private fun ExtensionFilterContent(
     }
 }
 
+// KMK -->
 @Preview
 @Composable
 @Suppress("UnusedPrivateMember")
@@ -228,3 +235,4 @@ private fun ExtensionFilterContentPreview() {
         onClickLang = {},
     )
 }
+// KMK <--

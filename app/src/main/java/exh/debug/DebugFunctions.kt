@@ -100,7 +100,9 @@ object DebugFunctions {
                     },
                     manga = manga,
                     fetchDetails = true,
+                    // KMK -->
                     manualFetch = true,
+                    // KMK <--
                 )
             }
         }
@@ -110,9 +112,11 @@ object DebugFunctions {
         return runBlocking {
             val result = getExhFavoriteMangaWithMetadata.await().mapNotNull { manga ->
                 val meta = getFlatMetadataById.await(manga.id)?.raise<EHentaiSearchMetadata>()
+                // KMK -->
                 meta?.let { "Aged: ${meta.aged}\t-\tTitle: ${manga.title}" }
             }
             listOf("Count: ${result.size}") + result
+            // KMK <--
         }.joinToString(",\n")
     }
 

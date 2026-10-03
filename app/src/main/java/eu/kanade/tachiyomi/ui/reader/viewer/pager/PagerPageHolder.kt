@@ -43,7 +43,9 @@ class PagerPageHolder(
     val viewer: PagerViewer,
     val page: ReaderPage,
     private var extraPage: ReaderPage? = null,
+    // KMK -->
     @ColorInt private val seedColor: Int? = null,
+    // KMK <--
 ) : ReaderPageImageView(readerThemedContext), ViewPagerAdapter.PositionableView {
 
     /**
@@ -76,7 +78,9 @@ class PagerPageHolder(
 
     init {
         loadJob = scope.launch { loadPageAndProcessStatus(1) }
+        // SY -->
         extraLoadJob = scope.launch { loadPageAndProcessStatus(2) }
+        // SY <--
     }
 
     /**
@@ -94,7 +98,9 @@ class PagerPageHolder(
         if (progressIndicator == null) {
             progressIndicator = ReaderProgressIndicator(
                 context = context,
+                // KMK -->
                 seedColor = seedColor,
+                // KMK <--
             )
             addView(progressIndicator)
         }
@@ -108,8 +114,10 @@ class PagerPageHolder(
      * the Job is cancelled.
      */
     private suspend fun loadPageAndProcessStatus(pageIndex: Int) {
+        // SY -->
         val page = if (pageIndex == 1) page else extraPage
         page ?: return
+        // SY <--
         val loader = page.chapter.pageLoader ?: return
         supervisorScope {
             launchIO {
@@ -175,6 +183,7 @@ class PagerPageHolder(
         try {
             val (source, isAnimated, background) = withIOContext {
                 streamFn().buffered(16).use { source ->
+                    // SY -->
                     if (extraPage != null) {
                         streamFn2?.invoke()
                             ?.buffered(16)
@@ -186,6 +195,7 @@ class PagerPageHolder(
                         } else {
                             mergePages(Buffer().readFrom(source), source2?.let { Buffer().readFrom(it) })
                         }
+                        // SY <--
                         val isAnimated = ImageUtil.isAnimatedAndSupported(itemSource)
                         val background = if (!isAnimated && viewer.config.automaticBackground) {
                             ImageUtil.chooseBackground(context, itemSource.peek())
@@ -206,9 +216,11 @@ class PagerPageHolder(
                         cropBorders = viewer.config.imageCropBorders,
                         zoomStartPosition = viewer.config.imageZoomType,
                         landscapeZoom = viewer.config.landscapeZoom,
+                        // KMK -->
                         disableZoomIn = viewer.config.disableZoomIn,
                         doubleTapZoom = viewer.config.doubleTapZoom,
                         landscapeZoomScaleType = viewer.config.landscapeZoomScaleType,
+                        // KMK <--
                     ),
                 )
                 if (!isAnimated) {

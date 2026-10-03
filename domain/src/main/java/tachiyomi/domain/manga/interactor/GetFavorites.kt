@@ -20,6 +20,7 @@ class GetFavorites(
 
     fun subscribe(sourceId: Long): Flow<List<Manga>> {
         return mangaRepository.getFavoritesBySourceId(sourceId)
+            // KMK -->
             .retry {
                 if (it is NullPointerException) {
                     delay(0.5.seconds)
@@ -30,5 +31,6 @@ class GetFavorites(
             }.catch {
                 this@GetFavorites.logcat(LogPriority.ERROR, it)
             }
+        // KMK <--
     }
 }

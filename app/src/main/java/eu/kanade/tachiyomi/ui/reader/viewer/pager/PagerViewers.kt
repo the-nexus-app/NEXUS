@@ -8,7 +8,9 @@ import eu.kanade.tachiyomi.ui.reader.ReaderActivity
  */
 class L2RPagerViewer(
     activity: ReaderActivity,
+    // KMK -->
     @ColorInt seedColor: Int? = null,
+    // KMK <--
 ) : PagerViewer(activity, seedColor) {
     /**
      * Creates a new left to right pager.
@@ -23,7 +25,9 @@ class L2RPagerViewer(
  */
 class R2LPagerViewer(
     activity: ReaderActivity,
+    // KMK -->
     @ColorInt seedColor: Int? = null,
+    // KMK <--
 ) : PagerViewer(activity, seedColor) {
     /**
      * Creates a new right to left pager.
@@ -52,7 +56,9 @@ class R2LPagerViewer(
  */
 class VerticalPagerViewer(
     activity: ReaderActivity,
+    // KMK -->
     @ColorInt seedColor: Int? = null,
+    // KMK <--
 ) : PagerViewer(activity, seedColor) {
     /**
      * Creates a new vertical pager.

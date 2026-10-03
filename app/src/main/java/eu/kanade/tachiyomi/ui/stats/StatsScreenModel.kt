@@ -36,15 +36,20 @@ class StatsScreenModel(
     private val getTracks: GetTracks = Injekt.get(),
     private val preferences: LibraryPreferences = Injekt.get(),
     private val trackerManager: TrackerManager = Injekt.get(),
+    // SY -->
     private val getReadMangaNotInLibraryView: GetReadMangaNotInLibraryView = Injekt.get(),
+    // SY <--
 ) : StateScreenModel<StatsScreenState>(StatsScreenState.Loading) {
 
     private val loggedInTrackers by lazy { trackerManager.loggedInTrackers() }
 
+    // SY -->
     private val _allRead = MutableStateFlow(false)
     val allRead = _allRead.asStateFlow()
+    // SY <--
 
     init {
+        // SY -->
         _allRead.onEach { allRead ->
             mutableState.update { StatsScreenState.Loading }
             val libraryManga = getLibraryManga.await() + if (allRead) {
@@ -52,6 +57,7 @@ class StatsScreenModel(
             } else {
                 emptyList()
             }
+            // SY <--
 
             val distinctLibraryManga = libraryManga.fastDistinctBy { it.id }
 
@@ -94,7 +100,9 @@ class StatsScreenModel(
                     trackers = trackersStatData,
                 )
             }
+            // SY -->
         }.launchIn(screenModelScope)
+        // SY <--
     }
 
     private fun getGlobalUpdateItemCount(libraryManga: List<LibraryManga>): Int {

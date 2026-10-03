@@ -165,10 +165,12 @@ private fun <T> WheelPicker(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .showSoftKeyboard(true)
+                    // KMK -->
                     .clearFocusOnSoftKeyboardHide(processManualInput),
                 /* clearFocusOnSoftKeyboardHide doesn't work because onSoftKeyboardHide won't trigger
                     a recomposition => use keyboardActions instead */
                 onKeyboardAction = { processManualInput() },
+                // KMK <--
                 state = value,
                 lineLimits = TextFieldLineLimits.SingleLine,
                 keyboardOptions = KeyboardOptions(

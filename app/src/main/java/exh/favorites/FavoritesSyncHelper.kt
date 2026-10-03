@@ -74,7 +74,9 @@ class FavoritesSyncHelper(val context: Context) {
     private var wifiLock: WifiManager.WifiLock? = null
     private var wakeLock: PowerManager.WakeLock? = null
 
+    // KMK -->
     private val logger = ResettableLogger { safeXLogTag() }
+    // KMK <--
 
     val status: MutableStateFlow<FavoritesSyncStatus> = MutableStateFlow(FavoritesSyncStatus.Idle)
 

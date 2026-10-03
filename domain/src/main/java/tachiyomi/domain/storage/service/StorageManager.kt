@@ -64,7 +64,9 @@ class StorageManager(
     private fun getBaseDir(uri: String): UniFile? {
         return UniFile.fromUri(context, uri.toUri())
             .takeIf {
+                // KMK -->
                 it?.isAccessibleDirectory == true
+                // KMK <--
             }
     }
 
@@ -80,11 +82,14 @@ class StorageManager(
         return baseDir?.createDirectory(LOCAL_SOURCE_PATH)
     }
 
+    // SY -->
     fun getLogsDirectory(): UniFile? {
         return baseDir?.createDirectory(LOGS_PATH)
     }
+    // SY <--
 
     companion object {
+        // KMK -->
         /**
          * Extension property to check if a UniFile is an accessible directory
          */
@@ -210,6 +215,7 @@ class StorageManager(
                 it.activityInfo.packageName != null && it.activityInfo.packageName != "com.android.tv.frameworkpackagestubs"
             }
         }
+        // KMK <--
     }
 }
 
@@ -217,4 +223,6 @@ private const val AUTOMATIC_BACKUPS_PATH = "autobackup"
 private const val DOWNLOADS_PATH = "downloads"
 private const val LOCAL_SOURCE_PATH = "local"
 
+// SY -->
 private const val LOGS_PATH = "logs"
+// SY <--

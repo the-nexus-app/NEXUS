@@ -28,6 +28,7 @@ class SyncChapterProgressWithTrack(
         if (tracker !is EnhancedTracker) {
             return null
         }
+        // KMK -->
         return sync(mangaId, remoteTrack, tracker)
     }
 
@@ -39,14 +40,18 @@ class SyncChapterProgressWithTrack(
         remoteTrack: Track,
         tracker: Tracker,
     ): Int? {
+        // KMK <--
         // Current chapters in database, sort by source's order because database's order is a mess
         val dbChapters = getChaptersByMangaId.await(mangaId)
+            // KMK -->
             .sortedByDescending { it.sourceOrder }
+            // KMK <--
             .filter { it.isRecognizedNumber }
 
         val sortedChapters = dbChapters
             .sortedBy { it.chapterNumber }
 
+        // KMK -->
         var lastCheckChapter: Double
         var checkingChapter = 0.0
 
@@ -63,6 +68,7 @@ class SyncChapterProgressWithTrack(
                 chapter.chapterNumber >= lastCheckChapter && chapter.chapterNumber <= remoteTrack.lastChapterRead
             }
             .filter { chapter -> !chapter.read }
+            // KMK <--
             .map { it.copy(read = true).toChapterUpdate() }
 
         // only take into account continuous reading
@@ -78,6 +84,7 @@ class SyncChapterProgressWithTrack(
                 // update Track in database
                 insertTrack.await(updatedTrack)
             }
+            // KMK -->
             // Always update local chapters following Tracker even past chapters
             if (chapterUpdates.isNotEmpty() &&
                 !tracker.hasNotStartedReading(remoteTrack.status)
@@ -85,9 +92,12 @@ class SyncChapterProgressWithTrack(
                 updateChapter.awaitAll(chapterUpdates)
                 return lastRead.toInt()
             }
+            // KMK <--
         } catch (e: Throwable) {
             logcat(LogPriority.WARN, e)
         }
+        // KMK -->
         return null
+        // KMK <--
     }
 }

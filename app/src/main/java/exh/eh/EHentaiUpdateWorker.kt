@@ -269,7 +269,9 @@ class EHentaiUpdateWorker(private val context: Context, workerParams: WorkerPara
 
         private const val TAG = "EHBackgroundUpdater"
 
+        // KMK -->
         private val logger = ResettableLogger { safeXLogTag() }
+        // KMK <--
 
         fun launchBackgroundTest(context: Context) {
             context.workManager.enqueue(

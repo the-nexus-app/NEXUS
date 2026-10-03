@@ -16,9 +16,11 @@ object TelemetryConfig {
         analytics = FirebaseAnalytics.getInstance(context)
         FirebaseApp.initializeApp(context)
         crashlytics = FirebaseCrashlytics.getInstance()
+        // KMK -->
         if (isPreviewBuildType) {
             analytics?.setUserProperty("preview_version", commitCount)
         }
+        // KMK <--
     }
 
     fun setAnalyticsEnabled(enabled: Boolean) {

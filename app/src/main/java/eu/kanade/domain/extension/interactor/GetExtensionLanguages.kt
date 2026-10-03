@@ -37,6 +37,7 @@ class GetExtensionLanguages(
         }
     }
 
+    // KMK -->
     companion object {
         fun getLanguageIconID(lang: String): Int? {
             return when (lang) {
@@ -171,6 +172,7 @@ class GetExtensionLanguages(
             }
         }
     }
+    // KMK <--
 }
 
 @Preview
