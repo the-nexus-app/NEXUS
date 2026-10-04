@@ -1,6 +1,6 @@
 {
   "baseBranchPatterns": [
-    "master"
+    "main"
   ],
   "rebaseWhen": "conflicted",
   "semanticCommits": "enabled",

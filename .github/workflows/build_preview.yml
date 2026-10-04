@@ -1,5 +1,5 @@
 name: Preview Builder
-# Manually build a preview on master
+# Manually build a preview on main
 
 on:
   # Dispatch or Manual triggers
@@ -7,7 +7,7 @@ on:
 
 #  push:
 #    branches:
-#      - master
+#      - main
 #    paths:
 #      - '**'
 #      - '!**.md'
@@ -97,7 +97,7 @@ jobs:
           echo "BUILD_TYPE_NAME=$build_type_name" >> $GITHUB_OUTPUT
 
       - name: Create Tag '${{ steps.prepare_env.outputs.TAG_NAME }}'
-        if: ${{ github.ref }} == "refs/heads/master"
+        if: github.ref == 'refs/heads/main'
         run: |
           git tag "${{ steps.prepare_env.outputs.TAG_NAME }}"
           git push origin "${{ steps.prepare_env.outputs.TAG_NAME }}"
@@ -116,7 +116,7 @@ jobs:
   build-app:
     runs-on: 'ubuntu-24.04'
     needs: prepare-build
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Clone Repository (${{ needs.prepare-build.outputs.VERSION_TAG }} - ${{ needs.prepare-build.outputs.TAG_NAME }})
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0

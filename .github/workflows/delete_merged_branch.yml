@@ -18,11 +18,11 @@ jobs:
       - name: Delete branch
         run: |
           branch_name=$(echo "${{ github.event.pull_request.head.ref }}")
-          if [ "$branch" != "refs/heads/main" ] && [ "$branch" != "refs/heads/master" ]; then
+          if [ "$branch_name" != "main" ]; then
             echo "Deleting branch ${branch_name}"
             git push origin --delete $branch_name
           else
-            echo "Skipping deletion of main or master branch"
+            echo "Skipping deletion of main branch"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -43,7 +43,7 @@ jobs:
       - name: Tag name
         id: tag_name
         run: |
-          if [ "${{ steps.get_tag.outputs.VERSION_TAG }}" = "master" ]; then
+          if [ "${{ steps.get_tag.outputs.VERSION_TAG }}" = "main" ]; then
             tag_name=${{ steps.get_tag.outputs.VERSION_TAG }}-r${{ steps.prepare_env.outputs.COMMIT_COUNT }}
             else
             tag_name=${{ steps.get_tag.outputs.VERSION_TAG }}
