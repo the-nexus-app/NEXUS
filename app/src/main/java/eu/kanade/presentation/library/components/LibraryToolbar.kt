@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import eu.kanade.presentation.components.AppBar
 import eu.kanade.presentation.components.AppBarActions
+import eu.kanade.presentation.components.AppBarTitle
 import kotlinx.collections.immutable.persistentListOf
 import tachiyomi.i18n.MR
 import tachiyomi.presentation.core.i18n.stringResource
@@ -59,12 +60,12 @@ private fun LibraryRegularToolbar(
     val context = LocalContext.current
     AppBar(
         titleContent = {
-            Text(
-                text = stringResource(MR.strings.label_library),
-                maxLines = 1,
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.SemiBold,
+            AppBarTitle(
+                title = stringResource(MR.strings.label_library),
+                titleStyle = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
                 ),
+                titleColor = MaterialTheme.colorScheme.primary,
             )
         },
         actions = {
