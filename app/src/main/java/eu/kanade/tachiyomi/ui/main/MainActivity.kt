@@ -25,8 +25,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -312,6 +314,23 @@ class MainActivity : BaseActivity() {
                                 .padding(contentPadding)
                                 .consumeWindowInsets(contentPadding),
                         )
+
+                        // NXS --> Solid status bar scrim. Edge-to-edge leaves the status bar
+                        // transparent, and Dashboard has no AppBar masking it the way every other
+                        // tab does, so anything scrolling past contentPadding's top offset passes
+                        // behind the clock — the header/search are fine at rest, it is the scrolled
+                        // items that overlap. NEXUS keeps surface == background in every theme, so
+                        // this matches both the AppBar tabs and the Dashboard Scaffold exactly and
+                        // reads as plain background until content scrolls underneath. Deliberately
+                        // opaque (unlike the 0.8 nav scrim) so nothing shows through behind the clock.
+                        Spacer(
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .fillMaxWidth()
+                                .windowInsetsTopHeight(WindowInsets.statusBars)
+                                .background(MaterialTheme.colorScheme.background),
+                        )
+                        // NXS <--
 
                         // Draw navigation bar scrim when needed
                         if (remember { isNavigationBarNeedsScrim() }) {
