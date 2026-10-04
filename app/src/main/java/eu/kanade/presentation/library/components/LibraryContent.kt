@@ -38,7 +38,9 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun LibraryContent(
     categories: List<Category>,
+    // KMK -->
     activeCategoryIndex: Int,
+    // KMK <--
     searchQuery: String?,
     selection: Set<Long>,
     contentPadding: PaddingValues,
@@ -56,10 +58,12 @@ fun LibraryContent(
     getDisplayMode: (Int) -> PreferenceMutableState<LibraryDisplayMode>,
     getColumnsForOrientation: (Boolean) -> PreferenceMutableState<Int>,
     getItemsForCategory: (Category) -> List<LibraryItem>,
+    // NXS -->
     onSearchQueryChange: (String?) -> Unit,
     searchScope: LibrarySearchScope,
     onScopeSelected: (LibrarySearchScope) -> Unit,
     onManageCategoriesClick: () -> Unit,
+    // NXS <--
 ) {
     Column(
         modifier = Modifier.padding(
@@ -68,6 +72,7 @@ fun LibraryContent(
             end = contentPadding.calculateEndPadding(LocalLayoutDirection.current),
         ),
     ) {
+        // NXS -->
         LibrarySearchBar(
             searchQuery = searchQuery,
             onSearchQueryChange = onSearchQueryChange,
@@ -75,6 +80,7 @@ fun LibraryContent(
             onScopeSelected = onScopeSelected,
         )
 
+        // NXS <--
         val pagerState = rememberPagerState(currentPage) { categories.size }
 
         val scope = rememberCoroutineScope()
@@ -82,6 +88,7 @@ fun LibraryContent(
 
         if (showPageTabs && categories.isNotEmpty() && (categories.size > 1 || !categories.first().isSystemCategory)) {
             LaunchedEffect(categories) {
+                // KMK -->
                 val targetPage = when {
                     categories.isEmpty() -> 0
                     activeCategoryIndex != pagerState.currentPage -> activeCategoryIndex.coerceAtMost(categories.size - 1)
@@ -91,6 +98,7 @@ fun LibraryContent(
                 if (targetPage != pagerState.currentPage) {
                     pagerState.scrollToPage(targetPage)
                 }
+                // KMK <--
             }
             LibraryTabs(
                 categories = categories,
@@ -101,7 +109,9 @@ fun LibraryContent(
                         pagerState.animateScrollToPage(it)
                     }
                 },
+                // NXS -->
                 onManageClick = onManageCategoriesClick,
+                // NXS <--
             )
         }
 

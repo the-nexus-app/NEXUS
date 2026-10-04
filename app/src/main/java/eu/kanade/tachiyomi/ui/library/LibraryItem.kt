@@ -14,8 +14,10 @@ data class LibraryItem(
     val unreadCount: Long = -1,
     val isLocal: Boolean = false,
     val sourceLanguage: String = "",
+    // KMK -->
     val useLangIcon: Boolean = true,
     val source: Source? = null,
+    // KMK <--
     private val sourceManager: SourceManager = Injekt.get(),
 ) {
     val id: Long = libraryManga.id

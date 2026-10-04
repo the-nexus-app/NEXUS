@@ -48,6 +48,7 @@ class ExtensionStoresScreen(
             onCopy = { context.copyToClipboard(it.indexUrl, it.indexUrl) },
             onOpenWebsite = { it.contact.website.let(context::openInBrowser) },
             onOpenDiscord = { it.contact.discord?.let(context::openInBrowser) },
+            // KMK -->
             onClickEnable = {
                 screenModel.enableStore(it.indexUrl)
                 screenModel.refreshExtensionList()
@@ -58,6 +59,7 @@ class ExtensionStoresScreen(
                 screenModel.refreshExtensionList()
                 context.toast(KMR.strings.extensions_page_need_refresh)
             },
+            // KMK <--
             onClickDelete = { screenModel.showDialog(ExtensionStoreDialog.Delete(it)) },
             onClickRefresh = { screenModel.refreshRepos() },
             navigateUp = navigator::pop,

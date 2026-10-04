@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- NXS -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     android:insetLeft="8dp"
     android:insetTop="8dp"
@@ -7,3 +8,4 @@
     <bitmap
         android:src="@drawable/nexus_logo" />
 </inset>
+<!-- /NXS -->

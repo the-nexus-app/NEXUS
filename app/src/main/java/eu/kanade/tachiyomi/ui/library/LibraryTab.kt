@@ -97,7 +97,9 @@ data object LibraryTab : Tab {
             val isSelected = LocalTabNavigator.current.current.key == key
             val image = AnimatedImageVector.animatedVectorResource(R.drawable.anim_library_enter)
             return TabOptions(
+                // NXS -->
                 index = 2u,
+                // NXS <--
                 title = stringResource(MR.strings.label_library),
                 icon = rememberAnimatedVectorPainter(image, isSelected),
             )
@@ -120,6 +122,7 @@ data object LibraryTab : Tab {
 
         val snackbarHostState = remember { SnackbarHostState() }
 
+        // NXS -->
         // Used by the per-card continue-reading button.
         val resumeReading: (LibraryManga) -> Unit = { manga ->
             scope.launchIO {
@@ -135,18 +138,40 @@ data object LibraryTab : Tab {
             Unit
         }
 
+        // NEXUS: while the visible list is synthetic (an "All Categories" search, or the
+        // category filter's single "Ungrouped" tab) there is no row in the categories
+        // table behind it. Passing it to a category-scoped action resolves to the system
+        // (uncategorized) category, so it is reported as null here and callers fall back
+        // to library-wide behaviour.
+        val backingCategory: Category? = state.activeCategory.takeUnless { state.isVirtualCategoryView }
+
+        // NXS <--
         val onClickRefresh: (Category?) -> Boolean = { category ->
+            // NXS -->
+            // NEXUS: a virtual tab has no real group behind it either, so refresh runs as a
+            // plain library-wide update rather than following the grouping preference -
+            // which would otherwise scope it by a source/status the tab is not grouped by.
+            val refreshGroup = if (state.isVirtualCategoryView) {
+                LibraryGroup.BY_DEFAULT
+            } else {
+                state.groupType
+            }
+            // NXS <--
+            // SY -->
             val started = LibraryUpdateJob.startNow(
                 context = context,
-                category = if (state.groupType == LibraryGroup.BY_DEFAULT) category else null,
-                group = state.groupType,
-                groupExtra = when (state.groupType) {
+                // NXS -->
+                category = if (refreshGroup == LibraryGroup.BY_DEFAULT) category else null,
+                group = refreshGroup,
+                groupExtra = when (refreshGroup) {
+                    // NXS <--
                     LibraryGroup.BY_DEFAULT -> null
                     LibraryGroup.BY_SOURCE, LibraryGroup.BY_TRACK_STATUS -> category?.id?.toString()
                     LibraryGroup.BY_STATUS -> category?.id?.minus(1)?.toString()
                     else -> null
                 },
             )
+            // SY <--
             scope.launch {
                 val msgRes = when {
                     !started -> MR.strings.update_already_running
@@ -165,8 +190,10 @@ data object LibraryTab : Tab {
                     onClickUnselectAll = screenModel::clearSelection,
                     onClickSelectAll = screenModel::selectAll,
                     onClickInvertSelection = screenModel::invertSelection,
+                    // NXS -->
                     onClickControls = { screenModel.showSettingsDialog() },
-                    onClickRefresh = { onClickRefresh(state.activeCategory) },
+                    onClickRefresh = { onClickRefresh(backingCategory) },
+                    // NXS <--
                     onClickGlobalUpdate = { onClickRefresh(null) },
                     onClickOpenRandomManga = {
                         scope.launch {
@@ -199,16 +226,21 @@ data object LibraryTab : Tab {
                     onDeleteClicked = screenModel::openDeleteMangaDialog,
                     onMigrateClicked = {
                         val selection = state
+                            // KMK -->
                             .selectedManga
                             .filterNot { it.source == MERGED_SOURCE_ID }
                             .map { it.id }
+                        // KMK <--
                         screenModel.clearSelection()
+                        // KMK -->
                         if (selection.isEmpty()) {
                             context.toast(SYMR.strings.no_valid_entry)
                         } else {
+                            // KMK <--
                             navigator.push(MigrationConfigScreen(selection))
                         }
                     },
+                    // KMK -->
                     onMergeClicked = {
                         if (state.selection.size == 1) {
                             val manga = state.selectedManga.first()
@@ -261,10 +293,13 @@ data object LibraryTab : Tab {
                             snackbarHostState.showSnackbar(context.stringResource(msgRes))
                         }
                     },
+                    // KMK <--
+                    // SY -->
                     onClickCleanTitles = screenModel::cleanTitles.takeIf { state.showCleanTitles },
                     onClickCollectRecommendations = screenModel::showRecommendationSearchDialog.takeIf { state.selection.size > 1 },
                     onClickAddToMangaDex = screenModel::syncMangaToDex.takeIf { state.showAddToMangadex },
                     onClickResetInfo = screenModel::resetInfo.takeIf { state.showResetInfo },
+                    // SY <--
                 )
             },
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -290,7 +325,9 @@ data object LibraryTab : Tab {
                 else -> {
                     LibraryContent(
                         categories = state.displayedCategories,
+                        // KMK -->
                         activeCategoryIndex = state.coercedActiveCategoryIndex,
+                        // KMK <--
                         searchQuery = state.searchQuery,
                         selection = state.selection,
                         contentPadding = contentPadding,
@@ -299,13 +336,17 @@ data object LibraryTab : Tab {
                         showPageTabs = state.showCategoryTabs || !state.searchQuery.isNullOrEmpty(),
                         onChangeCurrentPage = screenModel::updateActiveCategoryIndex,
                         onClickManga = { navigator.push(MangaScreen(it)) },
+                        // NXS -->
                         onContinueReadingClicked = resumeReading.takeIf { state.showMangaContinueButton },
+                        // NXS <--
                         onToggleSelection = screenModel::toggleSelection,
                         onToggleRangeSelection = { category, manga ->
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             screenModel.toggleRangeSelection(category, manga)
                         },
-                        onRefresh = { onClickRefresh(state.activeCategory) },
+                        // NXS -->
+                        onRefresh = { onClickRefresh(backingCategory) },
+                        // NXS <--
                         onGlobalSearchClicked = {
                             navigator.push(GlobalSearchScreen(screenModel.state.value.searchQuery ?: ""))
                         },
@@ -313,12 +354,14 @@ data object LibraryTab : Tab {
                         getDisplayMode = { screenModel.getDisplayMode() },
                         getColumnsForOrientation = { screenModel.getColumnsForOrientation(it) },
                         getItemsForCategory = { state.getItemsForCategory(it) },
+                        // NXS -->
                         onSearchQueryChange = screenModel::search,
                         searchScope = state.searchScope,
                         onScopeSelected = { scope ->
                             Injekt.get<LibraryPreferences>().librarySearchScope().set(scope)
                         },
                         onManageCategoriesClick = { navigator.push(CategoryScreen()) },
+                        // NXS <--
                     )
                 }
             }
@@ -330,10 +373,18 @@ data object LibraryTab : Tab {
                 LibrarySettingsDialog(
                     onDismissRequest = onDismissRequest,
                     screenModel = settingsScreenModel,
-                    category = state.activeCategory,
+                    // NXS -->
+                    category = backingCategory,
+                    // NXS <--
+                    // SY -->
                     hasCategories = state.libraryData.categories.fastAny { !it.isSystemCategory },
+                    // SY <--
+                    // KMK -->
                     categories = state.libraryData.categories.filterNot(Category::isSystemCategory),
+                    // KMK <--
+                    // NXS -->
                     initialTabIndex = dialog.initialTabIndex,
+                    // NXS <--
                 )
             }
             is LibraryScreenModel.Dialog.ChangeCategory -> {
@@ -341,7 +392,9 @@ data object LibraryTab : Tab {
                     initialSelection = dialog.initialSelection,
                     onDismissRequest = onDismissRequest,
                     onEditCategories = {
+                        // KMK -->
                         // screenModel.clearSelection()
+                        // KMK <--
                         navigator.push(CategoryScreen())
                     },
                     onConfirm = { include, exclude ->
@@ -360,6 +413,7 @@ data object LibraryTab : Tab {
                     },
                 )
             }
+            // SY -->
             LibraryScreenModel.Dialog.SyncFavoritesWarning -> {
                 SyncFavoritesWarningDialog(
                     onDismissRequest = onDismissRequest,
@@ -388,9 +442,11 @@ data object LibraryTab : Tab {
                     },
                 )
             }
+            // SY <--
             null -> {}
         }
 
+        // SY -->
         SyncFavoritesProgressDialog(
             status = screenModel.favoritesSync.status.collectAsState().value,
             setStatusIdle = { screenModel.favoritesSync.status.value = FavoritesSyncStatus.Idle },
@@ -402,6 +458,7 @@ data object LibraryTab : Tab {
             setStatusIdle = { screenModel.recommendationSearch.status.value = SearchStatus.Idle },
             setStatusCancelling = { screenModel.recommendationSearch.status.value = SearchStatus.Cancelling },
         )
+        // SY <--
 
         BackHandler(enabled = state.selectionMode || state.searchQuery != null) {
             when {
@@ -418,14 +475,19 @@ data object LibraryTab : Tab {
             if (!state.isLoading) {
                 (context as? MainActivity)?.ready = true
 
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
                 with(DiscordRPCService) {
                     discordScope.launchIO { setScreen(context, DiscordScreen.LIBRARY) }
                 }
+                // NXS -->
                 // AM (DISCORD)
+                // NXS <--
             }
         }
 
+        // SY -->
         val recSearchState by screenModel.recommendationSearch.status.collectAsState()
         LaunchedEffect(recSearchState) {
             when (val current = recSearchState) {
@@ -447,6 +509,7 @@ data object LibraryTab : Tab {
                 else -> {}
             }
         }
+        // SY <--
 
         LaunchedEffect(Unit) {
             launch { queryEvent.receiveAsFlow().collect(screenModel::search) }

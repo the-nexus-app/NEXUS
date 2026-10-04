@@ -45,7 +45,9 @@ class SourceRepositoryImpl(
             sourceManager.sources,
         ) { sourceIdWithFavoriteCount, _ -> sourceIdWithFavoriteCount }
             .map {
+                // SY -->
                 it.filterNot { it.source == MERGED_SOURCE_ID }
+                    // SY <--
                     .map { (sourceId, count) ->
                         val source = sourceManager.getOrStub(sourceId)
                         val domainSource = mapSourceToDomainSource(source).copy(
@@ -76,25 +78,31 @@ class SourceRepositoryImpl(
         filterList: FilterList,
     ): SourcePagingSource {
         val source = sourceManager.getOrStub(sourceId)
+        // SY -->
         if (source.isEhBasedSource()) {
             return EHentaiSearchPagingSource(source, query, filterList)
         }
+        // SY <--
         return SourceSearchPagingSource(source, query, filterList)
     }
 
     override fun getPopular(sourceId: Long): SourcePagingSource {
         val source = sourceManager.getOrStub(sourceId)
+        // SY -->
         if (source.isEhBasedSource()) {
             return EHentaiPopularPagingSource(source)
         }
+        // SY <--
         return SourcePopularPagingSource(source)
     }
 
     override fun getLatest(sourceId: Long): SourcePagingSource {
         val source = sourceManager.getOrStub(sourceId)
+        // SY -->
         if (source.isEhBasedSource()) {
             return EHentaiLatestPagingSource(source)
         }
+        // SY <--
         return SourceLatestPagingSource(source)
     }
 

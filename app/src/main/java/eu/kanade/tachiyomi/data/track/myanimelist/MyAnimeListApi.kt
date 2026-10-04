@@ -192,6 +192,7 @@ class MyAnimeListApi(
         }
     }
 
+    // SY -->
     suspend fun getMangaMetadata(track: DomainTrack): TrackMangaMetadata {
         return withIOContext {
             val url = "$BASE_API_URL/manga".toUri().buildUpon()
@@ -227,6 +228,7 @@ class MyAnimeListApi(
             }
         }
     }
+    // SY <--
 
     private suspend fun getListPage(offset: Int): MALSearchResult {
         return withIOContext {

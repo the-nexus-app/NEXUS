@@ -27,17 +27,23 @@ internal class ExtensionApi {
     private val updateExtensionStores: UpdateExtensionStores by injectLazy()
     private val extensionManager: ExtensionManager by injectLazy()
 
+    // SY -->
     private val sourcePreferences: SourcePreferences by injectLazy()
+    // SY <--
 
     private val lastExtCheck: Preference<Long> by lazy {
         preferenceStore.getLong(Preference.appStateKey("last_ext_check"), 0)
     }
 
     suspend fun findExtensions(): List<Extension.Available> {
+        // KMK -->
         val disabledRepos = sourcePreferences.disabledRepos().get()
+        // KMK <--
         return withIOContext {
             repository.fetchExtensions(
+                // KMK -->
                 disabledRepos,
+                // KMK <--
             )
         }
     }
@@ -61,12 +67,16 @@ internal class ExtensionApi {
             findExtensions().also { lastExtCheck.set(Instant.now().toEpochMilli()) }
         }
 
+        // SY -->
         val blacklistEnabled = sourcePreferences.enableSourceBlacklist().get()
+        // SY <--
 
         val installedExtensions = ExtensionLoader.loadExtensions(context)
             .filterIsInstance<LoadResult.Success>()
             .map { it.extension }
+            // SY -->
             .filterNot { it.isBlacklisted(blacklistEnabled) }
+        // SY <--
 
         val extensionsWithUpdate = mutableListOf<Extension.Installed>()
         for (installedExt in installedExtensions) {
@@ -87,12 +97,18 @@ internal class ExtensionApi {
         return extensionsWithUpdate
     }
 
+    // SY -->
     private fun Extension.isBlacklisted(
         blacklistEnabled: Boolean = sourcePreferences.enableSourceBlacklist().get(),
+        // KMK -->
         isHentaiEnabled: Boolean = Injekt.get<ExhPreferences>().isHentaiEnabled().get(),
+        // KMK <--
     ): Boolean {
         return pkgName in BlacklistedSources.BLACKLISTED_EXTENSIONS &&
             blacklistEnabled &&
+            // KMK -->
             isHentaiEnabled
+        // KMK <--
     }
+    // SY <--
 }

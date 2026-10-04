@@ -8,6 +8,8 @@ data class Release(
     val info: String,
     val releaseLink: String,
     val downloadLink: String,
+    // KMK -->
     val preRelease: Boolean = false,
     val draft: Boolean = false,
+    // KMK <--
 )

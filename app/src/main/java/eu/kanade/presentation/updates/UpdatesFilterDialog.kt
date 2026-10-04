@@ -89,7 +89,9 @@ private fun ColumnScope.FilterSheet(
 
     Row(
         modifier = Modifier
+            // KMK -->
             .clickable { screenModel.toggleSwitch(UpdatesPreferences::filterExcludedScanlators) }
+            // KMK <--
             .fillMaxWidth()
             .padding(horizontal = SettingsItemsPaddings.Horizontal),
         verticalAlignment = Alignment.CenterVertically,
@@ -103,10 +105,13 @@ private fun ColumnScope.FilterSheet(
 
         Switch(
             checked = filterExcludedScanlators,
+            // KMK -->
             onCheckedChange = { screenModel.toggleSwitch(UpdatesPreferences::filterExcludedScanlators) },
+            // KMK <--
         )
     }
 
+    // KMK -->
     HorizontalDivider(modifier = Modifier.padding(MaterialTheme.padding.small))
 
     val panoramaCover by screenModel.updatesPreferences.usePanoramaCover().collectAsState()
@@ -130,4 +135,5 @@ private fun ColumnScope.FilterSheet(
             onCheckedChange = { screenModel.toggleSwitch(UpdatesPreferences::usePanoramaCover) },
         )
     }
+    // KMK <--
 }

@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.model
 
 data class Bookmark(
@@ -8,3 +9,4 @@ data class Bookmark(
     val createdAt: Long,
     val note: String? = null,
 )
+// NXS <--

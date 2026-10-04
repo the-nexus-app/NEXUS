@@ -10,12 +10,16 @@ internal class HistoryWithRelationsProvider : PreviewParameterProvider<HistoryWi
         id = 1L,
         chapterId = 2L,
         mangaId = 3L,
+        // SY -->
         ogTitle = "Test Title",
+        // SY <--
         chapterNumber = 10.2,
+        // KMK -->
         read = true,
         lastPageRead = 5,
         totalCountCalculated = 5L,
         readCountCalculated = 3L,
+        // KMK <--
         readAt = Date(1697247357L),
         readDuration = 123L,
         coverData = tachiyomi.domain.manga.model.MangaCover(
@@ -31,12 +35,16 @@ internal class HistoryWithRelationsProvider : PreviewParameterProvider<HistoryWi
         id = 1L,
         chapterId = 2L,
         mangaId = 3L,
+        // SY -->
         ogTitle = "Test Title",
+        // SY <--
         chapterNumber = 10.2,
+        // KMK -->
         read = false,
         lastPageRead = 5,
         totalCountCalculated = 5L,
         readCountCalculated = 3L,
+        // KMK <--
         readAt = null,
         readDuration = 123L,
         coverData = tachiyomi.domain.manga.model.MangaCover(
@@ -52,12 +60,16 @@ internal class HistoryWithRelationsProvider : PreviewParameterProvider<HistoryWi
         id = 1L,
         chapterId = 2L,
         mangaId = 3L,
+        // SY -->
         ogTitle = "Test Title",
+        // SY <--
         chapterNumber = -2.0,
+        // KMK -->
         read = true,
         lastPageRead = 5,
         totalCountCalculated = 5L,
         readCountCalculated = 3L,
+        // KMK <--
         readAt = Date(1697247357L),
         readDuration = 123L,
         coverData = tachiyomi.domain.manga.model.MangaCover(

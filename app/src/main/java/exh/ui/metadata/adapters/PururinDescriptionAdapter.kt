@@ -29,11 +29,13 @@ import kotlin.math.round
 @Composable
 fun PururinDescription(state: State.Success, openMetadataViewer: () -> Unit) {
     val context = LocalContext.current
+    // KMK -->
     val colorScheme = AndroidViewColorScheme(MaterialTheme.colorScheme)
     val iconColor = colorScheme.iconColor
     val ratingBarColor = colorScheme.ratingBarColor
     val ratingBarSecondaryColor = colorScheme.ratingBarSecondaryColor
     val textColor = LocalContentColor.current.toArgb()
+    // KMK <--
     AndroidView(
         modifier = Modifier.fillMaxWidth(),
         factory = { factoryContext ->
@@ -49,21 +51,29 @@ fun PururinDescription(state: State.Success, openMetadataViewer: () -> Unit) {
                     genre?.let { tag -> MetadataUIUtil.getGenreAndColour(context, tag.name) }
                         ?.let { (genre, name) ->
                             binding.genre.setBackgroundColor(genre.color)
+                            // KMK -->
                             binding.genre.setTextColor(genreTextColor(genre))
+                            // KMK <--
                             name
                         } ?: genre?.name ?: context.stringResource(MR.strings.unknown)
                 }
 
             binding.uploader.text = meta.uploaderDisp ?: meta.uploader.orEmpty()
+            // KMK -->
             binding.uploader.setTextColor(textColor)
+            // KMK <--
 
             binding.size.text = meta.fileSize ?: context.stringResource(MR.strings.unknown)
+            // KMK -->
             binding.size.bindDrawable(context, R.drawable.ic_outline_sd_card_24, iconColor)
             binding.size.setTextColor(textColor)
+            // KMK <--
 
             binding.pages.text = context.pluralStringResource(SYMR.plurals.num_pages, meta.pages ?: 0, meta.pages ?: 0)
+            // KMK -->
             binding.pages.bindDrawable(context, R.drawable.ic_baseline_menu_book_24, iconColor, 4.dpToPx)
             binding.pages.setTextColor(textColor)
+            // KMK <--
 
             val ratingFloat = meta.averageRating?.toFloat()
             binding.ratingBar.rating = ratingFloat ?: 0F
@@ -71,6 +81,7 @@ fun PururinDescription(state: State.Success, openMetadataViewer: () -> Unit) {
             binding.rating.text =
                 (round((ratingFloat ?: 0F) * 100.0) / 100.0).toString() + " - " +
                 MetadataUIUtil.getRatingString(context, ratingFloat?.times(2))
+            // KMK -->
             binding.ratingBar.supportProgressTintList = ColorStateList.valueOf(ratingBarColor)
             binding.ratingBar.supportSecondaryProgressTintList = ColorStateList.valueOf(ratingBarSecondaryColor)
             binding.rating.setTextColor(textColor)
@@ -78,6 +89,7 @@ fun PururinDescription(state: State.Success, openMetadataViewer: () -> Unit) {
             binding.moreInfo.bindDrawable(context, R.drawable.ic_info_24dp, iconColor)
             binding.moreInfo.text = context.stringResource(SYMR.strings.more_info)
             binding.moreInfo.setTextColor(iconColor)
+            // KMK <--
 
             listOf(
                 binding.genre,

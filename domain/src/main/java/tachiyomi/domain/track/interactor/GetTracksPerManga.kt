@@ -13,9 +13,11 @@ class GetTracksPerManga(
     fun subscribe(): Flow<Map<Long, List<Track>>> {
         return trackRepository.getTracksAsFlow().map { tracks ->
             tracks.groupBy { it.mangaId }
+                // SY -->
                 .mapValues { entry ->
                     entry.value.filterNot { isTrackUnfollowed.await(it) }
                 }
+            // SY <--
         }
     }
 }

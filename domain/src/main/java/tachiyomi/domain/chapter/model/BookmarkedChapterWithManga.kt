@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.chapter.model
 
 import tachiyomi.domain.manga.interactor.GetCustomMangaInfo
@@ -24,3 +25,4 @@ data class BookmarkedChapterWithManga(
         private val getCustomMangaInfo: GetCustomMangaInfo by injectLazy()
     }
 }
+// NXS <--

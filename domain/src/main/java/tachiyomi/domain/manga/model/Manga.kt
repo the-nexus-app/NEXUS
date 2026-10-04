@@ -30,6 +30,7 @@ data class Manga(
     val chapterFlags: Long,
     val coverLastModified: Long,
     val url: String,
+    // SY -->
     val ogTitle: String,
     val ogArtist: String?,
     val ogAuthor: String?,
@@ -37,6 +38,7 @@ data class Manga(
     val ogDescription: String?,
     val ogGenre: List<String>?,
     val ogStatus: Long,
+    // SY <--
     val updateStrategy: UpdateStrategy,
     val initialized: Boolean,
     val lastModifiedAt: Long,
@@ -46,7 +48,8 @@ data class Manga(
     val memo: JsonObject,
 ) : JavaSerializable {
 
-    /* KMK*/ @Transient /* KMK*/
+    // SY -->
+    /* KMK --> */ @Transient /* KMK <-- */
     private val customMangaInfo = if (favorite) {
         getCustomMangaInfo.get(id)
     } else {
@@ -73,13 +76,14 @@ data class Manga(
 
     val status: Long
         get() = customMangaInfo?.status ?: ogStatus
+    // SY <--
 
     val expectedNextUpdate: Instant?
         get() = nextUpdate
-            /* KMK
+            /* KMK -->
             Always predict release date even for Completed entries
             .takeIf { status != SManga.COMPLETED.toLong() }?
-             KMK*/
+             KMK <-- */
             .let { Instant.ofEpochMilli(it) }
 
     val sorting: Long
@@ -148,7 +152,9 @@ data class Manga(
         fun create() = Manga(
             id = -1L,
             url = "",
+            // Sy -->
             ogTitle = "",
+            // SY <--
             source = -1L,
             favorite = false,
             lastUpdate = 0L,
@@ -158,12 +164,14 @@ data class Manga(
             viewerFlags = 0L,
             chapterFlags = 0L,
             coverLastModified = 0L,
+            // SY -->
             ogArtist = null,
             ogAuthor = null,
             ogThumbnailUrl = null,
             ogDescription = null,
             ogGenre = null,
             ogStatus = 0L,
+            // SY <--
             updateStrategy = UpdateStrategy.ALWAYS_UPDATE,
             initialized = false,
             lastModifiedAt = 0L,
@@ -173,7 +181,9 @@ data class Manga(
             memo = JsonObject.EMPTY,
         )
 
+        // SY -->
         private val getCustomMangaInfo: GetCustomMangaInfo by injectLazy()
+        // SY <--
     }
 
     @Throws(ObjectStreamException::class)

@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.data.bookmark
 
 import tachiyomi.domain.bookmark.model.Bookmark
@@ -86,3 +87,4 @@ object BookmarkMapper {
         )
     }
 }
+// NXS <--

@@ -40,6 +40,7 @@ dependencies {
 
     api(libs.bundles.sqldelight)
 }
+// NXS -->
 
 tasks.matching { it.name == "verifyDebugDatabaseMigration" || it.name == "verifyReleaseDatabaseMigration" }
     .configureEach {
@@ -47,3 +48,4 @@ tasks.matching { it.name == "verifyDebugDatabaseMigration" || it.name == "verify
             !org.gradle.internal.os.OperatingSystem.current().isWindows
         }
     }
+// NXS <--

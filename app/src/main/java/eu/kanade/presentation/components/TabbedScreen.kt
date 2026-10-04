@@ -41,20 +41,27 @@ fun TabbedScreen(
     state: PagerState = rememberPagerState { tabs.size },
     searchQuery: String? = null,
     onChangeSearchQuery: (String?) -> Unit = {},
+    // KMK -->
     feedScreenModel: FeedScreenModel,
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
+    // KMK <--
+    // NXS -->
     navigateUp: (() -> Unit)? = null,
+    // NXS <--
 ) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // KMK -->
     val feedState by feedScreenModel.state.collectAsState()
     val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
+    // KMK <--
 
     Scaffold(
         topBar = {
             val tab = tabs[state.currentPage]
             val searchEnabled = tab.searchEnabled
+            // KMK -->
             if (bulkFavoriteState.selectionMode) {
                 BulkSelectionToolbar(
                     selectedCount = bulkFavoriteState.selection.size,
@@ -77,7 +84,9 @@ fun TabbedScreen(
                     },
                 )
             } else {
+                // KMK <--
                 SearchToolbar(
+                    // NXS -->
                     titleContent = {
                         AppBarTitle(
                             title = stringResource(titleRes),
@@ -88,6 +97,7 @@ fun TabbedScreen(
                         )
                     },
                     navigateUp = navigateUp,
+                    // NXS <--
                     searchEnabled = searchEnabled,
                     searchQuery = if (searchEnabled) searchQuery else null,
                     onChangeSearchQuery = onChangeSearchQuery,

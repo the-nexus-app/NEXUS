@@ -21,12 +21,16 @@ fun LogoHeader() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
+            // NXS -->
             painter = painterResource(R.drawable.nexus_trans_logo),
+            // NXS <--
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .padding(vertical = 56.dp)
+                // NXS -->
                 .size(96.dp),
+            // NXS <--
         )
 
         HorizontalDivider()

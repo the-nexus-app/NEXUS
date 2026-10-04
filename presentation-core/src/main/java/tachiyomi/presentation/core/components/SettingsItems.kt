@@ -400,6 +400,7 @@ fun TextItem(label: String, value: String, onChange: (String) -> Unit) {
     )
 }
 
+// SY -->
 @Composable
 fun IconItem(
     label: String,
@@ -423,6 +424,7 @@ fun IconItem(
         onClick = onClick,
     )
 }
+// SY <--
 
 @Composable
 fun SettingsChipRow(labelRes: StringResource, content: @Composable FlowRowScope.() -> Unit) {

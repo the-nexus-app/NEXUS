@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.bookmarkedpages
 
 import androidx.compose.runtime.Composable
@@ -43,3 +44,4 @@ class BookmarkedPagesScreen : Screen() {
         )
     }
 }
+// NXS <--

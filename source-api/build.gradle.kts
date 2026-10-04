@@ -17,9 +17,11 @@ kotlin {
                 api(libs.rxjava)
                 api(libs.jsoup)
 
+                // SY -->
                 api(projects.i18n)
                 api(projects.i18nSy)
                 api(kotlinx.reflect)
+                // SY <--
 
                 implementation(project.dependencies.platform(compose.bom))
                 implementation(compose.runtime)

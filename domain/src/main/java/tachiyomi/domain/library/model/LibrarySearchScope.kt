@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.library.model
 
 /**
@@ -16,3 +17,4 @@ enum class LibrarySearchScope {
     ALL_CATEGORIES,
     CURRENT_CATEGORY,
 }
+// NXS <--

@@ -89,8 +89,10 @@ internal fun Screen.MigrateMangaDialog(
             ) {
                 TextButton(
                     onClick = {
+                        // KMK -->
                         // Allow `migrate` mangas when using `Bulk-favorite`
                         // onDismissRequest()
+                        // KMK <--
                         onClickTitle()
                     },
                 ) {
@@ -137,11 +139,15 @@ private class MigrateDialogScreenModel(
                 val applicable = when (it) {
                     MigrationFlag.CHAPTER -> true
                     MigrationFlag.CATEGORY -> true
+                    // KMK -->
                     MigrationFlag.TRACK -> true
+                    // KMK <--
                     MigrationFlag.CUSTOM_COVER -> current.hasCustomCover(coverCache)
                     MigrationFlag.NOTES -> current.notes.isNotBlank()
                     MigrationFlag.REMOVE_DOWNLOAD -> downloadManager.getDownloadCount(current) > 0
+                    // KMK -->
                     MigrationFlag.EXTRA -> true
+                    // KMK <--
                 }
                 if (applicable) add(it)
             }
@@ -170,13 +176,17 @@ private class MigrateDialogScreenModel(
         val state = state.value
         val current = state.current ?: return
         val target = state.target ?: return
+        // KMK -->
         // sourcePreference.migrationFlags().set(state.selectedFlags)
+        // KMK <--
         mutableState.update { it.copy(isMigrating = true) }
         try {
-            migrateManga(current, target, replace, /* KMK*/ state.selectedFlags /* KMK*/)
+            migrateManga(current, target, replace, /* KMK --> */ state.selectedFlags /* KMK <-- */)
             mutableState.update { it.copy(isMigrating = false, isMigrated = true) }
+            // KMK -->
         } catch (_: Throwable) {
             mutableState.update { it.copy(isMigrating = false, isMigrated = false) }
+            // KMK <--
         }
     }
 

@@ -70,7 +70,9 @@ fun UpdateScreen(
     state: UpdatesScreenModel.State,
     snackbarHostState: SnackbarHostState,
     lastUpdated: Long,
+    // SY -->
     preserveReadingPosition: Boolean,
+    // SY <--
     onClickCover: (UpdatesItem) -> Unit,
     onSelectAll: (Boolean) -> Unit,
     onInvertSelection: () -> Unit,
@@ -80,20 +82,26 @@ fun UpdateScreen(
     onMultiBookmarkClicked: (List<UpdatesItem>, bookmark: Boolean) -> Unit,
     onMultiMarkAsReadClicked: (List<UpdatesItem>, read: Boolean) -> Unit,
     onMultiDeleteClicked: (List<UpdatesItem>) -> Unit,
+    // KMK -->
     updateSwipeStartAction: LibraryPreferences.ChapterSwipeAction,
     updateSwipeEndAction: LibraryPreferences.ChapterSwipeAction,
     onUpdateSwipe: (UpdatesItem, LibraryPreferences.ChapterSwipeAction) -> Unit,
+    // KMK <--
+    // NXS -->
     showHiddenUpdates: Boolean,
     onToggleHiddenUpdates: () -> Unit,
     onUpdateSelected: (
         UpdatesItem, /* KMK*/
         UpdatesScreenModel.UpdateSelectionOptions, /* KMK*/
     ) -> Unit,
+    // NXS <--
     onOpenChapter: (UpdatesItem) -> Unit,
     onFilterClicked: () -> Unit,
     hasActiveFilters: Boolean,
+    // KMK -->
     usePanoramaCover: Boolean,
     collapseToggle: (key: String) -> Unit,
+    // KMK <--
 ) {
     BackHandler(enabled = state.selectionMode, onBack = { onSelectAll(false) })
 
@@ -109,8 +117,10 @@ fun UpdateScreen(
                 onInvertSelection = { onInvertSelection() },
                 onCancelActionMode = { onSelectAll(false) },
                 scrollBehavior = scrollBehavior,
+                // NXS -->
                 showHiddenUpdates = showHiddenUpdates,
                 onToggleHiddenUpdates = onToggleHiddenUpdates,
+                // NXS <--
             )
         },
         bottomBar = {
@@ -124,6 +134,7 @@ fun UpdateScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { contentPadding ->
+        // NXS -->
         // Recomputed whenever the update items, the hidden manga IDs, or the Hidden Updates
         // lock state change, so toggling the lock immediately reveals/hides hidden-category
         // updates without needing to navigate away and back. When everything visible ends up
@@ -132,9 +143,12 @@ fun UpdateScreen(
         val uiModels = remember(state.items, state.showHiddenUpdates, state.hiddenMangaIds) {
             state.getUiModel()
         }
+        // NXS <--
         when {
             state.isLoading -> LoadingScreen(Modifier.padding(contentPadding))
+            // NXS -->
             uiModels.isEmpty() -> EmptyScreen(
+                // NXS <--
                 stringRes = MR.strings.information_no_recent,
                 modifier = Modifier.padding(contentPadding),
             )
@@ -161,19 +175,25 @@ fun UpdateScreen(
                         contentPadding = contentPadding,
                     ) {
                         updatesUiItems(
+                            // KMK -->
                             uiModels = uiModels,
                             expandedState = state.expandedState,
                             collapseToggle = collapseToggle,
                             usePanoramaCover = usePanoramaCover,
+                            // KMK <--
                             selectionMode = state.selectionMode,
+                            // SY -->
                             preserveReadingPosition = preserveReadingPosition,
+                            // SY <--
                             onUpdateSelected = onUpdateSelected,
                             onClickCover = onClickCover,
                             onClickUpdate = onOpenChapter,
                             onDownloadChapter = onDownloadChapter,
+                            // KMK -->
                             updateSwipeStartAction = updateSwipeStartAction,
                             updateSwipeEndAction = updateSwipeEndAction,
                             onUpdateSwipe = onUpdateSwipe,
+                            // KMK <--
                         )
                     }
                 }
@@ -194,13 +214,18 @@ private fun UpdatesAppBar(
     onInvertSelection: () -> Unit,
     onCancelActionMode: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    // NXS -->
     showHiddenUpdates: Boolean,
     onToggleHiddenUpdates: () -> Unit,
+    // NXS <--
     modifier: Modifier = Modifier,
 ) {
+    // NXS -->
     val isActionMode = actionModeCounter > 0
+    // NXS <--
     AppBar(
         modifier = modifier,
+        // NXS -->
         titleContent = {
             if (isActionMode) {
                 AppBarTitle(actionModeCounter.toString())
@@ -209,11 +234,15 @@ private fun UpdatesAppBar(
                     title = stringResource(MR.strings.label_recent_updates),
                     titleStyle = MaterialTheme.typography.headlineSmall.copy(
                         fontWeight = FontWeight.Bold,
+                        // NXS <--
                     ),
+                    // NXS -->
                     titleColor = MaterialTheme.colorScheme.primary,
                 )
             }
+            // NXS <--
         },
+        // NXS -->
         actions = {
             if (isActionMode) {
                 AppBarActions(
@@ -228,7 +257,9 @@ private fun UpdatesAppBar(
                             icon = Icons.Outlined.FlipToBack,
                             onClick = onInvertSelection,
                         ),
+                        // NXS <--
                     ),
+                    // NXS -->
                 )
             } else {
                 AppBarActions(
@@ -254,12 +285,17 @@ private fun UpdatesAppBar(
                             icon = Icons.Outlined.Refresh,
                             onClick = onUpdateLibrary,
                         ),
+                        // NXS <--
                     ),
+                    // NXS -->
                 )
             }
+            // NXS <--
         },
+        // NXS -->
         isActionMode = isActionMode,
         onCancelActionMode = onCancelActionMode,
+        // NXS <--
         scrollBehavior = scrollBehavior,
     )
 }
@@ -302,6 +338,8 @@ sealed interface UpdatesUiModel {
     data class Header(val date: LocalDate, val mangaCount: Int) : UpdatesUiModel
     open class Item(open val item: UpdatesItem, open val isExpandable: Boolean = false) : UpdatesUiModel
 
+    // KMK -->
     /** The first [Item] in a group of chapters from same manga */
     data class Leader(override val item: UpdatesItem, override val isExpandable: Boolean) : Item(item)
+    // KMK <--
 }

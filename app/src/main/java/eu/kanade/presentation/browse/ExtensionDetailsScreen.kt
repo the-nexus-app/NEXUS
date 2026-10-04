@@ -73,7 +73,9 @@ fun ExtensionDetailsScreen(
     navigateUp: () -> Unit,
     state: ExtensionDetailsScreenModel.State,
     onClickSourcePreferences: (sourceId: Long) -> Unit,
+    // KMK -->
     onOpenWebView: (() -> Unit)?,
+    // KMK <--
     onClickEnableAll: () -> Unit,
     onClickDisableAll: () -> Unit,
     onClickClearCookies: () -> Unit,
@@ -183,11 +185,13 @@ private fun ExtensionDetails(
     ScrollbarLazyColumn(
         contentPadding = contentPadding,
     ) {
+        // SY -->
         if (extension.isRedundant) {
             item {
                 WarningBanner(SYMR.strings.redundant_extension_message)
             }
         }
+        // SY <--
         if (extension.isObsolete) {
             item {
                 WarningBanner(MR.strings.obsolete_extension_message)
@@ -374,10 +378,12 @@ private fun DetailsHeader(
             modifier = Modifier.padding(horizontal = MaterialTheme.padding.small),
             title = stringResource(MR.strings.pref_incognito_mode),
             subtitle = stringResource(MR.strings.pref_incognito_mode_extension_summary),
+            // KMK -->
             icon = rememberAnimatedVectorPainter(
                 AnimatedImageVector.animatedVectorResource(R.drawable.anim_incognito),
                 extIncognitoMode,
             ),
+            // KMK <--
             widget = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

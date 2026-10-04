@@ -114,6 +114,7 @@ fun RecommendationSearchProgressDialog(
                             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                         )
                     }
+                    // KMK -->
                     if (status is SearchStatus.Initializing) {
                         Box(
                             modifier = Modifier

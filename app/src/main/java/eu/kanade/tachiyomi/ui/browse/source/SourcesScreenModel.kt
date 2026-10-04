@@ -46,6 +46,7 @@ class SourcesScreenModel(
     private val getEnabledSources: GetEnabledSources = Injekt.get(),
     private val toggleSource: ToggleSource = Injekt.get(),
     private val toggleSourcePin: ToggleSourcePin = Injekt.get(),
+    // SY -->
     private val uiPreferences: UiPreferences = Injekt.get(),
     private val getSourceCategories: GetSourceCategories = Injekt.get(),
     private val getShowLatest: GetShowLatest = Injekt.get(),
@@ -53,6 +54,7 @@ class SourcesScreenModel(
     private val setSourceCategories: SetSourceCategories = Injekt.get(),
     private val sourcePreferences: SourcePreferences = Injekt.get(),
     val smartSearchConfig: SourcesScreen.SmartSearchConfig?,
+    // SY <--
 ) : StateScreenModel<SourcesScreenModel.State>(State()) {
 
     private val _events = Channel<Event>(Int.MAX_VALUE)
@@ -61,9 +63,12 @@ class SourcesScreenModel(
     val useNewSourceNavigation by uiPreferences.useNewSourceNavigation().asState(screenModelScope)
 
     init {
+        // SY -->
         combine(
+            // KMK -->
             state.map { Pair(it.searchQuery, it.nsfwOnly) }
                 .distinctUntilChanged().debounce(SEARCH_DEBOUNCE_MILLIS),
+            // KMK <--
             getEnabledSources.subscribe(),
             getSourceCategories.subscribe(),
             getShowLatest.subscribe(smartSearchConfig != null),
@@ -86,16 +91,20 @@ class SourcesScreenModel(
                 }
             }
             .launchIn(screenModelScope)
+        // SY <--
     }
 
     private fun collectLatestSources(
+        // KMK -->
         filters: Pair<String?, Boolean>,
         unfilteredSources: List<Source>,
         // sources: List<Source>,
+        // KMK <--
         categories: List<String>,
         showLatest: Boolean,
         showPin: Boolean,
     ) {
+        // KMK -->
         val searchQuery = filters.first
         val nsfwOnly = filters.second
         val queryFilter: (String?) -> ((Source) -> Boolean) = { query ->
@@ -113,6 +122,7 @@ class SourcesScreenModel(
         val sources = unfilteredSources
             .filter { !nsfwOnly || it.installedExtension?.isNsfw != false }
             .filter(queryFilter(searchQuery))
+        // KMK <--
         mutableState.update { state ->
             val map = TreeMap<String, MutableList<Source>> { d1, d2 ->
                 // Sources without a lang defined will be placed at the end
@@ -121,8 +131,10 @@ class SourcesScreenModel(
                     d2 == LAST_USED_KEY && d1 != LAST_USED_KEY -> 1
                     d1 == PINNED_KEY && d2 != PINNED_KEY -> -1
                     d2 == PINNED_KEY && d1 != PINNED_KEY -> 1
+                    // SY -->
                     d1.startsWith(CATEGORY_KEY_PREFIX) && !d2.startsWith(CATEGORY_KEY_PREFIX) -> -1
                     d2.startsWith(CATEGORY_KEY_PREFIX) && !d1.startsWith(CATEGORY_KEY_PREFIX) -> 1
+                    // SY <--
                     d1 == "" && d2 != "" -> 1
                     d2 == "" && d1 != "" -> -1
                     else -> d1.compareTo(d2)
@@ -130,7 +142,9 @@ class SourcesScreenModel(
             }
             val byLang = sources.groupByTo(map) {
                 when {
+                    // SY -->
                     it.category != null -> "$CATEGORY_KEY_PREFIX${it.category}"
+                    // SY <--
                     it.isUsedLast -> LAST_USED_KEY
                     Pin.Actual in it.pin -> PINNED_KEY
                     else -> it.lang
@@ -152,11 +166,13 @@ class SourcesScreenModel(
                         )
                     }
                     .toImmutableList(),
+                // SY -->
                 categories = categories
                     .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it })
                     .toImmutableList(),
                 showPin = showPin,
                 showLatest = showLatest,
+                // SY <--
             )
         }
     }
@@ -169,6 +185,7 @@ class SourcesScreenModel(
         toggleSourcePin.await(source)
     }
 
+    // SY -->
     fun toggleExcludeFromDataSaver(source: Source) {
         toggleExcludeFromDataSaver.await(source)
     }
@@ -180,6 +197,7 @@ class SourcesScreenModel(
     fun showSourceCategoriesDialog(source: Source) {
         mutableState.update { it.copy(dialog = Dialog.SourceCategories(source)) }
     }
+    // SY <--
 
     fun showSourceDialog(source: Source) {
         mutableState.update { it.copy(dialog = Dialog.SourceLongClick(source)) }
@@ -189,6 +207,7 @@ class SourcesScreenModel(
         mutableState.update { it.copy(dialog = null) }
     }
 
+    // KMK -->
     fun search(query: String?) {
         mutableState.update {
             it.copy(searchQuery = query)
@@ -200,6 +219,7 @@ class SourcesScreenModel(
             it.copy(nsfwOnly = !it.nsfwOnly)
         }
     }
+    // KMK <--
 
     sealed interface Event {
         data object FailedFetchingSources : Event
@@ -215,12 +235,16 @@ class SourcesScreenModel(
         val dialog: Dialog? = null,
         val isLoading: Boolean = true,
         val items: ImmutableList<SourceUiModel> = persistentListOf(),
+        // SY -->
         val categories: ImmutableList<String> = persistentListOf(),
         val showPin: Boolean = true,
         val showLatest: Boolean = false,
         val dataSaverEnabled: Boolean = false,
+        // SY <--
+        // KMK -->
         val searchQuery: String? = null,
         val nsfwOnly: Boolean = false,
+        // KMK <--
     ) {
         val isEmpty = items.isEmpty()
     }
@@ -229,6 +253,8 @@ class SourcesScreenModel(
         const val PINNED_KEY = "pinned"
         const val LAST_USED_KEY = "last_used"
 
+        // SY -->
         const val CATEGORY_KEY_PREFIX = "category-"
+        // SY <--
     }
 }

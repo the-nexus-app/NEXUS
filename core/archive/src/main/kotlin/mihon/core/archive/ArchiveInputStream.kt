@@ -11,7 +11,9 @@ import mihon.core.archive.ArchiveEntry as MihonArchiveEntry
 class ArchiveInputStream(
     buffer: Long,
     size: Long,
+    // SY -->
     encrypted: Boolean,
+    // SY <--
 ) : InputStream() {
     private val lock = Any()
 
@@ -22,9 +24,11 @@ class ArchiveInputStream(
 
     init {
         try {
+            // SY -->
             if (encrypted) {
                 Archive.readAddPassphrase(archive, CbzCrypto.getDecryptedPasswordCbz())
             }
+            // SY <--
             Archive.setCharset(archive, Charsets.UTF_8.name().toByteArray())
             Archive.readSupportFilterAll(archive)
             Archive.readSupportFormatAll(archive)
@@ -67,11 +71,15 @@ class ArchiveInputStream(
         return Archive.readNextHeader(archive).takeUnless { it == 0L }?.let { entry ->
             val name = ArchiveEntry.pathnameUtf8(entry) ?: ArchiveEntry.pathname(entry)?.decodeToString() ?: return null
             val isFile = ArchiveEntry.filetype(entry) == ArchiveEntry.AE_IFREG
+            // SY -->
             val isEncrypted = ArchiveEntry.isEncrypted(entry)
+            // SY <--
             MihonArchiveEntry(
                 name,
                 isFile,
+                // SY -->
                 isEncrypted,
+                // SY <--
             )
         }
     }

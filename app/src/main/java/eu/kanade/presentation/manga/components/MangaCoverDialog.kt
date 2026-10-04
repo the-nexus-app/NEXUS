@@ -66,10 +66,14 @@ fun MangaCoverDialog(
     onSaveClick: () -> Unit,
     onEditClick: ((EditCoverAction) -> Unit)?,
     onDismissRequest: () -> Unit,
+    // KMK -->
     modifier: Modifier = Modifier,
+    // KMK <--
 ) {
+    // KMK -->
     val iconColor = contentColorFor(MaterialTheme.colorScheme.secondaryContainer)
     val dropdownBgColor = MaterialTheme.colorScheme.surfaceVariant
+    // KMK <--
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(
@@ -78,7 +82,9 @@ fun MangaCoverDialog(
         ),
     ) {
         Scaffold(
+            // KMK -->
             modifier = modifier,
+            // KMK <--
             snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
             containerColor = Color.Transparent,
             bottomBar = {
@@ -93,7 +99,9 @@ fun MangaCoverDialog(
                             Icon(
                                 imageVector = Icons.Outlined.Close,
                                 contentDescription = stringResource(MR.strings.action_close),
+                                // KMK -->
                                 tint = iconColor,
+                                // KMK <--
                             )
                         }
                     }
@@ -105,13 +113,17 @@ fun MangaCoverDialog(
                                     title = stringResource(MR.strings.action_share),
                                     icon = Icons.Outlined.Share,
                                     onClick = onShareClick,
+                                    // KMK -->
                                     iconTint = iconColor,
+                                    // KMK <--
                                 ),
                                 AppBar.Action(
                                     title = stringResource(MR.strings.action_save),
                                     icon = Icons.Outlined.Save,
                                     onClick = onSaveClick,
+                                    // KMK -->
                                     iconTint = iconColor,
+                                    // KMK <--
                                 ),
                             ),
                         )
@@ -130,14 +142,18 @@ fun MangaCoverDialog(
                                     Icon(
                                         imageVector = Icons.Outlined.Edit,
                                         contentDescription = stringResource(MR.strings.action_edit_cover),
+                                        // KMK -->
                                         tint = iconColor,
+                                        // KMK <--
                                     )
                                 }
                                 DropdownMenu(
                                     expanded = expanded,
                                     onDismissRequest = { expanded = false },
                                     offset = DpOffset(8.dp, 0.dp),
+                                    // KMK -->
                                     modifier = Modifier.background(dropdownBgColor),
+                                    // KMK <--
                                 ) {
                                     DropdownMenuItem(
                                         text = { Text(text = stringResource(MR.strings.action_edit)) },
@@ -145,9 +161,11 @@ fun MangaCoverDialog(
                                             onEditClick(EditCoverAction.EDIT)
                                             expanded = false
                                         },
+                                        // KMK -->
                                         colors = MenuDefaults.itemColors().copy(
                                             textColor = contentColorFor(dropdownBgColor),
                                         ),
+                                        // KMK <--
                                     )
                                     DropdownMenuItem(
                                         text = { Text(text = stringResource(MR.strings.action_delete)) },
@@ -155,9 +173,11 @@ fun MangaCoverDialog(
                                             onEditClick(EditCoverAction.DELETE)
                                             expanded = false
                                         },
+                                        // KMK -->
                                         colors = MenuDefaults.itemColors().copy(
                                             textColor = contentColorFor(dropdownBgColor),
                                         ),
+                                        // KMK <--
                                     )
                                 }
                             }
@@ -192,8 +212,10 @@ fun MangaCoverDialog(
 
                                 // Copy bitmap in case it came from memory cache
                                 // Because SSIV needs to thoroughly read the image
+                                // KMK -->
                                 val src = (drawable as? BitmapDrawable)?.bitmap
                                 val config = src?.config?.takeIf { it != Bitmap.Config.HARDWARE } ?: Bitmap.Config.ARGB_8888
+                                // KMK <--
                                 val copy = src?.copy(config, false)
                                     ?.toDrawable(view.context.resources)
                                     ?: drawable
@@ -216,7 +238,9 @@ private fun ActionsPill(content: @Composable () -> Unit) {
     Row(
         modifier = Modifier
             .clip(MaterialTheme.shapes.extraLarge)
+            // KMK -->
             .background(MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.95f)),
+        // KMK <--
     ) {
         content()
     }

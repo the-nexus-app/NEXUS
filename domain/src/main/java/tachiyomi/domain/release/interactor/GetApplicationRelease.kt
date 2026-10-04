@@ -22,15 +22,19 @@ class GetApplicationRelease(
     suspend fun await(arguments: Arguments): Result {
         val now = Instant.now()
 
+        // NXS -->
         // Limit automatic checks (foreground app-open, background WorkManager job) to once
         // every CHECK_INTERVAL_HOURS. A user-initiated "Check for updates" always bypasses
         // this via [Arguments.forceCheck].
         val nextCheckTime = Instant.ofEpochMilli(lastChecked.get())
             .plus(AppUpdatePolicy.CHECK_INTERVAL_HOURS, ChronoUnit.HOURS)
+        // NXS <--
         if (!arguments.forceCheck && now.isBefore(nextCheckTime)) {
             return Result.NoNewUpdate
         }
 
+        // KMK -->
+        // NXS -->
         val releases = try {
             service.releaseNotes(arguments)
         } catch (e: Exception) {
@@ -46,6 +50,7 @@ class GetApplicationRelease(
             // or a prerelease to a stable build.
             .filterNot { it.draft }
             .filter { !it.preRelease }
+            // NXS <--
             .filter {
                 isNewVersion(
                     arguments.isPreview,
@@ -55,14 +60,21 @@ class GetApplicationRelease(
                 )
             }
 
+        // NXS -->
         val latest = eligibleReleases.getLatest() ?: return Result.NoNewUpdate
+        // NXS <--
+        // KMK <--
 
         lastChecked.set(now.toEpochMilli())
 
+        // NXS -->
         return Result.NewUpdate(latest)
+        // NXS <--
     }
 
+    // KMK -->
     suspend fun awaitReleaseNotes(arguments: Arguments): Result {
+        // NXS -->
         val releases = try {
             service.releaseNotes(arguments)
         } catch (e: Exception) {
@@ -71,11 +83,16 @@ class GetApplicationRelease(
         }
         val latest = releases
             .filterNot { it.draft }
+            // NXS <--
             .filter { !it.preRelease }
+            // NXS -->
             .getLatest() ?: return Result.NoNewUpdate
+        // NXS <--
         return Result.NewUpdate(latest)
     }
+    // KMK <--
 
+    // NXS -->
     suspend fun awaitReleaseNotesWithComparison(arguments: Arguments): ReleaseNotesResult {
         val releases = try {
             service.releaseNotes(arguments)
@@ -98,6 +115,7 @@ class GetApplicationRelease(
         return ReleaseNotesResult.Success(latest, isUpdateAvailable)
     }
 
+    // NXS <--
     /**
      * [isPreview] is if current version is Preview (beta) build
      *
@@ -106,9 +124,11 @@ class GetApplicationRelease(
      * Release (stable) version will compare with current's [versionName] ("v0.1.2")
      *
      * Preview (beta) version will compare with current's [commitCount] ("r1234")
+     // NXS -->
      *
      * Never throws: any malformed/unparseable tag is treated as "not a new version" so a bad
      * GitHub release can't crash the update check.
+     // NXS <--
      */
     private fun isNewVersion(
         isPreview: Boolean,
@@ -116,6 +136,7 @@ class GetApplicationRelease(
         versionName: String,
         versionTag: String,
     ): Boolean {
+        // NXS -->
         return try {
             if (isPreview) {
                 // Preview builds: based on releases in the preview repo tagged like "r1234"
@@ -126,13 +147,17 @@ class GetApplicationRelease(
                 val newSemVer = parseVersionParts(versionTag) ?: return false
                 val oldSemVer = parseVersionParts(versionName) ?: return false
                 compareVersionParts(newSemVer, oldSemVer) > 0
+                // NXS <--
             }
+            // NXS -->
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, e) { "Failed to parse version tag \"$versionTag\"" }
+            // NXS <--
             false
         }
     }
 
+    // NXS -->
     companion object {
         /**
          * Parses a version string such as "v1.2.3", "1.2.3", "1.2" or "1.2.0" into its numeric
@@ -172,6 +197,7 @@ class GetApplicationRelease(
         }
     }
 
+    // NXS <--
     data class Arguments(
         val isFoss: Boolean,
         /** If current version is Preview (beta) build */
@@ -191,11 +217,13 @@ class GetApplicationRelease(
         data object NoNewUpdate : Result
         data object OsTooOld : Result
     }
+    // NXS -->
 
     sealed interface ReleaseNotesResult {
         data class Success(val release: Release, val isUpdateAvailable: Boolean) : ReleaseNotesResult
         data object Error : ReleaseNotesResult
     }
+    // NXS <--
 }
 
 internal fun List<Release>.getLatest(): Release? {
@@ -207,3 +235,4 @@ internal fun List<Release>.getLatest(): Release? {
             },
         )
 }
+// KMK <--

@@ -91,12 +91,14 @@ fun DuplicateMangaDialog(
     onOpenManga: (manga: Manga) -> Unit,
     onMigrate: (manga: Manga) -> Unit,
     modifier: Modifier = Modifier,
+    // KMK -->
     targetManga: Manga,
     bulkFavoriteManga: Manga? = null,
     onAllowAllDuplicate: () -> Unit = {},
     onSkipAllDuplicate: () -> Unit = {},
     onSkipDuplicate: () -> Unit = {},
     stopRunning: () -> Unit = {},
+    // KMK <--
 ) {
     val sourceManager = remember { Injekt.get<SourceManager>() }
     val minHeight = LocalPreferenceMinHeight.current
@@ -106,7 +108,9 @@ fun DuplicateMangaDialog(
     AdaptiveSheet(
         modifier = modifier,
         onDismissRequest = {
+            // KMK -->
             stopRunning()
+            // KMK <--
             onDismissRequest()
         },
     ) {
@@ -125,11 +129,13 @@ fun DuplicateMangaDialog(
                     .padding(top = MaterialTheme.padding.small),
             )
 
+            // KMK -->
             Text(
                 text = targetManga.title,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.then(horizontalPaddingModifier),
             )
+            // KMK <--
 
             Text(
                 text = stringResource(MR.strings.possible_duplicates_summary),
@@ -138,12 +144,16 @@ fun DuplicateMangaDialog(
             )
 
             LazyRow(
-                horizontalArrangement = /* KMK*/ Arrangement.SpaceAround, /* KMK*/
+                horizontalArrangement = /* KMK --> */ Arrangement.SpaceAround, /* KMK <-- */
                 modifier = Modifier.height(getMaximumMangaCardHeight(duplicates))
+                    // KMK -->
                     .fillMaxWidth(),
+                // KMK <--
                 contentPadding = horizontalPadding,
             ) {
+                // KMK -->
                 itemsIndexed(
+                    // KMK <--
                     items = duplicates,
                     key = { _, it -> it.manga.id },
                 ) { index, it ->
@@ -154,12 +164,15 @@ fun DuplicateMangaDialog(
                         onOpenManga = { onOpenManga(it.manga) },
                     )
 
+                    // KMK -->
                     if (index != duplicates.lastIndex) {
                         Spacer(modifier = Modifier.width(MaterialTheme.padding.small))
                     }
+                    // KMK <--
                 }
             }
 
+            // KMK -->
             if (bulkFavoriteManga != null) {
                 Column(
                     modifier = horizontalPaddingModifier
@@ -238,6 +251,7 @@ fun DuplicateMangaDialog(
                     }
                 }
             } else {
+                // KMK <--
                 Column(modifier = horizontalPaddingModifier) {
                     HorizontalDivider()
 
@@ -279,14 +293,17 @@ private fun DuplicateMangaListItem(
     onOpenManga: () -> Unit,
     onMigrate: () -> Unit,
 ) {
+    // KMK -->
     val usePanoramaCover by Injekt.get<UiPreferences>().usePanoramaCoverAlways().collectAsState()
     val coverRatio = remember { mutableFloatStateOf(1f) }
     val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
+    // KMK <--
 
     val source = getSource()
     val manga = duplicate.manga
     Column(
         modifier = Modifier
+            // KMK -->
             .then(
                 if (usePanoramaCover && coverIsWide) {
                     Modifier.width(MangaCardPanoramaWidth)
@@ -294,6 +311,7 @@ private fun DuplicateMangaListItem(
                     Modifier.width(MangaCardWidth)
                 },
             )
+            // KMK <--
             .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surface)
             .combinedClickable(
@@ -302,6 +320,7 @@ private fun DuplicateMangaListItem(
             )
             .padding(MaterialTheme.padding.small),
     ) {
+        // KMK -->
         Box(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -343,6 +362,7 @@ private fun DuplicateMangaListItem(
                 )
             }
         }
+        // KMK <--
 
         Spacer(modifier = Modifier.height(MaterialTheme.padding.extraSmall))
 
@@ -532,4 +552,6 @@ private fun TextMeasurer.measureHeight(
 private val MangaCardWidth = 152.dp
 private val MangaDetailsIconWidth = 16.dp
 
+// KMK -->
 private val MangaCardPanoramaWidth = 322.dp
+// KMK <--

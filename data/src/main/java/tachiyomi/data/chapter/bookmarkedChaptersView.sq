@@ -1,3 +1,4 @@
+-- NXS -->
 -- NOTE: must update MERGED_SOURCE_ID (6969) here
 CREATE VIEW bookmarkedChaptersView AS
 SELECT
@@ -51,3 +52,4 @@ ORDER BY mangaTitle, chapterNumber;
 getAllBookmarkedChapters:
 SELECT *
 FROM bookmarkedChaptersView;
+-- NXS <--

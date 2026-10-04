@@ -37,9 +37,11 @@ class SyncYomiSyncService(
     private val protoBuf: ProtoBuf = Injekt.get(),
 ) : SyncService(context, json, syncPreferences) {
 
+    // KMK -->
     companion object {
         private val client by lazy { OkHttpClient() }
     }
+    // KMK <--
 
     private class SyncYomiException(message: String?) : Exception(message)
 
@@ -86,7 +88,9 @@ class SyncYomiSyncService(
                 reportSyncEvent(SyncEventStatus.SYNC_SUCCESS)
             } else {
                 reportSyncEvent(SyncEventStatus.SYNC_FAILED, "Failed to push sync data")
+                // KMK -->
                 return null
+                // KMK <--
             }
 
             return finalSyncData.backup
@@ -189,7 +193,9 @@ class SyncYomiSyncService(
         )
 
         client.newCall(uploadRequest).await()
+            // KMK -->
             .use { response ->
+                // KMK <--
                 if (response.isSuccessful) {
                     val newETag = response.headers["ETag"]
                         .takeIf { it?.isNotEmpty() == true } ?: throw SyncYomiException("Missing ETag")

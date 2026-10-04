@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: ❌ Help with Extensions
-    url: https://komikku-app.github.io/docs/faq/browse/extensions
-    about: For extension-related questions/issues
   - name: 🖥️ NEXUS website
-    url: https://github.com/the-nexus-app/NEXUS
+    url: https://the-nexus-app.github.io/nexus-website/
     about: Guides, troubleshooting, and answers to common questions

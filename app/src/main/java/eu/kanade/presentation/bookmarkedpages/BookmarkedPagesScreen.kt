@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.bookmarkedpages
 
 import androidx.compose.foundation.layout.padding
@@ -81,3 +82,4 @@ fun BookmarkedPagesScreen(
         )
     }
 }
+// NXS <--

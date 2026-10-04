@@ -10,7 +10,8 @@ import kotlinx.serialization.Transient
 @Serializable
 open class Page(
     val index: Int,
-    var url: String = "",
+    /* SY --> */
+    var /* SY <-- */ url: String = "",
     var imageUrl: String? = null,
     @Transient var uri: Uri? = null, // Deprecated but can't be deleted due to extensions
 ) : ProgressListener {

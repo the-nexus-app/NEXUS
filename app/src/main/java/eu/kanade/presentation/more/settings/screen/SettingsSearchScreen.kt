@@ -260,7 +260,9 @@ private fun SearchResult(
 @Composable
 @NonRestartableComposable
 private fun getIndex() = settingScreens
+    // SY -->
     .filter(SearchableSettings::isEnabled)
+    // SY <--
     .map { screen ->
         SettingsData(
             title = stringResource(screen.getTitleRes()),
@@ -289,14 +291,20 @@ private val settingScreens = listOf(
     SettingsReaderScreen,
     SettingsDownloadScreen,
     SettingsTrackingScreen,
+    // NXS -->
     // AM (CONNECTIONS)
+    // NXS <--
     SettingsConnectionScreen,
+    // NXS -->
     // AM (CONNECTIONS)
+    // NXS <--
     SettingsBrowseScreen,
     SettingsDataScreen,
     SettingsSecurityScreen,
+    // SY -->
     SettingsEhScreen,
     SettingsMangadexScreen,
+    // SY <--
     SettingsAdvancedScreen,
 )
 

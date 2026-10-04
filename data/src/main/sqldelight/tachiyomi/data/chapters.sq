@@ -88,6 +88,7 @@ FROM chapters
 WHERE bookmark
 AND manga_id = :mangaId;
 
+-- NXS -->
 getBookmarkedChapters:
 SELECT
     M._id AS mangaId,
@@ -133,6 +134,7 @@ ON MP._id = ME.merge_id
 WHERE C.bookmark
 ORDER BY bookmarkedAt DESC;
 
+-- NXS <--
 getChapterByUrl:
 SELECT *
 FROM chapters

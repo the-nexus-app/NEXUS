@@ -1,3 +1,4 @@
+// NXS -->
 package mihon.core.migration.migrations
 
 import eu.kanade.domain.ui.UiPreferences
@@ -23,3 +24,4 @@ class NexusDefaultThemeMigration : Migration {
         return@withIOContext true
     }
 }
+// NXS <--

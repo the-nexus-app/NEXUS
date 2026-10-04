@@ -35,7 +35,9 @@ class SmartSearchMerge(
      * @param manga The manga which will be merged into existed merged entry or the new merged entry (newly created by using [originalMangaId])
      */
     suspend fun smartSearchMerge(manga: Manga, originalMangaId: Long): Manga {
+        // KMK -->
         val context = Injekt.get<Application>()
+        // KMK <--
         val originalManga = getManga.await(originalMangaId)
             ?: throw IllegalArgumentException(context.stringResource(SYMR.strings.merge_unknown_entry, originalMangaId))
         if (originalManga.source == MERGED_SOURCE_ID) {

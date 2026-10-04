@@ -33,7 +33,9 @@ import kotlin.math.min
 @Suppress("LeakingThis")
 abstract class PagerViewer(
     val activity: ReaderActivity,
+    // KMK -->
     @ColorInt private val seedColor: Int? = null,
+    // KMK <--
 ) : Viewer {
 
     val downloadManager: DownloadManager by injectLazy()
@@ -56,7 +58,9 @@ abstract class PagerViewer(
      */
     private val adapter = PagerViewerAdapter(
         this,
+        // KMK -->
         seedColor = seedColor,
+        // KMK <--
     )
 
     /**
@@ -91,7 +95,9 @@ abstract class PagerViewer(
 
     private val pagerListener = object : ViewPager.SimpleOnPageChangeListener() {
         override fun onPageSelected(position: Int) {
+            // SY -->
             if (pager.isRestoring) return
+            // SY <--
             if (!activity.isScrollingThroughPages) {
                 activity.hideMenu()
             }
@@ -386,10 +392,12 @@ abstract class PagerViewer(
      * Pans to the top of the page or if already on the top moves to the previous page.
      */
     protected open fun moveUp() {
+        // KMK -->
         val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
         if (holder != null && holder.canPanUp()) {
             holder.panUp()
         } else {
+            // KMK <--
             moveToPrevious()
         }
     }
@@ -398,10 +406,12 @@ abstract class PagerViewer(
      * Pans to the bottom of the page or if already on the bottom moves to the next page.
      */
     protected open fun moveDown() {
+        // KMK -->
         val holder = (currentPage as? ReaderPage)?.let(::getPageHolder)
         if (holder != null && holder.canPanDown()) {
             holder.panDown()
         } else {
+            // KMK <--
             moveToNext()
         }
     }
@@ -491,6 +501,7 @@ abstract class PagerViewer(
         adapter.cleanupPageSplit()
     }
 
+    // SY -->
     fun updateShifting(page: ReaderPage? = null) {
         adapter.pageToShift = page ?: adapter.joinedItems.getOrNull(pager.currentItem)?.first as? ReaderPage
     }
@@ -500,4 +511,5 @@ abstract class PagerViewer(
     }
 
     fun getShiftedPage(): ReaderPage? = adapter.pageToShift
+    // SY <--
 }

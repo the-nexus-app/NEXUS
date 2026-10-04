@@ -66,7 +66,9 @@ object SettingsLibraryScreen : SearchableSettings {
             getCategoriesGroup(LocalNavigator.currentOrThrow, allCategories, libraryPreferences),
             getGlobalUpdateGroup(allCategories, libraryPreferences),
             getBehaviorGroup(libraryPreferences),
+            // SY -->
             getSortingCategory(LocalNavigator.currentOrThrow, libraryPreferences),
+            // SY <--
         )
     }
 
@@ -195,6 +197,7 @@ object SettingsLibraryScreen : SearchableSettings {
                     ),
                     onClick = { showCategoriesDialog = true },
                 ),
+                // SY -->
                 Preference.PreferenceItem.ListPreference(
                     preference = libraryPreferences.groupLibraryUpdateType(),
                     entries = persistentMapOf(
@@ -205,6 +208,7 @@ object SettingsLibraryScreen : SearchableSettings {
                     ),
                     title = stringResource(SYMR.strings.library_group_updates),
                 ),
+                // SY <--
                 Preference.PreferenceItem.SwitchPreference(
                     preference = libraryPreferences.autoUpdateMetadata(),
                     title = stringResource(MR.strings.pref_library_update_refresh_metadata),
@@ -224,10 +228,12 @@ object SettingsLibraryScreen : SearchableSettings {
                     preference = libraryPreferences.newShowUpdatesCount(),
                     title = stringResource(MR.strings.pref_library_update_show_tab_badge),
                 ),
+                // KMK -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = libraryPreferences.showUpdatingProgressBanner(),
                     title = stringResource(KMR.strings.pref_show_updating_progress_banner),
                 ),
+                // KMK <--
             ),
         )
     }
@@ -281,6 +287,7 @@ object SettingsLibraryScreen : SearchableSettings {
                     preference = libraryPreferences.hideMissingChapters(),
                     title = stringResource(MR.strings.pref_hide_missing_chapter_indicators),
                 ),
+                // KMK -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = libraryPreferences.showEmptyCategoriesSearch(),
                     title = stringResource(KMR.strings.pref_show_empty_categories_search),
@@ -295,10 +302,12 @@ object SettingsLibraryScreen : SearchableSettings {
                     title = stringResource(KMR.strings.pref_fetch_manga_chapters_on_add),
                     subtitle = stringResource(KMR.strings.pref_fetch_manga_chapters_on_add_description),
                 ),
+                // KMK <--
             ),
         )
     }
 
+    // SY -->
     @Composable
     fun getSortingCategory(navigator: Navigator, libraryPreferences: LibraryPreferences): Preference.PreferenceGroup {
         val tagCount by libraryPreferences.sortTagsForLibrary().collectAsState()
@@ -315,4 +324,5 @@ object SettingsLibraryScreen : SearchableSettings {
             ),
         )
     }
+    // SY <--
 }

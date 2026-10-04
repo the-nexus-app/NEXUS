@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
+<!-- NXS -->
 > NEXUS is a fork of [Komikku](https://github.com/komikku-app/komikku), which is
 > itself based on [Mihon](https://github.com/mihonapp/mihon) and
 > [TachiyomiSY](https://github.com/jobobby04/TachiyomiSY). Entries below
@@ -10,6 +11,7 @@ All notable changes to this project will be documented in this file.
 > New entries for changes made in NEXUS itself link to
 > [`the-nexus-app/NEXUS`](https://github.com/the-nexus-app/NEXUS).
 
+<!-- /NXS -->
 The format is a modified version of [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `Added` - for new features.
 - `Changed ` - for changes in existing functionality.

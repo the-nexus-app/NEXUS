@@ -35,17 +35,21 @@ class CategoryRepositoryImpl(
         }
     }
 
+    // SY -->
     override suspend fun insert(category: Category): Long {
         return handler.awaitOneExecutable(true) {
             categoriesQueries.insert(
                 name = category.name,
                 order = category.order,
                 flags = category.flags,
+                // KMK -->
                 hidden = if (category.hidden) 1L else 0L,
+                // KMK <--
             )
             categoriesQueries.selectLastInsertedRowId()
         }
     }
+    // SY <--
 
     override suspend fun updatePartial(update: CategoryUpdate) {
         handler.await {
@@ -66,7 +70,9 @@ class CategoryRepositoryImpl(
             name = update.name,
             order = update.order,
             flags = update.flags,
+            // KMK -->
             hidden = update.hidden?.let { if (it) 1L else 0L },
+            // KMK <--
             categoryId = update.id,
         )
     }

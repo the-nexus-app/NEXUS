@@ -24,7 +24,9 @@ class ExtensionStoresScreenModel(
     private val removeExtensionStore: RemoveExtensionStore = Injekt.get(),
     private val updateExtensionStores: UpdateExtensionStores = Injekt.get(),
     private val extensionManager: ExtensionManager = Injekt.get(),
+    // KMK -->
     private val sourcePreferences: SourcePreferences = Injekt.get(),
+    // KMK <--
 ) : StateScreenModel<ExtensionStoreScreenState>(ExtensionStoreScreenState.Loading) {
 
     private inline fun updateSuccessState(
@@ -46,7 +48,9 @@ class ExtensionStoresScreenModel(
                         when (it) {
                             ExtensionStoreScreenState.Loading -> ExtensionStoreScreenState.Success(
                                 stores = stores,
+                                // KMK -->
                                 disabledRepos = sourcePreferences.disabledRepos().get(),
+                                // KMK <--
                             )
                             is ExtensionStoreScreenState.Success -> it.copy(stores = stores)
                         }
@@ -54,6 +58,7 @@ class ExtensionStoresScreenModel(
                 }
         }
 
+        // KMK -->
         sourcePreferences.disabledRepos().changes()
             .onEach { disabledRepos ->
                 mutableState.update {
@@ -64,6 +69,7 @@ class ExtensionStoresScreenModel(
                 }
             }
             .launchIn(screenModelScope)
+        // KMK <--
     }
 
     /**
@@ -72,7 +78,9 @@ class ExtensionStoresScreenModel(
      * @param indexUrl The baseUrl of the repo to create.
      */
     fun createRepo(indexUrl: String) {
+        // KMK -->
         screenModelScope.launchIO {
+            // KMK <--
             updateSuccessState {
                 it.copy(
                     dialog = when (it.dialog) {
@@ -124,14 +132,17 @@ class ExtensionStoresScreenModel(
      * Deletes the given repo from the database
      */
     fun deleteRepo(indexUrl: String) {
+        // KMK -->
         // Remove repo from disabled list
         enableStore(indexUrl)
+        // KMK <--
         screenModelScope.launchIO {
             removeExtensionStore(indexUrl)
             extensionManager.findAvailableExtensions()
         }
     }
 
+    // KMK -->
     fun enableStore(indexUrl: String) {
         val disabledRepos = sourcePreferences.disabledRepos().get()
         if (indexUrl in disabledRepos) {
@@ -155,6 +166,7 @@ class ExtensionStoresScreenModel(
             extensionManager.findAvailableExtensions()
         }
     }
+    // KMK <--
 
     fun addFromDeeplink(storeIndexUrl: String) {
         updateSuccessState { state ->
@@ -200,7 +212,9 @@ sealed class ExtensionStoreScreenState {
     data class Success(
         val stores: List<ExtensionStore>,
         val dialog: ExtensionStoreDialog? = null,
+        // KMK -->
         val disabledRepos: Set<String> = emptySet(),
+        // KMK <--
     ) : ExtensionStoreScreenState() {
 
         val isEmpty: Boolean

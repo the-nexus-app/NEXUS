@@ -26,8 +26,10 @@ fun TextPreferenceWidget(
     modifier: Modifier = Modifier,
     title: String? = null,
     subtitle: CharSequence? = null,
+    // KMK -->
     /** Can be either [ImageVector] or [Painter] */
     icon: Any? = null,
+    // KMK <--
     iconTint: Color = MaterialTheme.colorScheme.primary,
     widget: @Composable (() -> Unit)? = null,
     onPreferenceClick: (() -> Unit)? = null,
@@ -37,6 +39,7 @@ fun TextPreferenceWidget(
         title = title,
         subcomponent = if (!subtitle.isNullOrBlank()) {
             {
+                // SY -->
                 if (subtitle is AnnotatedString) {
                     Text(
                         text = subtitle,
@@ -47,6 +50,7 @@ fun TextPreferenceWidget(
                         maxLines = 10,
                     )
                 } else {
+                    // SY <--
                     Text(
                         text = subtitle.toString(),
                         modifier = Modifier
@@ -67,12 +71,14 @@ fun TextPreferenceWidget(
                     tint = iconTint,
                     contentDescription = null,
                 )
+                // KMK -->
             } else if (icon != null && icon is Painter) {
                 Icon(
                     painter = icon,
                     tint = iconTint,
                     contentDescription = null,
                 )
+                // KMK <--
             }
         },
         onClick = onPreferenceClick,
@@ -97,6 +103,7 @@ private fun TextPreferenceWidgetPreview() {
                     subtitle = "Text preference summary",
                     onPreferenceClick = {},
                 )
+                // SY -->
                 TextPreferenceWidget(
                     title = "Text preference",
                     subtitle = buildAnnotatedString {
@@ -108,6 +115,7 @@ private fun TextPreferenceWidgetPreview() {
                     },
                     onPreferenceClick = {},
                 )
+                // SY <--
             }
         }
     }

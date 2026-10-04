@@ -49,15 +49,22 @@ class LibraryUpdateNotifier(
 
     private val securityPreferences: SecurityPreferences = Injekt.get(),
     private val sourceManager: SourceManager = Injekt.get(),
+    // NXS -->
     private val getCategories: GetCategories = Injekt.get(),
+    // NXS <--
 ) {
+    // KMK -->
     private val libraryUpdateStatus: LibraryUpdateStatus = Injekt.get()
+    // KMK <--
+    // NXS -->
     private val hiddenUpdatesUnlock: HiddenUpdatesUnlock = Injekt.get()
+    // NXS <--
     private val percentFormatter = NumberFormat.getPercentInstance().apply {
         roundingMode = RoundingMode.DOWN
         maximumFractionDigits = 0
     }
 
+    // NXS -->
     /**
      * True if [manga] belongs to at least one hidden category. This alone does not mean the
      * manga should be suppressed from notifications -- see [isHiddenAndLocked], which is the
@@ -79,6 +86,7 @@ class LibraryUpdateNotifier(
         return isMangaHidden(manga)
     }
 
+    // NXS <--
     /**
      * Pending intent of action that cancels the library update
      */
@@ -90,7 +98,9 @@ class LibraryUpdateNotifier(
      * Bitmap of the app for notifications.
      */
     private val notificationBitmap by lazy {
+        // NXS -->
         BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo)
+        // NXS <--
     }
 
     /**
@@ -124,12 +134,16 @@ class LibraryUpdateNotifier(
                 ),
             )
 
+        // KMK -->
         libraryUpdateStatus.updateProgress(current.toFloat() / total)
+        // KMK <--
 
         if (!securityPreferences.hideNotificationContent().get()) {
+            // NXS -->
             val visibleManga = manga.filterNot { isHiddenAndLocked(it) }
 
             val updatingText = visibleManga.joinToString("\n") { it.title.chop(40) }
+            // NXS <--
             progressNotificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(updatingText))
         }
 
@@ -185,7 +199,9 @@ class LibraryUpdateNotifier(
         ) {
             setContentTitle(context.pluralStringResource(MR.plurals.notification_update_error, failed, failed))
             setContentText(context.stringResource(MR.strings.action_show_errors))
+            // NXS -->
             setSmallIcon(R.drawable.ic_nexus)
+            // NXS <--
             setColor(ContextCompat.getColor(context, R.color.ic_launcher))
 
             setContentIntent(NotificationReceiver.openErrorLogPendingActivity(context))
@@ -197,6 +213,7 @@ class LibraryUpdateNotifier(
      *
      * @param updates a list of manga with new updates.
      */
+    // NXS -->
     suspend fun showUpdateNotifications(updates: List<Pair<Manga, Array<Chapter>>>) {
         // Hidden Category Updates: re-check the lock state right here, at the point the
         // notification is actually posted. If everything left is hidden-category and locked,
@@ -205,27 +222,34 @@ class LibraryUpdateNotifier(
         val visibleUpdates = updates.filterNot { hiddenMap[it.first.id] == true }
         if (visibleUpdates.isEmpty()) return
 
+        // NXS <--
         // Parent group notification
         context.notify(
             Notifications.ID_NEW_CHAPTERS,
             Notifications.CHANNEL_NEW_CHAPTERS,
         ) {
             setContentTitle(context.stringResource(MR.strings.notification_new_chapters))
+            // NXS -->
             if (visibleUpdates.size == 1 && !securityPreferences.hideNotificationContent().get()) {
                 setContentText(visibleUpdates.first().first.title.chop(NOTIF_TITLE_MAX_LEN))
+                // NXS <--
             } else {
                 setContentText(
                     context.pluralStringResource(
                         MR.plurals.notification_new_chapters_summary,
+                        // NXS -->
                         visibleUpdates.size,
                         visibleUpdates.size,
+                        // NXS <--
                     ),
                 )
 
                 if (!securityPreferences.hideNotificationContent().get()) {
                     setStyle(
                         NotificationCompat.BigTextStyle().bigText(
+                            // NXS -->
                             visibleUpdates.joinToString("\n") {
+                                // NXS <--
                                 it.first.title.chop(NOTIF_TITLE_MAX_LEN)
                             },
                         ),
@@ -233,7 +257,9 @@ class LibraryUpdateNotifier(
                 }
             }
 
+            // NXS -->
             setSmallIcon(R.drawable.ic_nexus)
+            // NXS <--
             setColor(ContextCompat.getColor(context, R.color.ic_launcher))
             setLargeIcon(notificationBitmap)
 
@@ -250,7 +276,9 @@ class LibraryUpdateNotifier(
         if (!securityPreferences.hideNotificationContent().get()) {
             launchUI {
                 context.notify(
+                    // NXS -->
                     visibleUpdates.map { (manga, chapters) ->
+                        // NXS <--
                         NotificationManagerCompat.NotificationWithIdAndTag(
                             manga.id.hashCode(),
                             createNewChaptersNotification(manga, chapters),
@@ -269,11 +297,14 @@ class LibraryUpdateNotifier(
             val description = getNewChaptersDescription(chapters)
             setContentText(description)
 
+            // NXS -->
             setSmallIcon(R.drawable.ic_nexus)
+            // NXS <--
             setColor(ContextCompat.getColor(context, R.color.ic_launcher))
 
             if (icon != null) {
                 setLargeIcon(icon)
+                // KMK -->
                 setStyle(
                     NotificationCompat.BigPictureStyle()
                         .bigPicture(icon)
@@ -281,6 +312,7 @@ class LibraryUpdateNotifier(
                         .setBigContentTitle(manga.title)
                         .setSummaryText(description),
                 )
+                // KMK <--
             } else {
                 setStyle(NotificationCompat.BigTextStyle().bigText(description))
             }
@@ -341,8 +373,10 @@ class LibraryUpdateNotifier(
     private suspend fun getMangaIcon(manga: Manga): Bitmap? {
         val request = ImageRequest.Builder(context)
             .data(manga)
+            // KMK -->
             // .transformations(CircleCropTransformation())
             // .size(NOTIF_ICON_SIZE)
+            // KMK <--
             .build()
         val drawable = context.imageLoader.execute(request).image?.asDrawable(context.resources)
         return drawable?.getBitmapOrNull()
@@ -426,7 +460,9 @@ class LibraryUpdateNotifier(
     }
 
     companion object {
+        // NXS -->
         const val HELP_WARNING_URL = "https://github.com/the-nexus-app/NEXUS"
+        // NXS <--
     }
 }
 

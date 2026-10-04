@@ -13,6 +13,8 @@ data class Backup(
     @ProtoNumber(105) var backupSourcePreferences: List<BackupSourcePreferences> = emptyList(),
     @ProtoNumber(106) var backupExtensionStores: List<BackupExtensionStore> = emptyList(),
     @ProtoNumber(600) var backupSavedSearches: List<BackupSavedSearch> = emptyList(),
+    // KMK -->
     // Global Popular/Latest feeds
     @ProtoNumber(610) var backupFeeds: List<BackupFeed> = emptyList(),
+    // KMK <--
 )

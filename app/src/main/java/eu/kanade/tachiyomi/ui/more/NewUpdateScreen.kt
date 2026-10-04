@@ -29,6 +29,7 @@ class NewUpdateScreen(
             changelogInfo
         }
 
+        // NXS -->
         // Record that the user has now been shown this release, however it closes (Update Now
         // or Later), so an automatic future check doesn't push this same dialog again on top of
         // whatever the user is doing - see [AppUpdatePreferences] and
@@ -37,6 +38,7 @@ class NewUpdateScreen(
             Injekt.get<AppUpdatePreferences>().lastPromptedVersion().set(versionName)
         }
 
+        // NXS <--
         NewUpdateScreen(
             versionName = versionName,
             changelogInfo = changelogInfoNoChecksum,

@@ -19,10 +19,14 @@ class SyncPreferences(
     fun syncInterval() = preferenceStore.getInt("sync_interval", 0)
     fun syncService() = preferenceStore.getInt("sync_service", 0)
 
+    // KMK -->
     fun webDavUrl() = preferenceStore.getString("connection_webdav_url", "")
     fun webDavUsername() = preferenceStore.getString("connection_webdav_username", "")
     fun webDavPassword() = preferenceStore.getString("connection_webdav_password", "")
+    // NXS -->
     fun webDavFolder() = preferenceStore.getString("connection_webdav_folder", "nexus")
+    // NXS <--
+    // KMK <--
 
     fun googleDriveAccessToken() = preferenceStore.getString(
         Preference.appStateKey("connection_google_drive_access_token"),
@@ -63,9 +67,11 @@ class SyncPreferences(
             sourceSettings = preferenceStore.getBoolean("sync_sourceSettings", true).get(),
             privateSettings = preferenceStore.getBoolean("sync_privateSettings", true).get(),
 
+            // SY -->
             customInfo = preferenceStore.getBoolean("sync_customInfo", true).get(),
             readEntries = preferenceStore.getBoolean("sync_readEntries", true).get(),
             savedSearchesFeeds = preferenceStore.getBoolean("sync_savedSearchesFeeds", true).get(),
+            // SY <--
         )
     }
 
@@ -80,9 +86,11 @@ class SyncPreferences(
         preferenceStore.getBoolean("sync_sourceSettings", true).set(syncSettings.sourceSettings)
         preferenceStore.getBoolean("sync_privateSettings", true).set(syncSettings.privateSettings)
 
+        // SY -->
         preferenceStore.getBoolean("sync_customInfo", true).set(syncSettings.customInfo)
         preferenceStore.getBoolean("sync_readEntries", true).set(syncSettings.readEntries)
         preferenceStore.getBoolean("sync_savedSearchesFeeds", true).set(syncSettings.savedSearchesFeeds)
+        // SY <--
     }
 
     fun getSyncTriggerOptions(): SyncTriggerOptions {
@@ -105,8 +113,10 @@ class SyncPreferences(
             .set(syncTriggerOptions.syncOnAppResume)
     }
 
+    // KMK -->
     fun showSyncingProgressBanner() = preferenceStore.getBoolean(
         Preference.appStateKey("pref_show_syncing_progress_banner_key"),
         true,
     )
+    // KMK <--
 }

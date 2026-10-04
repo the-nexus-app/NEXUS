@@ -28,6 +28,7 @@ open class Pager(
      */
     var longTapListener: ((MotionEvent) -> Boolean)? = null
 
+    // SY -->
     var isRestoring = false
 
     override fun onRestoreInstanceState(state: Parcelable?) {
@@ -37,6 +38,7 @@ open class Pager(
         setCurrentItem(currentItem, false)
         isRestoring = false
     }
+    // SY <--
 
     /**
      * Gesture listener that implements tap and long tap events.

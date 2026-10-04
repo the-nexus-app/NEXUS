@@ -43,15 +43,21 @@ val migrations: List<Migration>
         // MoveExtensionRepoSettingsMigration(),
         // MoveCacheToDiskSettingMigration(),
         // MoveEncryptionSettingsToAppStateMigration(),
+        // KMK -->
         IntegratedHentaiMigration(),
         SetupAppUpdateMigration(),
         EHentaiMigration(),
         MergedMangaDedupeModeMigration(),
+        // KMK <--
         TrustExtensionRepositoryMigration(),
         CategoryPreferencesCleanupMigration(),
         RemoveDuplicateReaderPreferenceMigration(),
+        // KMK -->
         DisabledRepoMigration(),
         SyncPrefKeyMigration(),
         ChapterUrlHashMigration(),
+        // KMK <--
+        // NXS -->
         NexusDefaultThemeMigration(),
+        // NXS <--
     )

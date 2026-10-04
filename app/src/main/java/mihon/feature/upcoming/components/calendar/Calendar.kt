@@ -115,6 +115,7 @@ private fun CalendarGrid(
     }
 }
 
+// KMK -->
 @Preview
 @Composable
 fun CalendarDayPreview() {
@@ -133,3 +134,4 @@ fun CalendarDayPreview() {
         }
     }
 }
+// KMK <--

@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.updates.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -101,3 +102,4 @@ private fun ControlChip(
         }
     }
 }
+// NXS <--

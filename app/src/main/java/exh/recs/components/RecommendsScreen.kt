@@ -79,7 +79,9 @@ internal fun RecommendsContent(
                                 getManga = getManga,
                                 onClick = onClickItem,
                                 onLongClick = onLongClickItem,
+                                // KMK -->
                                 selection = emptyList(),
+                                // KMK <--
                             )
                         }
                         is RecommendationItemResult.Error -> {

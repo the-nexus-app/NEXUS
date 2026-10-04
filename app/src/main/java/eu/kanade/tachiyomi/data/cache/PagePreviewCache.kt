@@ -64,7 +64,9 @@ class PagePreviewCache(private val context: Context) {
     val readableSize: String
         get() = Formatter.formatFileSize(context, realSize)
 
+    // NXS -->
     // EH
+    // NXS <--
     // Cache size is in MB
     private fun setupDiskCache(cacheSize: Long): DiskLruCache {
         return DiskLruCache.open(
@@ -74,7 +76,9 @@ class PagePreviewCache(private val context: Context) {
             cacheSize * 1024 * 1024,
         )
     }
+    // NXS -->
     // EH
+    // NXS <--
 
     /**
      * Get page list from cache.

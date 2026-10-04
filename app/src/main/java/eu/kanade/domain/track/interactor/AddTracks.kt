@@ -53,15 +53,17 @@ class AddTracks(
                     ?.chapterNumber ?: -1.0
 
                 if (latestLocalReadChapterNumber > track.lastChapterRead) {
-                    /* KMK
+                    /* KMK -->
                     // This code causes issue NOT settings remote-track's status
                     track = track.copy(
                         lastChapterRead = latestLocalReadChapterNumber,
                     )
-                    KMK*/
+                    KMK <-- */
                     tracker.setRemoteLastChapterRead(track.toDbTrack(), latestLocalReadChapterNumber.toInt())
+                        // KMK -->
                         .toDomainTrack(idRequired = false)
                         ?.let { track = it }
+                    // KMK <--
                 }
 
                 if (track.startDate <= 0) {
@@ -84,12 +86,14 @@ class AddTracks(
             }
 
             syncChapterProgressWithTrack.await(mangaId, track, tracker)
+                // KMK -->
                 ?.let {
                     val context = Injekt.get<Application>()
                     withUIContext {
                         context.toast(context.stringResource(KMR.strings.sync_progress_from_trackers_up_to_chapter, it))
                     }
                 }
+            // KMK <--
         }
     }
 
@@ -110,12 +114,14 @@ class AddTracks(
                                 track.toDomainTrack(idRequired = false)!!,
                                 service,
                             )
+                                // KMK -->
                                 ?.let {
                                     val context = Injekt.get<Application>()
                                     withUIContext {
                                         context.toast(context.stringResource(KMR.strings.sync_progress_from_trackers_up_to_chapter, it))
                                     }
                                 }
+                            // KMK <--
                         }
                     } catch (e: Exception) {
                         logcat(

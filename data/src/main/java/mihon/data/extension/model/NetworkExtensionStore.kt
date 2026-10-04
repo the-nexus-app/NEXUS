@@ -105,8 +105,10 @@ fun ExtensionList.toAvailableExtensions(store: ExtensionStore): List<TachiyomiEx
             versionName = extension.versionName,
             lang = if (lang.size == 1) lang.first() else "all",
             isNsfw = extension.contentWarning >= ContentWarning.MIXED,
+            // KMK -->
             signatureHash = store.signingKey,
             storeName = store.name,
+            // KMK <--
             sources = extension.sources.map { source ->
                 TachiyomiExtension.Available.Source(
                     id = source.id,

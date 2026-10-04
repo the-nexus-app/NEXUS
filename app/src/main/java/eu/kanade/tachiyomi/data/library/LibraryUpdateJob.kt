@@ -116,24 +116,30 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private val filterChaptersForDownload: FilterChaptersForDownload = Injekt.get()
     private val updateMangaFromRemote: UpdateMangaFromRemote = Injekt.get()
 
+    // SY -->
     private val updateManga: UpdateManga = Injekt.get()
     private val getFavorites: GetFavorites = Injekt.get()
     private val insertFlatMetadata: InsertFlatMetadata = Injekt.get()
     private val networkToLocalManga: NetworkToLocalManga = Injekt.get()
     private val getMergedMangaForDownloading: GetMergedMangaForDownloading = Injekt.get()
+    // NXS -->
     private val getCategories: GetCategories = Injekt.get()
     private val hiddenUpdatesUnlock: HiddenUpdatesUnlock = Injekt.get()
+    // NXS <--
     private val getTracks: GetTracks = Injekt.get()
     private val insertTrack: InsertTrack = Injekt.get()
     private val trackerManager: TrackerManager = Injekt.get()
     private val mdList = trackerManager.mdList
+    // SY <--
 
     private val notifier = LibraryUpdateNotifier(context)
 
+    // KMK -->
     private val libraryUpdateStatus: LibraryUpdateStatus = Injekt.get()
     private val deleteLibraryUpdateErrors: DeleteLibraryUpdateErrors = Injekt.get()
     private val insertLibraryUpdateErrors: InsertLibraryUpdateErrors = Injekt.get()
     private val insertLibraryUpdateErrorMessages: InsertLibraryUpdateErrorMessages = Injekt.get()
+    // KMK <--
 
     private var mangaToUpdate: List<LibraryManga> = mutableListOf()
 
@@ -153,9 +159,11 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             }
         }
 
+        // KMK -->
         libraryUpdateStatus.start()
 
         deleteLibraryUpdateErrors.cleanUnrelevantMangaErrors()
+        // KMK <--
 
         setForegroundSafely()
 
@@ -167,16 +175,20 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         }
 
         val categoryId = inputData.getLong(KEY_CATEGORY, -1L)
+        // SY -->
         val group = inputData.getInt(KEY_GROUP, LibraryGroup.BY_DEFAULT)
         val groupExtra = inputData.getString(KEY_GROUP_EXTRA)
+        // SY <--
         addMangaToQueue(categoryId, group, groupExtra)
 
         return withIOContext {
             try {
                 when (target) {
                     Target.CHAPTERS -> updateChapterList()
+                    // SY -->
                     Target.SYNC_FOLLOWS -> syncFollows()
                     Target.PUSH_FAVORITES -> pushFavorites()
+                    // SY <--
                 }
                 Result.success()
             } catch (e: Exception) {
@@ -189,7 +201,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 }
             } finally {
                 notifier.cancelProgressNotification()
+                // KMK -->
                 libraryUpdateStatus.stop()
+                // KMK <--
             }
         }
     }
@@ -214,8 +228,11 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
      */
     private suspend fun addMangaToQueue(categoryId: Long, group: Int, groupExtra: String?) {
         val libraryManga = getLibraryManga.await()
+        // SY -->
         val groupLibraryUpdateType = libraryPreferences.groupLibraryUpdateType().get()
+        // SY <--
 
+        // KMK -->
         // Check if specific manga IDs are provided for targeted update
         val targetMangaIds = inputData.getLongArray(KEY_MANGA_IDS)?.toSet()
         if (targetMangaIds != null) {
@@ -234,14 +251,17 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             notifier.showQueueSizeWarningNotificationIfNeeded(mangaToUpdate)
             return
         }
+        // KMK <--
 
         val listToUpdate = if (categoryId != -1L) {
             libraryManga.filter { categoryId in it.categories }
+            // SY -->
         } else if (
             group == LibraryGroup.BY_DEFAULT ||
             groupLibraryUpdateType == GroupLibraryMode.GLOBAL ||
             (groupLibraryUpdateType == GroupLibraryMode.ALL_BUT_UNGROUPED && group == LibraryGroup.UNGROUPED)
         ) {
+            // SY <--
             val includedCategories = libraryPreferences.updateCategories().get().map { it.toLong() }.toSet()
             val excludedCategories = libraryPreferences.updateCategoriesExclude().get().map { it.toLong() }.toSet()
 
@@ -250,6 +270,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 val excluded = it.categories.intersect(excludedCategories).isNotEmpty()
                 included && !excluded
             }
+            // SY -->
         } else {
             when (group) {
                 LibraryGroup.BY_TRACK_STATUS -> {
@@ -284,8 +305,10 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 LibraryGroup.UNGROUPED -> libraryManga
                 else -> libraryManga
             }
+            // SY <--
         }
 
+        // NXS -->
         // Hidden Category Updates: while locked, exclude manga belonging to at least one
         // hidden category from the Updates/background update-checking scope. This does not
         // affect targeted updates (KEY_MANGA_IDS branch above, used e.g. for manga-detail
@@ -301,12 +324,17 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             }
         }
 
+        // NXS <--
         val restrictions = libraryPreferences.autoUpdateMangaRestrictions().get()
         val skippedUpdates = mutableListOf<Pair<Manga, String?>>()
         val (_, fetchWindowUpperBound) = fetchInterval.getWindow(ZonedDateTime.now())
 
+        // NXS -->
         mangaToUpdate = filteredListToUpdate
+            // NXS <--
+            // SY -->
             .distinctBy { it.manga.id }
+            // SY <--
             .filter {
                 when {
                     it.manga.updateStrategy == UpdateStrategy.ONLY_FETCH_ONCE && it.totalChapters > 0L -> {
@@ -389,13 +417,17 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         val newUpdates = CopyOnWriteArrayList<Pair<Manga, Array<Chapter>>>()
         val failedUpdates = CopyOnWriteArrayList<Pair<Manga, String?>>()
         val hasDownloads = AtomicBoolean(false)
+        // SY -->
         val mdlistLogged = mdList.isLoggedIn
+        // SY <--
 
         val fetchWindow = fetchInterval.getWindow(ZonedDateTime.now())
 
         coroutineScope {
             mangaToUpdate.groupBy { it.manga.source }
+                // SY -->
                 .filterNot { it.key in LIBRARY_UPDATE_EXCLUDED_SOURCES }
+                // SY <--
                 .values
                 .map { mangaInSource ->
                     async {
@@ -448,6 +480,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                                                 hasDownloads.store(true)
                                             }
 
+                                            // NXS -->
                                             // Hidden Category Updates: re-check the current lock state right
                                             // here, since this manga may have entered the queue while unlocked
                                             // and finished checking after the user locked again. The update
@@ -456,6 +489,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                                             if (!isHiddenAndLocked(manga)) {
                                                 libraryPreferences.newUpdatesCount().getAndSet { it + newChapters.size }
                                             }
+                                            // NXS <--
 
                                             // Convert to the manga that contains new chapters
                                             newUpdates.add(manga to newChapters.toTypedArray())
@@ -503,6 +537,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     private fun downloadChapters(manga: Manga, chapters: List<Chapter>) {
         // We don't want to start downloading while the library is updating, because websites
         // may don't like it and they could ban the user.
+        // SY -->
         if (manga.source == MERGED_SOURCE_ID) {
             val downloadingManga = runBlocking { getMergedMangaForDownloading.await(manga.id) }
                 .associateBy { it.id }
@@ -517,6 +552,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
             return
         }
+        // SY <--
         downloadManager.downloadChapters(manga, chapters, false)
     }
 
@@ -541,6 +577,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         return if (update.manga.favorite) update.newChapters else emptyList()
     }
 
+    // SY -->
     /**
      * filter all follows from Mangadex and only add reading or rereading manga to library
      */
@@ -585,8 +622,10 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
                 updateMangaFromRemote(
                     manga = dbManga,
+                    // KMK -->
                     // Update cover & fetchInterval
                     manualFetch = true,
+                    // KMK <--
                 )
 
                 metadata.mangaId = dbManga.id
@@ -630,6 +669,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
 
         notifier.cancelProgressNotification()
     }
+    // SY <--
 
     private suspend fun withUpdateNotification(
         updatingManga: CopyOnWriteArrayList<Manga>,
@@ -659,6 +699,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         )
     }
 
+    // NXS -->
     /**
      * Hidden Category Updates: true if [manga] belongs to at least one hidden category AND
      * Hidden Updates is currently locked. Checked at the point badge/notification information
@@ -670,6 +711,8 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         return getCategories.await(manga.id).any { it.hidden }
     }
 
+    // NXS <--
+    // KMK -->
     private suspend fun clearErrorFromDB(mangaId: Long) {
         deleteLibraryUpdateErrors.deleteMangaError(mangaIds = listOf(mangaId))
     }
@@ -700,6 +743,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         }
         insertLibraryUpdateErrors.insertAll(errorList)
     }
+    // KMK <--
 
     /**
      * Defines what should be updated within a service execution.
@@ -707,9 +751,11 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
     enum class Target {
         CHAPTERS, // Manga chapters
 
+        // SY -->
         SYNC_FOLLOWS, // MangaDex specific, pull mangadex manga in reading, rereading
 
         PUSH_FAVORITES, // MangaDex specific, push mangadex manga to mangadex
+        // SY <--
     }
 
     companion object {
@@ -717,7 +763,9 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         private const val WORK_NAME_AUTO = "LibraryUpdate-auto"
         private const val WORK_NAME_MANUAL = "LibraryUpdate-manual"
 
+        // NXS -->
         private const val ERROR_LOG_HELP_URL = "https://github.com/the-nexus-app/NEXUS"
+        // NXS <--
 
         /**
          * Key for category to update.
@@ -729,16 +777,20 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
          */
         private const val KEY_TARGET = "target"
 
+        // SY -->
         /**
          * Key for group to update.
          */
         const val KEY_GROUP = "group"
         const val KEY_GROUP_EXTRA = "group_extra"
+        // SY <--
 
+        // KMK -->
         /**
          * Key for specific manga IDs to update.
          */
         private const val KEY_MANGA_IDS = "manga_ids"
+        // KMK <--
 
         fun setupTask(
             context: Context,
@@ -796,9 +848,13 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             context: Context,
             category: Category? = null,
             target: Target = Target.CHAPTERS,
+            // SY -->
             group: Int = LibraryGroup.BY_DEFAULT,
             groupExtra: String? = null,
+            // SY <--
+            // KMK -->
             mangaIds: List<Long>? = null,
+            // KMK <--
         ): Boolean {
             val wm = context.workManager
             // Check if the LibraryUpdateJob is already running
@@ -810,9 +866,13 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
             val inputData = workDataOf(
                 KEY_CATEGORY to category?.id,
                 KEY_TARGET to target.name,
+                // SY -->
                 KEY_GROUP to group,
                 KEY_GROUP_EXTRA to groupExtra,
+                // SY <--
+                // KMK -->
                 KEY_MANGA_IDS to mangaIds?.toLongArray(),
+                // KMK <--
             )
 
             val syncPreferences: SyncPreferences = Injekt.get()
@@ -862,8 +922,10 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 // Should only return one work but just in case
                 .forEach {
                     wm.cancelWorkById(it.id)
+                    // KMK -->
                     val libraryUpdateStatus: LibraryUpdateStatus = Injekt.get()
                     runBlocking { libraryUpdateStatus.stop() }
+                    // KMK <--
 
                     // Re-enqueue cancelled scheduled work
                     if (it.tags.contains(WORK_NAME_AUTO)) {
@@ -872,6 +934,7 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
                 }
         }
 
+        // KMK -->
         /**
          * Returns true if a periodic job is currently scheduled.
          * @param context The application context.
@@ -881,5 +944,6 @@ class LibraryUpdateJob(private val context: Context, workerParams: WorkerParamet
         suspend fun isPeriodicUpdateScheduled(context: Context): Boolean {
             return WorkerUtil.isPeriodicJobScheduled(context, WORK_NAME_AUTO)
         }
+        // KMK <--
     }
 }

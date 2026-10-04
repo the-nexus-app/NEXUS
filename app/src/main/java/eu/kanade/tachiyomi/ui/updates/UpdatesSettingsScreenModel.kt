@@ -18,7 +18,9 @@ class UpdatesSettingsScreenModel(
         }
     }
 
+    // KMK -->
     fun toggleSwitch(preference: (UpdatesPreferences) -> Preference<Boolean>) {
         preference(updatesPreferences).getAndSet { !it }
     }
+    // KMK <--
 }

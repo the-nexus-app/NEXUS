@@ -144,13 +144,17 @@ class MainActivity : BaseActivity() {
     private val libraryPreferences: LibraryPreferences by injectLazy()
     private val preferences: BasePreferences by injectLazy()
 
+    // SY -->
     private val exhPreferences: ExhPreferences by injectLazy()
+    // SY <--
 
+    // KMK -->
     private val backupPreferences: BackupPreferences by injectLazy()
     private val syncPreferences: SyncPreferences by injectLazy()
     private val backupRestoreStatus: BackupRestoreStatus by injectLazy()
     private val syncStatus: SyncStatus by injectLazy()
     private val libraryUpdateStatus: LibraryUpdateStatus by injectLazy()
+    // KMK <--
 
     private val downloadCache: DownloadCache by injectLazy()
     private val chapterCache: ChapterCache by injectLazy()
@@ -162,14 +166,19 @@ class MainActivity : BaseActivity() {
 
     private var navigator: Navigator? = null
 
+    // NXS -->
     // AM (CONNECTIONS)
+    // NXS <--
     private val connectionsPreferences: ConnectionsPreferences by injectLazy()
+    // NXS -->
     // AM (CONNECTIONS)
+    // NXS <--
 
     init {
         registerSecureActivity(this)
     }
 
+    // SY -->
     // Idle-until-urgent
     private var firstPaint = false
     private val iuuQueue = LinkedList<() -> Unit>()
@@ -188,6 +197,7 @@ class MainActivity : BaseActivity() {
     }
 
     private var runExhConfigureDialog by mutableStateOf(false)
+    // SY <--
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val isLaunch = savedInstanceState == null
@@ -209,8 +219,10 @@ class MainActivity : BaseActivity() {
             return
         }
 
+        // SY -->
         @Suppress("KotlinConstantConditions")
         val hasDebugOverlay = (isDebugBuildType || BuildConfig.BUILD_TYPE == "releaseTest")
+        // SY <--
 
         setComposeContent {
             val context = LocalContext.current
@@ -218,6 +230,7 @@ class MainActivity : BaseActivity() {
             var incognito by remember { mutableStateOf(getIncognitoState.await(null)) }
             val downloadOnly by preferences.downloadedOnly().collectAsState()
             val indexing by downloadCache.isInitializing.collectAsState()
+            // KMK -->
             val restoringState by backupRestoreStatus.isRunning.collectAsState()
             val syncingState by syncStatus.isRunning.collectAsState()
             val updatingState by libraryUpdateStatus.isRunning.collectAsState()
@@ -230,12 +243,15 @@ class MainActivity : BaseActivity() {
             val restoringProgress by backupRestoreStatus.progress.collectAsState()
             val syncingProgress by syncStatus.progress.collectAsState()
             val updatingProgress by libraryUpdateStatus.progress.collectAsState()
+            // KMK <--
 
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val statusBarBackgroundColor = when {
+                // KMK -->
                 updating -> UpdatingBannerBackgroundColor
                 syncing -> SyncingBannerBackgroundColor
                 restoring -> RestoringBannerBackgroundColor
+                // KMK <--
                 indexing -> IndexingBannerBackgroundColor
                 downloadOnly -> DownloadedOnlyBannerBackgroundColor
                 incognito -> IncognitoModeBannerBackgroundColor
@@ -265,6 +281,7 @@ class MainActivity : BaseActivity() {
                         // Reset Incognito Mode on relaunch
                         preferences.incognitoMode().set(false)
 
+                        // SY -->
                         initWhenIdle {
                             // Upload settings
                             if (exhPreferences.enableExhentai().get() &&
@@ -276,12 +293,15 @@ class MainActivity : BaseActivity() {
 
                             EHentaiUpdateWorker.scheduleBackground(this@MainActivity)
                         }
+                        // SY <--
                     }
                 }
                 LaunchedEffect(navigator.lastItem) {
                     (
                         (navigator.lastItem as? BrowseSourceScreen)?.sourceId
+                            // KMK -->
                             ?: (navigator.lastItem as? SourceFeedScreen)?.sourceId
+                        // KMK <--
                         )
                         .let(getIncognitoState::subscribe)
                         .collectLatest { incognito = it }
@@ -294,12 +314,14 @@ class MainActivity : BaseActivity() {
                             downloadedOnlyMode = downloadOnly,
                             incognitoMode = incognito,
                             indexing = indexing,
+                            // KMK -->
                             restoring = restoring,
                             syncing = syncing,
                             updating = updating,
                             progress = updatingProgress.takeIf { updating }
                                 ?: syncingProgress.takeIf { syncing }
                                 ?: restoringProgress.takeIf { restoring },
+                            // KMK <--
                             modifier = Modifier.windowInsetsPadding(scaffoldInsets),
                         )
                     },
@@ -361,7 +383,9 @@ class MainActivity : BaseActivity() {
                         }
                         .launchIn(this)
 
+                    // NXS -->
                     // AM (DISCORD)
+                    // NXS <--
                     connectionsPreferences.enableDiscordRPC().changes()
                         .drop(1)
                         .onEach {
@@ -381,16 +405,21 @@ class MainActivity : BaseActivity() {
                                 }
                             }
                         }.launchIn(this)
+                    // NXS -->
                     // AM (DISCORD)
+                    // NXS <--
                 }
 
                 HandleOnNewIntent(context = context, navigator = navigator)
 
+                // KMK -->
                 RearmJobs()
+                // KMK <--
                 CheckForUpdates()
                 ShowOnboarding()
             }
 
+            // SY -->
             if (hasDebugOverlay) {
                 val isDebugOverlayEnabled by remember {
                     DebugToggles.ENABLE_DEBUG_OVERLAY.asPref(lifecycleScope)
@@ -399,21 +428,27 @@ class MainActivity : BaseActivity() {
                     DebugModeOverlay()
                 }
             }
+            // SY <--
 
+            // KMK -->
             val previewLastVersion = Injekt.get<PreferenceStore>().getInt(
                 Preference.appStateKey("preview_last_version_code"),
                 0,
             )
             val previewCurrentVersion = BuildConfig.COMMIT_COUNT.toInt()
             var isCheckingWhatsNew by remember { mutableStateOf(false) }
+            // KMK <--
 
             var showChangelog by remember {
                 mutableStateOf(
+                    // KMK -->
                     (isReleaseBuildType && didMigration) ||
                         (isPreviewBuildType && previewCurrentVersion > previewLastVersion.get()),
+                    // KMK <--
                 )
             }
             if (showChangelog) {
+                // KMK -->
                 WhatsNewDialog(
                     onDismissRequest = { showChangelog = false },
                     onOpenWhatsNew = {
@@ -422,22 +457,30 @@ class MainActivity : BaseActivity() {
                             scope.launch {
                                 isCheckingWhatsNew = true
 
+                                // NXS -->
                                 getReleaseNotesWithComparison(
+                                    // NXS <--
                                     context = context,
+                                    // NXS -->
                                     onReleaseLoaded = { result ->
+                                        // NXS <--
                                         val whatsNewScreen = WhatsNewScreen(
                                             currentVersion = BuildConfig.VERSION_NAME,
                                             versionName = result.release.version,
                                             changelogInfo = result.release.info,
                                             releaseLink = result.release.releaseLink,
+                                            // NXS -->
                                             downloadLink = result.release.downloadLink,
                                             isUpdateAvailable = result.isUpdateAvailable,
+                                            // NXS <--
                                         )
                                         navigator?.push(whatsNewScreen)
                                     },
+                                    // NXS -->
                                     onError = {
                                         // Error is already toasted by the function
                                     },
+                                    // NXS <--
                                     onFinish = {
                                         isCheckingWhatsNew = false
                                     },
@@ -446,10 +489,15 @@ class MainActivity : BaseActivity() {
                         }
                     },
                 )
+                // KMK <--
             }
+            // KMK -->
             previewLastVersion.set(previewCurrentVersion)
+            // KMK <--
 
+            // SY -->
             ConfigureExhDialog(run = runExhConfigureDialog, onRunning = { runExhConfigureDialog = false })
+            // SY <--
         }
 
         val startTime = System.currentTimeMillis()
@@ -466,10 +514,12 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    // KMK -->
     override fun onPause() {
         super.onPause()
         MangaCoverMetadata.savePrefs()
     }
+    // KMK <--
 
     override fun onProvideAssistContent(outContent: AssistContent) {
         super.onProvideAssistContent(outContent)
@@ -493,6 +543,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    // KMK -->
     @Composable
     private fun RearmJobs() {
         val context = LocalContext.current
@@ -530,6 +581,7 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+    // KMK <--
 
     @Composable
     private fun CheckForUpdates() {
@@ -538,19 +590,25 @@ class MainActivity : BaseActivity() {
 
         // App updates
         LaunchedEffect(Unit) {
+            // NXS -->
             // Don't run the update check while onboarding is (or is about to be) shown - a new
             // user shouldn't see the update screen fight with/appear on top of onboarding, and
             // there's nothing useful to update yet on a fresh install.
             if (updaterEnabled && preferences.shownOnboardingFlow().get()) {
+                // NXS <--
                 try {
+                    // KMK -->
                     AppUpdateJob.setupTask(context)
+                    // KMK <--
                     val result = AppUpdateChecker().checkForUpdate(context)
+                    // NXS -->
                     val alreadyPrompted = result is GetApplicationRelease.Result.NewUpdate &&
                         Injekt.get<AppUpdatePreferences>().lastPromptedVersion().get() == result.release.version
                     if (result is GetApplicationRelease.Result.NewUpdate &&
                         navigator.lastItem !is NewUpdateScreen &&
                         !alreadyPrompted
                     ) {
+                        // NXS <--
                         val updateScreen = NewUpdateScreen(
                             versionName = result.release.version,
                             changelogInfo = result.release.info,
@@ -649,6 +707,7 @@ class MainActivity : BaseActivity() {
             }
             Constants.SHORTCUT_UPDATES -> HomeScreen.Tab.Updates
             Constants.SHORTCUT_HISTORY -> HomeScreen.Tab.History
+            // NXS -->
             Constants.SHORTCUT_SOURCES -> {
                 navigator.popUntilRoot()
                 HomeScreen.Tab.Browse(false)
@@ -657,14 +716,17 @@ class MainActivity : BaseActivity() {
                 navigator.popUntilRoot()
                 HomeScreen.Tab.Browse(true)
             }
+            // NXS <--
             Constants.SHORTCUT_DOWNLOADS -> {
                 navigator.popUntilRoot()
                 HomeScreen.Tab.More(toDownloads = true)
             }
+            // KMK -->
             Constants.SHORTCUT_LIBRARY_UPDATE_ERRORS -> {
                 navigator.popUntilRoot()
                 HomeScreen.Tab.More(toDownloads = false, toLibraryUpdateErrors = true)
             }
+            // KMK <--
             Intent.ACTION_SEARCH, Intent.ACTION_SEND, "com.google.android.gms.actions.SEARCH_ACTION" -> {
                 // If the intent match the "standard" Android search intent
                 // or the Google-specific search intent (triggered by saying or typing "search *query* on *Tachiyomi*" in Google Search/Google Assistant)

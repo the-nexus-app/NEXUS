@@ -12,7 +12,9 @@ import eu.kanade.presentation.theme.colorscheme.AndroidViewColorScheme
  */
 class DownloadAdapter(
     val downloadItemListener: DownloadItemListener,
+    // KMK -->
     val colorScheme: AndroidViewColorScheme,
+    // KMK <--
 ) : FlexibleAdapter<AbstractFlexibleItem<*>>(
     null,
     downloadItemListener,

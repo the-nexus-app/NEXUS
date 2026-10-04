@@ -35,7 +35,9 @@ import eu.kanade.tachiyomi.core.security.SecurityPreferences
 import eu.kanade.tachiyomi.util.system.dpToPx
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import mihon.domain.manga.interactor.GetHiddenMangaIds
 import tachiyomi.core.common.util.lang.withIOContext
 import tachiyomi.domain.manga.model.MangaCover
 import tachiyomi.domain.updates.interactor.GetUpdates
@@ -55,6 +57,9 @@ abstract class BaseUpdatesGridGlanceWidget(
     private val context: Context = Injekt.get<Application>(),
     private val getUpdates: GetUpdates = Injekt.get(),
     private val preferences: SecurityPreferences = Injekt.get(),
+    // NXS -->
+    private val getHiddenMangaIds: GetHiddenMangaIds = GetHiddenMangaIds(),
+    // NXS <--
 ) : GlanceAppWidget() {
 
     override val sizeMode = SizeMode.Exact
@@ -91,11 +96,21 @@ abstract class BaseUpdatesGridGlanceWidget(
             }
 
             val flow = remember {
-                getUpdates
-                    .subscribe(false, DateLimit.toEpochMilli())
-                    .map { rawData ->
-                        rawData.prepareData(rowCount, columnCount)
+                // NXS --> The home screen widget is visible without unlocking the
+                // app, so hidden-category manga must be excluded here too --
+                // notifications already do this via LibraryUpdateNotifier.
+                combine(
+                    getUpdates.subscribe(false, DateLimit.toEpochMilli()),
+                    getHiddenMangaIds.subscribe(),
+                ) { rawData, hiddenMangaIds ->
+                    if (hiddenMangaIds.isEmpty()) {
+                        rawData
+                    } else {
+                        rawData.filterNot { it.mangaId in hiddenMangaIds }
                     }
+                }
+                    // NXS <--
+                    .map { rawData -> rawData.prepareData(rowCount, columnCount) }
             }
             val data by flow.collectAsState(initial = null)
             UpdatesWidget(

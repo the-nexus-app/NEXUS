@@ -91,6 +91,7 @@ data class MigrateMangaScreen(
 
         val lazyListState = rememberLazyListState()
 
+        // KMK -->
         val scope = rememberCoroutineScope()
         val enableScrollToTop by remember {
             derivedStateOf {
@@ -103,12 +104,16 @@ data class MigrateMangaScreen(
                 lazyListState.canScrollForward
             }
         }
+        // KMK <--
 
         Scaffold(
             topBar = { scrollBehavior ->
+                // KMK -->
                 MigrateMangaAppBar(
+                    // KMK <--
                     title = state.source!!.name,
                     navigateUp = {
+                        // KMK -->
                         navigator.pop()
                     },
                     itemCnt = state.titles.size,
@@ -116,9 +121,11 @@ data class MigrateMangaScreen(
                     onClickUnselectAll = screenModel::clearSelection,
                     onClickSelectAll = screenModel::toggleAllSelection,
                     onClickInvertSelection = screenModel::invertSelection,
+                    // KMK <--
                     scrollBehavior = scrollBehavior,
                 )
             },
+            // KMK -->
             bottomBar = {
                 MigrateMangaBottomBar(
                     selectionMode = state.selectionMode,
@@ -139,6 +146,7 @@ data class MigrateMangaScreen(
                     },
                 )
             },
+            // KMK <--
         ) { contentPadding ->
             if (state.isEmpty) {
                 EmptyScreen(
@@ -152,8 +160,10 @@ data class MigrateMangaScreen(
                 lazyListState = lazyListState,
                 contentPadding = contentPadding,
                 state = state,
+                // KMK -->
                 onMangaSelected = screenModel::toggleSelection,
                 onClickItem = { navigator.push(MigrationConfigScreen(it.id)) },
+                // KMK <--
                 onClickCover = { navigator.push(MangaScreen(it.id)) },
             )
         }
@@ -174,7 +184,9 @@ data class MigrateMangaScreen(
         lazyListState: LazyListState,
         contentPadding: PaddingValues,
         state: MigrateMangaScreenModel.State,
+        // KMK -->
         onMangaSelected: (Manga, Boolean, Boolean) -> Unit,
+        // KMK <--
         onClickItem: (Manga) -> Unit,
         onClickCover: (Manga) -> Unit,
     ) {
@@ -183,19 +195,25 @@ data class MigrateMangaScreen(
             contentPadding = contentPadding,
         ) {
             items(items = state.titles) { manga ->
+                // KMK -->
                 val isSelected = manga.id in state.selection
+                // KMK <--
                 MigrateMangaItem(
                     manga = manga,
                     isSelected = isSelected,
                     onClickItem = {
+                        // KMK -->
                         when {
                             state.selectionMode -> onMangaSelected(manga, !isSelected, false)
+                            // KMK <--
                             else -> onClickItem(it)
                         }
                     },
                     onClickCover = onClickCover,
+                    // KMK -->
                     onLongClick = { onMangaSelected(manga, !isSelected, true) },
                     modifier = Modifier.animateItemFastScroll(),
+                    // KMK <--
                 )
             }
         }
@@ -207,7 +225,9 @@ data class MigrateMangaScreen(
         isSelected: Boolean,
         onClickItem: (Manga) -> Unit,
         onClickCover: (Manga) -> Unit,
+        // KMK -->
         onLongClick: () -> Unit,
+        // KMK <--
         modifier: Modifier = Modifier,
     ) {
         BaseMangaListItem(
@@ -215,10 +235,13 @@ data class MigrateMangaScreen(
             manga = manga,
             onClickItem = { onClickItem(manga) },
             onClickCover = { onClickCover(manga) },
+            // KMK -->
             onLongClick = onLongClick,
+            // KMK <--
         )
     }
 
+    // KMK -->
     @Composable
     private fun MigrateMangaAppBar(
         title: String,
@@ -341,4 +364,5 @@ data class MigrateMangaScreen(
             }
         }
     }
+// KMK <--
 }

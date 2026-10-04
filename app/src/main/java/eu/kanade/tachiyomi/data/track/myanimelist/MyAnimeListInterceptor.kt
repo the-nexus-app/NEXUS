@@ -33,7 +33,9 @@ class MyAnimeListInterceptor(private val myanimelist: MyAnimeList) : Interceptor
         val authRequest = originalRequest.newBuilder()
             .addHeader("Authorization", "Bearer ${oauth!!.accessToken}")
             // TODO(antsy): Add back custom user agent when they stop blocking us for no apparent reason
+            // NXS -->
             // .header("User-Agent", "NEXUS v${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
+            // NXS <--
             .build()
 
         return chain.proceed(authRequest)

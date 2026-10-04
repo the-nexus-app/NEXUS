@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.presentation.bookmarkedchapters.components
 
 import androidx.compose.animation.animateColorAsState
@@ -215,3 +216,4 @@ sealed class BookmarkedChaptersUiModel {
 
     data class Item(val chapter: BookmarkedChapterWithManga) : BookmarkedChaptersUiModel()
 }
+// NXS <--

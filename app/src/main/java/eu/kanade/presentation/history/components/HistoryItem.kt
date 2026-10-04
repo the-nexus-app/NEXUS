@@ -54,28 +54,39 @@ private val HistoryItemHeight = 96.dp
 fun HistoryItem(
     history: HistoryWithRelations,
     onClickCover: () -> Unit,
+    // KMK -->
     onClick: () -> Unit,
     onLongClick: () -> Unit,
+    // KMK <--
     onClickDelete: () -> Unit,
     onClickFavorite: () -> Unit,
     modifier: Modifier = Modifier,
+    // KMK -->
     selected: Boolean,
     readProgress: String?,
     hasUnread: Boolean,
     usePanoramaCover: Boolean,
     coverRatio: MutableFloatState = remember { mutableFloatStateOf(1f) },
+    // KMK <--
 ) {
+    // KMK -->
     val haptic = LocalHapticFeedback.current
     val textAlpha = if (history.read) DISABLED_ALPHA else 1f
+    // KMK <--
+    // NXS -->
     Surface(
+        // NXS <--
         modifier = modifier
+            // NXS -->
             .padding(horizontal = MaterialTheme.padding.medium, vertical = 4.dp)
             .clip(RoundedCornerShape(12.dp)),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = RoundedCornerShape(12.dp),
+        // NXS <--
     ) {
         Row(
             modifier = Modifier
+                // KMK -->
                 .selectedBackground(selected)
                 .combinedClickable(
                     onClick = onClick,
@@ -84,10 +95,12 @@ fun HistoryItem(
                         onLongClick()
                     },
                 )
+                // KMK <--
                 .height(HistoryItemHeight)
                 .padding(horizontal = MaterialTheme.padding.medium, vertical = MaterialTheme.padding.small),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            // KMK -->
             val mangaCover = history.coverData
             val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
             val bgColor = mangaCover.dominantCoverColors?.first?.let { Color(it) }
@@ -99,6 +112,7 @@ fun HistoryItem(
                     tint = onBgColor,
                     size = MangaCover.Size.Medium,
                 )
+                // NXS -->
             } else {
                 if (usePanoramaCover && coverIsWide) {
                     MangaCover.Panorama(
@@ -137,23 +151,33 @@ fun HistoryItem(
                             val image = result.result.image
                             coverRatio.floatValue = image.height.toFloat() / image.width
                         },
+                        // NXS <--
                     )
                 }
+                // NXS -->
             }
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = MaterialTheme.padding.medium, end = MaterialTheme.padding.small),
             ) {
+                // NXS <--
                 Text(
+                    // NXS -->
                     text = history.title,
+                    // NXS <--
                     color = LocalContentColor.current.copy(alpha = textAlpha),
+                    // NXS -->
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
+                    // NXS <--
                 )
+                // NXS -->
                 val readAt = remember { history.readAt?.toTimestampString() ?: "" }
+                // NXS <--
+                // KMK -->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(top = 4.dp),
@@ -168,7 +192,9 @@ fun HistoryItem(
                             tint = MaterialTheme.colorScheme.primary,
                         )
                     }
+                    // KMK <--
                     Text(
+                        // NXS -->
                         text = if (history.chapterNumber > -1) {
                             stringResource(
                                 MR.strings.recent_manga_time,
@@ -178,9 +204,12 @@ fun HistoryItem(
                         } else {
                             readAt
                         },
+                        // NXS <--
                         color = LocalContentColor.current.copy(alpha = textAlpha),
                         style = MaterialTheme.typography.bodySmall,
+                        // NXS -->
                     )
+                    // KMK -->
                     if (readProgress != null) {
                         DotSeparatorText()
                         Text(
@@ -191,6 +220,7 @@ fun HistoryItem(
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
+                    // KMK <--
                 }
             }
 
@@ -200,14 +230,20 @@ fun HistoryItem(
                         imageVector = Icons.Outlined.FavoriteBorder,
                         contentDescription = stringResource(MR.strings.add_to_library),
                         tint = MaterialTheme.colorScheme.onSurface,
+                        // NXS <--
                     )
                 }
+                // KMK <--
             }
 
+            // NXS -->
             IconButton(onClick = onClickDelete) {
+                // NXS <--
                 Icon(
+                    // NXS -->
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = stringResource(MR.strings.action_delete),
+                    // NXS <--
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
@@ -226,14 +262,18 @@ private fun HistoryItemPreviews(
             HistoryItem(
                 history = historyWithRelations,
                 onClickCover = {},
+                // KMK -->
                 onClick = {},
                 onLongClick = {},
+                // KMK <--
                 onClickDelete = {},
                 onClickFavorite = {},
                 readProgress = "Page 5",
+                // KMK -->
                 hasUnread = true,
                 selected = true,
                 usePanoramaCover = false,
+                // KMK <--
             )
         }
     }

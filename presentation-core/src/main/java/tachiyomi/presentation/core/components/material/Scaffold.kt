@@ -223,8 +223,10 @@ private fun ScaffoldLayout(
             val fabPlaceables =
                 subcompose(ScaffoldLayoutContent.Fab, fab).fastMapNotNull { measurable ->
                     measurable
+                        // KMK -->
                         .measure(looseConstraints.offset(-leftInset - rightInset, -bottomInset))
                         .takeIf { it.height != 0 && it.width != 0 }
+                    // KMK <--
                 }
 
             val fabWidth = fabPlaceables.fastMaxBy { it.width }?.width ?: 0
@@ -234,6 +236,7 @@ private fun ScaffoldLayout(
                 // FAB distance from the left of the layout, taking into account LTR / RTL
                 // Tachiyomi: Calculate insets for fab placement offset
                 val fabLeftOffset = when (fabPosition) {
+                    // KMK -->
                     FabPosition.Start -> {
                         if (layoutDirection == LayoutDirection.Ltr) {
                             FabSpacing.roundToPx() + leftInset
@@ -242,6 +245,7 @@ private fun ScaffoldLayout(
                         }
                     }
                     FabPosition.EndOverlay,
+                    // KMK <--
                     FabPosition.End,
                     -> {
                         if (layoutDirection == LayoutDirection.Ltr) {

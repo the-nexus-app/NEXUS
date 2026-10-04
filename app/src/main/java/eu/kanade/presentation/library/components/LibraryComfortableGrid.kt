@@ -20,7 +20,9 @@ internal fun LibraryComfortableGrid(
     onClickContinueReading: ((LibraryManga) -> Unit)?,
     searchQuery: String?,
     onGlobalSearchClicked: () -> Unit,
+    // KMK -->
     usePanoramaCover: Boolean = false,
+    // KMK <--
 ) {
     LazyLibraryGrid(
         modifier = Modifier.fillMaxSize(),
@@ -52,9 +54,13 @@ internal fun LibraryComfortableGrid(
                     LanguageBadge(
                         isLocal = libraryItem.isLocal,
                         sourceLanguage = libraryItem.sourceLanguage,
+                        // KMK -->
                         useLangIcon = libraryItem.useLangIcon,
+                        // KMK <--
                     )
+                    // KMK -->
                     SourceIconBadge(source = libraryItem.source)
+                    // KMK <--
                 },
                 onLongClick = { onLongClick(libraryItem.libraryManga) },
                 onClick = { onClick(libraryItem.libraryManga) },
@@ -63,7 +69,9 @@ internal fun LibraryComfortableGrid(
                 } else {
                     null
                 },
+                // KMK -->
                 usePanoramaCover = usePanoramaCover,
+                // KMK <--
             )
         }
     }

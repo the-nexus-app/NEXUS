@@ -17,17 +17,21 @@ class HistoryRepositoryImpl(
 
     override fun getHistory(
         query: String,
+        // KMK -->
         unfinishedManga: Boolean?,
         unfinishedChapter: Boolean?,
         nonLibraryEntries: Boolean?,
+        // KMK <--
     ): Flow<List<HistoryWithRelations>> {
         return handler.subscribeToList {
             historyViewQueries.history(
+                // KMK -->
                 Manga.CHAPTER_SHOW_NOT_BOOKMARKED,
                 Manga.CHAPTER_SHOW_BOOKMARKED,
                 unfinishedManga?.toLong(),
                 unfinishedChapter,
                 nonLibraryEntries,
+                // KMK <--
                 query,
                 HistoryMapper::mapHistoryWithRelations,
             )
@@ -52,17 +56,21 @@ class HistoryRepositoryImpl(
         return handler.awaitList { historyQueries.getHistoryByMangaId(mangaId, HistoryMapper::mapHistory) }
     }
 
+    // KMK -->
     override suspend fun resetHistory(historyIds: List<Long>) {
         try {
             handler.await { historyQueries.resetHistoryByIds(historyIds) }
+            // KMK <--
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, throwable = e)
         }
     }
 
+    // KMK -->
     override suspend fun resetHistoryByMangaIds(mangaIds: List<Long>) {
         try {
             handler.await { historyQueries.resetHistoryByMangaIds(mangaIds) }
+            // KMK <--
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, throwable = e)
         }
@@ -92,6 +100,7 @@ class HistoryRepositoryImpl(
         }
     }
 
+    // SY -->
     override suspend fun upsertHistory(historyUpdates: List<HistoryUpdate>) {
         try {
             handler.await(true) {
@@ -107,4 +116,5 @@ class HistoryRepositoryImpl(
             logcat(LogPriority.ERROR, throwable = e)
         }
     }
+    // SY <--
 }

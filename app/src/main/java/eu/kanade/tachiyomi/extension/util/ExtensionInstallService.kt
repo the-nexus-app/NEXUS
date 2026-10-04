@@ -33,15 +33,20 @@ class ExtensionInstallService : Service() {
 
     override fun onCreate() {
         val notification = notificationBuilder(Notifications.CHANNEL_EXTENSIONS_UPDATE) {
+            // NXS -->
             setSmallIcon(R.drawable.ic_nexus)
+            // NXS <--
             setColor(ContextCompat.getColor(applicationContext, R.color.ic_launcher))
+            // NXS -->
             setLargeIcon(BitmapFactory.decodeResource(applicationContext.resources, R.drawable.nexus_logo))
+            // NXS <--
             setAutoCancel(false)
             setOngoing(true)
             setShowWhen(false)
             setContentTitle(stringResource(MR.strings.ext_install_service_notif))
             setProgress(100, 100, true)
         }.build()
+        // KMK -->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
                 Notifications.ID_EXTENSION_INSTALLER,
@@ -49,6 +54,7 @@ class ExtensionInstallService : Service() {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC,
             )
         } else {
+            // KMK <--
             startForeground(Notifications.ID_EXTENSION_INSTALLER, notification)
         }
     }

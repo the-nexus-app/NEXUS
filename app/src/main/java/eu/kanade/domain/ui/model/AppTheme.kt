@@ -6,7 +6,9 @@ import tachiyomi.i18n.kmk.KMR
 
 enum class AppTheme(val titleRes: StringResource?) {
     DEFAULT(MR.strings.label_default),
+    // NXS -->
     NEXUS(KMR.strings.theme_nexus),
+    // NXS <--
     MONET(MR.strings.theme_monet),
 
     // Kuukiyomi themes
@@ -40,5 +42,7 @@ enum class AppTheme(val titleRes: StringResource?) {
     HOT_PINK(null),
     BLUE(null),
 
+    // SY -->
     PURE_RED(null),
+    // SY <--
 }

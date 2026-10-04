@@ -122,8 +122,10 @@ object SettingsAdvancedScreen : SearchableSettings {
         val basePreferences = remember { Injekt.get<BasePreferences>() }
         val networkPreferences = remember { Injekt.get<NetworkPreferences>() }
         val libraryPreferences = remember { Injekt.get<LibraryPreferences>() }
+        // SY -->
         val downloadPreferences = remember { Injekt.get<DownloadPreferences>() }
         val exhPreferences = remember { Injekt.get<ExhPreferences>() }
+        // SY <--
 
         return listOf(
             Preference.PreferenceItem.TextPreference(
@@ -135,7 +137,7 @@ object SettingsAdvancedScreen : SearchableSettings {
                     }
                 },
             ),
-            /* SYPreference.PreferenceItem.SwitchPreference(
+            /* SY --> Preference.PreferenceItem.SwitchPreference(
                 preference = networkPreferences.verboseLogging(),
                 title = stringResource(MR.strings.pref_verbose_logging),
                 subtitle = stringResource(MR.strings.pref_verbose_logging_summary),
@@ -143,7 +145,7 @@ object SettingsAdvancedScreen : SearchableSettings {
                     context.toast(MR.strings.requires_app_restart)
                     true
                 },
-            ), SY*/
+            ), SY <-- */
             Preference.PreferenceItem.TextPreference(
                 title = stringResource(MR.strings.pref_debug_info),
                 onClick = { navigator.push(DebugInfoScreen()) },
@@ -161,6 +163,7 @@ object SettingsAdvancedScreen : SearchableSettings {
                     context.startActivity(intent)
                 },
             ),
+            // KMK -->
             Preference.PreferenceItem.MultiSelectListPreference(
                 preference = exhPreferences.appShouldAutoUpdate(),
                 entries = persistentMapOf(
@@ -177,16 +180,21 @@ object SettingsAdvancedScreen : SearchableSettings {
                     true
                 },
             ),
+            // KMK <--
             getBackgroundActivityGroup(),
             getDataGroup(),
             getNetworkGroup(networkPreferences = networkPreferences),
             getLibraryGroup(libraryPreferences = libraryPreferences),
+            // SY -->
             getDownloadsGroup(downloadPreferences = downloadPreferences),
+            // SY <--
             getReaderGroup(basePreferences = basePreferences),
             getExtensionsGroup(basePreferences = basePreferences),
+            // SY -->
             // getDownloaderGroup(),
             getDataSaverGroup(),
             getDeveloperToolsGroup(),
+            // SY <--
         )
     }
 
@@ -352,7 +360,9 @@ object SettingsAdvancedScreen : SearchableSettings {
     ): Preference.PreferenceGroup {
         val scope = rememberCoroutineScope()
         val context = LocalContext.current
+        // KMK -->
         val uiPreferences = remember { Injekt.get<UiPreferences>() }
+        // KMK <--
 
         return Preference.PreferenceGroup(
             title = stringResource(MR.strings.label_library),
@@ -361,10 +371,12 @@ object SettingsAdvancedScreen : SearchableSettings {
                     title = stringResource(MR.strings.pref_refresh_library_covers),
                     onClick = { MetadataUpdateJob.startNow(context) },
                 ),
+                // KMK -->
                 Preference.PreferenceItem.SwitchPreference(
                     preference = uiPreferences.preloadLibraryColor(),
                     title = stringResource(KMR.strings.preload_library_cover_color),
                 ),
+                // KMK <--
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(MR.strings.pref_reset_viewer_flags),
                     subtitle = stringResource(MR.strings.pref_reset_viewer_flags_summary),
@@ -527,7 +539,9 @@ object SettingsAdvancedScreen : SearchableSettings {
                         }
                     },
                 ),
+                // KMK -->
                 Preference.PreferenceItem.InfoPreference(stringResource(KMR.strings.pref_private_installer_warning)),
+                // KMK <--
                 Preference.PreferenceItem.TextPreference(
                     title = stringResource(MR.strings.ext_revoke_trust),
                     onClick = {
@@ -539,6 +553,7 @@ object SettingsAdvancedScreen : SearchableSettings {
         )
     }
 
+    // SY -->
     @Composable
     fun CleanupDownloadsDialog(
         onDismissRequest: () -> Unit,
@@ -784,7 +799,9 @@ object SettingsAdvancedScreen : SearchableSettings {
                     ),
                 ),
                 Preference.PreferenceItem.ListPreference(
+                    // KMK -->
                     preference = exhPreferences.logLevel(isDebugBuildType),
+                    // KMK <--
                     entries = EHLogLevel.entries.mapIndexed { index, ehLogLevel ->
                         index to "${context.stringResource(ehLogLevel.nameRes)} (${
                             context.stringResource(ehLogLevel.description)
@@ -857,4 +874,5 @@ object SettingsAdvancedScreen : SearchableSettings {
     }
 
     private var job: Job? = null
+    // SY <--
 }

@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.data.library
 
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,3 +17,4 @@ class HiddenUpdatesUnlock {
         _isUnlocked.value = false
     }
 }
+// NXS <--

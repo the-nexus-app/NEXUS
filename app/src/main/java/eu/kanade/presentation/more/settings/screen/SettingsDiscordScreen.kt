@@ -1,4 +1,6 @@
+// NXS -->
 // AM (DISCORD)
+// NXS <--
 package eu.kanade.presentation.more.settings.screen
 
 import androidx.compose.foundation.layout.Column
@@ -88,12 +90,14 @@ object SettingsDiscordScreen : SearchableSettings {
             when (this) {
                 is LogoutConnectionDialog -> {
                     ConnectionsLogoutDialog(
+                        // KMK -->
                         serviceName = stringResource(service.nameStrRes()),
                         onConfirmation = {
                             enableDRPCPref.set(false)
                             service.logout()
                             navigator.pop()
                         },
+                        // KMK <--
                         onDismissRequest = {
                             dialog = null
                         },
@@ -279,4 +283,6 @@ object SettingsDiscordScreen : SearchableSettings {
         )
     }
 }
+// NXS -->
 // AM (DISCORD)
+// NXS <--

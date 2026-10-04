@@ -37,7 +37,9 @@ class GalleryAdder(
     private val Pair<Set<String>, Set<Long>>.disabledSources
         get() = second
 
+    // KMK -->
     private val logger = ResettableLogger { safeXLogStackTag() }
+    // KMK <--
 
     fun pickSource(url: String): List<UrlImportableSource> {
         val uri = url.toUri()

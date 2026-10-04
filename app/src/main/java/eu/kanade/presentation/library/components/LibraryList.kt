@@ -26,7 +26,9 @@ internal fun LibraryList(
 ) {
     FastScrollLazyColumn(
         modifier = Modifier.fillMaxSize(),
+        // NXS -->
         contentPadding = contentPadding + PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        // NXS <--
     ) {
         item {
             if (!searchQuery.isNullOrEmpty()) {
@@ -59,9 +61,13 @@ internal fun LibraryList(
                     LanguageBadge(
                         isLocal = libraryItem.isLocal,
                         sourceLanguage = libraryItem.sourceLanguage,
+                        // KMK -->
                         useLangIcon = libraryItem.useLangIcon,
+                        // KMK <--
                     )
+                    // KMK -->
                     SourceIconBadge(source = libraryItem.source)
+                    // KMK <--
                 },
                 onLongClick = { onLongClick(libraryItem.libraryManga) },
                 onClick = { onClick(libraryItem.libraryManga) },

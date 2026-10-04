@@ -71,7 +71,9 @@ object DownloadQueueScreen : Screen() {
         val scope = rememberCoroutineScope()
         val screenModel = rememberScreenModel {
             DownloadQueueScreenModel(
+                // KMK -->
                 navigator = navigator,
+                // KMK <--
             )
         }
         val downloadList by screenModel.state.collectAsState()
@@ -254,7 +256,9 @@ object DownloadQueueScreen : Screen() {
             val right = with(density) { contentPadding.calculateRightPadding(layoutDirection).toPx().roundToInt() }
             val bottom = with(density) { contentPadding.calculateBottomPadding().toPx().roundToInt() }
 
+            // KMK -->
             val colorScheme = AndroidViewColorScheme(MaterialTheme.colorScheme)
+            // KMK <--
 
             Box(modifier = Modifier.nestedScroll(nestedScrollConnection)) {
                 AndroidView(
@@ -263,7 +267,9 @@ object DownloadQueueScreen : Screen() {
                         screenModel.controllerBinding = DownloadListBinding.inflate(LayoutInflater.from(context))
                         screenModel.adapter = DownloadAdapter(
                             screenModel.listener,
+                            // KMK -->
                             colorScheme,
+                            // KMK <--
                         )
                         screenModel.controllerBinding.root.adapter = screenModel.adapter
                         screenModel.adapter?.isHandleDragEnabled = true

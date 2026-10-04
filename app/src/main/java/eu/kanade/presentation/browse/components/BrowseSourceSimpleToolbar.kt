@@ -27,14 +27,17 @@ fun BrowseSourceSimpleToolbar(
     displayMode: LibraryDisplayMode?,
     onDisplayModeChange: (LibraryDisplayMode) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    // KMK -->
     toggleSelectionMode: (() -> Unit)?,
     isRunning: Boolean,
+    // KMK <--
 ) {
     AppBar(
         navigateUp = navigateUp,
         title = title,
         actions = {
             var selectingDisplayMode by remember { mutableStateOf(false) }
+            // KMK -->
             AppBarActions(
                 actions = persistentListOf<AppBar.AppBarAction>().builder().apply {
                     displayMode?.let { mode ->
@@ -58,10 +61,12 @@ fun BrowseSourceSimpleToolbar(
                 }
                     .build(),
             )
+            // KMK <--
             DropdownMenu(
                 expanded = selectingDisplayMode,
                 onDismissRequest = { selectingDisplayMode = false },
             ) {
+                // KMK -->
                 RadioMenuItem(
                     text = { Text(text = stringResource(MR.strings.action_display_comfortable_grid)) },
                     isChecked = displayMode == LibraryDisplayMode.ComfortableGrid,
@@ -90,6 +95,7 @@ fun BrowseSourceSimpleToolbar(
                     selectingDisplayMode = false
                     onDisplayModeChange(LibraryDisplayMode.List)
                 }
+                // KMK <--
             }
         },
         scrollBehavior = scrollBehavior,

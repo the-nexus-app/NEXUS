@@ -46,6 +46,7 @@ class GlobalSearchScreen(
             mutableStateOf(searchQuery.isNotEmpty() && !extensionFilter.isNullOrEmpty() && state.total == 1)
         }
 
+        // KMK -->
         val bulkFavoriteScreenModel = rememberScreenModel { BulkFavoriteScreenModel() }
         val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
 
@@ -54,6 +55,7 @@ class GlobalSearchScreen(
         BackHandler(enabled = bulkFavoriteState.selectionMode) {
             bulkFavoriteScreenModel.backHandler()
         }
+        // KMK <--
 
         if (showSingleLoadingScreen) {
             LoadingScreen()
@@ -86,27 +88,35 @@ class GlobalSearchScreen(
                     navigator.push(BrowseSourceScreen(it.id, state.searchQuery))
                 },
                 onClickItem = { manga ->
+                    // KMK -->
                     if (bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.toggleSelection(manga)
                     } else {
+                        // KMK <--
                         navigator.push(MangaScreen(manga.id, true))
                     }
                 },
                 onLongClickItem = { manga ->
+                    // KMK -->
                     if (!bulkFavoriteState.selectionMode) {
                         bulkFavoriteScreenModel.addRemoveManga(manga, haptic)
                     } else {
+                        // KMK <--
                         navigator.push(MangaScreen(manga.id, true))
                     }
                 },
+                // KMK -->
                 bulkFavoriteScreenModel = bulkFavoriteScreenModel,
                 hasPinnedSources = screenModel.hasPinnedSources(),
+                // KMK <--
             )
         }
 
+        // KMK -->
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
+        // KMK <--
     }
 }

@@ -41,13 +41,15 @@ class FilterChaptersForDownload(
 
         if (!downloadPreferences.downloadNewUnreadChaptersOnly().get()) return newChapters
 
+        // SY -->
         val existingChapters = if (manga.source == MERGED_SOURCE_ID) {
-            getMergedChaptersByMangaId.await(manga.id, /* KMK*/ applyFilter = true /* KMK*/)
+            getMergedChaptersByMangaId.await(manga.id, /* KMK --> */ applyFilter = true /* KMK <-- */)
         } else {
-            getChaptersByMangaId.await(manga.id, /* KMK*/ applyFilter = true /* KMK*/)
+            getChaptersByMangaId.await(manga.id, /* KMK --> */ applyFilter = true /* KMK <-- */)
         }
 
         val readChapterNumbers = existingChapters
+            // SY <--
             .asSequence()
             .filter { it.read && it.isRecognizedNumber }
             .map { it.chapterNumber }

@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.interactor
 
 import kotlinx.coroutines.flow.Flow
@@ -15,3 +16,4 @@ class GetBookmarksByMangaId(
         return bookmarkRepository.getBookmarksByMangaId(mangaId)
     }
 }
+// NXS <--

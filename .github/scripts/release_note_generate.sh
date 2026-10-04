@@ -2,7 +2,7 @@
 
 # Check if at least one argument is provided
 if [ $# -lt 1 ]; then
-  echo "Usage: $0 <previous release> [latest commit or omit for master]"
+  echo "Usage: $0 <previous release> [latest commit or omit for main]"
   exit 1
 fi
 
@@ -11,7 +11,7 @@ previous_release=$1
 
 # Check if the second argument is provided, otherwise use default value
 if [ -z "$2" ]; then
-  latest_commit="master"
+  latest_commit="main"
 else
   latest_commit=$2
 fi

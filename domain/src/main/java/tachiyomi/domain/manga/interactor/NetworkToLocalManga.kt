@@ -14,11 +14,15 @@ class NetworkToLocalManga(
      */
     suspend operator fun invoke(
         manga: Manga,
+        // KMK -->
         updateInfo: Boolean = true,
+        // KMK <--
     ): Manga {
         return invoke(
             listOf(manga),
+            // KMK -->
             updateInfo,
+            // KMK <--
         ).single()
     }
 
@@ -29,11 +33,15 @@ class NetworkToLocalManga(
      */
     suspend operator fun invoke(
         manga: List<Manga>,
+        // KMK -->
         updateInfo: Boolean = true,
+        // KMK <--
     ): List<Manga> {
         return mangaRepository.insertNetworkManga(
             manga,
+            // KMK -->
             updateInfo,
+            // KMK <--
         )
     }
 }

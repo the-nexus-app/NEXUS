@@ -82,7 +82,9 @@ class UpdatesRepositoryImpl(
         excludedScanlator: String?,
     ): UpdatesWithRelations = UpdatesWithRelations(
         mangaId = mangaId,
+        // SY -->
         ogMangaTitle = mangaTitle,
+        // SY <--
         chapterId = chapterId,
         chapterName = chapterName,
         scanlator = scanlator,

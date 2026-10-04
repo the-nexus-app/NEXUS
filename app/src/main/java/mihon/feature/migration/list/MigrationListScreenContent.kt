@@ -81,8 +81,10 @@ fun MigrationListScreenContent(
     onMigrate: (Long) -> Unit,
     onCopy: (Long) -> Unit,
     openMigrationDialog: (Boolean) -> Unit,
+    // KMK -->
     onCancel: (Long) -> Unit,
     openOptionsDialog: () -> Unit,
+    // KMK <--
 ) {
     Scaffold(
         topBar = { scrollBehavior ->
@@ -95,11 +97,13 @@ fun MigrationListScreenContent(
                 actions = {
                     AppBarActions(
                         persistentListOf(
+                            // KMK -->
                             AppBar.Action(
                                 title = stringResource(MR.strings.action_settings),
                                 icon = Icons.Outlined.Settings,
                                 onClick = openOptionsDialog,
                             ),
+                            // KMK <--
                             AppBar.Action(
                                 title = stringResource(MR.strings.migrationListScreen_copyActionLabel),
                                 icon = if (items.size == 1) Icons.Outlined.ContentCopy else Icons.Outlined.CopyAll,
@@ -168,7 +172,9 @@ fun MigrationListScreenContent(
                         onSkip = { onSkip(item.manga.id) },
                         onMigrate = { onMigrate(item.manga.id) },
                         onCopy = { onCopy(item.manga.id) },
+                        // KMK -->
                         onCancel = { onCancel(item.manga.id) },
+                        // KMK <--
                     )
                 }
             }
@@ -320,14 +326,18 @@ private fun MigrationListItemAction(
     onSkip: () -> Unit,
     onMigrate: () -> Unit,
     onCopy: () -> Unit,
+    // KMK -->
     onCancel: () -> Unit,
+    // KMK <--
 ) {
     var menuExpanded by rememberSaveable { mutableStateOf(false) }
     val closeMenu = { menuExpanded = false }
     Box(modifier) {
         when (result) {
             MigratingManga.SearchResult.Searching -> {
+                // KMK -->
                 IconButton(onClick = onCancel) {
+                    // KMK <--
                     Icon(
                         imageVector = Icons.Outlined.Close,
                         contentDescription = null,

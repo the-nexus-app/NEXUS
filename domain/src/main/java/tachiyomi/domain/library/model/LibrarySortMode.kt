@@ -33,7 +33,9 @@ data class LibrarySort(
         data object TrackerMean : Type(0b00100000)
         data object Random : Type(0b00111100)
 
+        // SY -->
         data object TagList : Type(0b00100100)
+        // SY <--
 
         companion object {
             fun valueOf(flag: Long): Type {
@@ -80,7 +82,7 @@ data class LibrarySort(
                 Type.ChapterFetchDate,
                 Type.DateAdded,
                 Type.TrackerMean,
-                Type.TagList,
+                /* SY -->*/ Type.TagList, /* SY <--*/
                 Type.Random,
             )
         }
@@ -109,7 +111,9 @@ data class LibrarySort(
                     "CHAPTER_FETCH_DATE" -> Type.ChapterFetchDate
                     "DATE_ADDED" -> Type.DateAdded
                     "TRACKER_MEAN" -> Type.TrackerMean
+                    // SY -->
                     "TAG_LIST" -> Type.TagList
+                    // SY <--
                     "RANDOM" -> Type.Random
                     else -> Type.Alphabetical
                 }
@@ -132,7 +136,9 @@ data class LibrarySort(
             Type.ChapterFetchDate -> "CHAPTER_FETCH_DATE"
             Type.DateAdded -> "DATE_ADDED"
             Type.TrackerMean -> "TRACKER_MEAN"
+            // SY -->
             Type.TagList -> "TAG_LIST"
+            // SY <--
             Type.Random -> "RANDOM"
         }
         val direction = if (direction == Direction.Ascending) "ASCENDING" else "DESCENDING"

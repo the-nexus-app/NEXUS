@@ -16,6 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import eu.kanade.presentation.theme.colorscheme.AndroidViewColorScheme
 import eu.kanade.tachiyomi.databinding.DialogStubTextinputBinding
 
+// KMK -->
 @Suppress("UnusedReceiverParameter")
 fun MaterialAlertDialogBuilder.binding(context: Context): DialogStubTextinputBinding {
     return DialogStubTextinputBinding.inflate(LayoutInflater.from(context))
@@ -58,6 +59,7 @@ fun DialogStubTextinputBinding.setHint(hint: String? = null): DialogStubTextinpu
 }
 
 fun DialogStubTextinputBinding.setTextEdit(prefill: String? = null): DialogStubTextinputBinding {
+    // KMK <--
     textInputLayout.editText?.apply {
         setText(prefill, TextView.BufferType.EDITABLE)
         post {
@@ -65,6 +67,7 @@ fun DialogStubTextinputBinding.setTextEdit(prefill: String? = null): DialogStubT
             context.getSystemService<InputMethodManager>()?.showSoftInput(this, 0)
         }
     }
+    // KMK -->
     return this
 }
 
@@ -109,3 +112,4 @@ class RoundedCornerDrawable(val color: Int, private val cornerRadius: Float = 72
         paint.colorFilter = colorFilter
     }
 }
+// KMK <--

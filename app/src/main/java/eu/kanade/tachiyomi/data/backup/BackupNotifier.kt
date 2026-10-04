@@ -28,14 +28,20 @@ class BackupNotifier(private val context: Context) {
 
     private val preferences: SecurityPreferences by injectLazy()
 
+    // KMK -->
     private val backupRestoreStatus: BackupRestoreStatus = Injekt.get()
+    // KMK <--
 
     private val progressNotificationBuilder = context.notificationBuilder(
         Notifications.CHANNEL_BACKUP_RESTORE_PROGRESS,
     ) {
+        // NXS -->
         setSmallIcon(R.drawable.ic_nexus)
+        // NXS <--
         setColor(ContextCompat.getColor(context, R.color.ic_launcher))
+        // NXS -->
         setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo))
+        // NXS <--
         setAutoCancel(false)
         setOngoing(true)
         setOnlyAlertOnce(true)
@@ -44,9 +50,13 @@ class BackupNotifier(private val context: Context) {
     private val completeNotificationBuilder = context.notificationBuilder(
         Notifications.CHANNEL_BACKUP_RESTORE_COMPLETE,
     ) {
+        // NXS -->
         setSmallIcon(R.drawable.ic_nexus)
+        // NXS <--
         setColor(ContextCompat.getColor(context, R.color.ic_launcher))
+        // NXS -->
         setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo))
+        // NXS <--
         setAutoCancel(false)
     }
 
@@ -61,9 +71,11 @@ class BackupNotifier(private val context: Context) {
             setProgress(0, 0, true)
         }
 
+        // KMK -->
         // Avoid calling show() before returning builder for ForegroundInfo.
         // Calling show() here can cause duplicate notifications, as setForegroundSafely will display the notification using the returned builder.
         // builder.show(Notifications.ID_BACKUP_PROGRESS)
+        // KMK <--
 
         return builder
     }
@@ -117,7 +129,9 @@ class BackupNotifier(private val context: Context) {
 
             setProgress(maxAmount, progress, false)
             setOnlyAlertOnce(true)
+            // KMK -->
             backupRestoreStatus.updateProgress(progress.toFloat() / maxAmount)
+            // KMK <--
 
             clearActions()
             addAction(
@@ -127,9 +141,11 @@ class BackupNotifier(private val context: Context) {
             )
         }
 
+        // KMK -->
         // Avoid calling show() before returning builder for ForegroundInfo.
         // Calling show() here can cause duplicate notifications, as setForegroundSafely will display the notification using the returned builder.
         // builder.show(Notifications.ID_RESTORE_PROGRESS)
+        // KMK <--
 
         return builder
     }

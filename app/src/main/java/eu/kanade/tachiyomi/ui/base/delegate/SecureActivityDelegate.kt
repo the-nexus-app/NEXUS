@@ -28,6 +28,7 @@ interface SecureActivityDelegate {
     fun registerSecureActivity(activity: AppCompatActivity)
 
     companion object {
+        // SY -->
         const val LOCK_SUNDAY = 0x40
         const val LOCK_MONDAY = 0x20
         const val LOCK_TUESDAY = 0x10
@@ -36,6 +37,7 @@ interface SecureActivityDelegate {
         const val LOCK_FRIDAY = 0x2
         const val LOCK_SATURDAY = 0x1
         const val LOCK_ALL_DAYS = 0x7F
+        // SY <--
 
         /**
          * Set to true if we need the first activity to authenticate.
@@ -58,6 +60,7 @@ interface SecureActivityDelegate {
             }
         }
 
+        // SY -->
         private fun canLockNow(preferences: SecurityPreferences): Boolean {
             val today: Calendar = Calendar.getInstance()
             val timeRanges = preferences.authenticatorTimeRanges().get()
@@ -84,6 +87,7 @@ interface SecureActivityDelegate {
 
             return canLockNow && canLockToday
         }
+        // SY <--
 
         /**
          * Checks if unlock is needed when app comes foreground.
@@ -97,8 +101,8 @@ interface SecureActivityDelegate {
             // `requireUnlock` can be true on process start or if app was closed in locked state
             if (!AuthenticatorUtil.isAuthenticating && !requireUnlock) {
                 requireUnlock =
-                    canLockNow(preferences) &&
-                    when (val lockDelay = preferences.lockAppAfter().get()) {
+                    /* SY --> */ canLockNow(preferences) &&
+                    /* SY <-- */ when (val lockDelay = preferences.lockAppAfter().get()) {
                         -1 -> false // Never
                         0 -> true // Always
                         else -> lastClosedPref.get() + lockDelay * 60_000 <= System.currentTimeMillis()

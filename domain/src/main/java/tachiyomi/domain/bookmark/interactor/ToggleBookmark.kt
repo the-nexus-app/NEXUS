@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.interactor
 
 import logcat.LogPriority
@@ -34,3 +35,4 @@ class ToggleBookmark(
         return bookmarkRepository.getBookmark(chapterId, pageIndex) != null
     }
 }
+// NXS <--

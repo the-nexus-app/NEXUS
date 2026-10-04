@@ -26,7 +26,9 @@ data class BGMSubject(
     val eps: Long = 0,
     val rating: BGMSubjectRating?,
     val platform: String?,
+    // SY -->
     val infobox: List<Infobox>,
+    // SY <--
 ) {
     fun toTrackSearch(trackId: Long): TrackSearch = TrackSearch.create(trackId).apply {
         remote_id = this@BGMSubject.id

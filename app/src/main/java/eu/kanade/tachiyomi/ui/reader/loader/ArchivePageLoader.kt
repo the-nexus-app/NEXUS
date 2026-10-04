@@ -22,6 +22,7 @@ import java.io.File
  * Loader used to load a chapter from an archive file.
  */
 internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader() {
+    // SY -->
     private val mutex = Mutex()
     private val context: Application by injectLazy()
     private val readerPreferences: ReaderPreferences by injectLazy()
@@ -54,17 +55,21 @@ internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader
             }
         }
     }
+    // SY <--
 
     override var isLocal: Boolean = true
 
     override suspend fun getPages(): List<ReaderPage> = reader.useEntries { entries ->
+        // SY -->
         if (readerPreferences.archiveReaderMode().get() == ReaderPreferences.ArchiveReaderMode.CACHE_TO_DISK) {
             return DirectoryPageLoader(UniFile.fromFile(tmpDir)!!).getPages()
         }
+        // SY <--
         entries
             .filter { it.isFile && ImageUtil.isImage(it.name) { reader.getInputStream(it.name)!! } }
             .sortedWith { f1, f2 -> f1.name.compareToCaseInsensitiveNaturalOrder(f2.name) }
             .mapIndexed { i, entry ->
+                // SY -->
                 val imageBytesDeferred: Deferred<ByteArray>? =
                     when (readerPreferences.archiveReaderMode().get()) {
                         ReaderPreferences.ArchiveReaderMode.LOAD_INTO_MEMORY -> {
@@ -80,8 +85,11 @@ internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader
                         else -> null
                     }
                 val imageBytes by lazy { runBlocking { imageBytesDeferred?.await() } }
+                // SY <--
                 ReaderPage(i).apply {
+                    // SY -->
                     stream = { imageBytes?.copyOf()?.inputStream() ?: reader.getInputStream(entry.name)!! }
+                    // SY <--
                     status = Page.State.Ready
                 }
             }
@@ -95,6 +103,8 @@ internal class ArchivePageLoader(private val reader: ArchiveReader) : PageLoader
     override fun recycle() {
         super.recycle()
         reader.close()
+        // SY -->
         tmpDir.deleteRecursively()
+        // SY <--
     }
 }

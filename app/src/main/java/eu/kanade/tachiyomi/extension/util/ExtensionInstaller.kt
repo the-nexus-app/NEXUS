@@ -38,9 +38,11 @@ internal class ExtensionInstaller(
     private val context: Context,
 ) {
 
+    // KMK -->
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val activeJobs = ConcurrentHashMap<String, Job>()
     private val activeSteps = ConcurrentHashMap<Long, MutableStateFlow<InstallStep>>()
+    // KMK <--
     private val extensionInstaller = Injekt.get<BasePreferences>().extensionInstaller()
 
     private val httpClient: OkHttpClient = Injekt.get<NetworkHelper>().client
@@ -54,8 +56,10 @@ internal class ExtensionInstaller(
      */
     fun downloadAndInstall(url: String, extension: Extension): Flow<InstallStep> {
         val pkgName = extension.pkgName +
+            // KMK -->
             "_${extension.signatureHash}"
         val downloadId = pkgName.toDownloadId()
+        // KMK <--
         cancelInstall(pkgName)
 
         val step = MutableStateFlow(InstallStep.Pending)
@@ -67,13 +71,17 @@ internal class ExtensionInstaller(
                 step.value = InstallStep.Downloading
                 val request = Request.Builder().url(url).build()
                 httpClient.newCall(request).execute()
+                    // KMK -->
                     .use { response ->
+                        // KMK <--
 
                         if (!response.isSuccessful) {
                             throw Exception("Failed to download extension")
                         }
+                        // KMK -->
                         tmpFile.outputStream().use { output ->
                             response.body.byteStream().use { input ->
+                                // KMK <--
                                 input.copyTo(output)
                             }
                         }
@@ -88,7 +96,9 @@ internal class ExtensionInstaller(
                     logcat(LogPriority.ERROR, e)
                     step.value = InstallStep.Error
                 }
+                // KMK -->
                 tmpFile.delete()
+                // KMK <--
             }
         }
 
@@ -148,7 +158,7 @@ internal class ExtensionInstaller(
      */
     fun cancelInstall(pkgName: String) {
         activeJobs.remove(pkgName)?.cancel()
-        Installer.cancelInstallQueue(context, /* KMK*/ pkgName.toDownloadId() /* KMK*/)
+        Installer.cancelInstallQueue(context, /* KMK --> */ pkgName.toDownloadId() /* KMK <-- */)
     }
 
     /**
@@ -182,7 +192,9 @@ internal class ExtensionInstaller(
         const val APK_MIME = "application/vnd.android.package-archive"
         const val EXTRA_DOWNLOAD_ID = "ExtensionInstaller.extra.DOWNLOAD_ID"
 
+        // KMK -->
         /** Convert packageName to download ID avoiding negative number */
         private fun String.toDownloadId(): Long = hashCode().toLong() and 0xFFFFFFFFL
+        // KMK <--
     }
 }

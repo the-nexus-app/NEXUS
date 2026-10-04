@@ -28,6 +28,7 @@ sealed class Filter<T>(val name: String, var state: T) {
         data class Selection(val index: Int, val ascending: Boolean)
     }
 
+    // SY -->
     abstract class AutoComplete(
         name: String,
         val hint: String,
@@ -36,6 +37,7 @@ sealed class Filter<T>(val name: String, var state: T) {
         val validPrefixes: List<String> = emptyList(),
         state: List<String>,
     ) : Filter<List<String>>(name, state)
+    // SY <--
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

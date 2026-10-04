@@ -43,9 +43,11 @@ fun CategoryCreateDialog(
     onDismissRequest: () -> Unit,
     onCreate: (String) -> Unit,
     categories: ImmutableList<String>,
+    // SY -->
     title: String = stringResource(MR.strings.action_add_category),
     extraMessage: String? = null,
     alreadyExistsError: StringResource = MR.strings.error_category_exists,
+    // SY <--
 ) {
     var name by remember { mutableStateOf("") }
 
@@ -71,11 +73,15 @@ fun CategoryCreateDialog(
             }
         },
         title = {
+            // SY -->
             Text(text = title)
+            // SY <--
         },
         text = {
+            // SY -->
             Column {
                 extraMessage?.let { Text(it) }
+                // SY <--
 
                 OutlinedTextField(
                     modifier = Modifier
@@ -87,7 +93,9 @@ fun CategoryCreateDialog(
                     },
                     supportingText = {
                         val msgRes = if (name.isNotEmpty() && nameAlreadyExists) {
+                            // SY -->
                             alreadyExistsError
+                            // SY <--
                         } else {
                             MR.strings.information_required_plain
                         }
@@ -96,7 +104,9 @@ fun CategoryCreateDialog(
                     isError = name.isNotEmpty() && nameAlreadyExists,
                     singleLine = true,
                 )
+                // SY -->
             }
+            // SY <--
         },
     )
 
@@ -175,9 +185,11 @@ fun CategoryRenameDialog(
 fun CategoryDeleteDialog(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
+    // SY -->
     category: String = "",
     title: String = stringResource(MR.strings.delete_category),
     text: String = stringResource(MR.strings.delete_category_confirmation, category),
+    // SY <--
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -195,10 +207,14 @@ fun CategoryDeleteDialog(
             }
         },
         title = {
+            // SY -->
             Text(text = title)
+            // SY <--
         },
         text = {
+            // SY -->
             Text(text = text)
+            // SY <--
         },
     )
 }

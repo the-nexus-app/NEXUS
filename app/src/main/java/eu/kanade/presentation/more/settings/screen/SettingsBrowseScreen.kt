@@ -47,14 +47,20 @@ object SettingsBrowseScreen : SearchableSettings {
 
         val reposCount by getExtensionStoreCountAsFlow().collectAsState(0)
 
+        // SY -->
         val scope = rememberCoroutineScope()
         val hideFeedTab by remember { Injekt.get<UiPreferences>().hideFeedTab().asState(scope) }
         val uiPreferences = remember { Injekt.get<UiPreferences>() }
+        // SY <--
+        // KMK -->
         val relatedMangasInOverflow by uiPreferences.expandRelatedMangas().collectAsState()
+        // KMK <--
         return listOf(
+            // SY -->
             Preference.PreferenceGroup(
                 title = stringResource(MR.strings.label_sources),
                 preferenceItems = persistentListOf(
+                    // KMK -->
                     Preference.PreferenceItem.SwitchPreference(
                         preference = sourcePreferences.relatedMangas(),
                         title = stringResource(KMR.strings.pref_source_related_mangas),
@@ -78,6 +84,7 @@ object SettingsBrowseScreen : SearchableSettings {
                         subtitle = stringResource(KMR.strings.pref_show_home_on_related_mangas_summary),
                         enabled = sourcePreferences.relatedMangas().get(),
                     ),
+                    // KMK <--
                     run {
                         val count by sourcePreferences.sourcesTabCategories().collectAsState()
                         Preference.PreferenceItem.TextPreference(
@@ -118,12 +125,15 @@ object SettingsBrowseScreen : SearchableSettings {
                         subtitle = stringResource(SYMR.strings.pref_feed_position_summery),
                         enabled = hideFeedTab.not(),
                     ),
+                    // KMK -->
                     Preference.PreferenceItem.SwitchPreference(
                         preference = sourcePreferences.hideInLibraryFeedItems(),
                         title = stringResource(MR.strings.pref_hide_in_library_items),
                     ),
+                    // KMK <--
                 ),
             ),
+            // SY <--
             Preference.PreferenceGroup(
                 title = stringResource(MR.strings.label_sources),
                 preferenceItems = persistentListOf(

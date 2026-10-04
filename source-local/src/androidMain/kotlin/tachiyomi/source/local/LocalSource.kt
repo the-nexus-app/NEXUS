@@ -54,7 +54,9 @@ class LocalSource(
     private val context: Context,
     private val fileSystem: LocalSourceFileSystem,
     private val coverManager: LocalCoverManager,
+    // SY -->
     private val allowHiddenFiles: () -> Boolean,
+    // SY <--
 ) : Source, UnmeteredSource {
 
     private val json: Json by injectLazy()
@@ -87,16 +89,20 @@ class LocalSource(
         } else {
             0L
         }
+        // SY -->
         val allowLocalSourceHiddenFolders = allowHiddenFiles()
+        // SY <--
 
         var mangaDirs = fileSystem.getFilesInBaseDirectory()
             // Filter out files that are hidden and is not a folder
             .filter {
                 it.isDirectory &&
+                    // SY -->
                     (
                         !it.name.orEmpty().startsWith('.') ||
                             allowLocalSourceHiddenFolders
                         )
+                // SY <--
             }
             .distinctBy { it.name }
             .filter {
@@ -150,6 +156,7 @@ class LocalSource(
         MangasPage(mangas, false)
     }
 
+    // SY -->
     fun updateMangaInfo(manga: SManga) {
         val mangaDirFiles = fileSystem.getFilesInMangaDirectory(manga.url)
         val existingFile = mangaDirFiles
@@ -187,6 +194,7 @@ class LocalSource(
             )
         }
     }
+    // SY <--
 
     override suspend fun getMangaUpdate(
         manga: SManga,
@@ -216,8 +224,10 @@ class LocalSource(
                 .firstOrNull { it.name == ".noxml" }
             val legacyJsonDetailsFile = mangaDirFiles
                 .firstOrNull { it.extension == "json" }
+            // SY -->
             val comicInfoArchiveFile = mangaDirFiles
                 .firstOrNull { it.name == COMIC_INFO_ARCHIVE }
+            // SY <--
 
             when {
                 // Top level ComicInfo.xml
@@ -225,6 +235,7 @@ class LocalSource(
                     noXmlFile?.delete()
                     setMangaDetailsFromComicInfoFile(comicInfoFile.openInputStream(), manga)
                 }
+                // SY -->
                 comicInfoArchiveFile != null -> {
                     noXmlFile?.delete()
 
@@ -232,6 +243,7 @@ class LocalSource(
                         ?.let { setMangaDetailsFromComicInfoFile(it, manga) }
                 }
 
+                // SY <--
                 // Old custom JSON format
                 // TODO: remove support for this entirely after a while
                 legacyJsonDetailsFile != null -> {
@@ -261,11 +273,13 @@ class LocalSource(
 
                     val copiedFile = copyComicInfoFileFromChapters(chapterArchives, mangaDir)
 
+                    // SY -->
                     if (copiedFile != null && copiedFile.name != COMIC_INFO_ARCHIVE) {
                         setMangaDetailsFromComicInfoFile(copiedFile.openInputStream(), manga)
                     } else if (copiedFile != null && copiedFile.name == COMIC_INFO_ARCHIVE) {
                         copiedFile.archiveReader(context).getInputStream(COMIC_INFO_FILE)
                             ?.let { setMangaDetailsFromComicInfoFile(it, manga) }
+                        // SY <--
                     } else {
                         // Avoid re-scanning
                         mangaDir.createFile(".noxml")
@@ -282,19 +296,19 @@ class LocalSource(
     private fun <T> getComicInfoForChapter(chapter: UniFile, block: (InputStream, ArchiveReader?) -> T): T? {
         if (chapter.isDirectory) {
             return chapter.findFile(COMIC_INFO_FILE)?.let { file ->
-                file.openInputStream().use { block(it, null) }
+                file.openInputStream().use { block(it, /* SY --> */ null /* SY <-- */) }
             }
         } else {
             return chapter.archiveReader(context).use { reader ->
-                reader.getInputStream(COMIC_INFO_FILE)?.use { block(it, reader) }
+                reader.getInputStream(COMIC_INFO_FILE)?.use { block(it, /* SY --> */ reader /* SY <-- */) }
             }
         }
     }
 
     private fun copyComicInfoFileFromChapters(chapterArchives: List<UniFile>, folder: UniFile): UniFile? {
         for (chapter in chapterArchives) {
-            val file = getComicInfoForChapter(chapter) f@{ stream, reader ->
-                return@f copyComicInfoFile(stream, folder, reader?.encrypted == true)
+            val file = getComicInfoForChapter(chapter) f@{ stream, /* SY --> */ reader /* SY <-- */ ->
+                return@f copyComicInfoFile(stream, folder, /* SY --> */ reader?.encrypted == true /* SY <-- */)
             }
             if (file != null) return file
         }
@@ -304,8 +318,11 @@ class LocalSource(
     private fun copyComicInfoFile(
         comicInfoFileStream: InputStream,
         folder: UniFile,
+        // SY -->
         encrypt: Boolean,
+        // SY <--
     ): UniFile? {
+        // SY -->
         if (encrypt) {
             val comicInfoArchiveFile = folder.createFile(COMIC_INFO_ARCHIVE)
             comicInfoArchiveFile?.let { archive ->
@@ -315,6 +332,7 @@ class LocalSource(
             }
             return comicInfoArchiveFile
         } else {
+            // SY <--
             return folder.createFile(COMIC_INFO_FILE)?.apply {
                 openOutputStream().use { outputStream ->
                     comicInfoFileStream.use { it.copyTo(outputStream) }
@@ -366,7 +384,7 @@ class LocalSource(
                             epub.fillMetadata(manga, this)
                         }
                     } else {
-                        getComicInfoForChapter(chapterFile) { stream, _ ->
+                        getComicInfoForChapter(chapterFile) { stream, /* SY --> */ _ /* SY <-- */ ->
                             setChapterDetailsFromComicInfoFile(stream, this)
                         }
                     }
@@ -450,9 +468,13 @@ class LocalSource(
 
     companion object {
         const val ID = 0L
+        // NXS -->
         const val HELP_URL = "https://github.com/the-nexus-app/NEXUS"
+        // NXS <--
 
+        // SY -->
         const val COMIC_INFO_ARCHIVE = "ComicInfo.cbm"
+        // SY <--
 
         private val LATEST_THRESHOLD = 7.days.inWholeMilliseconds
     }

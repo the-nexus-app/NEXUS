@@ -30,15 +30,20 @@ fun WhatsNewScreen(
     currentVersion: String,
     versionName: String,
     changelogInfo: String,
+    // NXS -->
     isUpdateAvailable: Boolean = true,
+    // NXS <--
     onOpenInBrowser: () -> Unit,
+    // NXS -->
     onDownloadUpdate: () -> Unit,
+    // NXS <--
 ) {
     InfoScreen(
         icon = Icons.Outlined.NewReleases,
         headingText = stringResource(MR.strings.whats_new),
         subtitleText = stringResource(SYMR.strings.latest_, versionName) +
             " - " + stringResource(KMR.strings.current_, currentVersion),
+        // NXS -->
         acceptText = if (isUpdateAvailable) {
             stringResource(MR.strings.whats_new_download_update)
         } else {
@@ -46,6 +51,7 @@ fun WhatsNewScreen(
         },
         canAccept = isUpdateAvailable,
         onAcceptClick = onDownloadUpdate,
+        // NXS <--
     ) {
         Column(
             modifier = Modifier
@@ -74,8 +80,10 @@ fun WhatsNewScreen(
 private fun WhatsNewScreenPreview() {
     TachiyomiPreviewTheme {
         WhatsNewScreen(
+            // NXS -->
             currentVersion = "v1.2.1",
             versionName = "v1.2.2",
+            // NXS <--
             changelogInfo = """
                 ## v1.2.2
 
@@ -114,9 +122,13 @@ private fun WhatsNewScreenPreview() {
 
                 **Full Changelog**: [the-nexus-app/NEXUS@v1.1.9...v1.2.0](https://github.com/the-nexus-app/NEXUS/compare/v1.1.9...v1.2.0)
             """,
+            // NXS -->
             isUpdateAvailable = true,
+            // NXS <--
             onOpenInBrowser = {},
+            // NXS -->
             onDownloadUpdate = {},
+            // NXS <--
         )
     }
 }

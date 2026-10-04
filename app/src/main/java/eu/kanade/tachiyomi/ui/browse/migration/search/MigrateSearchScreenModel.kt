@@ -40,7 +40,9 @@ class MigrateSearchScreenModel(
             search()
         }
 
+        // KMK -->
         shouldPinnedSourcesHidden()
+        // KMK <--
     }
 
     override fun getEnabledSources(): List<Source> {

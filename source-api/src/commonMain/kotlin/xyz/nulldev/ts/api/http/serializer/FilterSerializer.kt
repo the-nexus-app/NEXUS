@@ -23,7 +23,9 @@ import kotlin.reflect.full.isSubclassOf
 
 class FilterSerializer {
     private val serializers = listOf<Serializer<*>>(
+        // SY -->
         AutoCompleteSerializer(this),
+        // SY <--
         HeaderSerializer(this),
         SeparatorSerializer(this),
         SelectSerializer(this),
@@ -70,11 +72,15 @@ class FilterSerializer {
 
     fun deserialize(filters: FilterList, json: JsonArray) {
         filters.filterIsInstance<Filter<Any?>>().zip(json).forEach { (filter, obj) ->
+            // KMK -->
             try {
+                // KMK <--
                 deserialize(filter, obj.jsonObject)
+                // KMK -->
             } catch (e: Exception) {
                 logcat(LogPriority.ERROR) { e.asLog() }
             }
+            // KMK <--
         }
     }
 

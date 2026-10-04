@@ -140,12 +140,14 @@ object SettingsEhScreen : SearchableSettings {
         ConfigureExhDialog(run = runConfigureDialog, onRunning = { runConfigureDialog = false })
 
         return listOf(
+            // KMK -->
             Preference.PreferenceGroup(
                 stringResource(MR.strings.source_settings),
                 preferenceItems = persistentListOf(
                     ehIncognitoMode(exhPreferences),
                 ),
             ),
+            // KMK <--
             Preference.PreferenceGroup(
                 stringResource(SYMR.strings.ehentai_prefs_account_settings),
                 preferenceItems = persistentListOf(
@@ -187,6 +189,7 @@ object SettingsEhScreen : SearchableSettings {
         )
     }
 
+    // KMK -->
     @Composable
     fun ehIncognitoMode(
         exhPreferences: ExhPreferences,
@@ -202,6 +205,7 @@ object SettingsEhScreen : SearchableSettings {
             },
         )
     }
+    // KMK <--
 
     @Composable
     fun getLoginPreference(

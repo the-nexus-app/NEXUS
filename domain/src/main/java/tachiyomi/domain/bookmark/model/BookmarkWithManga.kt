@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.bookmark.model
 
 import tachiyomi.domain.manga.model.MangaCover
@@ -23,3 +24,4 @@ data class BookmarkWithManga(
     val coverData: MangaCover,
     val note: String? = null,
 )
+// NXS <--

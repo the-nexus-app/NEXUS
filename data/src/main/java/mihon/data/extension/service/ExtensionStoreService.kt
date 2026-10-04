@@ -28,8 +28,10 @@ class ExtensionStoreService(
     suspend fun fetch(indexUrl: String): Result<ExtensionStore> {
         var updatedIndexUrl: String = indexUrl
         return try {
+            // KMK -->
             val store = network.client.newCall(GET(updatedIndexUrl)).awaitSuccess().use { response ->
                 val source = response.body.source().decompressIfGzipped()
+                // KMK <--
                 val networkStore = when (source.peek().readByte()) {
                     // "[..."
                     0x5B.toByte() -> run {
@@ -44,8 +46,10 @@ class ExtensionStoreService(
                     // "{..."
                     0x7B.toByte() -> try {
                         json.decodeFromBufferedSource<NetworkLegacyExtensionRepo>(source.peek())
+                        // KMK -->
                     } catch (e: Exception) {
                         if (e is CancellationException) throw e
+                        // KMK <--
                         json.decodeFromBufferedSource<NetworkExtensionStore>(source)
                     }
                     else -> protoBuf.decodeFromByteArray<NetworkExtensionStore>(source.readByteArray())
@@ -71,8 +75,10 @@ class ExtensionStoreService(
     suspend fun getExtensions(store: ExtensionStore): Result<List<Extension.Available>> {
         return try {
             val extensions = if (store.extensionListUrl != null) {
+                // KMK -->
                 network.client.newCall(GET(store.extensionListUrl!!)).awaitSuccess().use { response ->
                     val source = response.body.source().decompressIfGzipped()
+                    // KMK <--
                     when (source.peek().readByte()) {
                         // "{..."
                         0x7B.toByte() -> json.decodeFromBufferedSource<NetworkExtensionStore.ExtensionList>(source)
@@ -83,8 +89,10 @@ class ExtensionStoreService(
                         .toAvailableExtensions(store)
                 }
             } else if (!store.isLegacy) {
+                // KMK -->
                 network.client.newCall(GET(store.indexUrl)).awaitSuccess().use { response ->
                     val source = response.body.source().decompressIfGzipped()
+                    // KMK <--
                     when (source.peek().readByte()) {
                         // "{..."
                         0x7B.toByte() -> json.decodeFromBufferedSource<NetworkExtensionStore>(source)
@@ -95,8 +103,10 @@ class ExtensionStoreService(
                 }
             } else {
                 val storeBaseUrl = store.indexUrl.removeSuffix("/repo.json")
+                // KMK -->
                 network.client.newCall(GET("$storeBaseUrl/index.min.json")).awaitSuccess().use { response ->
                     val source = response.body.source()
+                    // KMK <--
                     json.decodeFromBufferedSource<List<NetworkLegacyExtension>>(source)
                         .map { it.toAvailableExtension(store, storeBaseUrl) }
                 }

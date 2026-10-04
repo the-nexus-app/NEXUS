@@ -50,24 +50,30 @@ class SourceCategoryScreen : Screen() {
                 CategoryCreateDialog(
                     onDismissRequest = screenModel::dismissDialog,
                     onCreate = { screenModel.createCategory(it) },
+                    // SY -->
                     categories = successState.categories,
                     title = stringResource(MR.strings.action_add_category),
+                    // SY <--
                 )
             }
             is SourceCategoryDialog.Rename -> {
                 CategoryRenameDialog(
                     onDismissRequest = screenModel::dismissDialog,
                     onRename = { screenModel.renameCategory(dialog.category, it) },
+                    // SY -->
                     categories = successState.categories,
                     category = dialog.category,
+                    // SY <--
                 )
             }
             is SourceCategoryDialog.Delete -> {
                 CategoryDeleteDialog(
                     onDismissRequest = screenModel::dismissDialog,
                     onDelete = { screenModel.deleteCategory(dialog.category) },
+                    // SY -->
                     title = stringResource(MR.strings.delete_category),
                     text = stringResource(MR.strings.delete_category_confirmation, dialog.category),
+                    // SY <--
                 )
             }
         }

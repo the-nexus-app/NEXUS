@@ -64,6 +64,7 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
         val navigator = LocalNavigator.currentOrThrow
         val context = LocalContext.current
 
+        // KMK -->
         screenModel.source.let {
             if (it is StubSource) {
                 MissingSourceScreen(
@@ -107,6 +108,7 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                     navigateUp = { showingFeedOrderScreen.value = false },
                 )
             } else {
+                // KMK <--
                 SourceFeedScreen(
                     name = screenModel.source.name,
                     isLoading = state.isLoading,
@@ -116,12 +118,16 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                     onClickBrowse = { onBrowseClick(navigator, screenModel.source) },
                     onClickLatest = { onLatestClick(navigator, screenModel.source) },
                     onClickSavedSearch = { onSavedSearchClick(navigator, screenModel.source, it) },
+                    // KMK -->
                     // onClickDelete = screenModel::openDeleteFeed,
                     onLongClickFeed = screenModel::openActionsDialog,
+                    // KMK <--
                     onClickManga = { manga ->
+                        // KMK -->
                         if (bulkFavoriteState.selectionMode) {
                             bulkFavoriteScreenModel.toggleSelection(manga)
                         } else {
+                            // KMK <--
                             onMangaClick(navigator, manga)
                         }
                     },
@@ -129,6 +135,7 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                     searchQuery = state.searchQuery,
                     onSearchQueryChange = screenModel::search,
                     getMangaState = { screenModel.getManga(initialManga = it) },
+                    // KMK -->
                     navigateUp = { navigator.pop() },
                     onWebViewClick = {
                         val source = screenModel.source as HttpSource
@@ -164,6 +171,7 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                         }
                     },
                     bulkFavoriteScreenModel = bulkFavoriteScreenModel,
+                    // KMK <--
                 )
             }
         }
@@ -189,6 +197,7 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                     },
                 )
             }
+            // KMK -->
             is SourceFeedScreenModel.Dialog.FeedActions -> {
                 FeedActionsDialog(
                     feed = dialog.feedItem.feed,
@@ -197,11 +206,14 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                     onClickDelete = { screenModel.openDeleteFeed(it) },
                 )
             }
+            // KMK <--
             is SourceFeedScreenModel.Dialog.Filter -> {
                 SourceFilterDialog(
                     onDismissRequest = onDismissRequest,
                     filters = state.filters,
+                    // KMK -->
                     onReset = screenModel::resetFilters,
+                    // KMK <--
                     onFilter = {
                         screenModel.onFilter { query, filters ->
                             onBrowseClick(
@@ -237,13 +249,17 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                             context.toast(it)
                         }
                     },
+                    // KMK -->
                     onSavedSearchPressDesc = stringResource(KMR.strings.saved_searches_add_feed),
                     shouldShowSavingButton = false,
+                    // KMK <--
                     openMangaDexRandom = if (screenModel.sourceIsMangaDex) {
                         {
                             screenModel.onMangaDexRandom {
+                                // KMK -->
                                 // navigator.replace(
                                 navigator.push(
+                                    // KMK <--
                                     BrowseSourceScreen(
                                         sourceId,
                                         "id:$it",
@@ -256,8 +272,10 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
                     },
                     openMangaDexFollows = if (screenModel.sourceIsMangaDex) {
                         {
+                            // KMK -->
                             // navigator.replace(MangaDexFollowsScreen(sourceId))
                             navigator.push(MangaDexFollowsScreen(sourceId))
+                            // KMK <--
                         }
                     } else {
                         null
@@ -267,10 +285,12 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
             null -> Unit
         }
 
+        // KMK -->
         BulkFavoriteDialogs(
             bulkFavoriteScreenModel = bulkFavoriteScreenModel,
             dialog = bulkFavoriteState.dialog,
         )
+        // KMK <--
     }
 
     private fun onMangaClick(navigator: Navigator, manga: Manga) {
@@ -278,23 +298,31 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
     }
 
     private fun onBrowseClick(navigator: Navigator, sourceId: Long, search: String? = null, savedSearch: Long? = null, filters: String? = null) {
+        // KMK -->
         // navigator.replace(BrowseSourceScreen(sourceId, search, savedSearch = savedSearch, filtersJson = filters))
         navigator.push(BrowseSourceScreen(sourceId, search, savedSearch = savedSearch, filtersJson = filters))
+        // KMK <--
     }
 
     private fun onLatestClick(navigator: Navigator, source: Source) {
+        // KMK -->
         // navigator.replace(BrowseSourceScreen(source.id, GetRemoteManga.QUERY_LATEST))
         navigator.push(BrowseSourceScreen(source.id, GetRemoteManga.QUERY_LATEST))
+        // KMK <--
     }
 
     private fun onBrowseClick(navigator: Navigator, source: Source) {
+        // KMK -->
         // navigator.replace(BrowseSourceScreen(source.id, GetRemoteManga.QUERY_POPULAR))
         navigator.push(BrowseSourceScreen(source.id, GetRemoteManga.QUERY_POPULAR))
+        // KMK <--
     }
 
     private fun onSavedSearchClick(navigator: Navigator, source: Source, savedSearch: SavedSearch) {
+        // KMK -->
         // navigator.replace(BrowseSourceScreen(source.id, listingQuery = null, savedSearch = savedSearch.id))
         navigator.push(BrowseSourceScreen(source.id, listingQuery = null, savedSearch = savedSearch.id))
+        // KMK <--
     }
 
     private fun onSearchClick(navigator: Navigator, source: Source, query: String) {

@@ -127,6 +127,7 @@ class BackupCreateJob(private val context: Context, workerParams: WorkerParamete
             context.workManager.enqueueUniqueWork(TAG_MANUAL, ExistingWorkPolicy.KEEP, request)
         }
 
+        // KMK -->
         /**
          * Returns true if a periodic job is currently scheduled.
          * @param context The application context.
@@ -136,6 +137,7 @@ class BackupCreateJob(private val context: Context, workerParams: WorkerParamete
         suspend fun isPeriodicBackupScheduled(context: Context): Boolean {
             return WorkerUtil.isPeriodicJobScheduled(context, TAG_AUTO)
         }
+        // KMK <--
     }
 }
 

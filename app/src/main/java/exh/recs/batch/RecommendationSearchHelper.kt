@@ -53,7 +53,9 @@ class RecommendationSearchHelper(val context: Context) {
 
     private val smartSearchEngine by lazy { SmartLibrarySearchEngine() }
 
+    // KMK -->
     private val logger = ResettableLogger { safeXLogTag() }
+    // KMK <--
 
     val status: MutableStateFlow<SearchStatus> = MutableStateFlow(SearchStatus.Idle)
 
@@ -101,7 +103,9 @@ class RecommendationSearchHelper(val context: Context) {
 
                 val jobs = RecommendationPagingSource.createSources(
                     sourceManga,
+                    // KMK -->
                     RecommendationSource(sourceManga.source),
+                    // KMK <--
                 ).mapNotNull { source ->
                     // Apply source filters
                     if (source is TrackerRecommendationPagingSource && !SearchFlags.hasIncludeTrackers(flags)) {
@@ -197,12 +201,14 @@ class RecommendationSearchHelper(val context: Context) {
             return this
         }
 
+        // KMK -->
         // Source recommendations can be directly resolved, if the recommendation is from the same source
         recSource.associatedSourceId?.let { srcId ->
             return networkToLocalManga(map { it.toDomainManga(srcId) })
                 .filterNot { local -> libraryManga.any { it.id == local.id } }
                 .map { it.toSManga() }
         }
+        // KMK <--
 
         return filterNot { manga ->
             // Tracker recommendations can be resolved by checking if the tracker is attached to the recommendation

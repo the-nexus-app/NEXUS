@@ -53,21 +53,29 @@ import tachiyomi.presentation.core.util.selectedBackground
 import tachiyomi.domain.manga.model.MangaCover as MangaCoverModel
 
 object CommonMangaItemDefaults {
+    // NXS -->
     val GridHorizontalSpacer = 8.dp
     val GridVerticalSpacer = 8.dp
+    // NXS <--
 
     @Suppress("ConstPropertyName")
     const val BrowseFavoriteCoverAlpha = 0.34f
 }
 
+// NXS -->
 private val ContinueReadingButtonSizeSmall = 32.dp
 private val ContinueReadingButtonSizeLarge = 36.dp
+// NXS <--
 
+// NXS -->
 private val ContinueReadingButtonIconSizeSmall = 18.dp
 private val ContinueReadingButtonIconSizeLarge = 22.dp
+// NXS <--
 
+// NXS -->
 private val ContinueReadingButtonGridPadding = 8.dp
 private val ContinueReadingButtonListSpacing = 10.dp
+// NXS <--
 
 internal const val GRID_SELECTED_COVER_ALPHA = 0.76f
 
@@ -86,10 +94,14 @@ fun MangaCompactGridItem(
     coverAlpha: Float = 1f,
     coverBadgeStart: @Composable (RowScope.() -> Unit)? = null,
     coverBadgeEnd: @Composable (RowScope.() -> Unit)? = null,
+    // KMK -->
     libraryColored: Boolean = true,
+    // KMK <--
 ) {
+    // KMK -->
     val bgColor = coverData.dominantCoverColors?.first?.let { Color(it) }.takeIf { libraryColored }
     val onBgColor = coverData.dominantCoverColors?.second.takeIf { libraryColored }
+    // KMK <--
     GridItemSelectable(
         isSelected = isSelected,
         onClick = onClick,
@@ -97,6 +109,7 @@ fun MangaCompactGridItem(
     ) {
         MangaGridCover(
             cover = {
+                // KMK -->
                 if (DebugToggles.HIDE_COVER_IMAGE_ONLY_SHOW_COLOR.enabled) {
                     MangaCoverHide.Book(
                         modifier = Modifier
@@ -105,14 +118,19 @@ fun MangaCompactGridItem(
                         tint = onBgColor,
                     )
                 } else {
+                    // KMK <--
                     MangaCover.Book(
                         modifier = Modifier
+                            // KMK -->
                             // .alpha(if (isSelected) GridSelectedCoverAlpha else coverAlpha)
+                            // KMK <--
                             .fillMaxWidth(),
                         data = coverData,
+                        // KMK -->
                         alpha = if (isSelected) GRID_SELECTED_COVER_ALPHA else coverAlpha,
                         bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { isSelected },
                         tint = onBgColor,
+                        // KMK <--
                     )
                 }
             },
@@ -149,15 +167,21 @@ private fun BoxScope.CoverTextOverlay(
 ) {
     Box(
         modifier = Modifier
+            // NXS -->
             .clip(RoundedCornerShape(bottomStart = 6.dp, bottomEnd = 6.dp))
+            // NXS <--
             .background(
                 Brush.verticalGradient(
                     0f to Color.Transparent,
+                    // NXS -->
                     0.6f to Color(0x33000000),
                     1f to Color(0xBB000000),
+                    // NXS <--
                 ),
             )
+            // NXS -->
             .fillMaxHeight(0.35f)
+            // NXS <--
             .fillMaxWidth()
             .align(Alignment.BottomCenter),
     )
@@ -168,14 +192,20 @@ private fun BoxScope.CoverTextOverlay(
         GridItemTitle(
             modifier = Modifier
                 .weight(1f)
+                // NXS -->
                 .padding(10.dp),
+            // NXS <--
             title = title,
             style = MaterialTheme.typography.titleSmall.copy(
                 color = Color.White,
+                // NXS -->
                 fontWeight = FontWeight.Medium,
+                // NXS <--
                 shadow = Shadow(
                     color = Color.Black,
+                    // NXS -->
                     blurRadius = 6f,
+                    // NXS <--
                 ),
             ),
             minLines = 1,
@@ -209,14 +239,18 @@ fun MangaComfortableGridItem(
     coverBadgeStart: @Composable (RowScope.() -> Unit)? = null,
     coverBadgeEnd: @Composable (RowScope.() -> Unit)? = null,
     onClickContinueReading: (() -> Unit)? = null,
+    // KMK -->
     libraryColored: Boolean = true,
     coverRatio: MutableFloatState = remember { mutableFloatStateOf(1f) },
     usePanoramaCover: Boolean,
     fitToPanoramaCover: Boolean = false,
+    // KMK <--
 ) {
+    // KMK -->
     val coverIsWide = coverRatio.floatValue <= RatioSwitchToPanorama
     val bgColor = coverData.dominantCoverColors?.first?.let { Color(it) }.takeIf { libraryColored }
     val onBgColor = coverData.dominantCoverColors?.second.takeIf { libraryColored }
+    // KMK <--
     GridItemSelectable(
         isSelected = isSelected,
         onClick = onClick,
@@ -225,6 +259,7 @@ fun MangaComfortableGridItem(
         Column {
             MangaGridCover(
                 cover = {
+                    // KMK -->
                     if (DebugToggles.HIDE_COVER_IMAGE_ONLY_SHOW_COLOR.enabled) {
                         MangaCoverHide.Book(
                             modifier = Modifier
@@ -236,9 +271,12 @@ fun MangaComfortableGridItem(
                         if (fitToPanoramaCover && usePanoramaCover && coverIsWide) {
                             MangaCover.Panorama(
                                 modifier = Modifier
+                                    // KMK -->
                                     // .alpha(if (isSelected) GridSelectedCoverAlpha else coverAlpha)
+                                    // KMK <--
                                     .fillMaxWidth(),
                                 data = coverData,
+                                // KMK -->
                                 alpha = if (isSelected) GRID_SELECTED_COVER_ALPHA else coverAlpha,
                                 bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { isSelected },
                                 tint = onBgColor,
@@ -246,13 +284,18 @@ fun MangaComfortableGridItem(
                                     val image = result.result.image
                                     coverRatio.floatValue = image.height.toFloat() / image.width
                                 },
+                                // KMK <--
                             )
                         } else {
+                            // KMK <--
                             MangaCover.Book(
                                 modifier = Modifier
+                                    // KMK -->
                                     // .alpha(if (isSelected) GridSelectedCoverAlpha else coverAlpha)
+                                    // KMK <--
                                     .fillMaxWidth(),
                                 data = coverData,
+                                // KMK -->
                                 alpha = if (isSelected) GRID_SELECTED_COVER_ALPHA else coverAlpha,
                                 bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { isSelected },
                                 tint = onBgColor,
@@ -265,15 +308,18 @@ fun MangaComfortableGridItem(
                                 } else {
                                     ContentScale.Crop
                                 },
+                                // KMK <--
                             )
                         }
                     }
                 },
+                // KMK -->
                 ratio = if (fitToPanoramaCover && usePanoramaCover && coverIsWide) {
                     MangaCover.Panorama.ratio
                 } else {
                     MangaCover.Book.ratio
                 },
+                // KMK <--
                 badgesStart = coverBadgeStart,
                 badgesEnd = coverBadgeEnd,
                 content = {
@@ -290,11 +336,15 @@ fun MangaComfortableGridItem(
                 },
             )
             GridItemTitle(
+                // NXS -->
                 modifier = Modifier.padding(6.dp),
+                // NXS <--
                 title = title,
+                // NXS -->
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Medium,
                 ),
+                // NXS <--
                 minLines = 2,
                 maxLines = titleMaxLines,
             )
@@ -309,7 +359,9 @@ fun MangaComfortableGridItem(
 private fun MangaGridCover(
     modifier: Modifier = Modifier,
     cover: @Composable BoxScope.() -> Unit = {},
+    // KMK -->
     ratio: Float = MangaCover.Book.ratio,
+    // KMK <--
     badgesStart: (@Composable RowScope.() -> Unit)? = null,
     badgesEnd: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable (BoxScope.() -> Unit)? = null,
@@ -352,7 +404,9 @@ private fun GridItemTitle(
     Text(
         modifier = modifier,
         text = title,
+        // NXS -->
         fontSize = 13.sp,
+        // NXS <--
         lineHeight = 18.sp,
         minLines = minLines,
         maxLines = maxLines,
@@ -374,16 +428,22 @@ private fun GridItemSelectable(
 ) {
     Box(
         modifier = modifier
+            // NXS -->
             .clip(RoundedCornerShape(8.dp))
+            // NXS <--
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
             )
+            // NXS -->
             .selectedOutline(isSelected = isSelected, color = MaterialTheme.colorScheme.primary)
             .padding(6.dp),
+        // NXS <--
     ) {
         val contentColor = if (isSelected) {
+            // NXS -->
             MaterialTheme.colorScheme.onPrimary
+            // NXS <--
         } else {
             LocalContentColor.current
         }
@@ -414,10 +474,14 @@ fun MangaListItem(
     isSelected: Boolean = false,
     coverAlpha: Float = 1f,
     onClickContinueReading: (() -> Unit)? = null,
+    // KMK -->
     libraryColored: Boolean = true,
+    // KMK <--
 ) {
+    // KMK -->
     val bgColor = coverData.dominantCoverColors?.first?.let { Color(it) }.takeIf { libraryColored }
     val onBgColor = coverData.dominantCoverColors?.second.takeIf { libraryColored }
+    // KMK <--
     Row(
         modifier = Modifier
             .selectedBackground(isSelected)
@@ -429,6 +493,7 @@ fun MangaListItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        // KMK -->
         if (DebugToggles.HIDE_COVER_IMAGE_ONLY_SHOW_COLOR.enabled) {
             MangaCoverHide.Square(
                 modifier = Modifier
@@ -437,15 +502,20 @@ fun MangaListItem(
                 tint = onBgColor,
             )
         } else {
+            // KMK <--
             MangaCover.Square(
                 modifier = Modifier
+                    // KMK -->
                     // .alpha(coverAlpha)
+                    // KMK <--
                     .fillMaxHeight(),
                 data = coverData,
+                // KMK -->
                 alpha = coverAlpha,
                 bgColor = bgColor ?: MaterialTheme.colorScheme.surface.takeIf { isSelected },
                 tint = onBgColor,
                 size = MangaCover.Size.Big,
+                // KMK <--
             )
         }
         Text(
@@ -479,9 +549,13 @@ private fun ContinueReadingButton(
     Box(modifier = modifier) {
         FilledIconButton(
             onClick = onClick,
+            // NXS -->
             shape = RoundedCornerShape(10.dp),
+            // NXS <--
             colors = IconButtonDefaults.filledIconButtonColors(
+                // NXS -->
                 containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.95f),
+                // NXS <--
                 contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer),
             ),
             modifier = Modifier.size(size),

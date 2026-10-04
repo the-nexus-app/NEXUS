@@ -137,9 +137,11 @@ class ShellInterface : IShellInterface.Stub() {
                             .getConstructor(ParcelFileDescriptor::class.java)
                             .newInstance(fd) as OutputStream
                     }
+                    // KMK -->
                 } catch (e: Exception) {
                     fd.close()
                     throw e
+                    // KMK <--
                 }
 
                 outputStream.use { output ->

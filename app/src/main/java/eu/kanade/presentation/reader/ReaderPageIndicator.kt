@@ -17,7 +17,9 @@ import eu.kanade.presentation.theme.TachiyomiPreviewTheme
 
 @Composable
 fun ReaderPageIndicator(
+    // SY -->
     currentPage: String,
+    // SY <--
     totalPages: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -26,7 +28,9 @@ fun ReaderPageIndicator(
     val text = "$currentPage / $totalPages"
 
     val style = TextStyle(
+        // KMK -->
         color = MaterialTheme.colorScheme.primary,
+        // KMK <--
         fontSize = MaterialTheme.typography.bodySmall.fontSize,
         fontWeight = FontWeight.Bold,
         letterSpacing = 1.sp,

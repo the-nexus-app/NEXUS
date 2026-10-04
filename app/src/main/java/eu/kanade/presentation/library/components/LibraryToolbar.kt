@@ -25,7 +25,9 @@ fun LibraryToolbar(
     onClickUnselectAll: () -> Unit,
     onClickSelectAll: () -> Unit,
     onClickInvertSelection: () -> Unit,
+    // NXS -->
     onClickControls: () -> Unit,
+    // NXS <--
     onClickRefresh: () -> Unit,
     onClickGlobalUpdate: () -> Unit,
     onClickOpenRandomManga: () -> Unit,
@@ -39,7 +41,9 @@ fun LibraryToolbar(
         onClickInvertSelection = onClickInvertSelection,
     )
     else -> LibraryRegularToolbar(
+        // NXS -->
         onClickControls = onClickControls,
+        // NXS <--
         onClickRefresh = onClickRefresh,
         onClickGlobalUpdate = onClickGlobalUpdate,
         onClickOpenRandomManga = onClickOpenRandomManga,
@@ -50,7 +54,9 @@ fun LibraryToolbar(
 
 @Composable
 private fun LibraryRegularToolbar(
+    // NXS -->
     onClickControls: () -> Unit,
+    // NXS <--
     onClickRefresh: () -> Unit,
     onClickGlobalUpdate: () -> Unit,
     onClickOpenRandomManga: () -> Unit,
@@ -58,8 +64,11 @@ private fun LibraryRegularToolbar(
     onInvalidateDownloadCache: (Context) -> Unit,
 ) {
     val context = LocalContext.current
+    // NXS -->
     AppBar(
+        // NXS <--
         titleContent = {
+            // NXS -->
             AppBarTitle(
                 title = stringResource(MR.strings.label_library),
                 titleStyle = MaterialTheme.typography.headlineSmall.copy(
@@ -67,6 +76,7 @@ private fun LibraryRegularToolbar(
                 ),
                 titleColor = MaterialTheme.colorScheme.primary,
             )
+            // NXS <--
         },
         actions = {
             AppBarActions(
@@ -74,7 +84,9 @@ private fun LibraryRegularToolbar(
                     AppBar.Action(
                         title = stringResource(MR.strings.action_filter),
                         icon = Icons.Outlined.FilterList,
+                        // NXS -->
                         onClick = onClickControls,
+                        // NXS <--
                     ),
                     AppBar.OverflowAction(
                         title = stringResource(MR.strings.action_update_library),
@@ -90,9 +102,13 @@ private fun LibraryRegularToolbar(
                     ),
                     AppBar.OverflowAction(
                         title = stringResource(MR.strings.pref_invalidate_download_cache),
+                        // NXS -->
                         onClick = { onInvalidateDownloadCache(context) },
+                        // NXS <--
                     ),
+                    // NXS -->
                 ),
+                // NXS <--
             )
         },
         scrollBehavior = scrollBehavior,

@@ -68,22 +68,29 @@ fun SourcesScreen(
     onClickItem: (Source, Listing) -> Unit,
     onClickPin: (Source) -> Unit,
     onLongClickItem: (Source) -> Unit,
+    // KMK -->
     @Suppress("UNUSED_PARAMETER") modifier: Modifier = Modifier,
     onChangeSearchQuery: (String?) -> Unit,
+    // KMK <--
 ) {
+    // KMK -->
     val lazyListState = rememberLazyListState()
 
     BackHandler(enabled = !state.searchQuery.isNullOrBlank()) {
         onChangeSearchQuery("")
     }
+    // KMK <--
 
     when {
         state.isLoading -> LoadingScreen(Modifier.padding(contentPadding))
+        // KMK -->
         state.searchQuery == null &&
+            // KMK <--
             state.isEmpty -> EmptyScreen(
             MR.strings.source_empty_screen,
             modifier = Modifier.padding(contentPadding),
         )
+        // KMK -->
         else -> Box(
             modifier = Modifier.padding(contentPadding),
         ) {
@@ -93,6 +100,7 @@ fun SourcesScreen(
             FastScrollLazyColumn(
                 state = lazyListState,
                 contentPadding = PaddingValues(top = searchBoxHeight),
+                // KMK <--
             ) {
                 state.items.forEach { model ->
                     when (model) {
@@ -107,7 +115,9 @@ fun SourcesScreen(
                                         .background(MaterialTheme.colorScheme.background)
                                         .fillMaxWidth(),
                                     language = model.language,
+                                    // SY -->
                                     isCategory = model.isCategory,
+                                    // SY <--
                                 )
                             }
                         }
@@ -119,8 +129,10 @@ fun SourcesScreen(
                                 SourceItem(
                                     modifier = Modifier.animateItemFastScroll(),
                                     source = model.source,
+                                    // SY -->
                                     showLatest = state.showLatest,
                                     showPin = state.showPin,
+                                    // SY <--
                                     onClickItem = onClickItem,
                                     onLongClickItem = onLongClickItem,
                                     onClickPin = onClickPin,
@@ -131,6 +143,7 @@ fun SourcesScreen(
                 }
             }
 
+            // KMK -->
             AnimatedFloatingSearchBox(
                 listState = lazyListState,
                 searchQuery = state.searchQuery,
@@ -147,6 +160,7 @@ fun SourcesScreen(
                     searchBoxHeight = with(density) { layoutCoordinates.size.height.toDp() + 2 * MaterialTheme.padding.small }
                 },
             )
+            // KMK <--
         }
     }
 }
@@ -154,16 +168,20 @@ fun SourcesScreen(
 @Composable
 private fun SourceHeader(
     language: String,
+    // SY -->
     isCategory: Boolean,
+    // SY <--
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     Text(
+        // SY -->
         text = if (!isCategory) {
             LocaleHelper.getSourceDisplayName(language, context)
         } else {
             language
         },
+        // SY <--
         modifier = modifier
             .padding(horizontal = MaterialTheme.padding.medium, vertical = MaterialTheme.padding.small),
         style = MaterialTheme.typography.header,
@@ -173,8 +191,10 @@ private fun SourceHeader(
 @Composable
 private fun SourceItem(
     source: Source,
+    // SY -->
     showLatest: Boolean,
     showPin: Boolean,
+    // SY <--
     onClickItem: (Source, Listing) -> Unit,
     onLongClickItem: (Source) -> Unit,
     onClickPin: (Source) -> Unit,
@@ -186,7 +206,7 @@ private fun SourceItem(
         onClickItem = { onClickItem(source, Listing.Popular) },
         onLongClickItem = { onLongClickItem(source) },
         action = {
-            if (source.supportsLatest && showLatest) {
+            if (source.supportsLatest /* SY --> */ && showLatest /* SY <-- */) {
                 TextButton(onClick = { onClickItem(source, Listing.Latest) }) {
                     Text(
                         text = stringResource(MR.strings.latest),
@@ -196,12 +216,14 @@ private fun SourceItem(
                     )
                 }
             }
+            // SY -->
             if (showPin) {
                 SourcePinButton(
                     isPinned = Pin.Pinned in source.pin,
                     onClick = { onClickPin(source) },
                 )
             }
+            // SY <--
         },
     )
 }
@@ -234,10 +256,14 @@ fun SourceOptionsDialog(
     source: Source,
     onClickPin: () -> Unit,
     onClickDisable: () -> Unit,
+    // SY -->
     onClickSetCategories: (() -> Unit)?,
     onClickToggleDataSaver: (() -> Unit)?,
+    // SY <--
     onDismiss: () -> Unit,
+    // KMK -->
     onClickSettings: (() -> Unit)? = null,
+    // KMK <--
 ) {
     AlertDialog(
         title = {
@@ -262,6 +288,7 @@ fun SourceOptionsDialog(
                             .padding(vertical = 16.dp),
                     )
                 }
+                // SY -->
                 if (onClickSetCategories != null) {
                     Text(
                         text = stringResource(MR.strings.categories),
@@ -284,6 +311,8 @@ fun SourceOptionsDialog(
                             .padding(vertical = 16.dp),
                     )
                 }
+                // SY <--
+                // KMK -->
                 if (onClickSettings != null &&
                     source.installedExtension !== null &&
                     source.id !in listOf(LocalSource.ID, EH_SOURCE_ID, EXH_SOURCE_ID)
@@ -296,6 +325,7 @@ fun SourceOptionsDialog(
                             .padding(vertical = 16.dp),
                     )
                 }
+                // KMK <--
             }
         },
         onDismissRequest = onDismiss,
@@ -308,6 +338,7 @@ sealed interface SourceUiModel {
     data class Header(val language: String, val isCategory: Boolean) : SourceUiModel
 }
 
+// SY -->
 @Composable
 fun SourceCategoriesDialog(
     source: Source,
@@ -347,3 +378,4 @@ fun SourceCategoriesDialog(
         },
     )
 }
+// SY <--

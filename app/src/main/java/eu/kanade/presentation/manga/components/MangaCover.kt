@@ -43,7 +43,9 @@ enum class MangaCover(val ratio: Float) {
     Square(1f / 1f),
     Book(2f / 3f),
 
+    // KMK -->
     Panorama(3f / 2f),
+    // KMK <--
     ;
 
     enum class Size {
@@ -59,6 +61,7 @@ enum class MangaCover(val ratio: Float) {
         contentDescription: String = "",
         shape: Shape = MaterialTheme.shapes.extraSmall,
         onClick: (() -> Unit)? = null,
+        // KMK -->
         alpha: Float = 1f,
         bgColor: Color? = null,
         @ColorInt tint: Int? = null,
@@ -66,14 +69,19 @@ enum class MangaCover(val ratio: Float) {
         onCoverLoaded: ((DomainMangaCover, result: AsyncImagePainter.State.Success) -> Unit)? = null,
         size: Size = Size.Normal,
         scale: ContentScale = ContentScale.Crop,
+        // KMK <--
     ) {
+        // KMK -->
         var succeed by remember { mutableStateOf(false) }
+        // KMK <--
 
         val modifierColored = modifier
             .aspectRatio(ratio)
             .clip(shape)
+            // KMK -->
             .alpha(if (succeed) alpha else 1f)
             .background(bgColor ?: CoverPlaceholderColor)
+            // KMK <--
             .then(
                 if (onClick != null) {
                     Modifier.clickable(
@@ -87,6 +95,7 @@ enum class MangaCover(val ratio: Float) {
 
         SubcomposeAsyncImage(
             model = data,
+            // KMK -->
             loading = {
                 Box(
                     modifier = modifierColored,
@@ -140,6 +149,7 @@ enum class MangaCover(val ratio: Float) {
                     }
                 }
             },
+            // KMK <--
             contentDescription = contentDescription,
             modifier = modifierColored,
             contentScale = scale,
@@ -164,6 +174,7 @@ enum class MangaCoverHide(private val ratio: Float) {
         contentDescription: String = "",
         shape: Shape = MaterialTheme.shapes.extraSmall,
         onClick: (() -> Unit)? = null,
+        // KMK -->
         /** background color, which used for loading/error indicator */
         bgColor: Color? = CoverPlaceholderColor,
         /** onBackground color, which used for loading/error indicator */

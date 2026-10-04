@@ -23,7 +23,9 @@ class CrashLogUtil(
 
     suspend fun dumpLogs(exception: Throwable? = null) = withNonCancellableContext {
         try {
+            // NXS -->
             val file = context.createFileInCacheDir("nexus_crash_logs.txt")
+            // NXS <--
 
             file.appendText(getDebugInfo() + "\n\n")
             getExtensionsInfo()?.let { file.appendText("$it\n\n") }

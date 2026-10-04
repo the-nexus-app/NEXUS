@@ -12,7 +12,9 @@ class BaselineProfileGenerator {
 
     @Test
     fun generate() = baselineProfileRule.collect(
+        // NXS -->
         packageName = "com.nexus.app.benchmark",
+        // NXS <--
         profileBlock = {
             pressHome()
             startActivityAndWait()

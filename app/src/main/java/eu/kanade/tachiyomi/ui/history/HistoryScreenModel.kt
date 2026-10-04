@@ -59,7 +59,9 @@ class HistoryScreenModel(
     private val addTracks: AddTracks = Injekt.get(),
     private val getCategories: GetCategories = Injekt.get(),
     private val getDuplicateLibraryManga: GetDuplicateLibraryManga = Injekt.get(),
+    // NXS -->
     private val getHiddenMangaIds: GetHiddenMangaIds = GetHiddenMangaIds(),
+    // NXS <--
     private val getHistory: GetHistory = Injekt.get(),
     private val getManga: GetManga = Injekt.get(),
     private val getNextChapters: GetNextChapters = Injekt.get(),
@@ -69,16 +71,21 @@ class HistoryScreenModel(
     private val updateManga: UpdateManga = Injekt.get(),
     val snackbarHostState: SnackbarHostState = SnackbarHostState(),
     private val sourceManager: SourceManager = Injekt.get(),
+    // KMK -->
     private val historyPreferences: HistoryPreferences = Injekt.get(),
+    // KMK <--
 ) : StateScreenModel<HistoryScreenModel.State>(State()) {
 
     private val _events: Channel<Event> = Channel(Channel.UNLIMITED)
     val events: Flow<Event> = _events.receiveAsFlow()
 
+    // KMK -->
     // First and last selected index in list
     private val selectedPositions: Array<Int> = arrayOf(-1, -1)
+    // KMK <--
 
     init {
+        // NXS -->
         // Hidden Category Privacy: collect the set of manga IDs belonging to hidden categories
         // and filter them out of History, matching the privacy behavior in Updates, Feed, and
         // Dashboard screens. History records are preserved but hidden manga never appear in the
@@ -89,29 +96,40 @@ class HistoryScreenModel(
             }
         }
 
+        // NXS <--
         screenModelScope.launch {
+            // KMK -->
             combine(
+                // KMK <--
                 state.map { it.searchQuery }
                     .distinctUntilChanged(),
+                // NXS -->
                 state.map { it.hiddenMangaIds }
                     .distinctUntilChanged(),
+                // NXS <--
                 getHistoryItemPreferenceFlow()
                     .distinctUntilChanged(),
+                // NXS -->
             ) { query, hiddenMangaIds, itemPreferences ->
                 Triple(query, hiddenMangaIds, itemPreferences)
             }
                 .flatMapLatest { (query, hiddenMangaIds, pref) ->
+                    // NXS <--
                     getHistory.subscribe(
                         query ?: "",
+                        // KMK -->
                         unfinishedManga = pref.filterUnfinishedManga.toBooleanOrNull(),
                         unfinishedChapter = pref.filterUnfinishedChapter.toBooleanOrNull(),
                         nonLibraryEntries = pref.filterNonLibraryManga.toBooleanOrNull(),
+                        // KMK <--
                     )
                         .distinctUntilChanged()
+                        // NXS -->
                         .map { historyList ->
                             // Filter out hidden-category manga before emitting to UI
                             historyList.filterNot { it.mangaId in hiddenMangaIds }
                         }
+                        // NXS <--
                         .catch { error ->
                             logcat(LogPriority.ERROR, error)
                             _events.send(Event.InternalError)
@@ -121,13 +139,16 @@ class HistoryScreenModel(
                 .collect { newList ->
                     mutableState.update {
                         it.copy(
+                            // KMK -->
                             isLoading = false,
                             list = newList.toImmutableList(),
+                            // KMK <--
                         )
                     }
                 }
         }
 
+        // KMK -->
         getHistoryItemPreferenceFlow()
             .map { prefs ->
                 listOf(
@@ -144,6 +165,7 @@ class HistoryScreenModel(
                 }
             }
             .launchIn(screenModelScope)
+        // KMK <--
     }
 
     suspend fun getNextChapter(): Chapter? {
@@ -161,6 +183,7 @@ class HistoryScreenModel(
         _events.send(Event.OpenChapter(chapter))
     }
 
+    // KMK -->
     fun removeFromHistory(toDelete: List<HistoryWithRelations>) {
         screenModelScope.launchIO {
             removeHistory.await(toDelete.map { it.id })
@@ -174,6 +197,7 @@ class HistoryScreenModel(
         }
         toggleSelectionMode(false)
     }
+    // KMK <--
 
     fun removeAllHistory() {
         screenModelScope.launchIO {
@@ -292,6 +316,7 @@ class HistoryScreenModel(
         }
     }
 
+    // KMK -->
     data class HistorySelectionOptions(
         val selected: Boolean,
         val fromLongPress: Boolean = false,
@@ -397,6 +422,7 @@ class HistoryScreenModel(
             mutableState.update { it.copy(selectionMode = newMode ?: !it.selectionMode) }
         }
     }
+    // KMK <--
 
     private fun getHistoryItemPreferenceFlow(): Flow<ItemPreferences> {
         return combine(
@@ -422,17 +448,23 @@ class HistoryScreenModel(
         val filterUnfinishedChapter: TriState,
         val filterNonLibraryManga: TriState,
     )
+    // KMK <--
 
     @Immutable
     data class State(
         val searchQuery: String? = null,
+        // KMK -->
         val list: ImmutableList<HistoryWithRelations> = persistentListOf(),
         val isLoading: Boolean = true,
+        // KMK <--
         val dialog: Dialog? = null,
+        // KMk -->
         val selection: Set<Long> = emptySet(),
         val hasActiveFilters: Boolean = false,
         val selectionMode: Boolean = false,
+        // NXS -->
         val hiddenMangaIds: Set<Long> = emptySet(),
+        // NXS <--
     ) {
         val selected
             get() = list.fastFilter { it.chapterId in selection }
@@ -448,21 +480,27 @@ class HistoryScreenModel(
                 }
             }
     }
+    // KMK <--
 
     sealed interface Dialog {
         data object DeleteAll : Dialog
+        // KMK -->
         data class Delete(val histories: List<HistoryWithRelations>) : Dialog {
             constructor(history: HistoryWithRelations) : this(listOf(history))
         }
+        // KMK <--
         data class DuplicateManga(val manga: Manga, val duplicates: List<MangaWithChapterCount>) : Dialog
         data class ChangeCategory(
             val manga: Manga,
             val initialSelection: ImmutableList<CheckboxState<Category>>,
         ) : Dialog
         data class Migrate(val target: Manga, val current: Manga) : Dialog
+        // KMK -->
         data object FilterSheet : Dialog
+        // KMK <--
     }
 
+    // KMK -->
     private fun TriState.toBooleanOrNull(): Boolean? {
         return when (this) {
             TriState.DISABLED -> null
@@ -470,6 +508,7 @@ class HistoryScreenModel(
             TriState.ENABLED_NOT -> false
         }
     }
+    // KMK <--
 
     sealed interface Event {
         data class OpenChapter(val chapter: Chapter?) : Event

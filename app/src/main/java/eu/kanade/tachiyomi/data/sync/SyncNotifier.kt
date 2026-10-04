@@ -20,14 +20,20 @@ class SyncNotifier(private val context: Context) {
 
     private val preferences: SecurityPreferences by injectLazy()
 
+    // KMK -->
     private val syncStatus: SyncStatus = Injekt.get()
+    // KMK <--
 
     private val progressNotificationBuilder = context.notificationBuilder(
         Notifications.CHANNEL_SYNC_LIBRARY,
     ) {
+        // NXS -->
         setSmallIcon(R.drawable.ic_nexus)
+        // NXS <--
         setColor(ContextCompat.getColor(context, R.color.ic_launcher))
+        // NXS -->
         setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo))
+        // NXS <--
         setAutoCancel(false)
         setOngoing(true)
         setOnlyAlertOnce(true)
@@ -36,9 +42,13 @@ class SyncNotifier(private val context: Context) {
     private val completeNotificationBuilder = context.notificationBuilder(
         Notifications.CHANNEL_SYNC_LIBRARY,
     ) {
+        // NXS -->
         setSmallIcon(R.drawable.ic_nexus)
+        // NXS <--
         setColor(ContextCompat.getColor(context, R.color.ic_launcher))
+        // NXS -->
         setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo))
+        // NXS <--
         setAutoCancel(false)
     }
 
@@ -60,7 +70,9 @@ class SyncNotifier(private val context: Context) {
 
             setProgress(maxAmount, progress, true)
             setOnlyAlertOnce(true)
+            // KMK -->
             syncStatus.updateProgress(progress.toFloat() / maxAmount)
+            // KMK <--
 
             clearActions()
             addAction(
@@ -70,9 +82,11 @@ class SyncNotifier(private val context: Context) {
             )
         }
 
+        // KMK -->
         // Avoid calling show() before returning builder for ForegroundInfo.
         // Calling show() here can cause duplicate notifications, as setForegroundSafely will display the notification using the returned builder.
         // builder.show(Notifications.ID_SYNC_PROGRESS)
+        // KMK <--
 
         return builder
     }

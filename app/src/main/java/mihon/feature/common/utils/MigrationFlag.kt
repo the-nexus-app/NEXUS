@@ -9,10 +9,14 @@ fun MigrationFlag.getLabel(): StringResource {
     return when (this) {
         MigrationFlag.CHAPTER -> MR.strings.chapters
         MigrationFlag.CATEGORY -> MR.strings.categories
+        // KMK -->
         MigrationFlag.TRACK -> MR.strings.track
+        // KMK <--
         MigrationFlag.CUSTOM_COVER -> MR.strings.custom_cover
         MigrationFlag.NOTES -> MR.strings.action_notes
         MigrationFlag.REMOVE_DOWNLOAD -> MR.strings.delete_downloaded
+        // KMK -->
         MigrationFlag.EXTRA -> SYMR.strings.log_extra
+        // KMK <--
     }
 }

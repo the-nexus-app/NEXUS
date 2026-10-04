@@ -14,10 +14,12 @@ interface DatabaseHandler {
         block: suspend Database.() -> Query<T>,
     ): List<T>
 
+    // SY -->
     suspend fun <T : Any> awaitListExecutable(
         inTransaction: Boolean = false,
         block: suspend Database.() -> ExecutableQuery<T>,
     ): List<T>
+    // SY <--
 
     suspend fun <T : Any> awaitOne(
         inTransaction: Boolean = false,

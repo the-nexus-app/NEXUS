@@ -19,7 +19,9 @@ class MangaUpdatesInterceptor(
         // Add the authorization header to the original request.
         val authRequest = originalRequest.newBuilder()
             .addHeader("Authorization", "Bearer $token")
+            // NXS -->
             .header("User-Agent", "NEXUS v${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})")
+            // NXS <--
             .build()
 
         return chain.proceed(authRequest)

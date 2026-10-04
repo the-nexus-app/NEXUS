@@ -35,6 +35,7 @@ class AppUpdateBroadcast : BroadcastReceiver() {
                     } finally {
                         AppUpdateDownloadJob.stop(context)
                         appUpdateNotifier.cancelInstallNotification()
+                        // NXS -->
                         // The APK has been handed off to PackageInstaller and installed - the
                         // cached copy is no longer needed. Delete by its known fixed location
                         // rather than parsing the content:// URI, which doesn't reliably map
@@ -44,6 +45,7 @@ class AppUpdateBroadcast : BroadcastReceiver() {
                         } catch (e: Exception) {
                             xLogE("Failed to clean up downloaded update APK", e)
                         }
+                        // NXS <--
                     }
                 }
                 PackageInstaller.STATUS_FAILURE,

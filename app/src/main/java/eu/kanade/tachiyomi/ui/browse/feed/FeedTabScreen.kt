@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.browse.feed
 
 import androidx.compose.runtime.Composable
@@ -26,3 +27,4 @@ class FeedTabScreen : Screen() {
         )
     }
 }
+// NXS <--

@@ -50,18 +50,22 @@ fun UpcomingScreenContent(
     state: UpcomingScreenModel.State,
     setSelectedYearMonth: (YearMonth) -> Unit,
     onClickUpcoming: (manga: Manga) -> Unit,
+    // KMK -->
     showUpdatingMangas: () -> Unit,
     hideUpdatingMangas: () -> Unit,
     isPredictReleaseDate: Boolean,
+    // KMK <--
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
+    // KMK -->
     val headerIndexes = if (state.isShowingUpdatingMangas) state.updatingHeaderIndexes else state.headerIndexes
     val items = if (state.isShowingUpdatingMangas) state.updatingItems else state.items
     val events = if (state.isShowingUpdatingMangas) state.updatingEvents else state.events
     val isLoading = if (state.isShowingUpdatingMangas) state.isLoadingUpdating else state.isLoadingUpcoming
+    // KMK <--
 
     val onClickDay: (LocalDate, Int) -> Unit = { date, offset ->
         headerIndexes[date]?.let {
@@ -73,18 +77,22 @@ fun UpcomingScreenContent(
     Scaffold(
         topBar = {
             UpcomingToolbar(
+                // KMK -->
                 state.isShowingUpdatingMangas,
                 showUpdatingMangas = showUpdatingMangas,
                 hideUpdatingMangas = hideUpdatingMangas,
                 isPredictReleaseDate = isPredictReleaseDate,
+                // KMK <--
             )
         },
         modifier = modifier,
     ) { paddingValues ->
+        // KMK -->
         if (isLoading) {
             LoadingScreen(modifier = Modifier.padding(paddingValues))
             return@Scaffold
         }
+        // KMK <--
         if (isTabletUi()) {
             UpcomingScreenLargeImpl(
                 listState = listState,
@@ -95,7 +103,9 @@ fun UpcomingScreenContent(
                 setSelectedYearMonth = setSelectedYearMonth,
                 onClickDay = { onClickDay(it, 0) },
                 onClickUpcoming = onClickUpcoming,
+                // KMK -->
                 state.isShowingUpdatingMangas,
+                // KMK <--
             )
         } else {
             UpcomingScreenSmallImpl(
@@ -107,7 +117,9 @@ fun UpcomingScreenContent(
                 setSelectedYearMonth = setSelectedYearMonth,
                 onClickDay = { onClickDay(it, 1) },
                 onClickUpcoming = onClickUpcoming,
+                // KMK -->
                 state.isShowingUpdatingMangas,
+                // KMK <--
             )
         }
     }
@@ -115,10 +127,12 @@ fun UpcomingScreenContent(
 
 @Composable
 private fun UpcomingToolbar(
+    // KMK -->
     isShowingUpdatingMangas: Boolean,
     showUpdatingMangas: () -> Unit,
     hideUpdatingMangas: () -> Unit,
     isPredictReleaseDate: Boolean,
+    // KMK <--
 ) {
     val navigator = LocalNavigator.currentOrThrow
     val uriHandler = LocalUriHandler.current
@@ -132,6 +146,7 @@ private fun UpcomingToolbar(
         },
         navigateUp = navigator::pop,
         actions = {
+            // KMK -->
             if (isPredictReleaseDate) {
                 IconButton(
                     onClick = {
@@ -149,6 +164,7 @@ private fun UpcomingToolbar(
                     )
                 }
             }
+            // KMK <--
             IconButton(onClick = { uriHandler.openUri(Constants.URL_HELP_UPCOMING) }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.HelpOutline,
@@ -163,7 +179,9 @@ private fun UpcomingToolbar(
 internal fun DateHeading(
     date: LocalDate,
     mangaCount: Int,
+    // KMK -->
     modifier: Modifier = Modifier,
+    // KMK <--
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -197,7 +215,9 @@ private fun UpcomingScreenSmallImpl(
     setSelectedYearMonth: (YearMonth) -> Unit,
     onClickDay: (LocalDate) -> Unit,
     onClickUpcoming: (manga: Manga) -> Unit,
+    // KMK -->
     isShowingUpdatingMangas: Boolean,
+    // KMK <--
 ) {
     FastScrollLazyColumn(
         contentPadding = paddingValues,
@@ -250,7 +270,9 @@ private fun UpcomingScreenLargeImpl(
     setSelectedYearMonth: (YearMonth) -> Unit,
     onClickDay: (LocalDate) -> Unit,
     onClickUpcoming: (manga: Manga) -> Unit,
+    // KMK -->
     isShowingUpdatingMangas: Boolean,
+    // KMK <--
 ) {
     TwoPanelBox(
         modifier = Modifier.padding(paddingValues),

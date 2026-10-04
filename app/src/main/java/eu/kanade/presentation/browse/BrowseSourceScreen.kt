@@ -43,18 +43,24 @@ import tachiyomi.source.local.LocalSource
 @Composable
 fun BrowseSourceContent(
     source: Source?,
-    mangaList: LazyPagingItems<StateFlow<Pair<Manga, RaisedSearchMetadata?>>>,
+    mangaList: LazyPagingItems<StateFlow</* SY --> */Pair<Manga, RaisedSearchMetadata?>/* SY <-- */>>,
     columns: GridCells,
+    // SY -->
     ehentaiBrowseDisplayMode: Boolean,
+    // SY <--
     displayMode: LibraryDisplayMode,
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
+    // SY -->
     onWebViewClick: (() -> Unit)?,
     onHelpClick: (() -> Unit)?,
     onLocalSourceHelpClick: (() -> Unit)?,
+    // SY <--
     onMangaClick: (Manga) -> Unit,
     onMangaLongClick: (Manga) -> Unit,
+    // KMK -->
     selection: List<Manga>,
+    // KMK <--
 ) {
     val context = LocalContext.current
 
@@ -91,7 +97,7 @@ fun BrowseSourceContent(
                 is LoadState.Error -> getErrorMessage(errorState)
                 else -> stringResource(MR.strings.no_results_found)
             },
-            actions = if (source is LocalSource && onLocalSourceHelpClick != null) {
+            actions = if (source is LocalSource /* SY --> */ && onLocalSourceHelpClick != null /* SY <-- */) {
                 persistentListOf(
                     EmptyScreenAction(
                         stringRes = MR.strings.local_source_help_guide,
@@ -106,6 +112,7 @@ fun BrowseSourceContent(
                         icon = Icons.Outlined.Refresh,
                         onClick = mangaList::refresh,
                     ),
+                    // SY -->
                     if (onWebViewClick != null) {
                         EmptyScreenAction(
                             MR.strings.action_open_in_web_view,
@@ -124,6 +131,7 @@ fun BrowseSourceContent(
                     } else {
                         null
                     },
+                    // SY <--
                 ).toImmutableList()
             },
         )
@@ -131,16 +139,20 @@ fun BrowseSourceContent(
         return
     }
 
+    // SY -->
     if (source?.isEhBasedSource() == true && ehentaiBrowseDisplayMode) {
         BrowseSourceEHentaiList(
             mangaList = mangaList,
             contentPadding = contentPadding,
             onMangaClick = onMangaClick,
             onMangaLongClick = onMangaLongClick,
+            // KMK -->
             selection = selection,
+            // KMK <--
         )
         return
     }
+    // SY <--
 
     when (displayMode) {
         LibraryDisplayMode.ComfortableGrid -> {
@@ -150,9 +162,12 @@ fun BrowseSourceContent(
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
+                // KMK -->
                 selection = selection,
+                // KMK <--
             )
         }
+        // KMK -->
         LibraryDisplayMode.ComfortableGridPanorama -> {
             BrowseSourceComfortableGrid(
                 mangaList = mangaList,
@@ -160,17 +175,22 @@ fun BrowseSourceContent(
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
+                // KMK -->
                 selection = selection,
                 usePanoramaCover = true,
+                // KMK <--
             )
         }
+        // KMK <--
         LibraryDisplayMode.List -> {
             BrowseSourceList(
                 mangaList = mangaList,
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
+                // KMK -->
                 selection = selection,
+                // KMK <--
             )
         }
         LibraryDisplayMode.CompactGrid, LibraryDisplayMode.CoverOnlyGrid -> {
@@ -180,7 +200,9 @@ fun BrowseSourceContent(
                 contentPadding = contentPadding,
                 onMangaClick = onMangaClick,
                 onMangaLongClick = onMangaLongClick,
+                // KMK -->
                 selection = selection,
+                // KMK <--
             )
         }
     }

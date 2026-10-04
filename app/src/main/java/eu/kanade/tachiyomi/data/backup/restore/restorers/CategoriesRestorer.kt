@@ -30,7 +30,9 @@ class CategoriesRestorer(
                             it.name,
                             order,
                             it.flags,
+                            // KMK -->
                             hidden = if (it.hidden) 1L else 0L,
+                            // KMK <--
                         )
                         categoriesQueries.selectLastInsertedRowId()
                     }

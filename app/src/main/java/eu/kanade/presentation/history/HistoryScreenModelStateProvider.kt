@@ -18,6 +18,7 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
     private val multiPage = HistoryScreenModel.State(
         searchQuery = null,
         list =
+        // KMK -->
         persistentListOf(HistoryWithRelationExamples.headerToday)
             .asSequence()
             .plus(HistoryWithRelationExamples.items().take(3))
@@ -25,6 +26,7 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
             .plus(HistoryWithRelationExamples.items().take(1))
             .plus(HistoryWithRelationExamples.header { it.minus(2, ChronoUnit.DAYS) })
             .plus(HistoryWithRelationExamples.items().take(7))
+            // KMK <--
             .toImmutableList(),
         dialog = null,
     )
@@ -32,8 +34,10 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
     private val shortRecent = HistoryScreenModel.State(
         searchQuery = null,
         list = persistentListOf(
+            // KMK -->
             HistoryWithRelationExamples.headerToday,
             HistoryWithRelationExamples.items().first(),
+            // KMK <--
         ),
         dialog = null,
     )
@@ -41,8 +45,10 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
     private val shortFuture = HistoryScreenModel.State(
         searchQuery = null,
         list = persistentListOf(
+            // KMK -->
             HistoryWithRelationExamples.headerTomorrow,
             HistoryWithRelationExamples.items().first(),
+            // KMK <--
         ),
         dialog = null,
     )
@@ -59,7 +65,9 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
 
     private val loading = HistoryScreenModel.State(
         searchQuery = null,
+        // KMK -->
         isLoading = true,
+        // KMK <--
         dialog = null,
     )
 
@@ -72,6 +80,7 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
         loading,
     )
 
+    // KMK -->
     private object HistoryWithRelationExamples {
         val headerToday = randItem()
         val headerTomorrow = randItem(LocalDate.now().plusDays(1).toDate())
@@ -81,17 +90,20 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
 
         fun LocalDate.toDate(zone: ZoneId = ZoneId.systemDefault()): Date =
             Date.from(atStartOfDay(zone).toInstant())
+        // KMK <--
 
         fun items() = sequence {
             var count = 1
             while (true) {
-                yield(randItem { it.copy(ogTitle = "Example Title $count") })
+                yield(randItem { it.copy(/* SY --> */ogTitle = /* SY <-- */ "Example Title $count") })
                 count += 1
             }
         }
 
         fun randItem(
+            // KMK -->
             readAt: Date = Date.from(Instant.now()),
+            // KMK <--
             historyBuilder: (HistoryWithRelations) -> HistoryWithRelations = { it },
         ) =
             historyBuilder(
@@ -99,13 +111,17 @@ class HistoryScreenModelStateProvider : PreviewParameterProvider<HistoryScreenMo
                     id = Random.nextLong(),
                     chapterId = Random.nextLong(),
                     mangaId = Random.nextLong(),
+                    // SY -->
                     ogTitle = "Test Title",
+                    // SY <--
                     chapterNumber = Random.nextDouble(),
+                    // KMK -->
                     read = Random.nextBoolean(),
                     lastPageRead = Random.nextLong(1, 10),
                     totalCountCalculated = Random.nextLong(1, 100),
                     readCountCalculated = 1,
                     readAt = readAt,
+                    // KMK <--
                     readDuration = Random.nextLong(),
                     coverData = MangaCover(
                         mangaId = Random.nextLong(),

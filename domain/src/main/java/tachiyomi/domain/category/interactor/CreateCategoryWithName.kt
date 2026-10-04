@@ -26,12 +26,14 @@ class CreateCategoryWithName(
             name = name,
             order = nextOrder,
             flags = initialFlags,
+            // KMK -->
             hidden = false,
+            // KMK <--
         )
 
         try {
             categoryRepository.insert(newCategory)
-            Result.Success(newCategory)
+            Result.Success(/* SY --> */newCategory/* SY <-- */)
         } catch (e: Exception) {
             logcat(LogPriority.ERROR, e)
             Result.InternalError(e)
@@ -39,8 +41,10 @@ class CreateCategoryWithName(
     }
 
     sealed interface Result {
+        // SY -->
         data class Success(val category: Category) : Result
 
+        // SY <--
         data class InternalError(val error: Throwable) : Result
     }
 }

@@ -37,13 +37,18 @@ fun GlobalSearchScreen(
     onClickSource: (Source) -> Unit,
     onClickItem: (Manga) -> Unit,
     onLongClickItem: (Manga) -> Unit,
+    // KMK -->
     bulkFavoriteScreenModel: BulkFavoriteScreenModel,
     hasPinnedSources: Boolean,
+    // KMK <--
 ) {
+    // KMK -->
     val bulkFavoriteState by bulkFavoriteScreenModel.state.collectAsState()
+    // KMK <--
 
     Scaffold(
         topBar = { scrollBehavior ->
+            // KMK -->
             if (bulkFavoriteState.selectionMode) {
                 BulkSelectionToolbar(
                     selectedCount = bulkFavoriteState.selection.size,
@@ -64,6 +69,7 @@ fun GlobalSearchScreen(
                     },
                 )
             } else {
+                // KMK <--
                 GlobalSearchToolbar(
                     searchQuery = state.searchQuery,
                     progress = state.progress,
@@ -77,9 +83,11 @@ fun GlobalSearchScreen(
                     onlyShowHasResults = state.onlyShowHasResults,
                     onToggleResults = onToggleResults,
                     scrollBehavior = scrollBehavior,
+                    // KMK -->
                     toggleSelectionMode = bulkFavoriteScreenModel::toggleSelectionMode,
                     isRunning = bulkFavoriteState.isRunning,
                     hasPinnedSources = hasPinnedSources,
+                    // KMK <--
                 )
             }
         },
@@ -91,7 +99,9 @@ fun GlobalSearchScreen(
             onClickSource = onClickSource,
             onClickItem = onClickItem,
             onLongClickItem = onLongClickItem,
+            // KMK -->
             selection = bulkFavoriteState.selection,
+            // KMK <--
         )
     }
 }
@@ -105,13 +115,16 @@ internal fun GlobalSearchContent(
     onClickItem: (Manga) -> Unit,
     onLongClickItem: (Manga) -> Unit,
     fromSourceId: Long? = null,
+    // KMK -->
     selection: List<Manga>,
+    // KMK <--
 ) {
     LazyColumn(
         contentPadding = contentPadding,
     ) {
         items.forEach { (source, result) ->
             item(key = "global-search-${source.id}") {
+                // KMK -->
                 val domainSource = DomainSource(
                     source.id,
                     "",
@@ -119,6 +132,7 @@ internal fun GlobalSearchContent(
                     supportsLatest = false,
                     isStub = false,
                 )
+                // KMK <--
 
                 GlobalSearchResultItem(
                     title = (
@@ -126,11 +140,13 @@ internal fun GlobalSearchContent(
                             "▶ ${source.name}".takeIf { source.id == fromSourceId }
                         } ?: source.name
                         ) +
+                        // KMK -->
                         (
                             domainSource.installedExtension?.let { extension ->
                                 " (${extension.name})".takeIf { extension.name != source.name }
                             } ?: ""
                             ),
+                    // KMK <--
                     subtitle = LocaleHelper.getLocalizedDisplayName(source.lang),
                     onClick = { onClickSource(source) },
                     modifier = Modifier.animateItem(),
@@ -145,7 +161,9 @@ internal fun GlobalSearchContent(
                                 getManga = getManga,
                                 onClick = onClickItem,
                                 onLongClick = onLongClickItem,
+                                // KMK -->
                                 selection = selection,
+                                // KMK <--
                             )
                         }
                         is SearchItemResult.Error -> {

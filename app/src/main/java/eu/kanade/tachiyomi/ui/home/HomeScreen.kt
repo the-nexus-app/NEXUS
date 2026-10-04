@@ -73,12 +73,18 @@ object HomeScreen : Screen() {
     private val showBottomNavEvent = Channel<Boolean>()
 
     private const val TAB_FADE_DURATION = 200
+    // NXS -->
     private const val TAB_NAVIGATOR_KEY = "HomeTabs2"
+    // NXS <--
 
     private val TABS = listOf(
+        // NXS -->
         DashboardTab,
+        // NXS <--
         UpdatesTab,
+        // NXS -->
         LibraryTab,
+        // NXS <--
         HistoryTab,
         MoreTab,
     )
@@ -87,13 +93,17 @@ object HomeScreen : Screen() {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
+        // SY -->
         val scope = rememberCoroutineScope()
         val alwaysShowLabel by remember {
             Injekt.get<UiPreferences>().bottomBarLabels().asState(scope)
         }
+        // SY <--
 
         TabNavigator(
+            // NXS -->
             tab = DashboardTab,
+            // NXS <--
             key = TAB_NAVIGATOR_KEY,
         ) { tabNavigator ->
             // Provide usable navigator to content screen
@@ -103,9 +113,11 @@ object HomeScreen : Screen() {
                         if (isTabletUi()) {
                             NavigationRail {
                                 TABS
+                                    // SY -->
                                     .fastFilter { it.isEnabled() }
+                                    // SY <--
                                     .fastForEach {
-                                        NavigationRailItem(it, alwaysShowLabel)
+                                        NavigationRailItem(it/* SY --> */, alwaysShowLabel/* SY <-- */)
                                     }
                             }
                         }
@@ -122,9 +134,11 @@ object HomeScreen : Screen() {
                             ) {
                                 NavigationBar {
                                     TABS
+                                        // SY -->
                                         .fastFilter { it.isEnabled() }
+                                        // SY <--
                                         .fastForEach {
-                                            NavigationBarItem(it, alwaysShowLabel)
+                                            NavigationBarItem(it/* SY --> */, alwaysShowLabel/* SY <-- */)
                                         }
                                 }
                             }
@@ -158,10 +172,14 @@ object HomeScreen : Screen() {
             }
 
             val goToLibraryTab = { tabNavigator.current = LibraryTab }
+            // NXS -->
             val goToDashboardTab = { tabNavigator.current = DashboardTab }
+            // NXS <--
             BackHandler(
+                // NXS -->
                 enabled = tabNavigator.current != DashboardTab,
                 onBack = goToDashboardTab,
+                // NXS <--
             )
 
             LaunchedEffect(Unit) {
@@ -173,14 +191,17 @@ object HomeScreen : Screen() {
                 }
                 launch {
                     openTabEvent.receiveAsFlow().collectLatest {
+                        // NXS -->
                         when (it) {
                             Tab.Dashboard -> tabNavigator.current = DashboardTab
                             is Tab.Library -> {
                                 tabNavigator.current = LibraryTab
                                 if (it.mangaIdToOpen != null) {
                                     navigator.push(MangaScreen(it.mangaIdToOpen))
+                                    // NXS <--
                                 }
                             }
+                            // NXS -->
                             Tab.Updates -> tabNavigator.current = UpdatesTab
                             Tab.History -> tabNavigator.current = HistoryTab
                             is Tab.Browse -> {
@@ -192,9 +213,14 @@ object HomeScreen : Screen() {
                                 tabNavigator.current = MoreTab
                                 if (it.toDownloads) {
                                     navigator.push(DownloadQueueScreen)
+                                    // NXS <--
+                                    // KMK -->
                                 } else if (it.toLibraryUpdateErrors) {
                                     navigator.push(LibraryUpdateErrorScreen())
+                                    // KMK <--
+                                    // NXS -->
                                 }
+                                // NXS <--
                             }
                         }
                     }
@@ -206,7 +232,9 @@ object HomeScreen : Screen() {
     @Composable
     private fun RowScope.NavigationBarItem(
         tab: eu.kanade.presentation.util.Tab,
+        // SY -->
         alwaysShowLabel: Boolean,
+        // SY <--
     ) {
         val tabNavigator = LocalTabNavigator.current
         val navigator = LocalNavigator.currentOrThrow
@@ -230,14 +258,16 @@ object HomeScreen : Screen() {
                     overflow = TextOverflow.Ellipsis,
                 )
             },
-            alwaysShowLabel = alwaysShowLabel,
+            alwaysShowLabel = /* SY --> */alwaysShowLabel, /* SY <-- */
         )
     }
 
     @Composable
     fun NavigationRailItem(
         tab: eu.kanade.presentation.util.Tab,
+        // SY -->
         alwaysShowLabel: Boolean,
+        // SY <--
     ) {
         val tabNavigator = LocalTabNavigator.current
         val navigator = LocalNavigator.currentOrThrow
@@ -261,7 +291,7 @@ object HomeScreen : Screen() {
                     overflow = TextOverflow.Ellipsis,
                 )
             },
-            alwaysShowLabel = alwaysShowLabel,
+            alwaysShowLabel = /* SY --> */alwaysShowLabel, /* SY <-- */
         )
     }
 
@@ -318,14 +348,18 @@ object HomeScreen : Screen() {
     }
 
     sealed interface Tab {
+        // NXS -->
         data object Dashboard : Tab
+        // NXS <--
         data class Library(val mangaIdToOpen: Long? = null) : Tab
         data object Updates : Tab
         data object History : Tab
         data class Browse(val toExtensions: Boolean = false) : Tab
         data class More(
             val toDownloads: Boolean,
+            // KMK -->
             val toLibraryUpdateErrors: Boolean = false,
+            // KMK <--
         ) : Tab
     }
 }

@@ -42,5 +42,7 @@ fun Chapter.toDbChapter(): DbChapter = ChapterImpl().also {
     it.chapter_number = chapterNumber.toFloat()
     it.source_order = sourceOrder.toInt()
     it.memo = memo
+    // SY -->
     it.last_modified = lastModifiedAt
+    // SY <--
 }

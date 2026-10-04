@@ -12,7 +12,9 @@ import eu.kanade.presentation.theme.colorscheme.AndroidViewColorScheme
 class EditMergedMangaAdapter(
     listener: EditMergedSettingsState,
     var isPriorityOrder: Boolean,
+    // KMK -->
     val colorScheme: AndroidViewColorScheme,
+    // KMK <--
 ) :
     FlexibleAdapter<EditMergedMangaItem>(null, listener, true),
     EditMergedSettingsHeaderAdapter.SortingListener {
@@ -28,7 +30,9 @@ class EditMergedMangaAdapter(
         fun onToggleChapterUpdatesClicked(position: Int)
         fun onToggleChapterDownloadsClicked(position: Int)
 
+        // KMK -->
         fun onOpenEntryClick(position: Int)
+        // KMK <--
     }
 
     override fun onSetPrioritySort(isPriorityOrder: Boolean) {

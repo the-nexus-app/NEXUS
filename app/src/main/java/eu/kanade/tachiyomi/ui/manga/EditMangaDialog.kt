@@ -80,7 +80,9 @@ import uy.kohesive.injekt.api.get
 @Composable
 fun EditMangaDialog(
     manga: Manga,
+    // KMK -->
     coverRatio: MutableFloatState,
+    // KMK <--
     onDismissRequest: () -> Unit,
     onPositiveClick: (
         title: String?,
@@ -101,7 +103,9 @@ fun EditMangaDialog(
     val trackerManager = remember { Injekt.get<TrackerManager>() }
     val tracks = remember { mutableStateOf(emptyList<Pair<Track, Tracker>>()) }
 
+    // KMK -->
     val colorScheme = AndroidViewColorScheme(MaterialTheme.colorScheme)
+    // KMK <--
 
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -160,8 +164,10 @@ fun EditMangaDialog(
                                     trackerManager,
                                     tracks,
                                     showTrackerSelectionDialogue,
+                                    // KMK -->
                                     colorScheme,
                                     coverRatio = coverRatio,
+                                    // KMK <--
                                 )
                             }
                             .root
@@ -234,17 +240,23 @@ private fun onViewCreated(
     trackerManager: TrackerManager,
     tracks: MutableState<List<Pair<Track, Tracker>>>,
     showTrackerSelectionDialogue: MutableState<Boolean>,
+    // KMK -->
     colorScheme: AndroidViewColorScheme,
     coverRatio: MutableFloatState,
+    // KMK <--
 ) {
     loadCover(
         manga,
         binding,
+        // KMK -->
         coverRatio,
+        // KMK <--
     )
 
+    // KMK -->
     // val statusAdapter: ArrayAdapter<String> = ArrayAdapter(
     val statusAdapter = SpinnerAdapter(
+        // KMK <--
         context,
         android.R.layout.simple_spinner_dropdown_item,
         listOf(
@@ -256,7 +268,9 @@ private fun onViewCreated(
             MR.strings.cancelled,
             MR.strings.on_hiatus,
         ).map { context.stringResource(it) },
+        // KMK -->
         colorScheme,
+        // KMK <--
     )
 
     binding.status.adapter = statusAdapter
@@ -275,6 +289,7 @@ private fun onViewCreated(
         )
     }
 
+    // KMK -->
     // Set Spinner's selected item's background color to transparent
     binding.status.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
@@ -285,6 +300,7 @@ private fun onViewCreated(
 
     // Set Spinner's dropdown caret color
     binding.status.backgroundTintList = ColorStateList.valueOf(colorScheme.iconColor)
+    // KMK
 
     if (manga.isLocal()) {
         if (manga.title != manga.url) {
@@ -324,20 +340,27 @@ private fun onViewCreated(
                 SYMR.strings.description_hint,
                 manga.ogDescription?.takeIf { it.isNotBlank() }?.replace("\n", " ")?.chop(20) ?: "",
             )
+        // KMK -->
         val thumbnailUrlHints = listOfNotNull(
             manga.ogThumbnailUrl?.let {
                 it.chop(40) + if (it.length > 46) "." + it.substringAfterLast(".").chop(6) else ""
             },
+            // NXS -->
             "file:///storage/emulated/0/Pictures/NEXUS/Cover.jpg",
+            // NXS <--
         )
+        // KMK <--
         binding.thumbnailUrl.hint =
             context.stringResource(
                 SYMR.strings.thumbnail_url_hint,
+                // KMK -->
                 thumbnailUrlHints.joinToString("\nor\n"),
+                // KMK <--
             )
     }
     binding.mangaGenresTags.clearFocus()
 
+    // KMK -->
     listOf(
         binding.title,
         binding.mangaAuthor,
@@ -363,6 +386,7 @@ private fun onViewCreated(
     binding.resetTags.setBackgroundColor(colorScheme.btnBgColor)
     binding.resetInfo.setTextColor(colorScheme.btnTextColor)
     binding.resetInfo.setBackgroundColor(colorScheme.btnBgColor)
+    // KMK <--
 
     binding.resetTags.setOnClickListener { resetTags(manga, binding, scope, colorScheme) }
     binding.resetInfo.setOnClickListener { resetInfo(manga, binding, scope, colorScheme) }
@@ -421,7 +445,9 @@ private fun resetTags(
     manga: Manga,
     binding: EditMangaDialogBinding,
     scope: CoroutineScope,
+    // KMK -->
     colorScheme: AndroidViewColorScheme,
+    // KMK <--
 ) {
     if (manga.genre.isNullOrEmpty() || manga.isLocal()) {
         binding.mangaGenresTags.setChips(emptyList(), scope, colorScheme)
@@ -433,8 +459,11 @@ private fun resetTags(
 private fun loadCover(
     manga: Manga,
     binding: EditMangaDialogBinding,
+    // KMK -->
     coverRatio: MutableFloatState,
+    // KMK <--
 ) {
+    // KMK -->
     if (Injekt.get<UiPreferences>().usePanoramaCoverAlways().get() && coverRatio.floatValue <= RatioSwitchToPanorama) {
         binding.mangaCover.visibility = View.GONE
         binding.mangaCoverPanorama.visibility = View.VISIBLE
@@ -442,6 +471,7 @@ private fun loadCover(
             transformations(RoundedCornersTransformation(4.dpToPx.toFloat()))
         }
     } else {
+        // KMK <--
         binding.mangaCover.load(manga) {
             transformations(RoundedCornersTransformation(4.dpToPx.toFloat()))
         }
@@ -452,7 +482,9 @@ private fun resetInfo(
     manga: Manga,
     binding: EditMangaDialogBinding,
     scope: CoroutineScope,
+    // KMK -->
     colorScheme: AndroidViewColorScheme,
+    // KMK <--
 ) {
     binding.title.text?.clear()
     binding.mangaAuthor.text?.clear()
@@ -465,25 +497,35 @@ private fun resetInfo(
 private fun ChipGroup.setChips(
     items: List<String>,
     scope: CoroutineScope,
+    // KMK -->
     colorScheme: AndroidViewColorScheme,
+    // KMK <--
 ) {
     removeAllViews()
 
+    // KMK -->
     val colorStateList = ColorStateList.valueOf(colorScheme.tagColor)
+    // KMK <--
 
     items.asSequence().map { item ->
         Chip(context).apply {
             text = item
+            // KMK -->
             setTextColor(colorScheme.tagTextColor)
+            // KMK <--
 
             isCloseIconVisible = true
+            // KMK -->
             // closeIcon?.setTint(context.getResourceColor(R.attr.colorAccent))
             closeIcon?.setTint(colorScheme.iconColor)
+            // KMK <--
             setOnCloseIconClickListener {
                 removeView(this)
             }
 
+            // KMK -->
             chipBackgroundColor = colorStateList
+            // KMK <--
         }
     }.forEach {
         addView(it)
@@ -491,17 +533,24 @@ private fun ChipGroup.setChips(
 
     val addTagChip = Chip(context).apply {
         text = SYMR.strings.add_tags.getString(context)
+        // KMK -->
         setTextColor(colorScheme.tagTextColor)
+        // KMK <--
 
         chipIcon = ContextCompat.getDrawable(context, R.drawable.ic_add_24dp)?.apply {
             isChipIconVisible = true
+            // KMK -->
             // setTint(context.getResourceColor(R.attr.colorAccent))
             setTint(colorScheme.iconColor)
+            // KMK <--
         }
 
+        // KMK -->
         chipBackgroundColor = colorStateList
+        // KMK <--
 
         setOnClickListener {
+            // KMK -->
             var dialog: AlertDialog? = null
 
             val builder = MaterialAlertDialogBuilder(context)
@@ -510,10 +559,12 @@ private fun ChipGroup.setChips(
                 .setHint(SYMR.strings.multi_tags_comma_separated.getString(context))
                 .setPositiveButton(MR.strings.action_ok.getString(context)) {
                     dialog?.dismissDialog()
+                    // KMK <--
                     val newTags = it.trimOrNull()
                     newTags?.let { tags ->
                         setChips(items + tags.split(",").mapNotNull { tag -> tag.trimOrNull() }, scope, colorScheme)
                     }
+                    // KMK -->
                 }
                 .setNegativeButton(MR.strings.action_cancel.getString(context)) {
                     dialog?.dismissDialog()
@@ -524,6 +575,7 @@ private fun ChipGroup.setChips(
             dialog = builder.create()
             dialog.setView(binding.root)
             dialog.show()
+            // KMK <--
         }
     }
     addView(addTagChip)

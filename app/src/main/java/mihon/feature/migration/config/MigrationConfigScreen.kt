@@ -102,23 +102,29 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
         val screenModel = rememberScreenModel { ScreenModel() }
         val state by screenModel.state.collectAsState()
 
+        // KMK -->
         var searchQuery by remember { mutableStateOf("") }
         BackHandler(enabled = searchQuery.isNotBlank()) {
             searchQuery = ""
         }
+        // KMK <--
 
         var migrationSheetOpen by rememberSaveable { mutableStateOf(false) }
 
         fun continueMigration(openSheet: Boolean, extraSearchQuery: String?) {
+            // KMK -->
             if (openSheet) {
+                // KMK <--
                 migrationSheetOpen = true
                 return
             }
+            // NXS -->
             val screen = MigrationListScreen(
                 mangaIds,
                 extraSearchQuery,
                 screenModel.sourcePreferences.migrationSmartSearchSingleEntry().get(),
             )
+            // NXS <--
             navigator.replace(screen)
         }
 
@@ -128,6 +134,7 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
         }
 
         val (selectedSources, availableSources) = state.sources
+            // KMK -->
             .filter { sources ->
                 if (searchQuery.isBlank()) return@filter true
                 val source = sources.source
@@ -138,6 +145,7 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                         source.id == input.toLongOrNull()
                 }
             }
+            // KMK <--
             .partition { it.isSelected }
         val showLanguage by remember(state) {
             derivedStateOf {
@@ -179,11 +187,13 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                 )
             },
             floatingActionButton = {
+                // KMK -->
                 AnimatedVisibility(
                     visible = selectedSources.isNotEmpty(),
                     enter = fadeIn(),
                     exit = fadeOut(),
                     content = {
+                        // KMK <--
                         SmallExtendedFloatingActionButton(
                             text = { Text(text = stringResource(MR.strings.migrationConfigScreen_continueButtonText)) },
                             icon = { Icon(imageVector = Icons.AutoMirrored.Outlined.ArrowForward, contentDescription = null) },
@@ -203,16 +213,20 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                 if (fromIndex == -1 || toIndex == -1) return@rememberReorderableLazyListState
                 screenModel.orderSource(fromIndex, toIndex)
             }
+            // KMK -->
             Box(
                 modifier = Modifier.padding(contentPadding),
             ) {
                 val density = LocalDensity.current
                 var searchBoxHeight by remember { mutableStateOf(SOURCE_SEARCH_BOX_HEIGHT) }
+                // KMK <--
 
                 FastScrollLazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
+                    // KMK -->
                     contentPadding = PaddingValues(top = searchBoxHeight),
+                    // KMK <--
                 ) {
                     listOf(selectedSources, availableSources).fastForEachIndexed { listIndex, sources ->
                         val selectedSourceList = listIndex == 0
@@ -252,6 +266,7 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                     }
                 }
 
+                // KMK -->
                 AnimatedFloatingSearchBox(
                     listState = lazyListState,
                     searchQuery = searchQuery,
@@ -268,6 +283,7 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                         searchBoxHeight = with(density) { layoutCoordinates.size.height.toDp() + 2 * MaterialTheme.padding.small }
                     },
                 )
+                // KMK <--
             }
         }
 
@@ -279,7 +295,9 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                     migrationSheetOpen = false
                     continueMigration(openSheet = false, extraSearchQuery = extraSearchQuery)
                 },
+                // KMK -->
                 isSingleEntry = mangaIds.size == 1,
+                // KMK <--
             )
         }
     }
@@ -351,7 +369,9 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
                     )
                     if (showLanguage) {
                         Pill(
+                            // KMK -->
                             text = FlagEmoji.getEmojiLangFlag(source.shortLanguage) + " (${source.upperShortLanguage})",
+                            // KMK <--
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
@@ -382,13 +402,17 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
         private val sourceManager: SourceManager = Injekt.get(),
     ) : StateScreenModel<ScreenModel.State>(State()) {
 
+        // KMK -->
         private val pinnedSources by lazy { sourcePreferences.pinnedSources().get().mapNotNull { it.toLongOrNull() } }
         private val disabledSources by lazy { sourcePreferences.disabledSources().get().mapNotNull { it.toLongOrNull() } }
+        // KMK <--
 
-        private val sourcesComparator = { includedSources: /* KMK*/ Map<Long, Int> /* KMK*/ ->
+        private val sourcesComparator = { includedSources: /* KMK --> */ Map<Long, Int> /* KMK <-- */ ->
             compareBy<MigrationSource>(
+                // KMK -->
                 // { !it.isSelected },
                 { includedSources[it.source.id] ?: Int.MAX_VALUE },
+                // KMK <--
                 { with(it) { "$name ($shortLanguage)" } },
             )
         }
@@ -404,7 +428,9 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
             mutableState.update { state ->
                 val updatedSources = action(state.sources)
                 val includedSources = updatedSources.mapNotNull { if (!it.isSelected) null else it.id }
+                    // KMK -->
                     .mapIndexed { index, id -> id to index }.toMap()
+                // KMK <--
                 state.copy(sources = updatedSources.sortedWith(sourcesComparator(includedSources)))
             }
             saveSources()
@@ -413,9 +439,13 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
         private fun initSources() {
             val languages = sourcePreferences.enabledLanguages().get()
             val includedSources = sourcePreferences.migrationSources().get()
+                // KMK -->
                 .mapIndexed { index, id -> id to index }.toMap()
+            // KMK <--
             val sources = sourceManager
+                // KMK -->
                 .getVisibleSources()
+                // KMK <--
                 .asSequence()
                 .filterIsInstance<HttpSource>()
                 .filter { it.lang in languages }
@@ -500,8 +530,10 @@ class MigrationConfigScreen(private val mangaIds: Collection<Long>) : Screen() {
     data class MigrationSource(
         val source: Source,
         val isSelected: Boolean,
+        // KMK -->
         val shortLanguage: String = LocaleHelper.getShortDisplayName(source.lang),
         val upperShortLanguage: String = shortLanguage.uppercase(),
+        // KMK <--
     ) {
         val id: Long
             inline get() = source.id

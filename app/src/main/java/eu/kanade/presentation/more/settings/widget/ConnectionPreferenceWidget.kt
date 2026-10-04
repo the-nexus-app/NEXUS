@@ -1,4 +1,6 @@
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--
 package eu.kanade.presentation.more.settings.widget
 
 import androidx.compose.foundation.clickable
@@ -82,4 +84,6 @@ fun ConnectionPreferenceWidget(
         }
     }
 }
+// NXS -->
 // AM (CONNECTIONS)
+// NXS <--

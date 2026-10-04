@@ -93,7 +93,7 @@ body:
           required: true
         - label: I have written a short but informative title.
           required: true
-        - label: I have gone through the [FAQ](https://komikku-app.github.io/docs/faq/general) and [troubleshooting guide](https://komikku-app.github.io/docs/guides/troubleshooting/).
+        - label: I have gone through the [FAQ and troubleshooting guide](https://the-nexus-app.github.io/nexus-website/).
           required: true
         - label: I have updated the app to version **[latest](https://github.com/the-nexus-app/NEXUS/releases/latest)**.
           required: true

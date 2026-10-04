@@ -44,7 +44,9 @@ internal object ExtensionLoader {
     private val preferences: SourcePreferences by injectLazy()
     private val trustExtension: TrustExtension by injectLazy()
 
+    // KMK -->
     private val getExtensionStores: GetExtensionStores by injectLazy()
+    // KMK <--
 
     private val loadNsfwSource by lazy {
         preferences.showNsfwSource().get()
@@ -169,13 +171,17 @@ internal object ExtensionLoader {
 
         // Load each extension concurrently and wait for completion
         return runBlocking {
+            // KMK -->
             val extStores = getExtensionStores.get()
+            // KMK <--
             val deferred = extPkgs.map {
                 async {
                     loadExtension(
                         context,
                         it,
+                        // KMK -->
                         extStores,
+                        // KMK <--
                     )
                 }
             }
@@ -241,9 +247,13 @@ internal object ExtensionLoader {
     private suspend fun loadExtension(
         context: Context,
         extensionInfo: ExtensionInfo,
+        // KMK -->
         extStores: List<ExtensionStore>? = null,
+        // KMK <--
     ): LoadResult {
+        // KMK -->
         val stores = extStores ?: getExtensionStores.get()
+        // KMK <--
         val pkgManager = context.packageManager
         val pkgInfo = extensionInfo.packageInfo
         val appInfo = pkgInfo.applicationInfo!!
@@ -284,11 +294,13 @@ internal object ExtensionLoader {
                 versionCode,
                 libVersion,
                 signatures.last(),
+                // KMK -->
                 storeName = stores.firstOrNull { store ->
                     signatures.all { it == store.signingKey }
                 }?.let { store ->
                     store.badgeLabel.takeIf(String::isNotBlank) ?: store.name
                 },
+                // KMK <--
             )
             logcat(LogPriority.WARN) { "Extension $pkgName isn't trusted" }
             return LoadResult.Untrusted(extension)
@@ -350,12 +362,14 @@ internal object ExtensionLoader {
             pkgFactory = appInfo.metaData.getString(METADATA_SOURCE_FACTORY),
             icon = appInfo.loadIcon(pkgManager),
             isShared = extensionInfo.isShared,
+            // KMK -->
             signatureHash = signatures.last(),
             storeName = stores.firstOrNull { store ->
                 signatures.all { it == store.signingKey }
             }?.let { store ->
                 store.badgeLabel.takeIf(String::isNotBlank) ?: store.name
             },
+            // KMK <--
         )
         return LoadResult.Success(extension)
     }

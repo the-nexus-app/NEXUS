@@ -75,7 +75,9 @@ abstract class AbstractStartupBenchmark(private val startupMode: StartupMode) {
     fun startupFullCompilation() = startup(CompilationMode.Full())
 
     private fun startup(compilationMode: CompilationMode) = benchmarkRule.measureRepeated(
+        // NXS -->
         packageName = "com.nexus.app.benchmark",
+        // NXS <--
         metrics = listOf(StartupTimingMetric()),
         compilationMode = compilationMode,
         iterations = 10,

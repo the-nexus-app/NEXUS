@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.release.interactor
 
 import io.kotest.matchers.shouldBe
@@ -66,3 +67,4 @@ class VersionComparisonTest {
         parseVersionParts("1.2.") shouldBe null
     }
 }
+// NXS <--

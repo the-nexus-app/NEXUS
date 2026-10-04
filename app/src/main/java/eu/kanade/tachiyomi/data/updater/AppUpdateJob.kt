@@ -47,6 +47,7 @@ class AppUpdateJob(private val context: Context, workerParams: WorkerParameters)
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
+            // NXS -->
             // Kept in sync with AppUpdatePolicy.CHECK_INTERVAL_HOURS, the throttle
             // GetApplicationRelease uses to decide whether a check actually hits the network.
             // Using the same interval here means a background run is never wasted by landing
@@ -54,10 +55,13 @@ class AppUpdateJob(private val context: Context, workerParams: WorkerParameters)
             // (Android/Doze controls background execution), so this is "at least every ~24h
             // when conditions allow", not a real-time guarantee - a flex window is given so the
             // OS can batch this with other work.
+            // NXS <--
             val request = PeriodicWorkRequestBuilder<AppUpdateJob>(
+                // NXS -->
                 AppUpdatePolicy.CHECK_INTERVAL_HOURS,
                 TimeUnit.HOURS,
                 6,
+                // NXS <--
                 TimeUnit.HOURS,
             )
                 .addTag(TAG)

@@ -29,9 +29,11 @@ object LocaleHelper {
      * Returns display name of a string language code.
      */
     fun getSourceDisplayName(lang: String?, context: Context): String {
+        // SY -->
         if (lang != null && lang.contains("custom|")) {
             return lang.split("|")[1]
         }
+        // SY <--
         return when (lang) {
             SourcesScreenModel.LAST_USED_KEY -> context.stringResource(MR.strings.last_used_source)
             SourcesScreenModel.PINNED_KEY -> context.stringResource(MR.strings.pinned_sources)

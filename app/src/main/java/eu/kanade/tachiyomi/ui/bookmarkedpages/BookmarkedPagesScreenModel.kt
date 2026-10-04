@@ -1,3 +1,4 @@
+// NXS -->
 package eu.kanade.tachiyomi.ui.bookmarkedpages
 
 import androidx.compose.runtime.Immutable
@@ -5,7 +6,9 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import eu.kanade.presentation.bookmarkedpages.components.BookmarkedPagesUiModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import mihon.domain.manga.interactor.GetHiddenMangaIds
 import tachiyomi.core.common.util.lang.launchIO
 import tachiyomi.core.common.util.lang.launchNonCancellable
 import tachiyomi.domain.bookmark.interactor.DeleteBookmark
@@ -19,18 +22,32 @@ class BookmarkedPagesScreenModel(
     private val getAllBookmarks: GetAllBookmarks = Injekt.get(),
     private val deleteBookmark: DeleteBookmark = Injekt.get(),
     private val updateBookmarkNoteInteractor: UpdateBookmarkNote = Injekt.get(),
+    private val getHiddenMangaIds: GetHiddenMangaIds = GetHiddenMangaIds(),
 ) : StateScreenModel<BookmarkedPagesScreenModel.State>(State()) {
 
     init {
         screenModelScope.launchIO {
-            getAllBookmarks.subscribe().collectLatest { bookmarks ->
-                mutableState.update {
-                    it.copy(
-                        isLoading = false,
-                        items = bookmarks,
-                    )
+            // NXS --> Hidden-category manga must not leak through the global
+            // Bookmarked pages list; same rule the Feed and History screens follow.
+            combine(
+                getAllBookmarks.subscribe(),
+                getHiddenMangaIds.subscribe(),
+            ) { bookmarks, hiddenMangaIds ->
+                if (hiddenMangaIds.isEmpty()) {
+                    bookmarks
+                } else {
+                    bookmarks.filterNot { it.mangaId in hiddenMangaIds }
                 }
             }
+                // NXS <--
+                .collectLatest { bookmarks ->
+                    mutableState.update {
+                        it.copy(
+                            isLoading = false,
+                            items = bookmarks,
+                        )
+                    }
+                }
         }
     }
 
@@ -70,3 +87,4 @@ class BookmarkedPagesScreenModel(
         }
     }
 }
+// NXS <--

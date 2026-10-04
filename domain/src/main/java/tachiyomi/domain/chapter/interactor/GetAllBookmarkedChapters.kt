@@ -1,3 +1,4 @@
+// NXS -->
 package tachiyomi.domain.chapter.interactor
 
 import kotlinx.coroutines.flow.Flow
@@ -19,3 +20,4 @@ class GetAllBookmarkedChapters(
             }
     }
 }
+// NXS <--

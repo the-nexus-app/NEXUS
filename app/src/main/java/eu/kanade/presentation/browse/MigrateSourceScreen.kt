@@ -67,12 +67,16 @@ fun MigrateSourceScreen(
     onClickItem: (Source) -> Unit,
     onToggleSortingDirection: () -> Unit,
     onToggleSortingMode: () -> Unit,
+    // KMK -->
     onChangeSearchQuery: (String?) -> Unit,
+    // KMK <--
 ) {
     val context = LocalContext.current
     when {
         state.isLoading -> LoadingScreen(Modifier.padding(contentPadding))
+        // KMK -->
         state.searchQuery == null &&
+            // KMK <--
             state.isEmpty -> EmptyScreen(
             stringRes = MR.strings.information_empty_library,
             modifier = Modifier.padding(contentPadding),
@@ -90,8 +94,10 @@ fun MigrateSourceScreen(
                 onToggleSortingMode = onToggleSortingMode,
                 sortingDirection = state.sortingDirection,
                 onToggleSortingDirection = onToggleSortingDirection,
+                // KMK -->
                 state = state,
                 onChangeSearchQuery = onChangeSearchQuery,
+                // KMK <--
             )
     }
 }
@@ -106,9 +112,12 @@ private fun MigrateSourceList(
     onToggleSortingMode: () -> Unit,
     sortingDirection: SetMigrateSorting.Direction,
     onToggleSortingDirection: () -> Unit,
+    // KMK -->
     state: MigrateSourceScreenModel.State,
     onChangeSearchQuery: (String?) -> Unit,
+    // KMK <--
 ) {
+    // KMK -->
     val lazyListState = rememberLazyListState()
     var filterObsoleteSource by rememberSaveable { mutableStateOf(false) }
     val isHentaiEnabled = remember { Injekt.get<ExhPreferences>().isHentaiEnabled().get() }
@@ -120,6 +129,7 @@ private fun MigrateSourceList(
     Column(
         modifier = Modifier.padding(contentPadding),
     ) {
+        // KMK <--
         Row(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
@@ -132,6 +142,7 @@ private fun MigrateSourceList(
                 style = MaterialTheme.typography.header,
             )
 
+            // KMK -->
             IconButton(onClick = { filterObsoleteSource = !filterObsoleteSource }) {
                 Icon(
                     Icons.Outlined.NewReleases,
@@ -140,6 +151,7 @@ private fun MigrateSourceList(
                         .takeIf { filterObsoleteSource } ?: LocalContentColor.current,
                 )
             }
+            // KMK <--
             IconButton(onClick = onToggleSortingMode) {
                 when (sortingMode) {
                     SetMigrateSorting.Mode.ALPHABETICAL -> Icon(
@@ -166,6 +178,7 @@ private fun MigrateSourceList(
             }
         }
 
+        // KMK -->
         Box {
             val density = LocalDensity.current
             var searchBoxHeight by remember { mutableStateOf(SOURCE_SEARCH_BOX_HEIGHT) }
@@ -173,9 +186,11 @@ private fun MigrateSourceList(
             FastScrollLazyColumn(
                 state = lazyListState,
                 contentPadding = PaddingValues(top = searchBoxHeight),
+                // KMK <--
             ) {
                 items(
                     items = list
+                        // KMK -->
                         .filter {
                             !filterObsoleteSource ||
                                 (
@@ -183,12 +198,15 @@ private fun MigrateSourceList(
                                         (!isHentaiEnabled || it.first.id !in eHentaiSourceIds)
                                     )
                         },
+                    // KMK <--
                     key = { (source, _) -> "migrate-${source.id}" },
                 ) { (source, count) ->
                     MigrateSourceItem(
+                        // KMK -->
                         // modifier = Modifier.animateItem(),
                         modifier = Modifier.animateItemFastScroll()
                             .padding(end = MaterialTheme.padding.small),
+                        // KMK <--
                         source = source,
                         count = count,
                         onClickItem = { onClickItem(source) },
@@ -197,6 +215,7 @@ private fun MigrateSourceList(
                 }
             }
 
+            // KMK -->
             AnimatedFloatingSearchBox(
                 listState = lazyListState,
                 searchQuery = state.searchQuery,
@@ -212,6 +231,7 @@ private fun MigrateSourceList(
                     searchBoxHeight = with(density) { layoutCoordinates.size.height.toDp() }
                 },
             )
+            // KMK <--
         }
     }
 }
@@ -236,7 +256,7 @@ private fun MigrateSourceItem(
                 Badge(text = "$count")
             }
         },
-        content = { _, sourceLangString, /* KMK*/ lang /* KMK*/ ->
+        content = { _, sourceLangString, /* KMK --> */ lang /* KMK <-- */ ->
             Column(
                 modifier = Modifier
                     .padding(horizontal = MaterialTheme.padding.medium)
@@ -255,7 +275,7 @@ private fun MigrateSourceItem(
                     if (sourceLangString != null) {
                         Text(
                             modifier = Modifier.secondaryItemAlpha(),
-                            text = /* KMK*/ FlagEmoji.getEmojiLangFlag(lang) + " " + /* KMK*/
+                            text = /* KMK --> */ FlagEmoji.getEmojiLangFlag(lang) + " " + /* KMK <-- */
                                 sourceLangString,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -271,6 +291,7 @@ private fun MigrateSourceItem(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
                         )
+                        // KMK -->
                     } else if (source.installedExtension?.isObsolete == true) {
                         Text(
                             modifier = Modifier.secondaryItemAlpha(),
@@ -280,6 +301,7 @@ private fun MigrateSourceItem(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error,
                         )
+                        // KMK <--
                     }
                 }
             }

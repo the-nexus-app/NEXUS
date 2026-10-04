@@ -27,7 +27,9 @@ import tachiyomi.i18n.MR
 class WebtoonTransitionHolder(
     val layout: LinearLayout,
     viewer: WebtoonViewer,
+    // KMK -->
     @ColorInt private val seedColor: Int? = null,
+    // KMK <--
 ) : WebtoonBaseHolder(layout, viewer) {
 
     private val scope = MainScope()
@@ -35,7 +37,9 @@ class WebtoonTransitionHolder(
 
     private val transitionView = ReaderTransitionView(
         context,
+        // KMK -->
         seedColor = seedColor,
+        // KMK <--
     )
 
     /**
@@ -107,10 +111,12 @@ class WebtoonTransitionHolder(
      * Sets the loading state on the pages container.
      */
     private fun setLoading() {
+        // KMK -->
         val progress = ReaderProgressIndicator(
             context = context,
             seedColor = seedColor,
         )
+        // KMK <--
 
         val textView = AppCompatTextView(context).apply {
             wrapContent()

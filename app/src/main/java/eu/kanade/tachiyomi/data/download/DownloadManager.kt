@@ -166,7 +166,9 @@ class DownloadManager(
             chapter.name,
             chapter.scanlator,
             chapter.url,
+            // SY -->
             manga.ogTitle,
+            // SY <--
             source,
         )
         val files = chapterDir?.listFiles().orEmpty()
@@ -233,14 +235,18 @@ class DownloadManager(
         chapters: List<Chapter>,
         manga: Manga,
         source: Source,
+        // KMK -->
         /** Ignore categories exclusion */
         ignoreCategoryExclusion: Boolean = false,
+        // KMK <--
     ) {
         launchIO {
             val filteredChapters = getChaptersToDelete(
                 chapters,
                 manga,
+                // KMK -->
                 ignoreCategoryExclusion,
+                // KMK <--
             )
             if (filteredChapters.isEmpty()) {
                 return@launchIO
@@ -271,10 +277,12 @@ class DownloadManager(
             if (removeQueued) {
                 downloader.removeFromQueue(manga)
             }
-            provider.findMangaDir(manga.ogTitle, source)?.delete()
+            provider.findMangaDir(/* SY --> */ manga.ogTitle /* SY <-- */, source)?.delete()
             cache.removeManga(manga)
 
+            // KMK -->
             if (source.isLocal()) return@launchIO
+            // KMK <--
 
             // Delete source directory if empty
             val sourceDir = provider.findSourceDir(source)
@@ -302,6 +310,7 @@ class DownloadManager(
         }
     }
 
+    // SY -->
     /**
      * return the list of all manga folders
      */
@@ -326,7 +335,7 @@ class DownloadManager(
         var cleaned = 0
 
         if (removeNonFavorite && !manga.favorite) {
-            val mangaFolder = provider.getMangaDir(manga.ogTitle, source).getOrElse { e ->
+            val mangaFolder = provider.getMangaDir(/* SY --> */ manga.ogTitle /* SY <-- */, source).getOrElse { e ->
                 logcat(LogPriority.ERROR, e) { "Manga download folder doesn't exist." }
                 return 0
             }
@@ -350,7 +359,7 @@ class DownloadManager(
         }
 
         if (cache.getDownloadCount(manga) == 0) {
-            val mangaFolder = provider.getMangaDir(manga.ogTitle, source).getOrElse { e ->
+            val mangaFolder = provider.getMangaDir(/* SY --> */ manga.ogTitle /* SY <-- */, source).getOrElse { e ->
                 logcat(LogPriority.ERROR, e) { "Manga download folder doesn't exist." }
                 return cleaned
             }
@@ -358,11 +367,12 @@ class DownloadManager(
                 mangaFolder.delete()
                 cache.removeManga(manga)
             } else {
-                xLogE("Cache and download folder doesn't match for " + manga.ogTitle)
+                xLogE("Cache and download folder doesn't match for " + /* SY --> */ manga.ogTitle /* SY <-- */)
             }
         }
         return cleaned
     }
+    // SY <--
 
     /**
      * Adds a list of chapters to be deleted later.
@@ -419,7 +429,7 @@ class DownloadManager(
      */
     suspend fun renameManga(manga: Manga, newTitle: String) {
         val source = sourceManager.getOrStub(manga.source)
-        val oldFolder = provider.findMangaDir(/* KMK*/ manga.ogTitle /* KMK*/, source) ?: return
+        val oldFolder = provider.findMangaDir(/* KMK --> */ manga.ogTitle /* KMK --> */, source) ?: return
         val newName = provider.getMangaDirName(newTitle)
 
         if (oldFolder.name == newName) return
@@ -453,7 +463,7 @@ class DownloadManager(
      */
     suspend fun renameChapter(source: Source, manga: Manga, oldChapter: Chapter, newChapter: Chapter) {
         val oldNames = provider.getValidChapterDirNames(oldChapter.name, oldChapter.scanlator, oldChapter.url)
-        val mangaDir = provider.getMangaDir(manga.ogTitle, source).getOrElse { e ->
+        val mangaDir = provider.getMangaDir(/* SY --> */ manga.ogTitle /* SY <-- */, source).getOrElse { e ->
             logcat(LogPriority.ERROR, e) { "Manga download folder doesn't exist. Skipping renaming after source sync" }
             return
         }
@@ -481,12 +491,16 @@ class DownloadManager(
     private suspend fun getChaptersToDelete(
         chapters: List<Chapter>,
         manga: Manga,
+        // KMK -->
         /** Ignore categories exclusion */
         ignoreCategoryExclusion: Boolean = false,
+        // KMK <--
     ): List<Chapter> {
+        // KMK -->
         val filteredCategoryManga = if (ignoreCategoryExclusion) {
             chapters
         } else {
+            // KMK <--
             // Retrieve the categories that are set to exclude from being deleted on read
             val categoriesToExclude = downloadPreferences.removeExcludeCategories().get().map(String::toLong).toSet()
 
@@ -501,8 +515,10 @@ class DownloadManager(
         }
 
         return if (!downloadPreferences.removeBookmarkedChapters().get() &&
+            // KMK -->
             // if manually deleting single chapter then will allow deleting bookmark chapter
             (chapters.size > 1 || !ignoreCategoryExclusion)
+            // KMK <--
         ) {
             filteredCategoryManga.filterNot { it.bookmark }
         } else {

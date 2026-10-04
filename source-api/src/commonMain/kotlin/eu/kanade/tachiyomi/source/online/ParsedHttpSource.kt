@@ -164,6 +164,7 @@ abstract class ParsedHttpSource : HttpSource() {
      */
     protected abstract fun mangaDetailsParse(document: Document): SManga
 
+    // KMK -->
     /**
      * Parses the response from the site and returns a list of related mangas.
      * Normally it's not needed to override this method.
@@ -190,6 +191,7 @@ abstract class ParsedHttpSource : HttpSource() {
      * @param element an element obtained from [relatedMangaListSelector].
      */
     protected open fun relatedMangaFromElement(element: Element): SManga = popularMangaFromElement(element)
+    // KMK <--
 
     /**
      * Parses the response from the site and returns a list of chapters.

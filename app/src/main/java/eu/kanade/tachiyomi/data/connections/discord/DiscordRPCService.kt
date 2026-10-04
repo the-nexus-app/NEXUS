@@ -1,4 +1,6 @@
+// NXS -->
 // AM (DISCORD)
+// NXS <--
 
 // Taken from Animiru. Thank you Quickdev for permission!
 // Much improved by Cuong-Tran
@@ -48,6 +50,7 @@ class DiscordRPCService : Service() {
 
         val token = connectionsPreferences.connectionsToken(connectionsManager.discord).get()
 
+        // KMK -->
         // Create RPC client only if token is valid
         if (token.isBlank()) {
             Timber.tag(TAG).w("Discord RPC disabled due to missing token")
@@ -58,6 +61,7 @@ class DiscordRPCService : Service() {
 
         // Show notification and enter foreground as early as possible
         notification(this)
+        // KMK <--
 
         val status = when (connectionsPreferences.discordRPCStatus().get()) {
             -1 -> "dnd"
@@ -68,6 +72,7 @@ class DiscordRPCService : Service() {
         try {
             rpc = DiscordRPC(token, status)
 
+            // KMK -->
             try {
                 discordScope.launchIO { setScreen(this@DiscordRPCService) }
             } catch (e: Exception) {
@@ -79,6 +84,7 @@ class DiscordRPCService : Service() {
             connectionsPreferences.enableDiscordRPC().set(false)
             stopSelf()
         }
+        // KMK <--
     }
 
     override fun onDestroy() {
@@ -138,15 +144,21 @@ class DiscordRPCService : Service() {
     }
 
     private fun notification(context: Context) {
+        // KMK -->
         val stopIntent = NotificationReceiver.stopDiscordRPCService(context)
+        // KMK <--
 
         val builder = context.notificationBuilder(Notifications.CHANNEL_DISCORD_RPC) {
             setSmallIcon(R.drawable.ic_discord_24dp)
             setColor(ContextCompat.getColor(context, R.color.ic_launcher))
+            // NXS -->
             setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.nexus_logo))
+            // NXS <--
             setContentText(context.getString(R.string.pref_discord_rpc))
+            // KMK -->
             setContentTitle(context.getString(R.string.app_name))
             addAction(R.drawable.ic_close_24dp, context.getString(R.string.action_stop), stopIntent)
+            // KMK <--
             setAutoCancel(false)
             setOngoing(true)
             setUsesChronometer(true)
@@ -257,6 +269,7 @@ class DiscordRPCService : Service() {
 
             lastUsedScreen = discordScreen
 
+            // KMK -->
             val showProgress = connectionsPreferences.discordShowProgress().get()
             val showTimestamp = connectionsPreferences.discordShowTimestamp().get()
 
@@ -283,26 +296,31 @@ class DiscordRPCService : Service() {
             } else {
                 null
             }
+            // KMK <--
 
             updateDiscordRPC(
                 context = context,
                 discordScreen = discordScreen,
+                // KMK -->
                 title = title,
                 state = state,
                 imageUrl = imageUrl,
                 timestamps = timestamps,
+                // KMK <--
             )
         }
 
         private suspend fun updateDiscordRPC(
             context: Context,
             discordScreen: DiscordScreen,
+            // KMK -->
             title: String? = null,
             state: String?,
             imageUrl: String,
             timestamps: Activity.Timestamps?,
             sinceTime: Long = since,
             appName: String = context.getString(R.string.app_name),
+            // KMK <--
         ) {
             val customMessage = connectionsPreferences.discordCustomMessage().get()
             val showButtons = connectionsPreferences.discordShowButtons().get()
@@ -477,4 +495,6 @@ class DiscordRPCService : Service() {
         }
     }
 }
+// NXS -->
 // AM (DISCORD)
+// NXS <--

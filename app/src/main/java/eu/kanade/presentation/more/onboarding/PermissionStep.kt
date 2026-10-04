@@ -53,7 +53,9 @@ internal class PermissionStep : OnboardingStep {
     private var notificationGranted by mutableStateOf(false)
     private var batteryGranted by mutableStateOf(false)
 
+    // KMK -->
     private var externalStoragePermissionGranted by mutableStateOf(false)
+    // KMK <--
 
     override val isComplete: Boolean = true
 
@@ -75,6 +77,7 @@ internal class PermissionStep : OnboardingStep {
                     }
                     batteryGranted = context.getSystemService<PowerManager>()!!
                         .isIgnoringBatteryOptimizations(context.packageName)
+                    // KMK -->
                     externalStoragePermissionGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         context.checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) ==
                             PackageManager.PERMISSION_GRANTED
@@ -85,6 +88,7 @@ internal class PermissionStep : OnboardingStep {
                         context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                             PackageManager.PERMISSION_GRANTED
                     }
+                    // KMK <--
                 }
             }
             lifecycleOwner.lifecycle.addObserver(observer)
@@ -131,6 +135,7 @@ internal class PermissionStep : OnboardingStep {
                 },
             )
 
+            // KMK -->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 val permissionRequester = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestPermission(),
@@ -171,6 +176,7 @@ internal class PermissionStep : OnboardingStep {
                     onButtonClick = { permissionRequester.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE) },
                 )
             }
+            // KMK <--
 
             if (!telemetryIncluded) return@Column
 

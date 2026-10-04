@@ -35,7 +35,9 @@ class BangumiInterceptor(private val bangumi: Bangumi) : Interceptor {
         return originalRequest.newBuilder()
             .header(
                 "User-Agent",
+                // NXS -->
                 "NEXUS v${BuildConfig.VERSION_NAME} (${BuildConfig.APPLICATION_ID})",
+                // NXS <--
             )
             .apply {
                 addHeader("Authorization", "Bearer ${currAuth.accessToken}")

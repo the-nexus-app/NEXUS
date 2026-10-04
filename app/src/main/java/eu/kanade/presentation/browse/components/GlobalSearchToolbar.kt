@@ -48,9 +48,11 @@ fun GlobalSearchToolbar(
     onlyShowHasResults: Boolean,
     onToggleResults: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    // KMK -->
     toggleSelectionMode: () -> Unit,
     isRunning: Boolean,
     hasPinnedSources: Boolean,
+    // KMK <--
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
         Box {
@@ -61,6 +63,7 @@ fun GlobalSearchToolbar(
                 onClickCloseSearch = navigateUp,
                 navigateUp = navigateUp,
                 scrollBehavior = scrollBehavior,
+                // KMK -->
                 actions = {
                     AppBarActions(
                         actions = persistentListOf(
@@ -68,6 +71,7 @@ fun GlobalSearchToolbar(
                         ),
                     )
                 },
+                // KMK <--
             )
             if (progress in 1..<total) {
                 LinearProgressIndicator(
@@ -87,7 +91,9 @@ fun GlobalSearchToolbar(
         ) {
             // TODO: make this UX better; it only applies when triggering a new search
             if (!hideSourceFilter) {
+                // KMK -->
                 if (hasPinnedSources) {
+                    // KMK <--
                     FilterChip(
                         selected = sourceFilter == SourceFilter.PinnedOnly,
                         onClick = { onChangeSearchFilter(SourceFilter.PinnedOnly) },
