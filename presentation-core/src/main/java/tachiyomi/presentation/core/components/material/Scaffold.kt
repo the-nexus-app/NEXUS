@@ -120,7 +120,13 @@ fun Scaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) {
     // Tachiyomi: Handle consumed window insets
-    val remainingWindowInsets = remember { MutableWindowInsets() }
+    // NXS --> Seed with contentWindowInsets rather than the default WindowInsets(0).
+    // onConsumedWindowInsetsChanged only runs when a child actually consumes an inset,
+    // so a screen like Dashboard (no AppBar, nothing consuming) was handing ScaffoldLayout
+    // a permanently zeroed MutableWindowInsets - no status bar offset, header under the
+    // clock. Screens with their own AppBar never showed it because the bar pads itself.
+    val remainingWindowInsets = remember { MutableWindowInsets(contentWindowInsets) }
+    // NXS <--
     androidx.compose.material3.Surface(
         modifier = Modifier
             .nestedScroll(topBarScrollBehavior.nestedScrollConnection)
