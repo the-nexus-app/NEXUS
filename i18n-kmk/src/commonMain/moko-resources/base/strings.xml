@@ -127,6 +127,7 @@
     <string name="extensions_page_need_refresh">Refresh extension page to update list.</string>
     <string name="extensions_page_more">More extensions...</string>
     <!-- Extension repos -->
+    <string name="extension_store_add_trust_warning">Extensions from this store can read any stored login credentials or execute arbitrary code, and every extension it ships is trusted automatically.\n\nBy adding this store, you accept these risks.</string>
       <!-- Downloads section -->
     <string name="download_cache_renew_interval">Download cache renew interval</string>
     <string name="download_cache_renew_interval_manual">Manual</string>

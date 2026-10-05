@@ -70,7 +70,17 @@ class ExtensionStoresScreen(
             is ExtensionStoreDialog.Create -> {
                 ExtensionStoreCreateDialog(
                     onDismissRequest = screenModel::dismissDialog,
-                    onCreate = { screenModel.createRepo(it) },
+                    // NXS --> Route manual adds through the trust confirmation as well, so both
+                    // entry points have to acknowledge the same warning before a store is added.
+                    onCreate = { indexUrl ->
+                        screenModel.showDialog(
+                            ExtensionStoreDialog.Confirm(
+                                url = indexUrl,
+                                alreadyExists = successState.stores.any { it.indexUrl == indexUrl },
+                            ),
+                        )
+                    },
+                    // NXS <--
                     storeIndexUrls = successState.stores.map { it.indexUrl }.toSet(),
                     processing = dialog.processing,
                     errorMessage = dialog.errorMessage,

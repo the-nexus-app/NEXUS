@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import tachiyomi.i18n.MR
+import tachiyomi.i18n.kmk.KMR
 import tachiyomi.presentation.core.i18n.stringResource
 import kotlin.time.Duration.Companion.seconds
 
@@ -148,7 +149,10 @@ fun ExtensionStoreConfirmDialog(
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(text = stringResource(MR.strings.extensionStoresScreen_addStoreDeeplink_bodyText))
+                // NXS --> Replaces the neutral deep-link prompt: adding a store is a trust
+                // decision, because it auto-trusts every extension the store ships.
+                Text(text = stringResource(KMR.strings.extension_store_add_trust_warning))
+                // NXS <--
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     state = state,
