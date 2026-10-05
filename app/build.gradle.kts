@@ -56,8 +56,8 @@ android {
         // NXS <--
 
         // NXS -->
-        versionCode = 8
-        versionName = "1.5.1"
+        versionCode = 9
+        versionName = "1.5.2"
         // NXS <--
 
         buildConfigField("String", "COMMIT_COUNT", "\"${getCommitCount()}\"")
