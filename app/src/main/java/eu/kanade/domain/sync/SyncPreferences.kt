@@ -65,7 +65,9 @@ class SyncPreferences(
             appSettings = preferenceStore.getBoolean("sync_appSettings", true).get(),
             extensionStores = preferenceStore.getBoolean("sync_extensionStores", true).get(),
             sourceSettings = preferenceStore.getBoolean("sync_sourceSettings", true).get(),
-            privateSettings = preferenceStore.getBoolean("sync_privateSettings", true).get(),
+            // NXS --> Match SyncSettings/BackupOptions defaults: don't sync __PRIVATE_* prefs unless opted in.
+            privateSettings = preferenceStore.getBoolean("sync_privateSettings", false).get(),
+            // NXS <--
 
             // SY -->
             customInfo = preferenceStore.getBoolean("sync_customInfo", true).get(),
@@ -84,7 +86,9 @@ class SyncPreferences(
         preferenceStore.getBoolean("sync_appSettings", true).set(syncSettings.appSettings)
         preferenceStore.getBoolean("sync_extensionStores", true).set(syncSettings.extensionStores)
         preferenceStore.getBoolean("sync_sourceSettings", true).set(syncSettings.sourceSettings)
-        preferenceStore.getBoolean("sync_privateSettings", true).set(syncSettings.privateSettings)
+        // NXS --> Default matches getSyncSettings() above.
+        preferenceStore.getBoolean("sync_privateSettings", false).set(syncSettings.privateSettings)
+        // NXS <--
 
         // SY -->
         preferenceStore.getBoolean("sync_customInfo", true).set(syncSettings.customInfo)
