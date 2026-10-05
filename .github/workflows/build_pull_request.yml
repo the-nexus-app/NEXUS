@@ -70,7 +70,7 @@ jobs:
 
       - name: Build app
         if: github.repository == github.event.pull_request.head.repo.full_name
-        run: ./gradlew assemblePreview -Pinclude-telemetry -Penable-updater
+        run: ./gradlew assemblePreview -Penable-updater
 
       - name: Build app
         if: github.repository != github.event.pull_request.head.repo.full_name
