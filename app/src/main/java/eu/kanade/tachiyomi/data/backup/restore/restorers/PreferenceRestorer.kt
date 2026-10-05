@@ -17,6 +17,7 @@ import eu.kanade.tachiyomi.data.updater.AppUpdateJob
 import eu.kanade.tachiyomi.source.sourcePreferences
 import exh.EXHMigrations
 import exh.log.xLogE
+import mihon.core.migration.migrations.PrivateSyncCredentialMigration
 import tachiyomi.core.common.preference.AndroidPreferenceStore
 import tachiyomi.core.common.preference.PreferenceStore
 import tachiyomi.core.common.preference.plusAssign
@@ -41,6 +42,11 @@ class PreferenceRestorer(
             preferenceStore,
             backupCategories,
         )
+
+        // NXS --> Restores write keys that are absent locally, which can reintroduce the
+        // plain credential keys this migration already moved under Preference.privateKey.
+        PrivateSyncCredentialMigration.moveLegacyCredentialsToPrivateKeys(preferenceStore)
+        // NXS <--
 
         LibraryUpdateJob.setupTask(context)
         BackupCreateJob.setupTask(context)

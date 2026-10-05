@@ -5,13 +5,16 @@ import eu.kanade.tachiyomi.data.sync.SyncManager
 import eu.kanade.tachiyomi.data.sync.models.SyncTriggerOptions
 import tachiyomi.core.common.preference.Preference
 import tachiyomi.core.common.preference.PreferenceStore
+import tachiyomi.core.common.preference.privateStringWithLegacyFallback
 import java.util.UUID
 
 class SyncPreferences(
     private val preferenceStore: PreferenceStore,
 ) {
     fun clientHost() = preferenceStore.getString("connection_sync_client_host", "https://sync.tachiyomi.org")
-    fun clientAPIKey() = preferenceStore.getString("connection_sync_client_api_key", "")
+    // NXS --> Private so the API key is excluded from backups/sync unless explicitly opted in.
+    fun clientAPIKey() = preferenceStore.privateStringWithLegacyFallback("connection_sync_client_api_key")
+    // NXS <--
     fun lastSyncTimestamp() = preferenceStore.getLong(Preference.appStateKey("last_sync_timestamp"), 0L)
 
     fun lastSyncEtag() = preferenceStore.getString("sync_etag", "")
@@ -22,7 +25,9 @@ class SyncPreferences(
     // KMK -->
     fun webDavUrl() = preferenceStore.getString("connection_webdav_url", "")
     fun webDavUsername() = preferenceStore.getString("connection_webdav_username", "")
-    fun webDavPassword() = preferenceStore.getString("connection_webdav_password", "")
+    // NXS --> Private so the password is excluded from backups/sync unless explicitly opted in.
+    fun webDavPassword() = preferenceStore.privateStringWithLegacyFallback("connection_webdav_password")
+    // NXS <--
     // NXS -->
     fun webDavFolder() = preferenceStore.getString("connection_webdav_folder", "nexus")
     // NXS <--

@@ -6,6 +6,7 @@ package eu.kanade.domain.connections.service
 import eu.kanade.tachiyomi.data.connections.ConnectionsService
 import tachiyomi.core.common.preference.Preference
 import tachiyomi.core.common.preference.PreferenceStore
+import tachiyomi.core.common.preference.privateStringWithLegacyFallback
 
 class ConnectionsPreferences(
     private val preferenceStore: PreferenceStore,
@@ -15,10 +16,11 @@ class ConnectionsPreferences(
         "",
     )
 
-    fun connectionsPassword(sync: ConnectionsService) = preferenceStore.getString(
+    // NXS --> Private so the password is excluded from backups/sync unless explicitly opted in.
+    fun connectionsPassword(sync: ConnectionsService) = preferenceStore.privateStringWithLegacyFallback(
         connectionsPassword(sync.id),
-        "",
     )
+    // NXS <--
 
     fun setConnectionsCredentials(sync: ConnectionsService, username: String, password: String) {
         connectionsUsername(sync).set(username)
@@ -55,7 +57,9 @@ class ConnectionsPreferences(
 
     fun discordShowDiscordButton() = preferenceStore.getBoolean("pref_discord_show_discord_button", true)
 
-    fun discordAccounts() = preferenceStore.getString("discord_accounts", "")
+    // NXS --> Private: this JSON carries the OAuth token of every logged-in account.
+    fun discordAccounts() = preferenceStore.privateStringWithLegacyFallback("discord_accounts")
+    // NXS <--
 
     companion object {
 

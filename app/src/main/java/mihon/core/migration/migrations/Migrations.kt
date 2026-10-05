@@ -59,5 +59,6 @@ val migrations: List<Migration>
         // KMK <--
         // NXS -->
         NexusDefaultThemeMigration(),
+        PrivateSyncCredentialMigration(),
         // NXS <--
     )
