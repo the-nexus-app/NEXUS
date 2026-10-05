@@ -2,4 +2,4 @@
 
 This module houses the string resources and translations.
 
-Original English strings are managed in `src/commonMain/moko-resources/base/`. Translations are done externally via Weblate. See [our website](https://mihon.app/docs/contribute#translation) for more details. 
+Original English strings are managed in `src/commonMain/moko-resources/base/`. Only the `base/` locale is edited in this repository: translations are maintained externally via Weblate, and non-`base` locale files must not be edited here. See [CONTRIBUTING.md](../CONTRIBUTING.md) for general contribution guidance.

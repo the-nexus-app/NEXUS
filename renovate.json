@@ -8,8 +8,7 @@
     "Dependencies"
   ],
   "extends": [
-    "config:best-practices",
-    "github>mihonapp/mihon//.github/renovate.json5"
+    "config:best-practices"
   ],
   "packageRules": [
     {
