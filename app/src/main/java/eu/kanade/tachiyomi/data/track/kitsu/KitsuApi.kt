@@ -1,6 +1,7 @@
 package eu.kanade.tachiyomi.data.track.kitsu
 
 import androidx.core.net.toUri
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.kitsu.dto.KitsuAddMangaResult
 import eu.kanade.tachiyomi.data.track.kitsu.dto.KitsuAlgoliaSearchResult
@@ -313,7 +314,7 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
 
     companion object {
         private const val CLIENT_ID = "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd"
-        private const val CLIENT_SECRET = "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151"
+        private val CLIENT_SECRET = BuildConfig.KITSU_CLIENT_SECRET
 
         private const val BASE_URL = "https://kitsu.app/api/edge/"
         private const val GRAPHQL_URL = "https://kitsu.app/api/graphql"

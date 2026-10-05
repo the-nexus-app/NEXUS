@@ -143,6 +143,13 @@ jobs:
           contents: ${{ secrets.GOOGLE_CLIENT_SECRETS_JSON }}
           write-mode: overwrite
 
+      - name: Write tracker_secrets.properties
+        uses: DamianReeves/write-file-action@6929a9a6d1807689191dcc8bbe62b54d70a32b42 # v1.3
+        with:
+          path: tracker_secrets.properties
+          contents: ${{ secrets.TRACKER_SECRETS }}
+          write-mode: overwrite
+
       - name: Set up gradle
         uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6
 

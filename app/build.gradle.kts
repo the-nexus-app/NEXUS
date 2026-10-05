@@ -33,6 +33,23 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+// OAuth client secrets for the Shikimori/Bangumi/Kitsu trackers. They are kept out of
+// source control because they are credentials, not constants; CI writes this file from
+// the TRACKER_SECRETS Actions secret. Deliberately non-fatal when absent, matching
+// keystore.properties above, so a fresh clone still builds.
+val trackerSecretsProperties = Properties()
+val trackerSecretsPropertiesFile = rootProject.file("tracker_secrets.properties")
+if (trackerSecretsPropertiesFile.exists()) {
+    trackerSecretsProperties.load(FileInputStream(trackerSecretsPropertiesFile))
+} else {
+    logger.warn(
+        "tracker_secrets.properties not found - Shikimori/Bangumi/Kitsu login will not work " +
+            "in this build. See .github/workflows (TRACKER_SECRETS secret).",
+    )
+}
+
+fun trackerSecret(key: String): String = trackerSecretsProperties.getProperty(key, "")
+
 // NXS <--
 android {
     namespace = "eu.kanade.tachiyomi"
@@ -65,6 +82,11 @@ android {
         buildConfigField("String", "BUILD_TIME", "\"${getBuildTime(useLastCommitTime = false)}\"")
         buildConfigField("boolean", "TELEMETRY_INCLUDED", "${Config.includeTelemetry}")
         buildConfigField("boolean", "UPDATER_ENABLED", "${Config.enableUpdater}")
+        // NXS -->
+        buildConfigField("String", "SHIKIMORI_CLIENT_SECRET", "\"${trackerSecret("shikimori.client.secret")}\"")
+        buildConfigField("String", "BANGUMI_CLIENT_SECRET", "\"${trackerSecret("bangumi.client.secret")}\"")
+        buildConfigField("String", "KITSU_CLIENT_SECRET", "\"${trackerSecret("kitsu.client.secret")}\"")
+        // NXS <--
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

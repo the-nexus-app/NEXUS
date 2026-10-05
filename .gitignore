@@ -28,6 +28,9 @@ keystore.properties
 # location all four workflows actually write to.
 app/src/main/assets/client_secrets.json
 app/src/main/assets/google-services.json
+# Tracker OAuth client secrets (Shikimori/Bangumi/Kitsu); CI writes this from the
+# TRACKER_SECRETS Actions secret, exactly like client_secrets.json above.
+tracker_secrets.properties
 *.keystore
 *.pem
 *.p12
