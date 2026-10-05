@@ -22,6 +22,19 @@ class PreferenceBackupCreator(
     private val preferenceStore: PreferenceStore = Injekt.get(),
 ) {
 
+    // NXS -->
+    /**
+     * Source preference keys that hold credentials written by extensions. They cannot be
+     * moved under [Preference.privateKey], because the extension doing the writing is not
+     * part of this repository and would keep writing the original key, silently desyncing
+     * our reads from its writes. Filtering at export time instead keeps them out of
+     * backups and sync without touching anything the extension reads or writes.
+     */
+    private val sensitiveCredentialKeys = setOf(
+        "APIKEY",
+    )
+    // NXS <--
+
     fun createApp(includePrivatePreferences: Boolean): List<BackupPreference> {
         return preferenceStore.getAll().toBackupPreferences()
             .withPrivatePreferences(includePrivatePreferences)
@@ -63,6 +76,8 @@ class PreferenceBackupCreator(
         if (include) {
             this
         } else {
-            this.filter { !Preference.isPrivate(it.key) }
+            // NXS --> Credential keys are dropped too; they cannot use Preference.privateKey.
+            this.filter { !Preference.isPrivate(it.key) && it.key !in sensitiveCredentialKeys }
+            // NXS <--
         }
 }
