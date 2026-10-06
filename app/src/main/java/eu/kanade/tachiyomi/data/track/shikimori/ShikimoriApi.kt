@@ -222,7 +222,7 @@ class ShikimoriApi(
 
         private const val REDIRECT_URL = "komikku://shikimori-auth"
 
-        private const val CLIENT_ID = "hst3O_VlZ0HrrXcnZAd6m-SCIc1_mv5cQV-3nQCdJ0E"
+        private val CLIENT_ID = BuildConfig.SHIKIMORI_CLIENT_ID
         private val CLIENT_SECRET = BuildConfig.SHIKIMORI_CLIENT_SECRET
 
         fun authUrl(): Uri = LOGIN_URL.toUri().buildUpon()

@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.track.myanimelist
 
 import android.net.Uri
 import androidx.core.net.toUri
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.model.TrackMangaMetadata
 import eu.kanade.tachiyomi.data.track.model.TrackSearch
@@ -302,7 +303,7 @@ class MyAnimeListApi(
 
     companion object {
         // Registered under KMK's MAL account
-        private const val CLIENT_ID = "2be14959235191ece14eebdc2eea0466"
+        private val CLIENT_ID = BuildConfig.MYANIMELIST_CLIENT_ID
 
         private const val BASE_OAUTH_URL = "https://myanimelist.net/v1/oauth2"
         private const val BASE_API_URL = "https://api.myanimelist.net/v2"
