@@ -46,8 +46,13 @@ jobs:
           java-version-file: .github/.java-version
           distribution: temurin
 
+      # Dependabot-triggered runs get no Actions secrets: GitHub withholds them from any
+      # run whose pull request can edit workflow files, which Dependabot PRs do. These
+      # steps therefore skip for Dependabot exactly as they do for forks, and the build
+      # continues without them - google-services.json and tracker_secrets.properties are
+      # only consumed when telemetry is enabled, and signing is optional here.
       - name: Write google-services.json
-        if: github.repository == github.event.pull_request.head.repo.full_name
+        if: github.repository == github.event.pull_request.head.repo.full_name && github.event.pull_request.user.login != 'dependabot[bot]'
         uses: DamianReeves/write-file-action@6929a9a6d1807689191dcc8bbe62b54d70a32b42 # v1.3
         with:
           path: app/google-services.json
@@ -55,7 +60,7 @@ jobs:
           write-mode: overwrite
 
       - name: Write client_secrets.json
-        if: github.repository == github.event.pull_request.head.repo.full_name
+        if: github.repository == github.event.pull_request.head.repo.full_name && github.event.pull_request.user.login != 'dependabot[bot]'
         uses: DamianReeves/write-file-action@6929a9a6d1807689191dcc8bbe62b54d70a32b42 # v1.3
         with:
           path: app/src/main/assets/client_secrets.json
@@ -63,7 +68,7 @@ jobs:
           write-mode: overwrite
 
       - name: Write tracker_secrets.properties
-        if: github.repository == github.event.pull_request.head.repo.full_name
+        if: github.repository == github.event.pull_request.head.repo.full_name && github.event.pull_request.user.login != 'dependabot[bot]'
         uses: DamianReeves/write-file-action@6929a9a6d1807689191dcc8bbe62b54d70a32b42 # v1.3
         with:
           path: tracker_secrets.properties
@@ -71,7 +76,7 @@ jobs:
           write-mode: overwrite
 
       - name: Verify tracker secrets written
-        if: github.repository == github.event.pull_request.head.repo.full_name
+        if: github.repository == github.event.pull_request.head.repo.full_name && github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           test -s tracker_secrets.properties
           for k in shikimori.client.secret bangumi.client.secret kitsu.client.secret; do
@@ -108,7 +113,7 @@ jobs:
           path: app/build/reports/tests/testReleaseUnitTest
 
       - name: Sign APK
-        if: github.repository == github.event.pull_request.head.repo.full_name
+        if: github.repository == github.event.pull_request.head.repo.full_name && github.event.pull_request.user.login != 'dependabot[bot]'
         uses: r0adkll/sign-android-release@f30bdd30588842ac76044ecdbd4b6d0e3e813478
         with:
           releaseDirectory: app/build/outputs/apk/preview
@@ -121,7 +126,7 @@ jobs:
 
       - name: Signed File name
         id: signed_filename
-        if: github.repository == github.event.pull_request.head.repo.full_name
+        if: github.repository == github.event.pull_request.head.repo.full_name && github.event.pull_request.user.login != 'dependabot[bot]'
         run: |
           echo "SIGNED_TRAIL=-signed" >> $GITHUB_OUTPUT
 
