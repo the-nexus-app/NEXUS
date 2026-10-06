@@ -105,19 +105,26 @@ migration path executes, and assert on the resulting preference XML.
 - each private value an **exact match** of the seeded value (proves lossless migration)
 - `__APP_STATE_eh_last_version_code == 10`
 
-### Not verified at runtime
+### Backup and sync exclusion
 
-**Backup and sync exclusion** (findings 1–3) was verified by code review only, not by
-executing a backup on-device. The filter is a single pure predicate in
-`PreferenceBackupCreator.withPrivatePreferences`:
+Findings 1–3 are now covered by `PreferenceBackupCreatorTest`, which injects a fake
+`PreferenceStore` and asserts that with `includePrivatePreferences = false`:
 
-```kotlin
-this.filter { !Preference.isPrivate(it.key) && it.key !in sensitiveCredentialKeys }
-```
+- all four `__PRIVATE_*` credentials are absent
+- the `APIKEY` extension credential is absent
+- ordinary settings are still exported, with their values intact
 
-Triggering a real backup requires navigating the UI, which was judged too fragile to
-automate reliably. A unit test against an injected `PreferenceStore` would close this gap
-cheaply and run in CI — recommended as follow-up (§7).
+and that with `includePrivatePreferences = true` the credentials *are* exported (the
+opt-in still works), while `__APP_STATE_*` keys are never exported on either path.
+
+**The test was mutation-checked:** disabling the filter in
+`PreferenceBackupCreator.withPrivatePreferences` makes
+`excludesCredentialsWhenPrivateSettingsAreNotRequested` fail at the credential assertion,
+while the other two tests correctly still pass. So it is not passing trivially.
+
+**Still not verified at runtime:** no backup was executed on-device. Doing so requires
+automating both the app's settings flow and the Android SAF file picker. The unit test
+runs in CI on every change instead, which is the stronger guarantee.
 
 **Tracker OAuth logins** were not exercised; they require third-party accounts and are
 blocked on the rotation in §5.
@@ -211,9 +218,8 @@ older than 1.5.2.
 
 ## 7. Recommendations
 
-1. **Unit-test `PreferenceBackupCreator`** with an injected `PreferenceStore` asserting
-   that `__PRIVATE_*` and `APIKEY` keys are absent from the output when
-   `includePrivatePreferences = false`. Closes the only gap in §3 and runs in CI.
+1. ~~Unit-test `PreferenceBackupCreator`~~ — **done**: `PreferenceBackupCreatorTest`
+   covers it, is mutation-checked, and runs in CI (§3).
 2. **Complete the rotation** in §5 — the highest-value remaining action, since §6.1 makes
    the current registrations permanently extractable.
 3. **Re-create pre-1.5.2 backups** (§6.2).
@@ -236,5 +242,6 @@ older than 1.5.2.
 | `1a4efe4` | Dependabot PRs skip secret-writing CI steps |
 | `722a02d`, `4552261` | Removed stale `update_website.yml` from two branches |
 | *this change* | Tracker client ids → `BuildConfig`; this document |
+| *follow-up* | `PreferenceBackupCreatorTest` closes the last verification gap (§3) |
 
 Merged as PR #7 (`aea00e9`), PR #8 (`db934cf`), PR #9 (`ce841cd`).
