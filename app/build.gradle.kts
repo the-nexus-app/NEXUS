@@ -73,7 +73,7 @@ android {
         // NXS <--
 
         // NXS -->
-        versionCode = 9
+        versionCode = 10
         versionName = "1.5.2"
         // NXS <--
 
