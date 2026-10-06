@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.track.bangumi
 
 import android.net.Uri
 import androidx.core.net.toUri
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.bangumi.dto.BGMCollectionResponse
 import eu.kanade.tachiyomi.data.track.bangumi.dto.BGMOAuth
@@ -198,7 +199,7 @@ class BangumiApi(
 
     companion object {
         private const val CLIENT_ID = "bgm31586666817a5d03b"
-        private const val CLIENT_SECRET = "3dad27cf8edcac6f55361d7971d219e1"
+        private val CLIENT_SECRET = BuildConfig.BANGUMI_CLIENT_SECRET
 
         private const val API_URL = "https://api.bgm.tv"
         private const val OAUTH_URL = "https://bgm.tv/oauth/access_token"
