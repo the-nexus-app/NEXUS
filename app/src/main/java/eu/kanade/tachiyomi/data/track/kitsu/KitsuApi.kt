@@ -313,7 +313,7 @@ class KitsuApi(private val client: OkHttpClient, interceptor: KitsuInterceptor) 
     }
 
     companion object {
-        private const val CLIENT_ID = "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd"
+        private val CLIENT_ID = BuildConfig.KITSU_CLIENT_ID
         private val CLIENT_SECRET = BuildConfig.KITSU_CLIENT_SECRET
 
         private const val BASE_URL = "https://kitsu.app/api/edge/"

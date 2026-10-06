@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.data.track.anilist
 
 import android.net.Uri
 import androidx.core.net.toUri
+import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.data.database.models.Track
 import eu.kanade.tachiyomi.data.track.anilist.dto.ALAddMangaResult
 import eu.kanade.tachiyomi.data.track.anilist.dto.ALCurrentUserResult
@@ -525,7 +526,7 @@ class AnilistApi(val client: OkHttpClient, interceptor: AnilistInterceptor) {
 
     companion object {
         // Registered under KMK's MAL account
-        private const val CLIENT_ID = "16801"
+        private val CLIENT_ID = BuildConfig.ANILIST_CLIENT_ID
         private const val API_URL = "https://graphql.anilist.co/"
         private const val BASE_URL = "https://anilist.co/api/v2/"
         private const val BASE_MANGA_URL = "https://anilist.co/manga/"

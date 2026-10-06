@@ -50,6 +50,11 @@ if (trackerSecretsPropertiesFile.exists()) {
 
 fun trackerSecret(key: String): String = trackerSecretsProperties.getProperty(key, "")
 
+// OAuth client ids are not secret, but they are half of a provider registration and so
+// rotate together with the secret once NEXUS registers its own apps. The default pins
+// today's upstream Komikku value, so a build with no override behaves exactly as before.
+fun trackerClient(key: String, default: String): String = trackerSecretsProperties.getProperty(key, default)
+
 // NXS <--
 android {
     namespace = "eu.kanade.tachiyomi"
@@ -86,6 +91,23 @@ android {
         buildConfigField("String", "SHIKIMORI_CLIENT_SECRET", "\"${trackerSecret("shikimori.client.secret")}\"")
         buildConfigField("String", "BANGUMI_CLIENT_SECRET", "\"${trackerSecret("bangumi.client.secret")}\"")
         buildConfigField("String", "KITSU_CLIENT_SECRET", "\"${trackerSecret("kitsu.client.secret")}\"")
+        buildConfigField("String", "ANILIST_CLIENT_ID", "\"${trackerClient("anilist.client.id", "16801")}\"")
+        buildConfigField(
+            "String",
+            "MYANIMELIST_CLIENT_ID",
+            "\"${trackerClient("myanimelist.client.id", "2be14959235191ece14eebdc2eea0466")}\"",
+        )
+        buildConfigField(
+            "String",
+            "SHIKIMORI_CLIENT_ID",
+            "\"${trackerClient("shikimori.client.id", "hst3O_VlZ0HrrXcnZAd6m-SCIc1_mv5cQV-3nQCdJ0E")}\"",
+        )
+        buildConfigField("String", "BANGUMI_CLIENT_ID", "\"${trackerClient("bangumi.client.id", "bgm31586666817a5d03b")}\"")
+        buildConfigField(
+            "String",
+            "KITSU_CLIENT_ID",
+            "\"${trackerClient("kitsu.client.id", "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd")}\"",
+        )
         // NXS <--
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
