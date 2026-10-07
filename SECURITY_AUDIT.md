@@ -162,9 +162,31 @@ no release branch required.
 
 ### Steps
 
-1. **Register an application** at each provider, using NEXUS's own redirect URI
-   (`nexus://<provider>-auth` — confirm the URI registered matches what the app expects
-   before switching).
+1. **Register an application** at each provider. The redirect URI is **not** uniform —
+   it has to match what the code actually sends:
+
+   | Provider | Console | Redirect URI to register | Comes back |
+   |---|---|---|---|
+   | Shikimori | `shikimori.one/oauth/applications` | `komikku://shikimori-auth` | id + secret |
+   | Bangumi | `bgm.tv/oauth/apps` | `komikku://bangumi-auth` | id + secret |
+   | Kitsu | `kitsu.app/oauth/applications` | unused — `nexus://kitsu-auth` if forced | id + secret |
+   | AniList | `anilist.co/apps` | `nexus://anilist-auth` | id only (secret unused) |
+   | MyAnimeList | `myanimelist.net/apiconfig/profile` | `nexus://myanimelist-auth`, **exactly one** | id only (PKCE) |
+
+   Why they differ:
+
+   - **Shikimori and Bangumi** send `redirect_uri=komikku://…` explicitly
+     (`ShikimoriApi.REDIRECT_URL`, `BangumiApi.REDIRECT_URL`) and providers match it
+     character for character, so the console value must be that exact string even
+     though this is NEXUS's own registration. The manifest also accepts `nexus://`
+     (`AndroidManifest.xml`), but that is irrelevant while the request carries
+     `komikku://`.
+   - **AniList and MAL** send *no* `redirect_uri` (`AnilistApi.authUrl()`,
+     `MyAnimeListApi.authUrl()`), so the provider falls back to whatever is
+     registered. MAL permits omitting it **only when exactly one URI is registered** —
+     adding a second later would silently break login.
+   - **Kitsu** uses the password grant (`KitsuApi.login()`), which never redirects;
+     there is no `kitsu-auth` host in the manifest because there is nothing to receive.
 2. **Add the ids** to `tracker_secrets.properties` (gitignored):
 
    ```properties
@@ -181,9 +203,16 @@ no release branch required.
 3. **Update the `TRACKER_SECRETS` Actions secret** with the same file contents so CI and
    release builds match local builds. (`34d18fd` will fail the build if the file is
    written but empty.)
-4. **Revoke the old registrations** at each provider only after a build from step 3
-   successfully logs in.
-5. **Verify** a tracker login on-device from a release build.
+4. **Do not revoke the old registrations.** They belong to Komikku upstream — the code
+   says so directly (`AnilistApi` and `MyAnimeListApi` are each commented
+   *"Registered under KMK's MAL account"*) — and this repository has no access to those
+   accounts. Revoking them would break every Komikku install and would not remove a
+   single byte from our own history. Once steps 2–3 are in place our builds simply stop
+   shipping those ids; their presence in git history is already accepted in §6.1.
+5. **Verify** a tracker login on-device from a release build. AniList is the one to
+   watch: because it receives no `redirect_uri`, a failure there would be fixed by
+   appending the registered URI to `AnilistApi.authUrl()` — a behaviour change to be
+   approved separately, not folded into this runbook.
 
 Every id has its current upstream Komikku value as the BuildConfig default, so omitting a
 key keeps today's behaviour exactly. That makes this change safe to land before the
@@ -243,5 +272,6 @@ older than 1.5.2.
 | `722a02d`, `4552261` | Removed stale `update_website.yml` from two branches |
 | *this change* | Tracker client ids → `BuildConfig`; this document |
 | *follow-up* | `PreferenceBackupCreatorTest` closes the last verification gap (§3) |
+| *follow-up* | §5 corrected: exact per-provider redirect URIs; "revoke old registrations" → do not revoke (they are upstream's) |
 
 Merged as PR #7 (`aea00e9`), PR #8 (`db934cf`), PR #9 (`ce841cd`).
